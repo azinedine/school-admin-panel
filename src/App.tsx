@@ -1,5 +1,6 @@
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
+import { Link } from "@tanstack/react-router"
 
 function App() {
   return (
@@ -23,7 +24,9 @@ function App() {
               </CardDescription>
             </CardHeader>
             <CardContent>
-              <Button className="w-full">View Students</Button>
+              <Button asChild className="w-full">
+                <Link to="/students">View Students</Link>
+              </Button>
             </CardContent>
           </Card>
           
