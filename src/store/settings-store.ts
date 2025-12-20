@@ -1,5 +1,6 @@
 import { create } from 'zustand'
 import { devtools, persist } from 'zustand/middleware'
+import { settingsStorage } from './storage'
 
 /**
  * App Settings State
@@ -46,7 +47,7 @@ const defaultSettings: SettingsState = {
 /**
  * Settings Store
  * 
- * Manages application-wide settings with localStorage persistence.
+ * Manages application-wide settings with IndexedDB persistence.
  * 
  * @example
  * ```tsx
@@ -139,7 +140,8 @@ export const useSettingsStore = create<SettingsStore>()(
           ),
       }),
       {
-        name: 'app-settings', // localStorage key
+        name: 'app-settings',
+        storage: settingsStorage as any, // Using IndexedDB
       }
     ),
     { name: 'SettingsStore' }
