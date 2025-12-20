@@ -1,33 +1,33 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { GradeSheetTable } from "@/components/GradeSheetTable"
-import { Header } from "@/components/layout/header"
-import { Main } from "@/components/layout/main"
 import { ModeToggle } from "@/components/mode-toggle"
+import { SidebarTrigger } from "@/components/ui/sidebar"
 
 export default function GradesPage() {
   return (
-    <>
-      <Header fixed>
-        <div className="ml-auto">
+    <Card className="flex flex-col h-full overflow-hidden">
+      <CardHeader className="flex flex-row items-center justify-between gap-4 shrink-0">
+        {/* Left side: Sidebar toggle */}
+        <div className="flex items-center gap-3">
+          <SidebarTrigger variant='outline' />
+        </div>
+        
+        {/* Center: Title */}
+        <div className="flex-1 text-right" dir="rtl">
+          <CardTitle>كشف النقاط</CardTitle>
+          <CardDescription>
+            إدارة ومتابعة علامات الطلاب
+          </CardDescription>
+        </div>
+        
+        {/* Right side: Theme toggle */}
+        <div className="flex items-center gap-2">
           <ModeToggle />
         </div>
-      </Header>
-
-      <Main>
-        <div className="w-full px-4">
-          <Card>
-            <CardHeader>
-              <CardTitle className="text-right" dir="rtl">كشف النقاط</CardTitle>
-              <CardDescription className="text-right" dir="rtl">
-                إدارة ومتابعة علامات الطلاب
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <GradeSheetTable />
-            </CardContent>
-          </Card>
-        </div>
-      </Main>
-    </>
+      </CardHeader>
+      <CardContent className="flex-1 overflow-auto">
+        <GradeSheetTable />
+      </CardContent>
+    </Card>
   )
 }
