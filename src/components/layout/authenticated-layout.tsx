@@ -13,7 +13,7 @@ export function AuthenticatedLayout({ children }: Props) {
   return (
     <SidebarProvider defaultOpen={defaultOpen} className="h-screen overflow-hidden">
       <AppSidebar />
-      <div className="flex-1 flex flex-col h-screen overflow-hidden transition-[width,margin] duration-200 ease-linear p-2">
+      <div className="flex-1 flex flex-col h-screen overflow-hidden transition-[width,margin] duration-200 ease-linear py-2 pr-2 pl-1">
         {children ? children : <Outlet />}
       </div>
     </SidebarProvider>
