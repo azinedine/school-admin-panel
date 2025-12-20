@@ -1,5 +1,6 @@
 /** @type {import('tailwindcss').Config} */
 export default {
+  darkMode: ["class"],
   content: [
     "./index.html",
     "./src/**/*.{js,ts,jsx,tsx}",
@@ -51,6 +52,13 @@ export default {
           "3": "hsl(var(--chart-3))",
           "4": "hsl(var(--chart-4))",
           "5": "hsl(var(--chart-5))",
+        },
+        pastel: {
+          blue: "#E0E7FF",
+          yellow: "#FEF3C7",
+          coral: "#FEE2E2",
+          green: "#DCFCE7",
+          purple: "#F3E8FF",
         },
       },
     },
