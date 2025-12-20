@@ -61,7 +61,7 @@ export function AppSidebar() {
             <GraduationCap className="h-6 w-6" />
           </div>
           <span className="font-bold text-xl tracking-tight truncate">
-            Maham
+            Mirsad
           </span>
         </div>
         <SidebarTrigger className="shrink-0" />
