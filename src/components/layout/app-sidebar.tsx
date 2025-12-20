@@ -1,7 +1,6 @@
 import { 
   LayoutDashboard, 
   Users, 
-  GraduationCap, 
   ClipboardCheck, 
   FileText, 
   BookOpen, 
@@ -15,6 +14,9 @@ import {
   Settings
 } from "lucide-react"
 import { Link } from "@tanstack/react-router"
+import { useTheme } from "next-themes"
+import mirsadLogoDark from "@/assets/mirsad-logo.png"
+import mirsadLogoLight from "@/assets/mirsad-logo-white.png"
 
 import {
   Sidebar,
@@ -53,13 +55,20 @@ const settingItems = [
 ]
 
 export function AppSidebar() {
+  const { theme, resolvedTheme } = useTheme()
+  const currentTheme = resolvedTheme || theme
+  const logoSrc = currentTheme === 'dark' ? mirsadLogoDark : mirsadLogoLight
+
   return (
     <Sidebar variant="sidebar" collapsible="icon" className="border-r-0">
       <SidebarHeader className="h-20 flex flex-row items-center justify-between group-data-[collapsible=icon]:justify-center">
         <div className="flex items-center gap-3 overflow-hidden group-data-[collapsible=icon]:hidden">
-          <div className="bg-primary text-primary-foreground p-1.5 rounded-lg shrink-0">
-            <GraduationCap className="h-6 w-6" />
-          </div>
+          <img 
+            src={logoSrc} 
+            alt="Mirsad Logo" 
+            className="h-10 w-10 object-contain shrink-0 transition-opacity duration-300 ease-in-out"
+            key={currentTheme}
+          />
           <span className="font-bold text-xl tracking-tight truncate">
             Mirsad
           </span>
