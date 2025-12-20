@@ -224,7 +224,7 @@ const Sidebar = React.forwardRef<
       <div
         ref={ref}
         className={cn(
-          "group peer hidden text-sidebar-foreground md:block shrink-0",
+          "group peer flex flex-col text-sidebar-foreground hidden md:flex shrink-0",
           variant === "inset" ? "w-[calc(var(--sidebar-width)_+_theme(spacing.4))]" : "w-[var(--sidebar-width)]",
           className
         )}
