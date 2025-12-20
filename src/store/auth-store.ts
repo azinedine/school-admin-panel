@@ -1,6 +1,7 @@
 import { create } from 'zustand'
 import { devtools, persist } from 'zustand/middleware'
 import type { User } from './types'
+import { authStorage } from './storage'
 
 /**
  * Authentication Store State
@@ -37,7 +38,7 @@ const initialState: AuthState = {
 /**
  * Authentication Store
  * 
- * Handles user authentication state with persistence.
+ * Handles user authentication state with IndexedDB persistence.
  * 
  * @example
  * ```tsx
@@ -105,12 +106,8 @@ export const useAuthStore = create<AuthStore>()(
           ),
       }),
       {
-        name: 'auth-storage', // localStorage key
-        partialize: (state) => ({
-          user: state.user,
-          token: state.token,
-          isAuthenticated: state.isAuthenticated,
-        }),
+        name: 'auth-storage',
+        storage: authStorage as any, // Using IndexedDB
       }
     ),
     { name: 'AuthStore' }
