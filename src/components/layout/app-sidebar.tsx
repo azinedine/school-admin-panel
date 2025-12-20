@@ -27,6 +27,7 @@ import {
   SidebarGroup,
   SidebarGroupLabel,
   SidebarGroupContent,
+  SidebarTrigger,
 } from "@/components/ui/sidebar"
 import { ModeToggle } from "@/components/mode-toggle"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
@@ -54,18 +55,19 @@ const settingItems = [
 export function AppSidebar() {
   return (
     <Sidebar variant="sidebar" collapsible="icon" className="border-r-0">
-      <SidebarHeader className="h-20 flex items-center px-6">
-        <div className="flex items-center gap-3">
-          <div className="bg-primary text-primary-foreground p-1.5 rounded-lg">
+      <SidebarHeader className="h-20 flex flex-row items-center justify-between group-data-[collapsible=icon]:justify-center">
+        <div className="flex items-center gap-3 overflow-hidden group-data-[collapsible=icon]:hidden">
+          <div className="bg-primary text-primary-foreground p-1.5 rounded-lg shrink-0">
             <GraduationCap className="h-6 w-6" />
           </div>
-          <span className="font-bold text-xl tracking-tight group-data-[collapsible=icon]:hidden">
+          <span className="font-bold text-xl tracking-tight truncate">
             Maham
           </span>
         </div>
+        <SidebarTrigger className="shrink-0" />
       </SidebarHeader>
       
-      <SidebarContent className="px-3">
+      <SidebarContent className="">
         <SidebarGroup>
           <SidebarGroupLabel className="px-4 text-xs font-semibold text-muted-foreground/70 uppercase tracking-wider mb-2">
             Main menu
