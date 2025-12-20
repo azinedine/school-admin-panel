@@ -10,8 +10,8 @@ export default function GradesPage() {
         {/* Left side: Sidebar toggle */}
         <div className="flex items-center gap-3">
           <SidebarTrigger variant='outline' />
+          <ModeToggle />
         </div>
-        
         {/* Center: Title */}
         <div className="flex-1 text-right" dir="rtl">
           <CardTitle>كشف النقاط</CardTitle>
@@ -20,10 +20,7 @@ export default function GradesPage() {
           </CardDescription>
         </div>
         
-        {/* Right side: Theme toggle */}
-        <div className="flex items-center gap-2">
-          <ModeToggle />
-        </div>
+     
       </CardHeader>
       <CardContent className="flex-1 overflow-auto">
         <GradeSheetTable />
