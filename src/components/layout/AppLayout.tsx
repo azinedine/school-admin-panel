@@ -1,14 +1,17 @@
 import { Outlet } from '@tanstack/react-router'
-import { AppSidebar } from './AppSidebar'
+import { SidebarProvider, SidebarInset } from "@/components/ui/sidebar"
+import { AppSidebar } from "./app-sidebar"
 
 export default function AppLayout() {
   return (
-    <div className="min-h-screen grid grid-cols-1 md:grid-cols-[16rem_1fr]">
+    <SidebarProvider className="bg-[#F3F4F6] dark:bg-background">
       <AppSidebar />
-      <main className="min-h-screen bg-background">
-        <Outlet />
-      </main>
-    </div>
+      <SidebarInset className="m-2 md:m-4 md:ml-0 rounded-[2.5rem] bg-background shadow-xl overflow-hidden border-0">
+        <main className="h-full overflow-y-auto p-4 md:p-8">
+          <Outlet />
+        </main>
+      </SidebarInset>
+    </SidebarProvider>
   )
 }
 
