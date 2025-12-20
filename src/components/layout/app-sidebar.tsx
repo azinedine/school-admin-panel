@@ -53,7 +53,7 @@ const settingItems = [
 
 export function AppSidebar() {
   return (
-    <Sidebar variant="inset" collapsible="icon" className="border-r-0">
+    <Sidebar variant="sidebar" collapsible="icon" className="border-r-0">
       <SidebarHeader className="h-20 flex items-center px-6">
         <div className="flex items-center gap-3">
           <div className="bg-primary text-primary-foreground p-1.5 rounded-lg">
