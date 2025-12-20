@@ -223,7 +223,11 @@ const Sidebar = React.forwardRef<
     return (
       <div
         ref={ref}
-        className="group peer hidden text-sidebar-foreground md:block"
+        className={cn(
+          "group peer hidden text-sidebar-foreground md:block shrink-0",
+          variant === "inset" ? "w-[calc(var(--sidebar-width)_+_theme(spacing.4))]" : "w-[--sidebar-width]",
+          className
+        )}
         data-state={state}
         data-collapsible={state === "collapsed" ? collapsible : ""}
         data-variant={variant}
@@ -329,6 +333,7 @@ const SidebarInset = React.forwardRef<
   return (
     <main
       ref={ref}
+      data-sidebar="inset"
       className={cn(
         "relative flex w-full flex-1 flex-col bg-background",
         "md:peer-data-[variant=inset]:m-2 md:peer-data-[state=collapsed]:peer-data-[variant=inset]:ml-2 md:peer-data-[variant=inset]:ml-0 md:peer-data-[variant=inset]:rounded-xl md:peer-data-[variant=inset]:shadow",
