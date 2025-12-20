@@ -1,4 +1,5 @@
-import axios, { AxiosError, AxiosInstance } from 'axios'
+import axios from 'axios'
+import type { AxiosError, AxiosInstance } from 'axios'
 
 /**
  * Base API URL - configure this based on your environment
