@@ -224,8 +224,7 @@ const Sidebar = React.forwardRef<
       <div
         ref={ref}
         className={cn(
-          "group peer flex flex-col text-sidebar-foreground hidden md:flex shrink-0",
-          variant === "inset" ? "w-[calc(var(--sidebar-width)_+_theme(spacing.4))]" : "w-[var(--sidebar-width)]",
+          "group peer hidden text-sidebar-foreground md:block",
           className
         )}
         data-state={state}
@@ -260,7 +259,7 @@ const Sidebar = React.forwardRef<
         >
           <div
             data-sidebar="sidebar"
-            className="flex h-full w-full flex-col bg-sidebar group-data-[variant=floating]:rounded-lg group-data-[variant=floating]:border group-data-[variant=floating]:border-sidebar-border group-data-[variant=floating]:shadow"
+            className="flex h-full w-full flex-col bg-sidebar group-data-[variant=floating]:rounded-lg group-data-[variant=floating]:border group-data-[variant=floating]:shadow"
           >
             {children}
           </div>
