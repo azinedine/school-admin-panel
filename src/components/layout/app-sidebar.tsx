@@ -57,18 +57,27 @@ const settingItems = [
 export function AppSidebar() {
   const { theme, resolvedTheme } = useTheme()
   const currentTheme = resolvedTheme || theme
-  const logoSrc = currentTheme === 'dark' ? mirsadLogoDark : mirsadLogoLight
 
   return (
     <Sidebar variant="sidebar" collapsible="icon" className="border-r-0">
       <SidebarHeader className="h-20 flex flex-row items-center justify-between group-data-[collapsible=icon]:justify-center">
         <div className="flex items-center gap-3 overflow-hidden group-data-[collapsible=icon]:hidden">
-          <img 
-            src={logoSrc} 
-            alt="Mirsad Logo" 
-            className="h-10 w-10 object-contain shrink-0 transition-opacity duration-300 ease-in-out"
-            key={currentTheme}
-          />
+          <div className="relative h-10 w-10 shrink-0">
+            <img 
+              src={mirsadLogoDark}
+              alt="Mirsad Logo" 
+              className={`absolute inset-0 h-full w-full object-contain transition-opacity duration-500 ease-in-out ${
+                currentTheme === 'dark' ? 'opacity-100' : 'opacity-0'
+              }`}
+            />
+            <img 
+              src={mirsadLogoLight}
+              alt="Mirsad Logo" 
+              className={`absolute inset-0 h-full w-full object-contain transition-opacity duration-500 ease-in-out ${
+                currentTheme === 'light' ? 'opacity-100' : 'opacity-0'
+              }`}
+            />
+          </div>
           <span className="font-bold text-xl tracking-tight truncate">
             Mirsad
           </span>
