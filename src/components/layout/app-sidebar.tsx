@@ -21,11 +21,13 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   }
 
   return (
-    <Sidebar collapsible='icon' variant='floating' side='right' {...props}>
+    <Sidebar collapsible='icon' variant='floating' {...props}>
       <SidebarHeader>
         <div className='flex items-center justify-between gap-2'>
           <TeamSwitcher teams={sidebarData.teams} />
-          <LanguageSwitcher />
+          <div className='group-data-[collapsible=icon]:hidden'>
+            <LanguageSwitcher />
+          </div>
         </div>
       </SidebarHeader>
       <SidebarContent>
