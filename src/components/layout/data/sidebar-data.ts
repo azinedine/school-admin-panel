@@ -15,6 +15,7 @@ import {
   FileText,
 } from 'lucide-react'
 
+// Translation keys for sidebar items
 export const sidebarData = {
   user: {
     name: 'Amirbaqian',
@@ -30,86 +31,86 @@ export const sidebarData = {
   ],
   navGroups: [
     {
-      title: 'Main menu',
+      title: 'nav.mainMenu',
       items: [
         {
-          title: 'Overview',
+          title: 'nav.overview',
           url: '/',
           icon: LayoutDashboard,
         },
         {
-          title: 'Class Preparation',
+          title: 'nav.classPreparation',
           url: '/prep',
           icon: ClipboardCheck,
         },
         {
-          title: 'Attendance',
+          title: 'nav.attendance',
           url: '/attendance',
           icon: FileText,
         },
         {
-          title: 'Exams',
+          title: 'nav.exams',
           url: '/exams',
           icon: BookOpen,
         },
         {
-          title: 'Assignment management',
+          title: 'nav.assignmentManagement',
           url: '/assignments',
           icon: FileText,
         },
         {
-          title: 'Schedule',
+          title: 'nav.schedule',
           url: '/schedule',
           icon: Calendar,
         },
         {
-          title: 'Students',
+          title: 'nav.students',
           url: '/students',
           icon: Users,
         },
         {
-          title: 'Grades',
+          title: 'nav.grades',
           url: '/grades',
           icon: GraduationCap,
         },
         {
-          title: 'Messages',
+          title: 'nav.messages',
           url: '/messages',
           icon: MessageSquare,
           badge: '2',
         },
         {
-          title: 'Analytics',
+          title: 'nav.analytics',
           url: '/analytics',
           icon: BarChart3,
         },
         {
-          title: 'Reports',
+          title: 'nav.reports',
           url: '/reports',
           icon: Files,
         },
       ],
     },
     {
-      title: 'Settings and news',
+      title: 'nav.settingsAndNews',
       items: [
         {
-          title: 'School News',
+          title: 'nav.schoolNews',
           url: '/news',
           icon: Newspaper,
         },
         {
-          title: 'School Activities',
+          title: 'nav.schoolActivities',
           url: '/activities',
           icon: Activity,
         },
         {
-          title: "What's New",
+          title: 'nav.whatsNew',
           url: '/updates',
           icon: Zap,
         },
         {
-          title: 'Settings',
+          title: 'nav.settings',
           url: '/settings',
           icon: Settings,
         },
