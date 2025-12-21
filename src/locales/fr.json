@@ -26,7 +26,8 @@
             "class4a": "Classe 4A - Mathématiques",
             "class4b": "Classe 4B - Mathématiques",
             "class5a": "Classe 5A - Mathématiques",
-            "mathematics": "Mathématiques"
+            "mathematics": "Mathématiques",
+            "noClasses": "Aucune classe"
         },
         "messages": "Messages",
         "analytics": "Analytique",
