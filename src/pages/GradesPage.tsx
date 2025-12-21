@@ -1,30 +1,14 @@
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { GradeSheetTable } from "@/components/GradeSheetTable"
-import { ModeToggle } from "@/components/mode-toggle"
-import { SidebarTrigger } from "@/components/ui/sidebar"
+import { ContentPage } from "@/components/layout/content-page"
 
 export default function GradesPage() {
   return (
-    <Card className="flex flex-col h-full overflow-hidden">
-      <CardHeader className="flex flex-row items-center justify-between gap-4 shrink-0">
-        {/* Left side: Sidebar toggle */}
-        <div className="flex items-center gap-3">
-          <SidebarTrigger variant='outline' />
-          <ModeToggle />
-        </div>
-        {/* Center: Title */}
-        <div className="flex-1 text-right" dir="rtl">
-          <CardTitle>كشف النقاط</CardTitle>
-          <CardDescription>
-            إدارة ومتابعة علامات الطلاب
-          </CardDescription>
-        </div>
-        
-     
-      </CardHeader>
-      <CardContent className="flex-1 overflow-auto">
-        <GradeSheetTable />
-      </CardContent>
-    </Card>
+    <ContentPage 
+      title="كشف النقاط" 
+      description="إدارة ومتابعة علامات الطلاب"
+      rtl
+    >
+      <GradeSheetTable />
+    </ContentPage>
   )
 }
