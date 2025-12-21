@@ -1,4 +1,4 @@
-import { useMemo, useCallback, useState } from "react"
+import { useMemo, useCallback, useState, useEffect } from "react"
 import { ArrowUpDown, Search, Users, TrendingUp, CheckCircle, XCircle, UserMinus, Clock, History, Trash2 } from "lucide-react"
 import { useTranslation } from "react-i18next"
 import { Button } from "@/components/ui/button"
@@ -94,6 +94,13 @@ export function GradeSheetTable() {
   const getClassStudentCount = useCallback((classId: string) => {
     return students.filter(s => s.classId === classId).length
   }, [students])
+
+  // Auto-select first class when classes exist but none selected
+  useEffect(() => {
+    if (classes.length > 0 && !selectedClassId) {
+      setSelectedClass(classes[0].id)
+    }
+  }, [classes, selectedClassId, setSelectedClass])
 
   // Local UI state
   const [searchQuery, setSearchQuery] = useState("")
