@@ -48,5 +48,49 @@
         "classes": "Classes",
         "classesDescription": "Organize classes and schedules",
         "viewClasses": "View Classes"
+    },
+    "pages": {
+        "grades": {
+            "title": "Grade Sheet",
+            "description": "Manage and track student grades",
+            "stats": {
+                "totalStudents": "Total Students",
+                "classAverage": "Class Average",
+                "successRate": "Success Rate",
+                "failureRate": "Failure Rate"
+            },
+            "search": {
+                "placeholder": "Search by first or last name...",
+                "firstName": "First Name",
+                "lastName": "Last Name"
+            },
+            "table": {
+                "id": "ID",
+                "lastName": "Last Name",
+                "firstName": "First Name",
+                "dateOfBirth": "Date of Birth",
+                "behavior": "Behavior",
+                "applications": "Applications",
+                "notebook": "Notebook",
+                "lateness": "Lateness",
+                "absences": "Absences",
+                "activityAverage": "Activity Avg /20",
+                "assignment": "Assignment /20",
+                "exam": "Exam /20",
+                "finalAverage": "Average",
+                "remarks": "Remarks"
+            },
+            "remarks": {
+                "excellent": "Excellent",
+                "veryGood": "Very Good",
+                "good": "Good",
+                "average": "Average",
+                "poor": "Poor. Needs improvement"
+            },
+            "hints": {
+                "clickToEdit": "Click on a cell to edit the grade",
+                "autoCalculate": "Average and remarks are calculated automatically"
+            }
+        }
     }
 }
