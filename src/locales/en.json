@@ -1,0 +1,52 @@
+{
+    "common": {
+        "changeLanguage": "Change language",
+        "search": "Search",
+        "save": "Save",
+        "cancel": "Cancel",
+        "delete": "Delete",
+        "edit": "Edit",
+        "add": "Add",
+        "loading": "Loading...",
+        "noResults": "No results found"
+    },
+    "nav": {
+        "mainMenu": "Main menu",
+        "settingsAndNews": "Settings and news",
+        "overview": "Overview",
+        "classPreparation": "Class Preparation",
+        "attendance": "Attendance",
+        "exams": "Exams",
+        "assignmentManagement": "Assignment management",
+        "schedule": "Schedule",
+        "students": "Students",
+        "grades": "Grades",
+        "messages": "Messages",
+        "analytics": "Analytics",
+        "reports": "Reports",
+        "schoolNews": "School News",
+        "schoolActivities": "School Activities",
+        "whatsNew": "What's New",
+        "settings": "Settings"
+    },
+    "user": {
+        "upgradeToPro": "Upgrade to Pro",
+        "account": "Account",
+        "billing": "Billing",
+        "notifications": "Notifications",
+        "logout": "Log out"
+    },
+    "app": {
+        "title": "School Admin Panel",
+        "subtitle": "Built with the latest Tailwind CSS and shadcn/ui",
+        "students": "Students",
+        "studentsDescription": "Manage student information and records",
+        "viewStudents": "View Students",
+        "teachers": "Teachers",
+        "teachersDescription": "Handle teacher profiles and schedules",
+        "viewTeachers": "View Teachers",
+        "classes": "Classes",
+        "classesDescription": "Organize classes and schedules",
+        "viewClasses": "View Classes"
+    }
+}
