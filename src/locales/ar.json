@@ -101,7 +101,13 @@
                 "absenceRecorded": "تم تسجيل غياب {{name}}",
                 "tardinessRecorded": "تم تسجيل تأخر {{name}}",
                 "viewHistory": "عرض السجل",
-                "noRecords": "لا توجد سجلات حضور"
+                "noRecords": "لا توجد سجلات حضور",
+                "deleteRecord": "حذف السجل",
+                "deleteConfirm": "هل أنت متأكد من حذف هذا السجل؟",
+                "deleted": "تم حذف السجل",
+                "history": "سجل الحضور",
+                "absence": "غياب",
+                "tardiness": "تأخر"
             }
         }
     }
