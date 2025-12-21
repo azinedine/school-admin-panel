@@ -69,9 +69,23 @@ export const sidebarData = {
           icon: Users,
         },
         {
-          title: 'nav.grades',
+          title: 'nav.grades.title',
           url: '/grades',
           icon: GraduationCap,
+          items: [
+            {
+              title: 'nav.grades.class4a',
+              url: '/grades?class=class-4a',
+            },
+            {
+              title: 'nav.grades.class4b',
+              url: '/grades?class=class-4b',
+            },
+            {
+              title: 'nav.grades.class5a',
+              url: '/grades?class=class-5a',
+            },
+          ],
         },
         {
           title: 'nav.messages',
