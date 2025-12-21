@@ -101,7 +101,13 @@
                 "absenceRecorded": "Absence enregistrée pour {{name}}",
                 "tardinessRecorded": "Retard enregistré pour {{name}}",
                 "viewHistory": "Voir l'historique",
-                "noRecords": "Aucun enregistrement de présence"
+                "noRecords": "Aucun enregistrement de présence",
+                "deleteRecord": "Supprimer l'enregistrement",
+                "deleteConfirm": "Êtes-vous sûr de vouloir supprimer cet enregistrement ?",
+                "deleted": "Enregistrement supprimé",
+                "history": "Historique de présence",
+                "absence": "Absence",
+                "tardiness": "Retard"
             }
         }
     }
