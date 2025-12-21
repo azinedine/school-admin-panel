@@ -85,7 +85,8 @@
                 "assignment": "Assignment /20",
                 "exam": "Exam /20",
                 "finalAverage": "Average",
-                "remarks": "Remarks"
+                "remarks": "Remarks",
+                "group": "Group"
             },
             "remarks": {
                 "excellent": "Excellent",
@@ -146,6 +147,11 @@
                 "noData": "No data found in Excel file",
                 "parseError": "Error parsing Excel file. Please check the format.",
                 "multiSuccess": "Created {{classes}} classes with {{students}} students"
+            },
+            "groups": {
+                "showGroups": "Show Groups",
+                "hideGroups": "Hide Groups",
+                "groupLabel": "G{{number}}"
             }
         }
     }
