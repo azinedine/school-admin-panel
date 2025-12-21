@@ -180,6 +180,13 @@ const SidebarMenuCollapsedDropdown = ({
 }
 
 function checkIsActive(href: string, item: NavItem, mainNav = false) {
+  // For items with query params (like /grades?class=xxx), do full URL comparison
+  if (item.url?.includes('?')) {
+    // Compare full URLs for query param based routing
+    return href === item.url || 
+           decodeURIComponent(href) === decodeURIComponent(item.url)
+  }
+  
   return (
     href === item.url || // /endpoint?search=param
     href.split('?')[0] === item.url || // endpoint
