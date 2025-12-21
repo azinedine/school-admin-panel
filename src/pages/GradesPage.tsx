@@ -1,6 +1,7 @@
-import { useRef, useState, useCallback } from "react"
+import { useRef, useState, useCallback, useEffect } from "react"
 import { Upload, Plus, Trash2 } from "lucide-react"
 import { useTranslation } from "react-i18next"
+import { useLocation } from "@tanstack/react-router"
 import { GradeSheetTable } from "@/components/GradeSheetTable"
 import { ContentPage } from "@/components/layout/content-page"
 import { useDirection } from "@/hooks/use-direction"
@@ -21,11 +22,13 @@ import * as XLSX from "xlsx"
 export default function GradesPage() {
   const { t } = useTranslation()
   const { isRTL } = useDirection()
+  const location = useLocation()
   
   // Store actions
   const classes = useGradesStore((state) => state.classes)
   const students = useGradesStore((state) => state.students)
   const selectedClassId = useGradesStore((state) => state.selectedClassId)
+  const setSelectedClass = useGradesStore((state) => state.setSelectedClass)
   const addClass = useGradesStore((state) => state.addClass)
   const addStudentsToClass = useGradesStore((state) => state.addStudentsToClass)
   const removeClass = useGradesStore((state) => state.removeClass)
@@ -44,6 +47,19 @@ export default function GradesPage() {
     classId: null,
   })
   const [clearAllDialog, setClearAllDialog] = useState(false)
+
+  // Sync URL class param with selected class
+  useEffect(() => {
+    const params = new URLSearchParams(location.search)
+    const classParam = params.get('class')
+    
+    if (classParam && classes.some(c => c.id === classParam)) {
+      // URL has valid class param - select it
+      if (classParam !== selectedClassId) {
+        setSelectedClass(classParam)
+      }
+    }
+  }, [location.search, classes, selectedClassId, setSelectedClass])
 
   // Get student count for a class
   const getClassStudentCount = useCallback((classId: string) => {
