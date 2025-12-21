@@ -20,7 +20,14 @@
         "assignmentManagement": "Assignment management",
         "schedule": "Schedule",
         "students": "Students",
-        "grades": "Grades",
+        "grades": {
+            "title": "Grades",
+            "gradeSheet": "Grade Sheet",
+            "class4a": "Class 4A - Mathematics",
+            "class4b": "Class 4B - Mathematics",
+            "class5a": "Class 5A - Mathematics",
+            "mathematics": "Mathematics"
+        },
         "messages": "Messages",
         "analytics": "Analytics",
         "reports": "Reports",
@@ -108,6 +115,37 @@
                 "history": "Attendance History",
                 "absence": "Absence",
                 "tardiness": "Tardiness"
+            },
+            "empty": {
+                "title": "No Classes Yet",
+                "description": "Get started by adding your first class. You can upload an Excel file with student data or create a class manually.",
+                "uploadExcel": "Upload Excel File",
+                "createManually": "Create Class Manually",
+                "uploadHint": "Excel file should contain columns: ID, LastName, FirstName, DateOfBirth, Behavior, Applications, Notebook, Assignment, Exam"
+            },
+            "addClass": {
+                "title": "Add New Class",
+                "name": "Class Name",
+                "namePlaceholder": "e.g., Class 4A",
+                "subject": "Subject",
+                "subjectPlaceholder": "e.g., Mathematics",
+                "grade": "Grade Level",
+                "gradePlaceholder": "e.g., 4th Grade",
+                "success": "Class created successfully",
+                "uploadSuccess": "{{count}} students imported successfully"
+            },
+            "deleteClass": {
+                "title": "Delete Class",
+                "confirm": "Are you sure you want to delete this class?",
+                "hasStudents": "This class has {{count}} students. Deleting will remove all student data.",
+                "success": "Class deleted successfully",
+                "clearAll": "Clear All Classes",
+                "clearAllConfirm": "Are you sure you want to delete all classes? This will remove all student data."
+            },
+            "excel": {
+                "noData": "No data found in Excel file",
+                "parseError": "Error parsing Excel file. Please check the format.",
+                "multiSuccess": "Created {{classes}} classes with {{students}} students"
             }
         }
     }
