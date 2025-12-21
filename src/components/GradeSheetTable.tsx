@@ -107,6 +107,7 @@ export function GradeSheetTable() {
   const [sortField, setSortField] = useState<SortField | null>(null)
   const [sortDirection, setSortDirection] = useState<SortDirection>(null)
   const [editingCell, setEditingCell] = useState<{ id: string; field: string } | null>(null)
+  const [showGroups, setShowGroups] = useState(false)
   
   // Attendance dialog state
   const [attendanceDialog, setAttendanceDialog] = useState<{
@@ -476,6 +477,17 @@ export function GradeSheetTable() {
             />
           </div>
         </div>
+
+        {/* Group Split Toggle */}
+        <Button
+          variant={showGroups ? "default" : "outline"}
+          size="sm"
+          onClick={() => setShowGroups(!showGroups)}
+          className="gap-2"
+        >
+          <Users className="h-4 w-4" />
+          {showGroups ? t('pages.grades.groups.hideGroups') : t('pages.grades.groups.showGroups')}
+        </Button>
       </div>
 
       {/* Hints */}
@@ -489,6 +501,8 @@ export function GradeSheetTable() {
         <Table>
           <TableHeader className="sticky top-0 bg-background z-10">
             <TableRow>
+              <TableHead className="w-12 text-center">#</TableHead>
+              {showGroups && <TableHead className="w-20 text-center">{t('pages.grades.table.group')}</TableHead>}
               <SortableHeader field="id">{t('pages.grades.table.id')}</SortableHeader>
               <SortableHeader field="lastName">{t('pages.grades.table.lastName')}</SortableHeader>
               <SortableHeader field="firstName">{t('pages.grades.table.firstName')}</SortableHeader>
@@ -506,15 +520,27 @@ export function GradeSheetTable() {
             </TableRow>
           </TableHeader>
           <TableBody>
-            {filteredAndSortedStudents.map((student, index) => (
-              <TableRow 
-                key={student.id + '-' + index}
-                className={`${getRowColor(student.finalAverage)} ${index % 2 === 0 ? 'bg-opacity-50' : ''}`}
-              >
-                <TableCell className="font-mono text-xs">{student.id}</TableCell>
-                <TableCell className="font-semibold">{student.lastName}</TableCell>
-                <TableCell>{student.firstName}</TableCell>
-                <TableCell className="text-center">{student.dateOfBirth}</TableCell>
+            {filteredAndSortedStudents.map((student, index) => {
+              const studentNumber = index + 1
+              const totalStudents = filteredAndSortedStudents.length
+              const midpoint = Math.ceil(totalStudents / 2) // First group gets extra if odd
+              const groupNumber = studentNumber <= midpoint ? 1 : 2
+              
+              return (
+                <TableRow 
+                  key={student.id + '-' + index}
+                  className={`${getRowColor(student.finalAverage)} ${index % 2 === 0 ? 'bg-opacity-50' : ''}`}
+                >
+                  <TableCell className="text-center font-semibold">{studentNumber}</TableCell>
+                  {showGroups && (
+                    <TableCell className={`text-center font-bold ${groupNumber === 1 ? 'text-blue-600 bg-blue-50 dark:bg-blue-950' : 'text-green-600 bg-green-50 dark:bg-green-950'}`}>
+                      {t('pages.grades.groups.groupLabel', { number: groupNumber })}
+                    </TableCell>
+                  )}
+                  <TableCell className="font-mono text-xs">{student.id}</TableCell>
+                  <TableCell className="font-semibold">{student.lastName}</TableCell>
+                  <TableCell>{student.firstName}</TableCell>
+                  <TableCell className="text-center">{student.dateOfBirth}</TableCell>
                 <EditableCell student={student} field="behavior" value={student.behavior} />
                 <EditableCell student={student} field="applications" value={student.applications} />
                 <EditableCell student={student} field="notebook" value={student.notebook} />
@@ -556,7 +582,8 @@ export function GradeSheetTable() {
                 <TableCell className="text-center font-bold text-lg bg-primary/10 dark:bg-primary/20 text-primary">{student.finalAverage.toFixed(2)}</TableCell>
                 <TableCell className="font-semibold">{t(`pages.grades.remarks.${student.remarks}`)}</TableCell>
               </TableRow>
-            ))}
+              )
+            })}
           </TableBody>
         </Table>
       </div>
