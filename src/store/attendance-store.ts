@@ -1,6 +1,5 @@
 import { create } from 'zustand'
 import { devtools, persist } from 'zustand/middleware'
-import { createIndexedDBStorage } from './storage'
 
 /**
  * Attendance Record Type
@@ -38,40 +37,9 @@ interface AttendanceActions {
 type AttendanceStore = AttendanceState & AttendanceActions
 
 /**
- * Pre-configured IndexedDB storage for attendance
- */
-const attendanceStorage = createIndexedDBStorage('school-admin-db', 'attendance-store')
-
-/**
  * Attendance Store
  * 
- * Manages attendance records (absences and tardiness) with IndexedDB persistence.
- * 
- * @example
- * ```tsx
- * import { useAttendanceStore } from '@/store/attendance-store'
- * 
- * function AttendanceButton({ student }) {
- *   const { addRecord, getStudentAbsenceCount } = useAttendanceStore()
- *   
- *   const recordAbsence = () => {
- *     addRecord({
- *       studentId: student.id,
- *       studentName: `${student.firstName} ${student.lastName}`,
- *       classId: 'class-1',
- *       date: new Date().toISOString().split('T')[0],
- *       time: new Date().toTimeString().slice(0, 5),
- *       type: 'absence'
- *     })
- *   }
- *   
- *   return (
- *     <button onClick={recordAbsence}>
- *       Absences: {getStudentAbsenceCount(student.id)}
- *     </button>
- *   )
- * }
- * ```
+ * Manages attendance records (absences and tardiness) with localStorage persistence.
  */
 export const useAttendanceStore = create<AttendanceStore>()(
   devtools(
@@ -130,8 +98,8 @@ export const useAttendanceStore = create<AttendanceStore>()(
           ),
       }),
       {
-        name: 'attendance-records',
-        storage: attendanceStorage as any,
+        name: 'school-admin-attendance',
+        // Using default localStorage for reliable persistence
       }
     ),
     { name: 'AttendanceStore' }
