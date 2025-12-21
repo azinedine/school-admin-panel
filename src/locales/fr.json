@@ -20,7 +20,14 @@
         "assignmentManagement": "Gestion des devoirs",
         "schedule": "Emploi du temps",
         "students": "Étudiants",
-        "grades": "Notes",
+        "grades": {
+            "title": "Notes",
+            "gradeSheet": "Fiche de notes",
+            "class4a": "Classe 4A - Mathématiques",
+            "class4b": "Classe 4B - Mathématiques",
+            "class5a": "Classe 5A - Mathématiques",
+            "mathematics": "Mathématiques"
+        },
         "messages": "Messages",
         "analytics": "Analytique",
         "reports": "Rapports",
@@ -108,6 +115,37 @@
                 "history": "Historique de présence",
                 "absence": "Absence",
                 "tardiness": "Retard"
+            },
+            "empty": {
+                "title": "Aucune classe",
+                "description": "Commencez par ajouter votre première classe. Vous pouvez télécharger un fichier Excel avec les données des élèves ou créer une classe manuellement.",
+                "uploadExcel": "Télécharger un fichier Excel",
+                "createManually": "Créer une classe manuellement",
+                "uploadHint": "Le fichier Excel doit contenir les colonnes : ID, Nom, Prénom, DateNaissance, Comportement, Applications, Cahier, Devoir, Examen"
+            },
+            "addClass": {
+                "title": "Ajouter une nouvelle classe",
+                "name": "Nom de la classe",
+                "namePlaceholder": "ex: Classe 4A",
+                "subject": "Matière",
+                "subjectPlaceholder": "ex: Mathématiques",
+                "grade": "Niveau",
+                "gradePlaceholder": "ex: 4ème année",
+                "success": "Classe créée avec succès",
+                "uploadSuccess": "{{count}} élèves importés avec succès"
+            },
+            "deleteClass": {
+                "title": "Supprimer la classe",
+                "confirm": "Êtes-vous sûr de vouloir supprimer cette classe ?",
+                "hasStudents": "Cette classe contient {{count}} élèves. La suppression effacera toutes les données des élèves.",
+                "success": "Classe supprimée avec succès",
+                "clearAll": "Supprimer toutes les classes",
+                "clearAllConfirm": "Êtes-vous sûr de vouloir supprimer toutes les classes ? Cela supprimera toutes les données des élèves."
+            },
+            "excel": {
+                "noData": "Aucune donnée trouvée dans le fichier Excel",
+                "parseError": "Erreur lors de l'analyse du fichier Excel. Veuillez vérifier le format.",
+                "multiSuccess": "{{classes}} classes créées avec {{students}} élèves"
             }
         }
     }
