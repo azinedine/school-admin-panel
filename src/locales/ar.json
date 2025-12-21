@@ -1,0 +1,52 @@
+{
+    "common": {
+        "changeLanguage": "تغيير اللغة",
+        "search": "بحث",
+        "save": "حفظ",
+        "cancel": "إلغاء",
+        "delete": "حذف",
+        "edit": "تعديل",
+        "add": "إضافة",
+        "loading": "جاري التحميل...",
+        "noResults": "لم يتم العثور على نتائج"
+    },
+    "nav": {
+        "mainMenu": "القائمة الرئيسية",
+        "settingsAndNews": "الإعدادات والأخبار",
+        "overview": "نظرة عامة",
+        "classPreparation": "تحضير الدروس",
+        "attendance": "الحضور",
+        "exams": "الامتحانات",
+        "assignmentManagement": "إدارة الواجبات",
+        "schedule": "الجدول الزمني",
+        "students": "الطلاب",
+        "grades": "الدرجات",
+        "messages": "الرسائل",
+        "analytics": "التحليلات",
+        "reports": "التقارير",
+        "schoolNews": "أخبار المدرسة",
+        "schoolActivities": "الأنشطة المدرسية",
+        "whatsNew": "ما الجديد",
+        "settings": "الإعدادات"
+    },
+    "user": {
+        "upgradeToPro": "الترقية إلى Pro",
+        "account": "الحساب",
+        "billing": "الفواتير",
+        "notifications": "الإشعارات",
+        "logout": "تسجيل الخروج"
+    },
+    "app": {
+        "title": "لوحة إدارة المدرسة",
+        "subtitle": "مبني بأحدث Tailwind CSS و shadcn/ui",
+        "students": "الطلاب",
+        "studentsDescription": "إدارة معلومات الطلاب وسجلاتهم",
+        "viewStudents": "عرض الطلاب",
+        "teachers": "المعلمون",
+        "teachersDescription": "إدارة ملفات المعلمين وجداولهم",
+        "viewTeachers": "عرض المعلمين",
+        "classes": "الفصول",
+        "classesDescription": "تنظيم الفصول والجداول",
+        "viewClasses": "عرض الفصول"
+    }
+}
