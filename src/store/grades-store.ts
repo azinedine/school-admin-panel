@@ -1,6 +1,5 @@
 import { create } from 'zustand'
 import { devtools, persist } from 'zustand/middleware'
-import { createIndexedDBStorage } from './storage'
 
 /**
  * Student Grade Type
@@ -22,25 +21,18 @@ export interface StudentGrade {
  */
 interface GradesState {
   students: StudentGrade[]
-  initialized: boolean
 }
 
 /**
  * Grades Store Actions
  */
 interface GradesActions {
-  initializeStudents: (students: StudentGrade[]) => void
   updateStudent: (id: string, updates: Partial<StudentGrade>) => void
   updateStudentField: (id: string, field: keyof StudentGrade, value: number) => void
   getStudent: (id: string) => StudentGrade | undefined
 }
 
 type GradesStore = GradesState & GradesActions
-
-/**
- * Pre-configured IndexedDB storage for grades
- */
-const gradesStorage = createIndexedDBStorage('school-admin-db', 'grades-store')
 
 /**
  * Initial student data
@@ -90,30 +82,15 @@ const initialStudentsData: StudentGrade[] = [
 /**
  * Grades Store
  * 
- * Manages student grade data with IndexedDB persistence.
+ * Manages student grade data with localStorage persistence.
+ * Uses localStorage for reliable synchronous persistence.
  */
 export const useGradesStore = create<GradesStore>()(
   devtools(
     persist(
       (set, get) => ({
-        students: [],
-        initialized: false,
-
-        initializeStudents: (students) =>
-          set(
-            (state) => {
-              // Only initialize if not already initialized
-              if (state.initialized && state.students.length > 0) {
-                return state
-              }
-              return {
-                students,
-                initialized: true,
-              }
-            },
-            false,
-            'grades/initializeStudents'
-          ),
+        // Start with initial data - will be replaced by persisted data on rehydration
+        students: initialStudentsData,
 
         updateStudent: (id, updates) =>
           set(
@@ -142,14 +119,8 @@ export const useGradesStore = create<GradesStore>()(
         },
       }),
       {
-        name: 'grades-data',
-        storage: gradesStorage as any,
-        onRehydrateStorage: () => (state) => {
-          // If no data after rehydration, initialize with default data
-          if (state && (!state.students || state.students.length === 0)) {
-            state.initializeStudents(initialStudentsData)
-          }
-        },
+        name: 'school-admin-grades',
+        // Using default localStorage - simpler and more reliable
       }
     ),
     { name: 'GradesStore' }
@@ -160,8 +131,3 @@ export const useGradesStore = create<GradesStore>()(
  * Hook to get students with selector
  */
 export const useStudents = () => useGradesStore((state) => state.students)
-
-/**
- * Get initial students data for first-time initialization
- */
-export const getInitialStudentsData = () => initialStudentsData
