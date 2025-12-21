@@ -85,7 +85,8 @@
                 "assignment": "Devoir /20",
                 "exam": "Examen /20",
                 "finalAverage": "Moyenne",
-                "remarks": "Appréciations"
+                "remarks": "Appréciations",
+                "group": "Groupe"
             },
             "remarks": {
                 "excellent": "Excellent",
@@ -146,6 +147,11 @@
                 "noData": "Aucune donnée trouvée dans le fichier Excel",
                 "parseError": "Erreur lors de l'analyse du fichier Excel. Veuillez vérifier le format.",
                 "multiSuccess": "{{classes}} classes créées avec {{students}} élèves"
+            },
+            "groups": {
+                "showGroups": "Afficher les groupes",
+                "hideGroups": "Masquer les groupes",
+                "groupLabel": "G{{number}}"
             }
         }
     }
