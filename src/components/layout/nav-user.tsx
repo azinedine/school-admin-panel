@@ -6,6 +6,7 @@ import {
   LogOut,
   Sparkles,
 } from 'lucide-react'
+import { useTranslation } from 'react-i18next'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import {
   DropdownMenu,
@@ -33,6 +34,7 @@ export function NavUser({
   }
 }) {
   const { isMobile } = useSidebar()
+  const { t } = useTranslation()
 
   const handleLogout = () => {
     // TODO: Implement logout logic
@@ -81,28 +83,28 @@ export function NavUser({
             <DropdownMenuGroup>
               <DropdownMenuItem>
                 <Sparkles />
-                Upgrade to Pro
+                {t('user.upgradeToPro')}
               </DropdownMenuItem>
             </DropdownMenuGroup>
             <DropdownMenuSeparator />
             <DropdownMenuGroup>
               <DropdownMenuItem onClick={() => window.location.href = '/settings'}>
                 <BadgeCheck />
-                Account
+                {t('user.account')}
               </DropdownMenuItem>
               <DropdownMenuItem onClick={() => window.location.href = '/settings'}>
                 <CreditCard />
-                Billing
+                {t('user.billing')}
               </DropdownMenuItem>
               <DropdownMenuItem onClick={() => window.location.href = '/settings'}>
                 <Bell />
-                Notifications
+                {t('user.notifications')}
               </DropdownMenuItem>
             </DropdownMenuGroup>
             <DropdownMenuSeparator />
             <DropdownMenuItem onClick={handleLogout}>
               <LogOut />
-              Log out
+              {t('user.logout')}
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
