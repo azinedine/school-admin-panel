@@ -50,7 +50,7 @@ export default function GradesPage() {
     return students.filter(s => s.classId === classId).length
   }, [students])
 
-  // Handle Excel file upload - supports multiple classes via sheets or Class column
+  // Handle Excel file upload - each sheet becomes a class
   const handleExcelUpload = useCallback((event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0]
     if (!file) return
@@ -64,109 +64,113 @@ export default function GradesPage() {
         let totalStudents = 0
         let totalClasses = 0
 
-        if (workbook.SheetNames.length > 1) {
-          workbook.SheetNames.forEach((sheetName) => {
-            const worksheet = workbook.Sheets[sheetName]
-            const jsonData = XLSX.utils.sheet_to_json(worksheet)
+        workbook.SheetNames.forEach((sheetName) => {
+          const worksheet = workbook.Sheets[sheetName]
+          const rawData = XLSX.utils.sheet_to_json(worksheet, { header: 1 }) as any[][]
+          if (!rawData || rawData.length < 2) return
+
+          // Find header row - first row with multiple non-empty string cells
+          let headerRowIndex = 0
+          for (let i = 0; i < Math.min(10, rawData.length); i++) {
+            const row = rawData[i]
+            if (!row) continue
+            const stringCellCount = row.filter(cell => typeof cell === 'string' && cell.trim().length > 0).length
+            if (stringCellCount >= 2) {
+              headerRowIndex = i
+              break
+            }
+          }
+
+          const headers = rawData[headerRowIndex]
+          if (!headers) return
+
+          // Column finder with exact then partial matching
+          const findCol = (exactPatterns: string[], partialPatterns: string[]): number => {
+            let idx = headers.findIndex(h => {
+              if (typeof h !== 'string') return false
+              const hClean = h.trim().toLowerCase()
+              return exactPatterns.some(p => hClean === p.toLowerCase())
+            })
+            if (idx !== -1) return idx
             
-            if (jsonData.length === 0) return
+            return headers.findIndex(h => {
+              if (typeof h !== 'string') return false
+              const hClean = h.trim().toLowerCase()
+              return partialPatterns.some(p => hClean.includes(p.toLowerCase()))
+            })
+          }
+
+          // Map columns
+          const lastNameIdx = findCol(
+            ['اللقب', 'Nom', 'LastName', 'Last Name', 'Surname', 'Family Name'],
+            ['lقب', 'last', 'family', 'surname']
+          )
+
+          let firstNameIdx = findCol(
+            ['الاسم', 'Prénom', 'FirstName', 'First Name', 'Given Name'],
+            ['اسم', 'prénom', 'first', 'given']
+          )
+          if (firstNameIdx === lastNameIdx || firstNameIdx === -1) {
+            firstNameIdx = headers.findIndex((h, idx) => {
+              if (idx === lastNameIdx) return false
+              if (typeof h !== 'string') return false
+              const hLower = h.toLowerCase()
+              return hLower.includes('name') || hLower.includes('nom') || hLower.includes('اسم')
+            })
+          }
+
+          const idIdx = findCol(['ID', 'Matricule', 'Code'], ['id', 'matricule', 'code', 'ref'])
+          const dobIdx = findCol(['تاريخ الميلاد', 'Date'], ['birth', 'naissance', 'تاريخ'])
+
+          const sheetStudents: any[] = []
+          
+          for (let i = headerRowIndex + 1; i < rawData.length; i++) {
+            const row = rawData[i]
+            if (!row || row.length === 0) continue
             
+            const nonEmptyCells = row.filter(cell => cell !== undefined && cell !== null && cell !== '').length
+            if (nonEmptyCells < 2) continue
+
+            const lastName = lastNameIdx !== -1 ? String(row[lastNameIdx] || '') : ''
+            const firstName = firstNameIdx !== -1 ? String(row[firstNameIdx] || '') : ''
+            const studentId = idIdx !== -1 ? String(row[idIdx] || '') : undefined
+            const dob = dobIdx !== -1 ? String(row[dobIdx] || '2013-01-01') : '2013-01-01'
+
+            if (!lastName && !firstName) continue
+            const combinedNames = (lastName + firstName).toLowerCase()
+            if (combinedNames.includes('name') || combinedNames.includes('nom') || combinedNames.includes('اسم')) continue
+
+            sheetStudents.push({
+              id: studentId || undefined,
+              lastName: lastName || 'Unknown',
+              firstName: firstName || 'Unknown',
+              dateOfBirth: dob,
+              behavior: 20,
+              applications: 20,
+              notebook: 20,
+              assignment: 0,
+              exam: 0,
+            })
+          }
+
+          if (sheetStudents.length > 0) {
             const classId = addClass({
               name: sheetName,
               subject: 'Mathematics',
               grade: sheetName,
             })
             totalClasses++
-
-            const studentsData = jsonData.map((row: any) => ({
-              lastName: row['LastName'] || row['Nom'] || row['اللقب'] || '',
-              firstName: row['FirstName'] || row['Prénom'] || row['الاسم'] || '',
-              dateOfBirth: row['DateOfBirth'] || row['DateNaissance'] || row['تاريخ الميلاد'] || '2013-01-01',
-              behavior: Number(row['Behavior'] || row['Comportement'] || row['السلوك']) || 20,
-              applications: Number(row['Applications'] || row['التطبيقات']) || 20,
-              notebook: Number(row['Notebook'] || row['Cahier'] || row['الدفتر']) || 20,
-              assignment: Number(row['Assignment'] || row['Devoir'] || row['الفرض']) || 0,
-              exam: Number(row['Exam'] || row['Examen'] || row['الامتحان']) || 0,
-            }))
-
-            addStudentsToClass(classId, studentsData)
-            totalStudents += studentsData.length
-          })
-        } else {
-          const worksheet = workbook.Sheets[workbook.SheetNames[0]]
-          const jsonData = XLSX.utils.sheet_to_json(worksheet)
-
-          if (jsonData.length === 0) {
-            toast.error(t('pages.grades.excel.noData'))
-            return
+            addStudentsToClass(classId, sheetStudents)
+            totalStudents += sheetStudents.length
           }
+        })
 
-          const firstRow = jsonData[0] as any
-          const classColumn = firstRow['Class'] || firstRow['Classe'] || firstRow['الفصل']
-          
-          if (classColumn !== undefined) {
-            const classesByName = new Map<string, any[]>()
-            
-            jsonData.forEach((row: any) => {
-              const className = row['Class'] || row['Classe'] || row['الفصل'] || 'Default'
-              if (!classesByName.has(className)) {
-                classesByName.set(className, [])
-              }
-              classesByName.get(className)!.push(row)
-            })
-
-            classesByName.forEach((rows, className) => {
-              const classId = addClass({
-                name: className,
-                subject: 'Mathematics',
-                grade: className,
-              })
-              totalClasses++
-
-              const studentsData = rows.map((row: any) => ({
-                lastName: row['LastName'] || row['Nom'] || row['اللقب'] || '',
-                firstName: row['FirstName'] || row['Prénom'] || row['الاسم'] || '',
-                dateOfBirth: row['DateOfBirth'] || row['DateNaissance'] || row['تاريخ الميلاد'] || '2013-01-01',
-                behavior: Number(row['Behavior'] || row['Comportement'] || row['السلوك']) || 20,
-                applications: Number(row['Applications'] || row['التطبيقات']) || 20,
-                notebook: Number(row['Notebook'] || row['Cahier'] || row['الدفتر']) || 20,
-                assignment: Number(row['Assignment'] || row['Devoir'] || row['الفرض']) || 0,
-                exam: Number(row['Exam'] || row['Examen'] || row['الامتحان']) || 0,
-              }))
-
-              addStudentsToClass(classId, studentsData)
-              totalStudents += studentsData.length
-            })
-          } else {
-            const className = file.name.replace(/\.[^/.]+$/, '')
-            const classId = addClass({
-              name: className,
-              subject: 'Mathematics',
-              grade: className,
-            })
-            totalClasses++
-
-            const studentsData = jsonData.map((row: any) => ({
-              lastName: row['LastName'] || row['Nom'] || row['اللقب'] || '',
-              firstName: row['FirstName'] || row['Prénom'] || row['الاسم'] || '',
-              dateOfBirth: row['DateOfBirth'] || row['DateNaissance'] || row['تاريخ الميلاد'] || '2013-01-01',
-              behavior: Number(row['Behavior'] || row['Comportement'] || row['السلوك']) || 20,
-              applications: Number(row['Applications'] || row['التطبيقات']) || 20,
-              notebook: Number(row['Notebook'] || row['Cahier'] || row['الدفتر']) || 20,
-              assignment: Number(row['Assignment'] || row['Devoir'] || row['الفرض']) || 0,
-              exam: Number(row['Exam'] || row['Examen'] || row['الامتحان']) || 0,
-            }))
-
-            addStudentsToClass(classId, studentsData)
-            totalStudents += studentsData.length
-          }
-        }
-
-        if (totalClasses > 1) {
+        if (totalClasses > 0) {
           toast.success(t('pages.grades.excel.multiSuccess', { classes: totalClasses, students: totalStudents }))
         } else {
-          toast.success(t('pages.grades.addClass.uploadSuccess', { count: totalStudents }))
+            toast.error(t('pages.grades.excel.noData'))
         }
+
       } catch (error) {
         console.error('Error parsing Excel:', error)
         toast.error(t('pages.grades.excel.parseError'))
