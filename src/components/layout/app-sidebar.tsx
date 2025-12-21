@@ -11,8 +11,11 @@ import { TeamSwitcher } from '@/components/layout/team-switcher'
 import { LanguageSwitcher } from '@/components/language-switcher'
 import { sidebarData } from './data/sidebar-data'
 import type { NavGroup as NavGroupType } from './types'
+import { useDirection } from '@/hooks/use-direction'
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
+  const { isRTL } = useDirection()
+  
   // Use sidebar data or fallback to default
   const userData = {
     name: sidebarData.user.name,
@@ -21,7 +24,12 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   }
 
   return (
-    <Sidebar collapsible='icon' variant='floating' {...props}>
+    <Sidebar 
+      collapsible='icon' 
+      variant='floating' 
+      side={isRTL ? 'right' : 'left'}
+      {...props}
+    >
       <SidebarHeader>
         <div className='flex items-center justify-between gap-2'>
           <TeamSwitcher teams={sidebarData.teams} />
