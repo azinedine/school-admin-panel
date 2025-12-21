@@ -373,11 +373,11 @@ export function GradeSheetTable() {
       {/* Class Navigation - Modern Pill Switcher */}
       <div className="flex-shrink-0 mb-4 relative">
         {/* Gradient scroll indicators */}
-        <div className="pointer-events-none absolute left-0 top-0 bottom-0 w-8 bg-gradient-to-r from-background to-transparent z-10 hidden [.overflow-x-scroll:has(:first-child:not(:hover))>&]:block" />
-        <div className="pointer-events-none absolute right-0 top-0 bottom-0 w-8 bg-gradient-to-l from-background to-transparent z-10" />
+        <div className="pointer-events-none absolute left-0 top-0 bottom-0 w-6 bg-gradient-to-r from-background to-transparent z-10" />
+        <div className="pointer-events-none absolute right-0 top-0 bottom-0 w-6 bg-gradient-to-l from-background to-transparent z-10" />
         
-        {/* Scrollable class pills */}
-        <div className="flex gap-2 overflow-x-auto pb-2 scrollbar-thin scrollbar-thumb-muted scrollbar-track-transparent">
+        {/* Scrollable class pills - hidden scrollbar */}
+        <div className="flex gap-2 overflow-x-auto [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden">
           {classes.map((cls) => {
             const isActive = cls.id === selectedClassId
             const studentCount = getClassStudentCount(cls.id)
@@ -387,21 +387,20 @@ export function GradeSheetTable() {
                 key={cls.id}
                 onClick={() => setSelectedClass(cls.id)}
                 className={`
-                  flex items-center gap-2 px-4 py-2.5 rounded-full text-sm font-medium
-                  whitespace-nowrap transition-all duration-200 ease-out
-                  border-2 cursor-pointer select-none
+                  flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium
+                  whitespace-nowrap transition-all duration-150 ease-out cursor-pointer select-none
                   ${isActive 
-                    ? 'bg-primary text-primary-foreground border-primary shadow-md scale-105' 
-                    : 'bg-card text-card-foreground border-border hover:border-primary/50 hover:bg-muted'
+                    ? 'bg-white dark:bg-zinc-800 text-foreground shadow-sm border border-border' 
+                    : 'text-muted-foreground hover:text-foreground hover:bg-muted/50'
                   }
                 `}
               >
                 <span>{cls.name}</span>
                 <span className={`
-                  px-2 py-0.5 text-xs font-semibold rounded-full
+                  px-1.5 py-0.5 text-xs rounded-md
                   ${isActive 
-                    ? 'bg-primary-foreground/20 text-primary-foreground' 
-                    : 'bg-muted text-muted-foreground'
+                    ? 'bg-muted text-muted-foreground font-medium' 
+                    : 'text-muted-foreground/70'
                   }
                 `}>
                   {studentCount}
