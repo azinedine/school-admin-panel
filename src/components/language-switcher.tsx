@@ -6,21 +6,24 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
 import { Languages } from 'lucide-react'
-import { useState } from 'react'
+import { useTranslation } from 'react-i18next'
+import { useSettingsStore } from '@/store/settings-store'
 
 const languages = [
-  { label: 'English', code: 'en', flag: '🇬🇧' },
-  { label: 'French', code: 'fr', flag: '🇫🇷' },
-  { label: 'Arabic', code: 'ar', flag: '🇸🇦' },
+  { label: 'English', code: 'en' as const, flag: '🇬🇧' },
+  { label: 'Français', code: 'fr' as const, flag: '🇫🇷' },
+  { label: 'العربية', code: 'ar' as const, flag: '🇸🇦' },
 ]
 
 export function LanguageSwitcher() {
-  const [currentLanguage, setCurrentLanguage] = useState(languages[0])
+  const { t, i18n } = useTranslation()
+  const { language, setLanguage } = useSettingsStore()
 
-  const changeLanguage = (language: typeof languages[0]) => {
-    setCurrentLanguage(language)
-    // TODO: Implement i18n when ready
-    console.log('Language changed to:', language.code)
+  const currentLanguage = languages.find((l) => l.code === language) || languages[0]
+
+  const changeLanguage = (lang: typeof languages[0]) => {
+    setLanguage(lang.code)
+    i18n.changeLanguage(lang.code)
   }
 
   return (
@@ -28,19 +31,19 @@ export function LanguageSwitcher() {
       <DropdownMenuTrigger asChild>
         <Button variant='ghost' size='icon' className='h-9 w-9'>
           <Languages className='h-4 w-4' />
-          <span className='sr-only'>Change language</span>
+          <span className='sr-only'>{t('common.changeLanguage')}</span>
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align='end'>
-        {languages.map((language) => (
+        {languages.map((lang) => (
           <DropdownMenuItem
-            key={language.code}
-            onClick={() => changeLanguage(language)}
+            key={lang.code}
+            onClick={() => changeLanguage(lang)}
             className='cursor-pointer'
           >
-            <span className='mr-2'>{language.flag}</span>
-            <span>{language.label}</span>
-            {currentLanguage.code === language.code && (
+            <span className='mr-2'>{lang.flag}</span>
+            <span>{lang.label}</span>
+            {currentLanguage.code === lang.code && (
               <span className='ml-auto text-xs'>✓</span>
             )}
           </DropdownMenuItem>
