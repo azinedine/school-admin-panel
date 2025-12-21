@@ -90,6 +90,18 @@
             "hints": {
                 "clickToEdit": "انقر على الخلية لتعديل العلامة",
                 "autoCalculate": "سيتم حساب المعدل والتقديرات تلقائياً"
+            },
+            "attendance": {
+                "recordAbsence": "تسجيل غياب",
+                "recordTardiness": "تسجيل تأخر",
+                "date": "التاريخ",
+                "time": "الوقت",
+                "confirm": "تأكيد",
+                "recorded": "تم تسجيل الحضور",
+                "absenceRecorded": "تم تسجيل غياب {{name}}",
+                "tardinessRecorded": "تم تسجيل تأخر {{name}}",
+                "viewHistory": "عرض السجل",
+                "noRecords": "لا توجد سجلات حضور"
             }
         }
     }
