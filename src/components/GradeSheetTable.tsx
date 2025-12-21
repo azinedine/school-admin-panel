@@ -233,12 +233,13 @@ export function GradeSheetTable() {
     }
   }, [calculatedStudents])
 
-  const SortableHeader = useCallback(({ field, children }: { field: SortField; children: React.ReactNode }) => (
-    <TableHead className="text-center font-bold">
+  // Header with optional highlight for major grade columns
+  const SortableHeader = useCallback(({ field, children, highlight }: { field: SortField; children: React.ReactNode; highlight?: boolean }) => (
+    <TableHead className={`text-center font-bold ${highlight ? 'bg-primary/5 dark:bg-primary/10' : ''}`}>
       <Button
         variant="ghost"
         onClick={() => handleSort(field)}
-        className="h-auto p-0 hover:bg-transparent font-bold"
+        className={`h-auto p-0 hover:bg-transparent font-bold ${highlight ? 'text-primary' : ''}`}
       >
         {children}
         <ArrowUpDown className="h-3 w-3 ltr:ml-2 rtl:mr-2" />
@@ -408,10 +409,10 @@ export function GradeSheetTable() {
               <SortableHeader field="notebook">{t('pages.grades.table.notebook')}</SortableHeader>
               <SortableHeader field="lateness">{t('pages.grades.table.lateness')}</SortableHeader>
               <SortableHeader field="absences">{t('pages.grades.table.absences')}</SortableHeader>
-              <SortableHeader field="activityAverage">{t('pages.grades.table.activityAverage')}</SortableHeader>
-              <SortableHeader field="assignment">{t('pages.grades.table.assignment')}</SortableHeader>
-              <SortableHeader field="exam">{t('pages.grades.table.exam')}</SortableHeader>
-              <SortableHeader field="finalAverage">{t('pages.grades.table.finalAverage')}</SortableHeader>
+              <SortableHeader field="activityAverage" highlight>{t('pages.grades.table.activityAverage')}</SortableHeader>
+              <SortableHeader field="assignment" highlight>{t('pages.grades.table.assignment')}</SortableHeader>
+              <SortableHeader field="exam" highlight>{t('pages.grades.table.exam')}</SortableHeader>
+              <SortableHeader field="finalAverage" highlight>{t('pages.grades.table.finalAverage')}</SortableHeader>
               <SortableHeader field="remarks">{t('pages.grades.table.remarks')}</SortableHeader>
             </TableRow>
           </TableHeader>
@@ -430,10 +431,40 @@ export function GradeSheetTable() {
                 <EditableCell student={student} field="notebook" value={student.notebook} />
                 <AttendanceCell student={student} type="lateness" count={student.lateness} />
                 <AttendanceCell student={student} type="absences" count={student.absences} />
-                <TableCell className="text-center font-medium">{student.activityAverage}</TableCell>
-                <EditableCell student={student} field="assignment" value={student.assignment} />
-                <EditableCell student={student} field="exam" value={student.exam} />
-                <TableCell className="text-center font-bold">{student.finalAverage.toFixed(2)}</TableCell>
+                <TableCell className="text-center font-semibold bg-primary/5 dark:bg-primary/10 text-primary">{student.activityAverage}</TableCell>
+                <TableCell className="text-center font-semibold bg-primary/5 dark:bg-primary/10 cursor-pointer" onClick={() => setEditingCell({ id: student.id, field: 'assignment' })}>
+                  {editingCell?.id === student.id && editingCell?.field === 'assignment' ? (
+                    <Input
+                      type="number"
+                      defaultValue={student.assignment}
+                      autoFocus
+                      className="w-16 h-8 text-center"
+                      onBlur={(e) => handleCellEdit(student.id, 'assignment', e.target.value)}
+                      onKeyDown={(e) => {
+                        if (e.key === 'Enter') handleCellEdit(student.id, 'assignment', (e.target as HTMLInputElement).value)
+                        if (e.key === 'Escape') setEditingCell(null)
+                      }}
+                      min={0} max={20} step={0.5}
+                    />
+                  ) : student.assignment}
+                </TableCell>
+                <TableCell className="text-center font-semibold bg-primary/5 dark:bg-primary/10 cursor-pointer" onClick={() => setEditingCell({ id: student.id, field: 'exam' })}>
+                  {editingCell?.id === student.id && editingCell?.field === 'exam' ? (
+                    <Input
+                      type="number"
+                      defaultValue={student.exam}
+                      autoFocus
+                      className="w-16 h-8 text-center"
+                      onBlur={(e) => handleCellEdit(student.id, 'exam', e.target.value)}
+                      onKeyDown={(e) => {
+                        if (e.key === 'Enter') handleCellEdit(student.id, 'exam', (e.target as HTMLInputElement).value)
+                        if (e.key === 'Escape') setEditingCell(null)
+                      }}
+                      min={0} max={20} step={0.5}
+                    />
+                  ) : student.exam}
+                </TableCell>
+                <TableCell className="text-center font-bold text-lg bg-primary/10 dark:bg-primary/20 text-primary">{student.finalAverage.toFixed(2)}</TableCell>
                 <TableCell className="font-semibold">{t(`pages.grades.remarks.${student.remarks}`)}</TableCell>
               </TableRow>
             ))}
