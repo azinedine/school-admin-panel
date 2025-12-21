@@ -90,6 +90,18 @@
             "hints": {
                 "clickToEdit": "Click on a cell to edit the grade",
                 "autoCalculate": "Average and remarks are calculated automatically"
+            },
+            "attendance": {
+                "recordAbsence": "Record Absence",
+                "recordTardiness": "Record Tardiness",
+                "date": "Date",
+                "time": "Time",
+                "confirm": "Confirm",
+                "recorded": "Attendance recorded",
+                "absenceRecorded": "Absence recorded for {{name}}",
+                "tardinessRecorded": "Tardiness recorded for {{name}}",
+                "viewHistory": "View History",
+                "noRecords": "No attendance records"
             }
         }
     }
