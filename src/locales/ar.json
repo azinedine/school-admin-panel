@@ -48,5 +48,49 @@
         "classes": "الفصول",
         "classesDescription": "تنظيم الفصول والجداول",
         "viewClasses": "عرض الفصول"
+    },
+    "pages": {
+        "grades": {
+            "title": "كشف النقاط",
+            "description": "إدارة ومتابعة علامات الطلاب",
+            "stats": {
+                "totalStudents": "عدد الطلاب",
+                "classAverage": "معدل القسم",
+                "successRate": "نسبة النجاح",
+                "failureRate": "نسبة الرسوب"
+            },
+            "search": {
+                "placeholder": "البحث بالاسم أو اللقب...",
+                "firstName": "الاسم",
+                "lastName": "اللقب"
+            },
+            "table": {
+                "id": "رقم التعريف",
+                "lastName": "اللقب",
+                "firstName": "الاسم",
+                "dateOfBirth": "تاريخ الميلاد",
+                "behavior": "السلوك",
+                "applications": "التطبيقات",
+                "notebook": "الكراس",
+                "lateness": "التأخر",
+                "absences": "الغيابات",
+                "activityAverage": "معدل النشاطات /20",
+                "assignment": "الفرض /20",
+                "exam": "الإختبار /20",
+                "finalAverage": "المعدل",
+                "remarks": "التقديرات"
+            },
+            "remarks": {
+                "excellent": "ممتاز",
+                "veryGood": "جيد جدا",
+                "good": "جيد",
+                "average": "متوسط",
+                "poor": "ضعيف. ضرورة المراجعة والاجتهاد"
+            },
+            "hints": {
+                "clickToEdit": "انقر على الخلية لتعديل العلامة",
+                "autoCalculate": "سيتم حساب المعدل والتقديرات تلقائياً"
+            }
+        }
     }
 }
