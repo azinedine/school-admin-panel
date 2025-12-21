@@ -1,5 +1,5 @@
-import { useMemo, useCallback, useEffect, useState } from "react"
-import { ArrowUpDown, Search, Users, TrendingUp, CheckCircle, XCircle, UserMinus, Clock } from "lucide-react"
+import { useMemo, useCallback, useState } from "react"
+import { ArrowUpDown, Search, Users, TrendingUp, CheckCircle, XCircle, UserMinus, Clock, History, Trash2 } from "lucide-react"
 import { useTranslation } from "react-i18next"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -27,7 +27,7 @@ import {
 import { Label } from "@/components/ui/label"
 import { useDirection } from "@/hooks/use-direction"
 import { useAttendanceStore } from "@/store/attendance-store"
-import { useGradesStore, getInitialStudentsData, type StudentGrade } from "@/store/grades-store"
+import { useGradesStore, type StudentGrade } from "@/store/grades-store"
 import { toast } from "sonner"
 
 // Calculated student grade with computed fields
@@ -82,9 +82,10 @@ export function GradeSheetTable() {
   const { t } = useTranslation()
   const { isRTL } = useDirection()
   
-  // Persistent stores
-  const { students, initialized, initializeStudents, updateStudentField } = useGradesStore()
-  const { addRecord, getStudentAbsenceCount, getStudentTardinessCount, records } = useAttendanceStore()
+  // Persistent stores - students are available immediately with initial data
+  const students = useGradesStore((state) => state.students)
+  const updateStudentField = useGradesStore((state) => state.updateStudentField)
+  const { addRecord, removeRecord, getStudentRecords, getStudentAbsenceCount, getStudentTardinessCount, records } = useAttendanceStore()
   
   // Local UI state
   const [searchQuery, setSearchQuery] = useState("")
@@ -100,13 +101,13 @@ export function GradeSheetTable() {
   }>({ open: false, student: null, type: 'absence' })
   const [attendanceDate, setAttendanceDate] = useState(new Date().toISOString().split('T')[0])
   const [attendanceTime, setAttendanceTime] = useState(new Date().toTimeString().slice(0, 5))
-
-  // Initialize students on first load
-  useEffect(() => {
-    if (!initialized || students.length === 0) {
-      initializeStudents(getInitialStudentsData())
-    }
-  }, [initialized, students.length, initializeStudents])
+  
+  // History dialog state
+  const [historyDialog, setHistoryDialog] = useState<{
+    open: boolean
+    student: CalculatedStudentGrade | null
+  }>({ open: false, student: null })
+  const [recordToDelete, setRecordToDelete] = useState<string | null>(null)
 
   const handleSort = useCallback((field: SortField) => {
     setSortField(prev => {
@@ -184,6 +185,23 @@ export function GradeSheetTable() {
     setAttendanceTime(new Date().toTimeString().slice(0, 5))
     setAttendanceDialog({ open: true, student, type })
   }, [])
+
+  const openHistoryDialog = useCallback((student: CalculatedStudentGrade) => {
+    setHistoryDialog({ open: true, student })
+  }, [])
+
+  const handleDeleteRecord = useCallback((id: string) => {
+    removeRecord(id)
+    toast.success(t('pages.grades.attendance.deleted'))
+    setRecordToDelete(null)
+  }, [removeRecord, t])
+
+  const studentRecords = useMemo(() => {
+    if (!historyDialog.student) return []
+    return getStudentRecords(historyDialog.student.id).sort(
+      (a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+    )
+  }, [historyDialog.student, getStudentRecords, records])
 
   const filteredAndSortedStudents = useMemo(() => {
     let result = [...calculatedStudents]
@@ -314,19 +332,16 @@ export function GradeSheetTable() {
             {type === 'absences' ? <UserMinus className="h-4 w-4 ltr:mr-2 rtl:ml-2" /> : <Clock className="h-4 w-4 ltr:mr-2 rtl:ml-2" />}
             {type === 'absences' ? t('pages.grades.attendance.recordAbsence') : t('pages.grades.attendance.recordTardiness')}
           </DropdownMenuItem>
+          {count > 0 && (
+            <DropdownMenuItem onClick={() => openHistoryDialog(student)}>
+              <History className="h-4 w-4 ltr:mr-2 rtl:ml-2" />
+              {t('pages.grades.attendance.viewHistory')}
+            </DropdownMenuItem>
+          )}
         </DropdownMenuContent>
       </DropdownMenu>
     </TableCell>
-  ), [openAttendanceDialog, t])
-
-  // Show loading state while initializing
-  if (!initialized || students.length === 0) {
-    return (
-      <div className="flex items-center justify-center h-64">
-        <p className="text-muted-foreground">{t('common.loading')}</p>
-      </div>
-    )
-  }
+  ), [openAttendanceDialog, openHistoryDialog, t])
 
   return (
     <div className="w-full space-y-4" dir={isRTL ? 'rtl' : 'ltr'}>
@@ -518,6 +533,83 @@ export function GradeSheetTable() {
             </Button>
             <Button onClick={handleRecordAttendance}>
               {t('pages.grades.attendance.confirm')}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* History Dialog */}
+      <Dialog open={historyDialog.open} onOpenChange={(open) => setHistoryDialog(prev => ({ ...prev, open }))}>
+        <DialogContent className="max-w-md">
+          <DialogHeader>
+            <DialogTitle>
+              {t('pages.grades.attendance.history')}
+              {historyDialog.student && ` - ${historyDialog.student.firstName} ${historyDialog.student.lastName}`}
+            </DialogTitle>
+          </DialogHeader>
+          
+          <div className="space-y-2 max-h-[300px] overflow-y-auto py-4">
+            {studentRecords.length === 0 ? (
+              <p className="text-muted-foreground text-center py-4">
+                {t('pages.grades.attendance.noRecords')}
+              </p>
+            ) : (
+              studentRecords.map((record) => (
+                <div 
+                  key={record.id} 
+                  className="flex items-center justify-between p-3 rounded-lg border bg-muted/30"
+                >
+                  <div className="flex items-center gap-3">
+                    {record.type === 'absence' ? (
+                      <UserMinus className="h-4 w-4 text-red-500" />
+                    ) : (
+                      <Clock className="h-4 w-4 text-orange-500" />
+                    )}
+                    <div>
+                      <p className="font-medium text-sm">
+                        {t(`pages.grades.attendance.${record.type}`)}
+                      </p>
+                      <p className="text-xs text-muted-foreground">
+                        {record.date} • {record.time}
+                      </p>
+                    </div>
+                  </div>
+                  
+                  {recordToDelete === record.id ? (
+                    <div className="flex items-center gap-2">
+                      <Button 
+                        variant="destructive" 
+                        size="sm"
+                        onClick={() => handleDeleteRecord(record.id)}
+                      >
+                        {t('pages.grades.attendance.confirm')}
+                      </Button>
+                      <Button 
+                        variant="outline" 
+                        size="sm"
+                        onClick={() => setRecordToDelete(null)}
+                      >
+                        {t('common.cancel')}
+                      </Button>
+                    </div>
+                  ) : (
+                    <Button 
+                      variant="ghost" 
+                      size="sm"
+                      className="text-destructive hover:text-destructive"
+                      onClick={() => setRecordToDelete(record.id)}
+                    >
+                      <Trash2 className="h-4 w-4" />
+                    </Button>
+                  )}
+                </div>
+              ))
+            )}
+          </div>
+          
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setHistoryDialog({ open: false, student: null })}>
+              {t('common.cancel')}
             </Button>
           </DialogFooter>
         </DialogContent>
