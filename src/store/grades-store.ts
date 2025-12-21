@@ -2,10 +2,21 @@ import { create } from 'zustand'
 import { devtools, persist } from 'zustand/middleware'
 
 /**
+ * Class Type
+ */
+export interface Class {
+  id: string
+  name: string
+  subject: string
+  grade: string
+}
+
+/**
  * Student Grade Type
  */
 export interface StudentGrade {
   id: string
+  classId: string
   lastName: string
   firstName: string
   dateOfBirth: string
@@ -20,77 +31,94 @@ export interface StudentGrade {
  * Grades Store State
  */
 interface GradesState {
+  classes: Class[]
   students: StudentGrade[]
+  selectedClassId: string | null
 }
 
 /**
  * Grades Store Actions
  */
 interface GradesActions {
+  setSelectedClass: (classId: string) => void
+  addClass: (classData: Omit<Class, 'id'>) => string
+  addStudentsToClass: (classId: string, students: Omit<StudentGrade, 'id' | 'classId'>[]) => void
+  removeClass: (classId: string) => void
   updateStudent: (id: string, updates: Partial<StudentGrade>) => void
   updateStudentField: (id: string, field: keyof StudentGrade, value: number) => void
   getStudent: (id: string) => StudentGrade | undefined
+  getStudentsByClass: (classId: string) => StudentGrade[]
+  clearAllData: () => void
 }
 
 type GradesStore = GradesState & GradesActions
 
 /**
- * Initial student data
- */
-const initialStudentsData: StudentGrade[] = [
-  { id: "1101344040220100", lastName: "أوهمنة", firstName: "أروى", dateOfBirth: "2013-06-27", behavior: 20, applications: 20, notebook: 20, assignment: 18.5, exam: 18 },
-  { id: "1001344040411100", lastName: "إليفي", firstName: "لؤي عبد الجليل", dateOfBirth: "2013-10-20", behavior: 20, applications: 20, notebook: 20, assignment: 16.5, exam: 16 },
-  { id: "1101444010251200", lastName: "اسعيدي", firstName: "مارية", dateOfBirth: "2014-05-07", behavior: 20, applications: 20, notebook: 20, assignment: 18, exam: 18 },
-  { id: "1101344040411100", lastName: "بلهواري", firstName: "أروى", dateOfBirth: "2013-10-20", behavior: 20, applications: 20, notebook: 20, assignment: 17, exam: 16.5 },
-  { id: "1001444040061100", lastName: "بن دنون", firstName: "آدم", dateOfBirth: "2014-01-11", behavior: 20, applications: 20, notebook: 18, assignment: 13, exam: 12.5 },
-  { id: "1101344040251200", lastName: "بن رجدال", firstName: "إكرام", dateOfBirth: "2013-05-07", behavior: 20, applications: 20, notebook: 20, assignment: 18, exam: 17 },
-  { id: "1001444120311100", lastName: "بن عدودة", firstName: "عصام الدين", dateOfBirth: "2014-06-16", behavior: 20, applications: 18, notebook: 18, assignment: 14, exam: 11 },
-  { id: "1001444010081200", lastName: "توري", firstName: "ماهر", dateOfBirth: "2014-01-18", behavior: 20, applications: 20, notebook: 20, assignment: 14.5, exam: 13 },
-  { id: "1101344040251100", lastName: "جبايلي", firstName: "آية", dateOfBirth: "2013-05-05", behavior: 20, applications: 20, notebook: 20, assignment: 17, exam: 17.5 },
-  { id: "1101344040241100", lastName: "جواهري", firstName: "جنة", dateOfBirth: "2013-04-24", behavior: 20, applications: 20, notebook: 20, assignment: 18, exam: 18 },
-  { id: "1001344040111200", lastName: "حجاج", firstName: "يزيد", dateOfBirth: "2013-02-11", behavior: 18, applications: 18, notebook: 18, assignment: 12, exam: 10 },
-  { id: "1101244020211100", lastName: "حسناوي", firstName: "رهف", dateOfBirth: "2012-04-10", behavior: 20, applications: 20, notebook: 20, assignment: 16, exam: 16.5 },
-  { id: "1001444040161200", lastName: "حصباوي", firstName: "نضال", dateOfBirth: "2014-03-16", behavior: 20, applications: 20, notebook: 18, assignment: 10, exam: 9 },
-  { id: "1101344040091100", lastName: "دقيش", firstName: "يارة", dateOfBirth: "2013-01-19", behavior: 20, applications: 20, notebook: 20, assignment: 16, exam: 15 },
-  { id: "1001244040171100", lastName: "ديدوش", firstName: "وسام", dateOfBirth: "2012-03-17", behavior: 18, applications: 18, notebook: 18, assignment: 10, exam: 8 },
-  { id: "1101344040241200", lastName: "رحماني", firstName: "ميسم", dateOfBirth: "2013-04-24", behavior: 18, applications: 18, notebook: 16, assignment: 12, exam: 11 },
-  { id: "1101444040031200", lastName: "زقدان", firstName: "فرح", dateOfBirth: "2014-01-03", behavior: 20, applications: 20, notebook: 18, assignment: 15, exam: 14 },
-  { id: "1101544020231200", lastName: "ساحلي", firstName: "نور اليقين", dateOfBirth: "2015-04-23", behavior: 20, applications: 18, notebook: 16, assignment: 10, exam: 9 },
-  { id: "1001444040301200", lastName: "سريدي", firstName: "أيمن", dateOfBirth: "2014-06-15", behavior: 18, applications: 16, notebook: 14, assignment: 8, exam: 6 },
-  { id: "1101344040121200", lastName: "شابي", firstName: "أسيل", dateOfBirth: "2013-02-12", behavior: 20, applications: 20, notebook: 20, assignment: 17, exam: 17 },
-  { id: "1101444010051200", lastName: "شارف", firstName: "آية الرحمان", dateOfBirth: "2014-01-10", behavior: 18, applications: 18, notebook: 16, assignment: 11, exam: 10 },
-  { id: "1001344040111100", lastName: "شريف", firstName: "أيوب", dateOfBirth: "2013-02-11", behavior: 18, applications: 16, notebook: 14, assignment: 7, exam: 5 },
-  { id: "1001444040091200", lastName: "طالب", firstName: "عماد الدين", dateOfBirth: "2014-01-19", behavior: 20, applications: 20, notebook: 20, assignment: 17, exam: 16 },
-  { id: "1001444040111100", lastName: "عثماني", firstName: "صفوان", dateOfBirth: "2014-02-11", behavior: 20, applications: 20, notebook: 18, assignment: 12.5, exam: 11 },
-  { id: "1101344040121100", lastName: "فرحي", firstName: "سجى", dateOfBirth: "2013-02-12", behavior: 20, applications: 20, notebook: 20, assignment: 17.5, exam: 18 },
-  { id: "1101444040121100", lastName: "قماري", firstName: "عائشة", dateOfBirth: "2014-02-12", behavior: 20, applications: 20, notebook: 18, assignment: 14, exam: 12 },
-  { id: "1001444040151200", lastName: "قواسمية", firstName: "جمال الدين", dateOfBirth: "2014-03-15", behavior: 18, applications: 16, notebook: 14, assignment: 7.5, exam: 6 },
-  { id: "1101244010021200", lastName: "كراشي", firstName: "ريتاج", dateOfBirth: "2012-01-05", behavior: 20, applications: 20, notebook: 20, assignment: 18, exam: 18.5 },
-  { id: "1001344040121100", lastName: "كسال", firstName: "محمد حمزة", dateOfBirth: "2013-02-12", behavior: 20, applications: 20, notebook: 18, assignment: 14, exam: 13 },
-  { id: "1001444040061200", lastName: "لعويسي", firstName: "سفيان", dateOfBirth: "2014-01-11", behavior: 18, applications: 16, notebook: 14, assignment: 6, exam: 5 },
-  { id: "1101344040111100", lastName: "ماحي", firstName: "آية", dateOfBirth: "2013-02-11", behavior: 20, applications: 20, notebook: 20, assignment: 17, exam: 17.5 },
-  { id: "1101444010041200", lastName: "معتصم", firstName: "رقية", dateOfBirth: "2014-01-09", behavior: 20, applications: 20, notebook: 18, assignment: 13, exam: 12 },
-  { id: "1101344040061100", lastName: "منصوري", firstName: "رتاج", dateOfBirth: "2013-01-11", behavior: 20, applications: 20, notebook: 20, assignment: 15.5, exam: 15 },
-  { id: "1001344040121200", lastName: "ميهوب", firstName: "عماد الدين", dateOfBirth: "2013-02-12", behavior: 18, applications: 18, notebook: 16, assignment: 10, exam: 9 },
-  { id: "1001344040251100", lastName: "ناشف", firstName: "إسلام", dateOfBirth: "2013-05-05", behavior: 18, applications: 16, notebook: 14, assignment: 7, exam: 6 },
-  { id: "1101444010281200", lastName: "هلايلي", firstName: "نور الإيمان", dateOfBirth: "2014-05-13", behavior: 20, applications: 20, notebook: 20, assignment: 18, exam: 17.5 },
-  { id: "1101444040101200", lastName: "واضح", firstName: "نهاد", dateOfBirth: "2014-02-10", behavior: 20, applications: 20, notebook: 18, assignment: 15, exam: 14.5 },
-  { id: "1001444040221200", lastName: "ولهازي", firstName: "محمد رياض", dateOfBirth: "2014-04-22", behavior: 18, applications: 16, notebook: 14, assignment: 8, exam: 7 },
-  { id: "1101544020201200", lastName: "يحياوي", firstName: "هاجر", dateOfBirth: "2015-04-10", behavior: 20, applications: 20, notebook: 20, assignment: 16, exam: 16 },
-]
-
-/**
  * Grades Store
  * 
- * Manages student grade data with localStorage persistence.
- * Uses localStorage for reliable synchronous persistence.
+ * Manages student grade data and classes with localStorage persistence.
+ * Starts empty - teachers add classes via Excel or manual creation.
  */
 export const useGradesStore = create<GradesStore>()(
   devtools(
     persist(
       (set, get) => ({
-        // Start with initial data - will be replaced by persisted data on rehydration
-        students: initialStudentsData,
+        classes: [],
+        students: [],
+        selectedClassId: null,
+
+        setSelectedClass: (classId) =>
+          set(
+            { selectedClassId: classId },
+            false,
+            'grades/setSelectedClass'
+          ),
+
+        addClass: (classData) => {
+          const id = `class-${crypto.randomUUID().slice(0, 8)}`
+          set(
+            (state) => ({
+              classes: [...state.classes, { ...classData, id }],
+              selectedClassId: state.selectedClassId || id,
+            }),
+            false,
+            'grades/addClass'
+          )
+          return id
+        },
+
+        addStudentsToClass: (classId, studentsData) =>
+          set(
+            (state) => ({
+              students: [
+                ...state.students,
+                ...studentsData.map((s) => ({
+                  ...s,
+                  id: crypto.randomUUID(),
+                  classId,
+                })),
+              ],
+            }),
+            false,
+            'grades/addStudentsToClass'
+          ),
+
+        removeClass: (classId) =>
+          set(
+            (state) => {
+              const newClasses = state.classes.filter((c) => c.id !== classId)
+              const newStudents = state.students.filter((s) => s.classId !== classId)
+              return {
+                classes: newClasses,
+                students: newStudents,
+                selectedClassId: state.selectedClassId === classId
+                  ? (newClasses[0]?.id || null)
+                  : state.selectedClassId,
+              }
+            },
+            false,
+            'grades/removeClass'
+          ),
 
         updateStudent: (id, updates) =>
           set(
@@ -117,10 +145,20 @@ export const useGradesStore = create<GradesStore>()(
         getStudent: (id) => {
           return get().students.find((s) => s.id === id)
         },
+
+        getStudentsByClass: (classId) => {
+          return get().students.filter((s) => s.classId === classId)
+        },
+
+        clearAllData: () =>
+          set(
+            { classes: [], students: [], selectedClassId: null },
+            false,
+            'grades/clearAllData'
+          ),
       }),
       {
         name: 'school-admin-grades',
-        // Using default localStorage - simpler and more reliable
       }
     ),
     { name: 'GradesStore' }
@@ -131,3 +169,13 @@ export const useGradesStore = create<GradesStore>()(
  * Hook to get students with selector
  */
 export const useStudents = () => useGradesStore((state) => state.students)
+
+/**
+ * Hook to get classes
+ */
+export const useClasses = () => useGradesStore((state) => state.classes)
+
+/**
+ * Hook to get selected class
+ */
+export const useSelectedClass = () => useGradesStore((state) => state.selectedClassId)
