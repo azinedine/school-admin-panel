@@ -48,5 +48,49 @@
         "classes": "Classes",
         "classesDescription": "Organiser les classes et les horaires",
         "viewClasses": "Voir les classes"
+    },
+    "pages": {
+        "grades": {
+            "title": "Relevé de notes",
+            "description": "Gérer et suivre les notes des étudiants",
+            "stats": {
+                "totalStudents": "Total étudiants",
+                "classAverage": "Moyenne de classe",
+                "successRate": "Taux de réussite",
+                "failureRate": "Taux d'échec"
+            },
+            "search": {
+                "placeholder": "Rechercher par prénom ou nom...",
+                "firstName": "Prénom",
+                "lastName": "Nom"
+            },
+            "table": {
+                "id": "Identifiant",
+                "lastName": "Nom",
+                "firstName": "Prénom",
+                "dateOfBirth": "Date de naissance",
+                "behavior": "Comportement",
+                "applications": "Applications",
+                "notebook": "Cahier",
+                "lateness": "Retards",
+                "absences": "Absences",
+                "activityAverage": "Moy. activités /20",
+                "assignment": "Devoir /20",
+                "exam": "Examen /20",
+                "finalAverage": "Moyenne",
+                "remarks": "Appréciations"
+            },
+            "remarks": {
+                "excellent": "Excellent",
+                "veryGood": "Très bien",
+                "good": "Bien",
+                "average": "Moyen",
+                "poor": "Faible. Amélioration nécessaire"
+            },
+            "hints": {
+                "clickToEdit": "Cliquez sur une cellule pour modifier la note",
+                "autoCalculate": "La moyenne et les appréciations sont calculées automatiquement"
+            }
+        }
     }
 }
