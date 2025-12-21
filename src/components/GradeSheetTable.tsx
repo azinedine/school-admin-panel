@@ -1,5 +1,5 @@
-import { useState, useMemo } from "react"
-import { ArrowUpDown, Search, Users, TrendingUp, CheckCircle, XCircle } from "lucide-react"
+import { useState, useMemo, useCallback } from "react"
+import { ArrowUpDown, Search, Users, TrendingUp, CheckCircle, XCircle, UserMinus, Clock } from "lucide-react"
 import { useTranslation } from "react-i18next"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -11,7 +11,23 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table"
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogFooter,
+} from "@/components/ui/dialog"
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu"
+import { Label } from "@/components/ui/label"
 import { useDirection } from "@/hooks/use-direction"
+import { useAttendanceStore } from "@/store/attendance-store"
+import { toast } from "sonner"
 
 interface StudentGrade {
   id: string
@@ -49,34 +65,49 @@ const initialStudents: StudentGrade[] = [
   { id: "1001444040161200", lastName: "حصباوي", firstName: "نضال", dateOfBirth: "2014-03-16", behavior: 20, applications: 20, notebook: 18, lateness: 0, absences: 0, activityAverage: 19.33, assignment: 10, exam: 9, finalAverage: 12.78, remarks: "good" },
   { id: "1101344040091100", lastName: "دقيش", firstName: "يارة", dateOfBirth: "2013-01-19", behavior: 20, applications: 20, notebook: 20, lateness: 0, absences: 0, activityAverage: 20, assignment: 16, exam: 15, finalAverage: 17, remarks: "excellent" },
   { id: "1001244040171100", lastName: "ديدوش", firstName: "وسام", dateOfBirth: "2012-03-17", behavior: 18, applications: 18, notebook: 18, lateness: 0, absences: 0, activityAverage: 18, assignment: 10, exam: 8, finalAverage: 12, remarks: "good" },
-  { id: "1101344040241200", lastName: "رحماني", firstName: "ميسم", dateOfBirth: "2013-04-24", behavior: 18, applications: 18, notebook: 16, lateness: 1, absences: 1, activityAverage: 17.33, assignment: 12, exam: 11, finalAverage: 13.44, remarks: "good" },
+  { id: "1101344040241200", lastName: "رحماني", firstName: "ميسم", dateOfBirth: "2013-04-24", behavior: 18, applications: 18, notebook: 16, lateness: 0, absences: 0, activityAverage: 17.33, assignment: 12, exam: 11, finalAverage: 13.44, remarks: "good" },
   { id: "1101444040031200", lastName: "زقدان", firstName: "فرح", dateOfBirth: "2014-01-03", behavior: 20, applications: 20, notebook: 18, lateness: 0, absences: 0, activityAverage: 19.33, assignment: 15, exam: 14, finalAverage: 16.11, remarks: "excellent" },
   { id: "1101544020231200", lastName: "ساحلي", firstName: "نور اليقين", dateOfBirth: "2015-04-23", behavior: 20, applications: 18, notebook: 16, lateness: 0, absences: 0, activityAverage: 18, assignment: 10, exam: 9, finalAverage: 12.33, remarks: "good" },
-  { id: "1001444040301200", lastName: "سريدي", firstName: "أيمن", dateOfBirth: "2014-06-15", behavior: 18, applications: 16, notebook: 14, lateness: 1, absences: 1, activityAverage: 16, assignment: 8, exam: 6, finalAverage: 10, remarks: "average" },
+  { id: "1001444040301200", lastName: "سريدي", firstName: "أيمن", dateOfBirth: "2014-06-15", behavior: 18, applications: 16, notebook: 14, lateness: 0, absences: 0, activityAverage: 16, assignment: 8, exam: 6, finalAverage: 10, remarks: "average" },
   { id: "1101344040121200", lastName: "شابي", firstName: "أسيل", dateOfBirth: "2013-02-12", behavior: 20, applications: 20, notebook: 20, lateness: 0, absences: 0, activityAverage: 20, assignment: 17, exam: 17, finalAverage: 18, remarks: "excellent" },
-  { id: "1101444010051200", lastName: "شارف", firstName: "آية الرحمان", dateOfBirth: "2014-01-10", behavior: 18, applications: 18, notebook: 16, lateness: 1, absences: 1, activityAverage: 17.33, assignment: 11, exam: 10, finalAverage: 12.78, remarks: "good" },
-  { id: "1001344040111100", lastName: "شريف", firstName: "أيوب", dateOfBirth: "2013-02-11", behavior: 18, applications: 16, notebook: 14, lateness: 2, absences: 2, activityAverage: 16, assignment: 7, exam: 5, finalAverage: 9.33, remarks: "poor" },
+  { id: "1101444010051200", lastName: "شارف", firstName: "آية الرحمان", dateOfBirth: "2014-01-10", behavior: 18, applications: 18, notebook: 16, lateness: 0, absences: 0, activityAverage: 17.33, assignment: 11, exam: 10, finalAverage: 12.78, remarks: "good" },
+  { id: "1001344040111100", lastName: "شريف", firstName: "أيوب", dateOfBirth: "2013-02-11", behavior: 18, applications: 16, notebook: 14, lateness: 0, absences: 0, activityAverage: 16, assignment: 7, exam: 5, finalAverage: 9.33, remarks: "poor" },
   { id: "1001444040091200", lastName: "طالب", firstName: "عماد الدين", dateOfBirth: "2014-01-19", behavior: 20, applications: 20, notebook: 20, lateness: 0, absences: 0, activityAverage: 20, assignment: 17, exam: 16, finalAverage: 17.67, remarks: "excellent" },
   { id: "1001444040111100", lastName: "عثماني", firstName: "صفوان", dateOfBirth: "2014-02-11", behavior: 20, applications: 20, notebook: 18, lateness: 0, absences: 0, activityAverage: 19.33, assignment: 12.5, exam: 11, finalAverage: 14.28, remarks: "veryGood" },
   { id: "1101344040121100", lastName: "فرحي", firstName: "سجى", dateOfBirth: "2013-02-12", behavior: 20, applications: 20, notebook: 20, lateness: 0, absences: 0, activityAverage: 20, assignment: 17.5, exam: 18, finalAverage: 18.5, remarks: "excellent" },
   { id: "1101444040121100", lastName: "قماري", firstName: "عائشة", dateOfBirth: "2014-02-12", behavior: 20, applications: 20, notebook: 18, lateness: 0, absences: 0, activityAverage: 19.33, assignment: 14, exam: 12, finalAverage: 15.11, remarks: "veryGood" },
-  { id: "1001444040151200", lastName: "قواسمية", firstName: "جمال الدين", dateOfBirth: "2014-03-15", behavior: 18, applications: 16, notebook: 14, lateness: 2, absences: 2, activityAverage: 16, assignment: 7.5, exam: 6, finalAverage: 9.83, remarks: "poor" },
+  { id: "1001444040151200", lastName: "قواسمية", firstName: "جمال الدين", dateOfBirth: "2014-03-15", behavior: 18, applications: 16, notebook: 14, lateness: 0, absences: 0, activityAverage: 16, assignment: 7.5, exam: 6, finalAverage: 9.83, remarks: "poor" },
   { id: "1101244010021200", lastName: "كراشي", firstName: "ريتاج", dateOfBirth: "2012-01-05", behavior: 20, applications: 20, notebook: 20, lateness: 0, absences: 0, activityAverage: 20, assignment: 18, exam: 18.5, finalAverage: 18.83, remarks: "excellent" },
   { id: "1001344040121100", lastName: "كسال", firstName: "محمد حمزة", dateOfBirth: "2013-02-12", behavior: 20, applications: 20, notebook: 18, lateness: 0, absences: 0, activityAverage: 19.33, assignment: 14, exam: 13, finalAverage: 15.44, remarks: "veryGood" },
-  { id: "1001444040061200", lastName: "لعويسي", firstName: "سفيان", dateOfBirth: "2014-01-11", behavior: 18, applications: 16, notebook: 14, lateness: 3, absences: 3, activityAverage: 16, assignment: 6, exam: 5, finalAverage: 9, remarks: "poor" },
+  { id: "1001444040061200", lastName: "لعويسي", firstName: "سفيان", dateOfBirth: "2014-01-11", behavior: 18, applications: 16, notebook: 14, lateness: 0, absences: 0, activityAverage: 16, assignment: 6, exam: 5, finalAverage: 9, remarks: "poor" },
   { id: "1101344040111100", lastName: "ماحي", firstName: "آية", dateOfBirth: "2013-02-11", behavior: 20, applications: 20, notebook: 20, lateness: 0, absences: 0, activityAverage: 20, assignment: 17, exam: 17.5, finalAverage: 18.17, remarks: "excellent" },
   { id: "1101444010041200", lastName: "معتصم", firstName: "رقية", dateOfBirth: "2014-01-09", behavior: 20, applications: 20, notebook: 18, lateness: 0, absences: 0, activityAverage: 19.33, assignment: 13, exam: 12, finalAverage: 14.78, remarks: "veryGood" },
   { id: "1101344040061100", lastName: "منصوري", firstName: "رتاج", dateOfBirth: "2013-01-11", behavior: 20, applications: 20, notebook: 20, lateness: 0, absences: 0, activityAverage: 20, assignment: 15.5, exam: 15, finalAverage: 16.83, remarks: "excellent" },
-  { id: "1001344040121200", lastName: "ميهوب", firstName: "عماد الدين", dateOfBirth: "2013-02-12", behavior: 18, applications: 18, notebook: 16, lateness: 1, absences: 1, activityAverage: 17.33, assignment: 10, exam: 9, finalAverage: 12.11, remarks: "good" },
-  { id: "1001344040251100", lastName: "ناشف", firstName: "إسلام", dateOfBirth: "2013-05-05", behavior: 18, applications: 16, notebook: 14, lateness: 2, absences: 2, activityAverage: 16, assignment: 7, exam: 6, finalAverage: 9.67, remarks: "poor" },
+  { id: "1001344040121200", lastName: "ميهوب", firstName: "عماد الدين", dateOfBirth: "2013-02-12", behavior: 18, applications: 18, notebook: 16, lateness: 0, absences: 0, activityAverage: 17.33, assignment: 10, exam: 9, finalAverage: 12.11, remarks: "good" },
+  { id: "1001344040251100", lastName: "ناشف", firstName: "إسلام", dateOfBirth: "2013-05-05", behavior: 18, applications: 16, notebook: 14, lateness: 0, absences: 0, activityAverage: 16, assignment: 7, exam: 6, finalAverage: 9.67, remarks: "poor" },
   { id: "1101444010281200", lastName: "هلايلي", firstName: "نور الإيمان", dateOfBirth: "2014-05-13", behavior: 20, applications: 20, notebook: 20, lateness: 0, absences: 0, activityAverage: 20, assignment: 18, exam: 17.5, finalAverage: 18.5, remarks: "excellent" },
   { id: "1101444040101200", lastName: "واضح", firstName: "نهاد", dateOfBirth: "2014-02-10", behavior: 20, applications: 20, notebook: 18, lateness: 0, absences: 0, activityAverage: 19.33, assignment: 15, exam: 14.5, finalAverage: 16.28, remarks: "excellent" },
-  { id: "1001444040221200", lastName: "ولهازي", firstName: "محمد رياض", dateOfBirth: "2014-04-22", behavior: 18, applications: 16, notebook: 14, lateness: 2, absences: 2, activityAverage: 16, assignment: 8, exam: 7, finalAverage: 10.33, remarks: "average" },
+  { id: "1001444040221200", lastName: "ولهازي", firstName: "محمد رياض", dateOfBirth: "2014-04-22", behavior: 18, applications: 16, notebook: 14, lateness: 0, absences: 0, activityAverage: 16, assignment: 8, exam: 7, finalAverage: 10.33, remarks: "average" },
   { id: "1101544020201200", lastName: "يحياوي", firstName: "هاجر", dateOfBirth: "2015-04-10", behavior: 20, applications: 20, notebook: 20, lateness: 0, absences: 0, activityAverage: 20, assignment: 16, exam: 16, finalAverage: 17.33, remarks: "excellent" },
 ]
 
-function calculateActivityAverage(applications: number, notebook: number, lateness: number, absences: number): number {
-  return Number(((applications / 4) + (notebook / 4) + Math.max(0, 5 - lateness) + Math.max(0, 5 - absences)).toFixed(2))
+// Calculate continuous assessment from all 5 components
+// Each component is /5, behavior is /20 scaled to /4, result is /20
+function calculateContinuousAssessment(
+  behavior: number,      // stored as /20
+  applications: number,  // stored as /20
+  notebook: number,      // stored as /20
+  tardinessCount: number, // count of tardiness records
+  absenceCount: number    // count of absence records
+): number {
+  const behaviorScore = behavior / 4           // /20 → /5
+  const applicationsScore = applications / 4  // /20 → /5
+  const notebookScore = notebook / 4          // /20 → /5
+  const tardinessScore = Math.max(0, 5 - tardinessCount)  // /5, deduct 1 per tardiness
+  const absenceScore = Math.max(0, 5 - absenceCount)      // /5, deduct 1 per absence
+  
+  const total = behaviorScore + applicationsScore + notebookScore + tardinessScore + absenceScore
+  return Number((total * 4 / 5).toFixed(2)) // Scale /25 to /20
 }
 
 function calculateFinalAverage(activityAverage: number, assignment: number, exam: number): number {
@@ -105,6 +136,18 @@ export function GradeSheetTable() {
   const [sortField, setSortField] = useState<SortField | null>(null)
   const [sortDirection, setSortDirection] = useState<SortDirection>(null)
   const [editingCell, setEditingCell] = useState<{ id: string; field: string } | null>(null)
+  
+  // Attendance dialog state
+  const [attendanceDialog, setAttendanceDialog] = useState<{
+    open: boolean
+    student: StudentGrade | null
+    type: 'absence' | 'tardiness'
+  }>({ open: false, student: null, type: 'absence' })
+  const [attendanceDate, setAttendanceDate] = useState(new Date().toISOString().split('T')[0])
+  const [attendanceTime, setAttendanceTime] = useState(new Date().toTimeString().slice(0, 5))
+  
+  // Attendance store
+  const { addRecord, getStudentAbsenceCount, getStudentTardinessCount } = useAttendanceStore()
 
   const handleSort = (field: SortField) => {
     if (sortField === field) {
@@ -115,6 +158,33 @@ export function GradeSheetTable() {
     }
   }
 
+  // Recalculate student grades based on attendance records
+  const studentsWithAttendance = useMemo(() => {
+    return students.map(student => {
+      const absenceCount = getStudentAbsenceCount(student.id)
+      const tardinessCount = getStudentTardinessCount(student.id)
+      
+      const activityAverage = calculateContinuousAssessment(
+        student.behavior,
+        student.applications,
+        student.notebook,
+        tardinessCount,
+        absenceCount
+      )
+      
+      const finalAverage = calculateFinalAverage(activityAverage, student.assignment, student.exam)
+      
+      return {
+        ...student,
+        lateness: tardinessCount,
+        absences: absenceCount,
+        activityAverage,
+        finalAverage,
+        remarks: getRemarksKey(finalAverage)
+      }
+    })
+  }, [students, getStudentAbsenceCount, getStudentTardinessCount])
+
   const handleCellEdit = (id: string, field: keyof StudentGrade, value: string) => {
     setStudents(prev => prev.map(student => {
       if (student.id !== id) return student
@@ -122,34 +192,42 @@ export function GradeSheetTable() {
       const numValue = Number(value)
       if (isNaN(numValue) || numValue < 0 || numValue > 20) return student
       
-      const updated = { ...student, [field]: numValue }
-      
-      if (field === 'applications' || field === 'notebook' || field === 'lateness' || field === 'absences') {
-        updated.activityAverage = calculateActivityAverage(
-          updated.applications,
-          updated.notebook,
-          updated.lateness,
-          updated.absences
-        )
-      }
-      
-      if (field === 'activityAverage' || field === 'assignment' || field === 'exam' || 
-          field === 'applications' || field === 'notebook' || field === 'lateness' || field === 'absences') {
-        updated.finalAverage = calculateFinalAverage(
-          updated.activityAverage,
-          updated.assignment,
-          updated.exam
-        )
-        updated.remarks = getRemarksKey(updated.finalAverage)
-      }
-      
-      return updated
+      return { ...student, [field]: numValue }
     }))
     setEditingCell(null)
   }
 
+  const handleRecordAttendance = useCallback(() => {
+    if (!attendanceDialog.student) return
+    
+    const student = attendanceDialog.student
+    const studentName = `${student.firstName} ${student.lastName}`
+    
+    addRecord({
+      studentId: student.id,
+      studentName,
+      classId: 'class-1', // Default class ID
+      date: attendanceDate,
+      time: attendanceTime,
+      type: attendanceDialog.type
+    })
+    
+    const messageKey = attendanceDialog.type === 'absence' 
+      ? 'pages.grades.attendance.absenceRecorded' 
+      : 'pages.grades.attendance.tardinessRecorded'
+    
+    toast.success(t(messageKey, { name: studentName }))
+    setAttendanceDialog({ open: false, student: null, type: 'absence' })
+  }, [attendanceDialog, attendanceDate, attendanceTime, addRecord, t])
+
+  const openAttendanceDialog = (student: StudentGrade, type: 'absence' | 'tardiness') => {
+    setAttendanceDate(new Date().toISOString().split('T')[0])
+    setAttendanceTime(new Date().toTimeString().slice(0, 5))
+    setAttendanceDialog({ open: true, student, type })
+  }
+
   const filteredAndSortedStudents = useMemo(() => {
-    let result = [...students]
+    let result = [...studentsWithAttendance]
     
     if (searchQuery) {
       result = result.filter(student =>
@@ -178,12 +256,12 @@ export function GradeSheetTable() {
     }
     
     return result
-  }, [students, searchQuery, sortField, sortDirection])
+  }, [studentsWithAttendance, searchQuery, sortField, sortDirection])
 
   const statistics = useMemo(() => {
-    const total = students.length
-    const classAverage = students.reduce((sum, s) => sum + s.finalAverage, 0) / total
-    const passCount = students.filter(s => s.finalAverage >= 10).length
+    const total = studentsWithAttendance.length
+    const classAverage = studentsWithAttendance.reduce((sum, s) => sum + s.finalAverage, 0) / total
+    const passCount = studentsWithAttendance.filter(s => s.finalAverage >= 10).length
     const failCount = total - passCount
     
     return {
@@ -192,7 +270,7 @@ export function GradeSheetTable() {
       passRate: ((passCount / total) * 100).toFixed(1),
       failRate: ((failCount / total) * 100).toFixed(1),
     }
-  }, [students])
+  }, [studentsWithAttendance])
 
   const SortableHeader = ({ field, children }: { field: SortField; children: React.ReactNode }) => (
     <TableHead className="text-center font-bold">
@@ -245,6 +323,37 @@ export function GradeSheetTable() {
       </TableCell>
     )
   }
+
+  // Cell with attendance action dropdown
+  const AttendanceCell = ({ 
+    student, 
+    type,
+    count 
+  }: { 
+    student: StudentGrade
+    type: 'absences' | 'lateness'
+    count: number 
+  }) => (
+    <TableCell className="text-center">
+      <DropdownMenu>
+        <DropdownMenuTrigger asChild>
+          <Button 
+            variant="ghost" 
+            size="sm" 
+            className={`h-7 px-2 ${count > 0 ? 'text-red-600 font-bold' : ''}`}
+          >
+            {count}
+          </Button>
+        </DropdownMenuTrigger>
+        <DropdownMenuContent align="center">
+          <DropdownMenuItem onClick={() => openAttendanceDialog(student, type === 'absences' ? 'absence' : 'tardiness')}>
+            {type === 'absences' ? <UserMinus className="h-4 w-4 ltr:mr-2 rtl:ml-2" /> : <Clock className="h-4 w-4 ltr:mr-2 rtl:ml-2" />}
+            {type === 'absences' ? t('pages.grades.attendance.recordAbsence') : t('pages.grades.attendance.recordTardiness')}
+          </DropdownMenuItem>
+        </DropdownMenuContent>
+      </DropdownMenu>
+    </TableCell>
+  )
 
   return (
     <div className="w-full space-y-4" dir={isRTL ? 'rtl' : 'ltr'}>
@@ -349,9 +458,9 @@ export function GradeSheetTable() {
                 <EditableCell student={student} field="behavior" value={student.behavior} />
                 <EditableCell student={student} field="applications" value={student.applications} />
                 <EditableCell student={student} field="notebook" value={student.notebook} />
-                <TableCell className="text-center">{student.lateness}</TableCell>
-                <TableCell className="text-center">{student.absences}</TableCell>
-                <EditableCell student={student} field="activityAverage" value={student.activityAverage} />
+                <AttendanceCell student={student} type="lateness" count={student.lateness} />
+                <AttendanceCell student={student} type="absences" count={student.absences} />
+                <TableCell className="text-center font-medium">{student.activityAverage}</TableCell>
                 <EditableCell student={student} field="assignment" value={student.assignment} />
                 <EditableCell student={student} field="exam" value={student.exam} />
                 <TableCell className="text-center font-bold">{student.finalAverage.toFixed(2)}</TableCell>
@@ -361,6 +470,57 @@ export function GradeSheetTable() {
           </TableBody>
         </Table>
       </div>
+
+      {/* Attendance Dialog */}
+      <Dialog open={attendanceDialog.open} onOpenChange={(open) => setAttendanceDialog(prev => ({ ...prev, open }))}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>
+              {attendanceDialog.type === 'absence' 
+                ? t('pages.grades.attendance.recordAbsence') 
+                : t('pages.grades.attendance.recordTardiness')}
+            </DialogTitle>
+          </DialogHeader>
+          
+          {attendanceDialog.student && (
+            <div className="space-y-4 py-4">
+              <p className="font-medium">
+                {attendanceDialog.student.firstName} {attendanceDialog.student.lastName}
+              </p>
+              
+              <div className="grid grid-cols-2 gap-4">
+                <div className="space-y-2">
+                  <Label htmlFor="date">{t('pages.grades.attendance.date')}</Label>
+                  <Input
+                    id="date"
+                    type="date"
+                    value={attendanceDate}
+                    onChange={(e) => setAttendanceDate(e.target.value)}
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="time">{t('pages.grades.attendance.time')}</Label>
+                  <Input
+                    id="time"
+                    type="time"
+                    value={attendanceTime}
+                    onChange={(e) => setAttendanceTime(e.target.value)}
+                  />
+                </div>
+              </div>
+            </div>
+          )}
+          
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setAttendanceDialog({ open: false, student: null, type: 'absence' })}>
+              {t('common.cancel')}
+            </Button>
+            <Button onClick={handleRecordAttendance}>
+              {t('pages.grades.attendance.confirm')}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   )
 }
