@@ -24,7 +24,6 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
-import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Label } from "@/components/ui/label"
 import { useDirection } from "@/hooks/use-direction"
 import { useAttendanceStore } from "@/store/attendance-store"
@@ -368,26 +367,49 @@ export function GradeSheetTable() {
     )
   }
 
+
   return (
     <div className="flex flex-col h-full" dir={isRTL ? 'rtl' : 'ltr'}>
-      {/* Scrollable Class Tabs */}
-      <div className="flex-shrink-0 mb-4 overflow-x-auto pb-1">
-        <Tabs value={selectedClassId || undefined} onValueChange={setSelectedClass}>
-          <TabsList className="inline-flex w-max gap-1 p-1 bg-muted rounded-lg">
-            {classes.map((cls) => (
-              <TabsTrigger 
-                key={cls.id} 
-                value={cls.id} 
-                className="px-4 py-2 text-sm font-medium rounded-md whitespace-nowrap data-[state=active]:bg-background data-[state=active]:shadow-sm"
+      {/* Class Navigation - Modern Pill Switcher */}
+      <div className="flex-shrink-0 mb-4 relative">
+        {/* Gradient scroll indicators */}
+        <div className="pointer-events-none absolute left-0 top-0 bottom-0 w-8 bg-gradient-to-r from-background to-transparent z-10 hidden [.overflow-x-scroll:has(:first-child:not(:hover))>&]:block" />
+        <div className="pointer-events-none absolute right-0 top-0 bottom-0 w-8 bg-gradient-to-l from-background to-transparent z-10" />
+        
+        {/* Scrollable class pills */}
+        <div className="flex gap-2 overflow-x-auto pb-2 scrollbar-thin scrollbar-thumb-muted scrollbar-track-transparent">
+          {classes.map((cls) => {
+            const isActive = cls.id === selectedClassId
+            const studentCount = getClassStudentCount(cls.id)
+            
+            return (
+              <button
+                key={cls.id}
+                onClick={() => setSelectedClass(cls.id)}
+                className={`
+                  flex items-center gap-2 px-4 py-2.5 rounded-full text-sm font-medium
+                  whitespace-nowrap transition-all duration-200 ease-out
+                  border-2 cursor-pointer select-none
+                  ${isActive 
+                    ? 'bg-primary text-primary-foreground border-primary shadow-md scale-105' 
+                    : 'bg-card text-card-foreground border-border hover:border-primary/50 hover:bg-muted'
+                  }
+                `}
               >
-                {cls.name}
-                <span className="ml-2 px-1.5 py-0.5 text-xs rounded-full bg-muted-foreground/20">
-                  {getClassStudentCount(cls.id)}
+                <span>{cls.name}</span>
+                <span className={`
+                  px-2 py-0.5 text-xs font-semibold rounded-full
+                  ${isActive 
+                    ? 'bg-primary-foreground/20 text-primary-foreground' 
+                    : 'bg-muted text-muted-foreground'
+                  }
+                `}>
+                  {studentCount}
                 </span>
-              </TabsTrigger>
-            ))}
-          </TabsList>
-        </Tabs>
+              </button>
+            )
+          })}
+        </div>
       </div>
 
       {/* Scrollable Content Area */}
