@@ -90,6 +90,18 @@
             "hints": {
                 "clickToEdit": "Cliquez sur une cellule pour modifier la note",
                 "autoCalculate": "La moyenne et les appréciations sont calculées automatiquement"
+            },
+            "attendance": {
+                "recordAbsence": "Enregistrer une absence",
+                "recordTardiness": "Enregistrer un retard",
+                "date": "Date",
+                "time": "Heure",
+                "confirm": "Confirmer",
+                "recorded": "Présence enregistrée",
+                "absenceRecorded": "Absence enregistrée pour {{name}}",
+                "tardinessRecorded": "Retard enregistré pour {{name}}",
+                "viewHistory": "Voir l'historique",
+                "noRecords": "Aucun enregistrement de présence"
             }
         }
     }
