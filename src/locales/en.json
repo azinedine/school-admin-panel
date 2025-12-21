@@ -101,7 +101,13 @@
                 "absenceRecorded": "Absence recorded for {{name}}",
                 "tardinessRecorded": "Tardiness recorded for {{name}}",
                 "viewHistory": "View History",
-                "noRecords": "No attendance records"
+                "noRecords": "No attendance records",
+                "deleteRecord": "Delete Record",
+                "deleteConfirm": "Are you sure you want to delete this record?",
+                "deleted": "Record deleted",
+                "history": "Attendance History",
+                "absence": "Absence",
+                "tardiness": "Tardiness"
             }
         }
     }
