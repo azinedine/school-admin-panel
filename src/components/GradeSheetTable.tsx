@@ -24,6 +24,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
+import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Label } from "@/components/ui/label"
 import { useDirection } from "@/hooks/use-direction"
 import { useAttendanceStore } from "@/store/attendance-store"
@@ -82,11 +83,19 @@ export function GradeSheetTable() {
   const { t } = useTranslation()
   const { isRTL } = useDirection()
   
-  // Persistent stores - students are available immediately with initial data
+  // Persistent stores
   const students = useGradesStore((state) => state.students)
+  const classes = useGradesStore((state) => state.classes)
+  const selectedClassId = useGradesStore((state) => state.selectedClassId)
+  const setSelectedClass = useGradesStore((state) => state.setSelectedClass)
   const updateStudentField = useGradesStore((state) => state.updateStudentField)
   const { addRecord, removeRecord, getStudentRecords, getStudentAbsenceCount, getStudentTardinessCount, records } = useAttendanceStore()
   
+  // Get student count for a class
+  const getClassStudentCount = useCallback((classId: string) => {
+    return students.filter(s => s.classId === classId).length
+  }, [students])
+
   // Local UI state
   const [searchQuery, setSearchQuery] = useState("")
   const [sortField, setSortField] = useState<SortField | null>(null)
@@ -120,32 +129,34 @@ export function GradeSheetTable() {
     })
   }, [])
 
-  // Calculate student grades with attendance data - recomputes when records or students change
+  // Calculate student grades with attendance data - filter by selected class
   const calculatedStudents = useMemo((): CalculatedStudentGrade[] => {
-    return students.map(student => {
-      const absenceCount = getStudentAbsenceCount(student.id)
-      const tardinessCount = getStudentTardinessCount(student.id)
-      
-      const activityAverage = calculateContinuousAssessment(
-        student.behavior,
-        student.applications,
-        student.notebook,
-        tardinessCount,
-        absenceCount
-      )
-      
-      const finalAverage = calculateFinalAverage(activityAverage, student.assignment, student.exam)
-      
-      return {
-        ...student,
-        lateness: tardinessCount,
-        absences: absenceCount,
-        activityAverage,
-        finalAverage,
-        remarks: getRemarksKey(finalAverage)
-      }
-    })
-  }, [students, records, getStudentAbsenceCount, getStudentTardinessCount])
+    return students
+      .filter(student => student.classId === selectedClassId)
+      .map(student => {
+        const absenceCount = getStudentAbsenceCount(student.id)
+        const tardinessCount = getStudentTardinessCount(student.id)
+        
+        const activityAverage = calculateContinuousAssessment(
+          student.behavior,
+          student.applications,
+          student.notebook,
+          tardinessCount,
+          absenceCount
+        )
+        
+        const finalAverage = calculateFinalAverage(activityAverage, student.assignment, student.exam)
+        
+        return {
+          ...student,
+          lateness: tardinessCount,
+          absences: absenceCount,
+          activityAverage,
+          finalAverage,
+          remarks: getRemarksKey(finalAverage)
+        }
+      })
+  }, [students, records, selectedClassId, getStudentAbsenceCount, getStudentTardinessCount])
 
   const handleCellEdit = useCallback((id: string, field: keyof StudentGrade, value: string) => {
     const numValue = Number(value)
@@ -343,9 +354,44 @@ export function GradeSheetTable() {
     </TableCell>
   ), [openAttendanceDialog, openHistoryDialog, t])
 
+  // If no classes, show empty state message
+  if (classes.length === 0) {
+    return (
+      <div className="flex flex-col items-center justify-center py-16 px-4" dir={isRTL ? 'rtl' : 'ltr'}>
+        <p className="text-lg text-muted-foreground">
+          {t('pages.grades.empty.title')}
+        </p>
+        <p className="text-sm text-muted-foreground mt-2">
+          {t('pages.grades.empty.description')}
+        </p>
+      </div>
+    )
+  }
+
   return (
-    <div className="w-full space-y-4" dir={isRTL ? 'rtl' : 'ltr'}>
-      {/* Header Section */}
+    <div className="flex flex-col h-full" dir={isRTL ? 'rtl' : 'ltr'}>
+      {/* Scrollable Class Tabs */}
+      <div className="flex-shrink-0 mb-4 overflow-x-auto pb-1">
+        <Tabs value={selectedClassId || undefined} onValueChange={setSelectedClass}>
+          <TabsList className="inline-flex w-max gap-1 p-1 bg-muted rounded-lg">
+            {classes.map((cls) => (
+              <TabsTrigger 
+                key={cls.id} 
+                value={cls.id} 
+                className="px-4 py-2 text-sm font-medium rounded-md whitespace-nowrap data-[state=active]:bg-background data-[state=active]:shadow-sm"
+              >
+                {cls.name}
+                <span className="ml-2 px-1.5 py-0.5 text-xs rounded-full bg-muted-foreground/20">
+                  {getClassStudentCount(cls.id)}
+                </span>
+              </TabsTrigger>
+            ))}
+          </TabsList>
+        </Tabs>
+      </div>
+
+      {/* Scrollable Content Area */}
+      <div className="flex-1 flex flex-col min-h-0 space-y-4">
       <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 p-4 rounded-lg border bg-muted/30">
         {/* Statistics */}
         <div className="flex flex-wrap items-center gap-6">
@@ -614,6 +660,9 @@ export function GradeSheetTable() {
           </DialogFooter>
         </DialogContent>
       </Dialog>
+
+      {/* End of Scrollable Content Area */}
+      </div>
     </div>
   )
 }
