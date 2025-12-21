@@ -1,0 +1,52 @@
+{
+    "common": {
+        "changeLanguage": "Changer la langue",
+        "search": "Rechercher",
+        "save": "Enregistrer",
+        "cancel": "Annuler",
+        "delete": "Supprimer",
+        "edit": "Modifier",
+        "add": "Ajouter",
+        "loading": "Chargement...",
+        "noResults": "Aucun résultat trouvé"
+    },
+    "nav": {
+        "mainMenu": "Menu principal",
+        "settingsAndNews": "Paramètres et actualités",
+        "overview": "Aperçu",
+        "classPreparation": "Préparation de cours",
+        "attendance": "Présence",
+        "exams": "Examens",
+        "assignmentManagement": "Gestion des devoirs",
+        "schedule": "Emploi du temps",
+        "students": "Étudiants",
+        "grades": "Notes",
+        "messages": "Messages",
+        "analytics": "Analytique",
+        "reports": "Rapports",
+        "schoolNews": "Actualités scolaires",
+        "schoolActivities": "Activités scolaires",
+        "whatsNew": "Nouveautés",
+        "settings": "Paramètres"
+    },
+    "user": {
+        "upgradeToPro": "Passer à Pro",
+        "account": "Compte",
+        "billing": "Facturation",
+        "notifications": "Notifications",
+        "logout": "Se déconnecter"
+    },
+    "app": {
+        "title": "Panneau d'administration scolaire",
+        "subtitle": "Construit avec le dernier Tailwind CSS et shadcn/ui",
+        "students": "Étudiants",
+        "studentsDescription": "Gérer les informations et les dossiers des étudiants",
+        "viewStudents": "Voir les étudiants",
+        "teachers": "Enseignants",
+        "teachersDescription": "Gérer les profils et les horaires des enseignants",
+        "viewTeachers": "Voir les enseignants",
+        "classes": "Classes",
+        "classesDescription": "Organiser les classes et les horaires",
+        "viewClasses": "Voir les classes"
+    }
+}
