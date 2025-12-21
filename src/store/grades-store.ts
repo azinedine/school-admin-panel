@@ -42,7 +42,7 @@ interface GradesState {
 interface GradesActions {
   setSelectedClass: (classId: string) => void
   addClass: (classData: Omit<Class, 'id'>) => string
-  addStudentsToClass: (classId: string, students: Omit<StudentGrade, 'id' | 'classId'>[]) => void
+  addStudentsToClass: (classId: string, students: (Omit<StudentGrade, 'id' | 'classId'> & { id?: string })[]) => void
   removeClass: (classId: string) => void
   updateStudent: (id: string, updates: Partial<StudentGrade>) => void
   updateStudentField: (id: string, field: keyof StudentGrade, value: number) => void
@@ -94,7 +94,7 @@ export const useGradesStore = create<GradesStore>()(
                 ...state.students,
                 ...studentsData.map((s) => ({
                   ...s,
-                  id: crypto.randomUUID(),
+                  id: s.id || crypto.randomUUID(),
                   classId,
                 })),
               ],
