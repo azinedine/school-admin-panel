@@ -85,7 +85,8 @@
                 "assignment": "الفرض /20",
                 "exam": "الإختبار /20",
                 "finalAverage": "المعدل",
-                "remarks": "التقديرات"
+                "remarks": "التقديرات",
+                "group": "الفوج"
             },
             "remarks": {
                 "excellent": "ممتاز",
@@ -146,6 +147,11 @@
                 "noData": "لم يتم العثور على بيانات في ملف Excel",
                 "parseError": "خطأ في تحليل ملف Excel. يرجى التحقق من التنسيق.",
                 "multiSuccess": "تم إنشاء {{classes}} فصل مع {{students}} طالب"
+            },
+            "groups": {
+                "showGroups": "إظهار الأفواج",
+                "hideGroups": "إخفاء الأفواج",
+                "groupLabel": "ف{{number}}"
             }
         }
     }
