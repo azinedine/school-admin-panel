@@ -184,6 +184,7 @@
             },
             "studentManagement": {
                 "menu": "إدارة الطالب",
+                "viewInfo": "عرض معلومات الطالب",
                 "moveToClass": "نقل إلى فصل",
                 "removeFromClass": "إزالة من الفصل",
                 "moveStudentDescription": "نقل {{name}} إلى فصل آخر:",
@@ -211,6 +212,19 @@
                 "nameRequired": "الاسم واللقب مطلوبان",
                 "duplicateId": "يوجد طالب بهذا الرقم بالفعل",
                 "noClassSelected": "يرجى اختيار فصل أولاً"
+            },
+            "studentInfo": {
+                "description": "معلومات الطالب الكاملة والأداء الأكاديمي",
+                "basicInfo": "المعلومات الأساسية",
+                "id": "رقم الطالب",
+                "dateOfBirth": "تاريخ الميلاد",
+                "specialCase": "حالة خاصة",
+                "grades": "الدرجات",
+                "attendance": "الحضور",
+                "averages": "المتوسطات",
+                "academicContext": "السياق الأكاديمي",
+                "year": "السنة الدراسية",
+                "term": "الفصل"
             }
         }
     }

@@ -184,6 +184,7 @@
             },
             "studentManagement": {
                 "menu": "Gestion de l'élève",
+                "viewInfo": "Voir les informations de l'élève",
                 "moveToClass": "Déplacer vers une classe",
                 "removeFromClass": "Retirer de la classe",
                 "moveStudentDescription": "Déplacer {{name}} vers une autre classe :",
@@ -211,6 +212,19 @@
                 "nameRequired": "Le prénom et le nom de famille sont requis",
                 "duplicateId": "Un élève avec cet ID existe déjà",
                 "noClassSelected": "Veuillez d'abord sélectionner une classe"
+            },
+            "studentInfo": {
+                "description": "Informations complètes de l'élève et performance académique",
+                "basicInfo": "Informations de base",
+                "id": "ID de l'élève",
+                "dateOfBirth": "Date de naissance",
+                "specialCase": "Cas spécial",
+                "grades": "Notes",
+                "attendance": "Assiduité",
+                "averages": "Moyennes",
+                "academicContext": "Contexte académique",
+                "year": "Année académique",
+                "term": "Trimestre"
             }
         }
     }

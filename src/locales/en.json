@@ -184,6 +184,7 @@
             },
             "studentManagement": {
                 "menu": "Student Management",
+                "viewInfo": "View Student Info",
                 "moveToClass": "Move to Class",
                 "removeFromClass": "Remove from Class",
                 "moveStudentDescription": "Move {{name}} to another class:",
@@ -211,6 +212,19 @@
                 "nameRequired": "First name and last name are required",
                 "duplicateId": "A student with this ID already exists",
                 "noClassSelected": "Please select a class first"
+            },
+            "studentInfo": {
+                "description": "Complete student information and academic performance",
+                "basicInfo": "Basic Information",
+                "id": "Student ID",
+                "dateOfBirth": "Date of Birth",
+                "specialCase": "Special Case",
+                "grades": "Grades",
+                "attendance": "Attendance",
+                "averages": "Averages",
+                "academicContext": "Academic Context",
+                "year": "Academic Year",
+                "term": "Term"
             }
         }
     }
