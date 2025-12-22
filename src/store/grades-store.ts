@@ -94,10 +94,11 @@ export const useGradesStore = create<GradesStore>()(
               students: [
                 ...state.students,
                 ...studentsData.map((s) => ({
-                  // Ensure all CA fields default to 0 if not provided
-                  behavior: s.behavior ?? 0,
-                  applications: s.applications ?? 0,
-                  notebook: s.notebook ?? 0,
+                  // Default CA fields to 4/5 if not provided (good starting point)
+                  behavior: s.behavior ?? 5,
+                  applications: s.applications ?? 5,
+                  notebook: s.notebook ?? 5,
+                  // Assignment and exam default to 0 (no grade yet)
                   assignment: s.assignment ?? 0,
                   exam: s.exam ?? 0,
                   // Spread other properties
