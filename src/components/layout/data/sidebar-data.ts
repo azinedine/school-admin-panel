@@ -1,6 +1,5 @@
 import {
   LayoutDashboard,
-  Users,
   ClipboardCheck,
   BookOpen,
   Calendar,
@@ -62,11 +61,6 @@ export const sidebarData = {
           title: 'nav.schedule',
           url: '/schedule',
           icon: Calendar,
-        },
-        {
-          title: 'nav.students',
-          url: '/students',
-          icon: Users,
         },
         {
           title: 'nav.grades.title',
