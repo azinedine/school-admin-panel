@@ -176,8 +176,26 @@ function SortableStudentRow({
         </TableCell>
       )}
       <TableCell className="font-mono text-xs">{student.id}</TableCell>
-      <TableCell className="font-semibold">{student.lastName}</TableCell>
-      <TableCell>{student.firstName}</TableCell>
+      <TooltipProvider>
+        <Tooltip>
+          <TooltipTrigger asChild>
+            <TableCell className="font-semibold whitespace-nowrap truncate max-w-[120px]">{student.lastName}</TableCell>
+          </TooltipTrigger>
+          <TooltipContent side="top">
+            <p>{student.lastName}</p>
+          </TooltipContent>
+        </Tooltip>
+      </TooltipProvider>
+      <TooltipProvider>
+        <Tooltip>
+          <TooltipTrigger asChild>
+            <TableCell className="whitespace-nowrap truncate max-w-[120px]">{student.firstName}</TableCell>
+          </TooltipTrigger>
+          <TooltipContent side="top">
+            <p>{student.firstName}</p>
+          </TooltipContent>
+        </Tooltip>
+      </TooltipProvider>
       <TableCell className="text-center">{student.dateOfBirth}</TableCell>
       <EditableCell student={student} field="behavior" value={student.behavior} />
       <EditableCell student={student} field="applications" value={student.applications} />
