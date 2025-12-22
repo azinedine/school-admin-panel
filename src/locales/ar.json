@@ -118,6 +118,10 @@
                 "absence": "غياب",
                 "tardiness": "تأخر"
             },
+            "validation": {
+                "maxReached": "الحد الأقصى لـ {{field}} هو {{max}}",
+                "minReached": "الحد الأدنى لـ {{field}} هو {{min}}"
+            },
             "empty": {
                 "title": "لا توجد فصول بعد",
                 "description": "ابدأ بإضافة فصلك الأول. يمكنك تحميل ملف Excel يحتوي على بيانات الطلاب أو إنشاء فصل يدوياً.",
