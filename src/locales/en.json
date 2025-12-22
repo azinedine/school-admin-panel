@@ -229,6 +229,28 @@
                 "year": "Academic Year",
                 "term": "Term"
             }
+        },
+        "prep": {
+            "title": "Lesson Preparation",
+            "description": "Daily planner and lesson organization",
+            "days": {
+                "sunday": "Sunday",
+                "monday": "Monday",
+                "wednesday": "Wednesday",
+                "thursday": "Thursday"
+            },
+            "groups": {
+                "first": "First Group",
+                "second": "Second Group"
+            },
+            "timeSlot": "Time Slot",
+            "addLesson": "Add Lesson",
+            "editLesson": "Edit Lesson",
+            "class": "Class",
+            "lessonTitle": "Lesson Title",
+            "lessonContent": "Lesson Content",
+            "practiceNotes": "Practice/Application Notes",
+            "emptySlot": "Click to add lesson"
         }
     }
 }

@@ -229,6 +229,28 @@
                 "year": "السنة الدراسية",
                 "term": "الفصل"
             }
+        },
+        "prep": {
+            "title": "تحضير الدروس",
+            "description": "مفكرة يومية وتنظيم الدروس",
+            "days": {
+                "sunday": "الأحد",
+                "monday": "الاثنين",
+                "wednesday": "الأربعاء",
+                "thursday": "الخميس"
+            },
+            "groups": {
+                "first": "المجموعة الأولى",
+                "second": "المجموعة الثانية"
+            },
+            "timeSlot": "الفترة الزمنية",
+            "addLesson": "إضافة درس",
+            "editLesson": "تعديل الدرس",
+            "class": "الفصل",
+            "lessonTitle": "عنوان الدرس",
+            "lessonContent": "محتوى الدرس",
+            "practiceNotes": "ملاحظات التطبيق",
+            "emptySlot": "انقر لإضافة درس"
         }
     }
 }

@@ -229,6 +229,28 @@
                 "year": "Année académique",
                 "term": "Trimestre"
             }
+        },
+        "prep": {
+            "title": "Préparation des cours",
+            "description": "Planificateur quotidien et organisation des cours",
+            "days": {
+                "sunday": "Dimanche",
+                "monday": "Lundi",
+                "wednesday": "Mercredi",
+                "thursday": "Jeudi"
+            },
+            "groups": {
+                "first": "Premier groupe",
+                "second": "Deuxième groupe"
+            },
+            "timeSlot": "Créneau horaire",
+            "addLesson": "Ajouter un cours",
+            "editLesson": "Modifier le cours",
+            "class": "Classe",
+            "lessonTitle": "Titre du cours",
+            "lessonContent": "Contenu du cours",
+            "practiceNotes": "Notes pratiques/Applications",
+            "emptySlot": "Cliquez pour ajouter un cours"
         }
     }
 }
