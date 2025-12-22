@@ -202,7 +202,12 @@ function SortableStudentRow({
       <EditableCell student={student} field="notebook" value={student.notebook} />
       <AttendanceCell student={student} type="lateness" count={student.lateness} />
       <AttendanceCell student={student} type="absences" count={student.absences} />
-      <TableCell className="text-center font-semibold bg-primary/5 dark:bg-primary/10 text-primary">{student.activityAverage}</TableCell>
+      <TableCell 
+        className="text-center font-semibold bg-primary/5 dark:bg-primary/10 text-primary cursor-not-allowed"
+        onClick={() => toast.info(t('pages.grades.validation.caAutoCalculated'))}
+      >
+        {student.activityAverage}
+      </TableCell>
       <TableCell className="text-center font-semibold bg-primary/5 dark:bg-primary/10 cursor-pointer" onClick={() => setEditingCell({ id: student.id, field: 'assignment' })}>
         {editingCell?.id === student.id && editingCell?.field === 'assignment' ? (
           <Input
@@ -210,9 +215,48 @@ function SortableStudentRow({
             defaultValue={student.assignment}
             autoFocus
             className="w-16 h-8 text-center"
-            onBlur={(e) => handleCellEdit(student.id, 'assignment', e.target.value)}
+            onFocus={(e) => e.target.select()}
+            onBlur={(e) => {
+              const newValue = e.target.value.trim()
+              if (newValue === '') {
+                setEditingCell(null)
+              } else {
+                const numValue = parseFloat(newValue)
+                if (!isNaN(numValue)) {
+                  if (numValue > 20) {
+                    toast.warning(t('pages.grades.validation.exceedsMax'))
+                    handleCellEdit(student.id, 'assignment', '20')
+                  } else if (numValue < 0) {
+                    handleCellEdit(student.id, 'assignment', '0')
+                  } else {
+                    handleCellEdit(student.id, 'assignment', newValue)
+                  }
+                } else {
+                  setEditingCell(null)
+                }
+              }
+            }}
             onKeyDown={(e) => {
-              if (e.key === 'Enter') handleCellEdit(student.id, 'assignment', (e.target as HTMLInputElement).value)
+              if (e.key === 'Enter') {
+                const newValue = (e.target as HTMLInputElement).value.trim()
+                if (newValue === '') {
+                  setEditingCell(null)
+                } else {
+                  const numValue = parseFloat(newValue)
+                  if (!isNaN(numValue)) {
+                    if (numValue > 20) {
+                      toast.warning(t('pages.grades.validation.exceedsMax'))
+                      handleCellEdit(student.id, 'assignment', '20')
+                    } else if (numValue < 0) {
+                      handleCellEdit(student.id, 'assignment', '0')
+                    } else {
+                      handleCellEdit(student.id, 'assignment', newValue)
+                    }
+                  } else {
+                    setEditingCell(null)
+                  }
+                }
+              }
               if (e.key === 'Escape') setEditingCell(null)
             }}
             min={0} max={20} step={0.5}
@@ -226,9 +270,48 @@ function SortableStudentRow({
             defaultValue={student.exam}
             autoFocus
             className="w-16 h-8 text-center"
-            onBlur={(e) => handleCellEdit(student.id, 'exam', e.target.value)}
+            onFocus={(e) => e.target.select()}
+            onBlur={(e) => {
+              const newValue = e.target.value.trim()
+              if (newValue === '') {
+                setEditingCell(null)
+              } else {
+                const numValue = parseFloat(newValue)
+                if (!isNaN(numValue)) {
+                  if (numValue > 20) {
+                    toast.warning(t('pages.grades.validation.exceedsMax'))
+                    handleCellEdit(student.id, 'exam', '20')
+                  } else if (numValue < 0) {
+                    handleCellEdit(student.id, 'exam', '0')
+                  } else {
+                    handleCellEdit(student.id, 'exam', newValue)
+                  }
+                } else {
+                  setEditingCell(null)
+                }
+              }
+            }}
             onKeyDown={(e) => {
-              if (e.key === 'Enter') handleCellEdit(student.id, 'exam', (e.target as HTMLInputElement).value)
+              if (e.key === 'Enter') {
+                const newValue = (e.target as HTMLInputElement).value.trim()
+                if (newValue === '') {
+                  setEditingCell(null)
+                } else {
+                  const numValue = parseFloat(newValue)
+                  if (!isNaN(numValue)) {
+                    if (numValue > 20) {
+                      toast.warning(t('pages.grades.validation.exceedsMax'))
+                      handleCellEdit(student.id, 'exam', '20')
+                    } else if (numValue < 0) {
+                      handleCellEdit(student.id, 'exam', '0')
+                    } else {
+                      handleCellEdit(student.id, 'exam', newValue)
+                    }
+                  } else {
+                    setEditingCell(null)
+                  }
+                }
+              }
               if (e.key === 'Escape') setEditingCell(null)
             }}
             min={0} max={20} step={0.5}
@@ -535,10 +618,24 @@ export function GradeSheetTable() {
                   defaultValue={value}
                   autoFocus
                   className="w-16 h-8 text-center"
-                  onBlur={(e) => handleValidatedEdit(e.target.value)}
+                  onFocus={(e) => e.target.select()}
+                  onBlur={(e) => {
+                    const newValue = e.target.value.trim()
+                    // If empty, revert to original value
+                    if (newValue === '') {
+                      setEditingCell(null)
+                    } else {
+                      handleValidatedEdit(newValue)
+                    }
+                  }}
                   onKeyDown={(e) => {
                     if (e.key === 'Enter') {
-                      handleValidatedEdit((e.target as HTMLInputElement).value)
+                      const newValue = (e.target as HTMLInputElement).value.trim()
+                      if (newValue === '') {
+                        setEditingCell(null)
+                      } else {
+                        handleValidatedEdit(newValue)
+                      }
                     }
                     if (e.key === 'Escape') {
                       setEditingCell(null)
