@@ -1,5 +1,5 @@
 import { useMemo, useCallback, useState, useEffect } from "react"
-import { ArrowUpDown, Search, Users, TrendingUp, CheckCircle, XCircle, UserMinus, Clock, History, Trash2, GripVertical, Star, MoreVertical, Move, UserX, UserPlus } from "lucide-react"
+import { ArrowUpDown, Search, Users, TrendingUp, CheckCircle, XCircle, UserMinus, Clock, History, Trash2, GripVertical, Star, MoreVertical, Move, UserX, UserPlus, Info } from "lucide-react"
 import { useTranslation } from "react-i18next"
 import { useNavigate } from "@tanstack/react-router"
 import {
@@ -49,6 +49,13 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip"
+import {
+  Sheet,
+  SheetContent,
+  SheetHeader,
+  SheetTitle,
+  SheetDescription,
+} from "@/components/ui/sheet"
 import { useDirection } from "@/hooks/use-direction"
 import { useAttendanceStore } from "@/store/attendance-store"
 import { useGradesStore, type StudentGrade } from "@/store/grades-store"
@@ -132,6 +139,7 @@ interface SortableStudentRowProps {
   AttendanceCell: React.FC<{ student: CalculatedStudentGrade; type: 'lateness' | 'absences'; count: number }>
   onMoveStudent: (student: CalculatedStudentGrade) => void
   onRemoveStudent: (student: CalculatedStudentGrade) => void
+  onViewStudentInfo: (student: CalculatedStudentGrade) => void
   t: (key: string, opts?: Record<string, unknown>) => string
 }
 
@@ -149,6 +157,7 @@ function SortableStudentRow({
   AttendanceCell,
   onMoveStudent,
   onRemoveStudent,
+  onViewStudentInfo,
   t,
 }: SortableStudentRowProps) {
   const {
@@ -207,6 +216,10 @@ function SortableStudentRow({
             </button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="start">
+            <DropdownMenuItem onClick={() => onViewStudentInfo(student)}>
+              <Info className="h-4 w-4 ltr:mr-2 rtl:ml-2" />
+              {t('pages.grades.studentManagement.viewInfo')}
+            </DropdownMenuItem>
             <DropdownMenuItem onClick={() => onMoveStudent(student)}>
               <Move className="h-4 w-4 ltr:mr-2 rtl:ml-2" />
               {t('pages.grades.studentManagement.moveToClass')}
@@ -537,6 +550,10 @@ export function GradeSheetTable() {
     student: CalculatedStudentGrade | null
   }>({ open: false, student: null })
   const [addStudentDialog, setAddStudentDialog] = useState(false)
+  const [studentInfoSidebar, setStudentInfoSidebar] = useState<{
+    open: boolean
+    student: CalculatedStudentGrade | null
+  }>({ open: false, student: null })
   const [newStudent, setNewStudent] = useState({
     id: '',
     lastName: '',
@@ -1186,6 +1203,7 @@ export function GradeSheetTable() {
                       AttendanceCell={AttendanceCell}
                       onMoveStudent={(s) => setMoveStudentDialog({ open: true, student: s })}
                       onRemoveStudent={(s) => setRemoveStudentDialog({ open: true, student: s })}
+                      onViewStudentInfo={(s) => setStudentInfoSidebar({ open: true, student: s })}
                       t={t}
                     />
                   )
@@ -1479,6 +1497,143 @@ export function GradeSheetTable() {
           </DialogFooter>
         </DialogContent>
       </Dialog>
+
+      {/* Student Info Sidebar */}
+      <Sheet 
+        open={studentInfoSidebar.open} 
+        onOpenChange={(open) => setStudentInfoSidebar({ open, student: open ? studentInfoSidebar.student : null })}
+      >
+        <SheetContent 
+          side={isRTL ? 'left' : 'right'}
+          className="w-full sm:max-w-md overflow-y-auto"
+        >
+          {studentInfoSidebar.student && (
+            <>
+              <SheetHeader>
+                <SheetTitle>
+                  {studentInfoSidebar.student.firstName} {studentInfoSidebar.student.lastName}
+                </SheetTitle>
+                <SheetDescription>
+                  {t('pages.grades.studentInfo.description')}
+                </SheetDescription>
+              </SheetHeader>
+              
+              <div className="mt-6 space-y-6">
+                {/* Basic Information */}
+                <div className="space-y-3">
+                  <h3 className="text-sm font-semibold text-foreground">
+                    {t('pages.grades.studentInfo.basicInfo')}
+                  </h3>
+                  <div className="space-y-2 text-sm">
+                    <div className="flex justify-between">
+                      <span className="text-muted-foreground">{t('pages.grades.studentInfo.id')}</span>
+                      <span className="font-mono font-medium">{studentInfoSidebar.student.id}</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-muted-foreground">{t('pages.grades.studentInfo.dateOfBirth')}</span>
+                      <span className="font-medium">{studentInfoSidebar.student.dateOfBirth}</span>
+                    </div>
+                    {studentInfoSidebar.student.specialCase && (
+                      <div className="flex justify-between">
+                        <span className="text-muted-foreground">{t('pages.grades.studentInfo.specialCase')}</span>
+                        <span className="font-medium">
+                          {['longAbsence', 'exemption', 'medical', 'transfer'].includes(studentInfoSidebar.student.specialCase)
+                            ? t(`pages.grades.specialCase.${studentInfoSidebar.student.specialCase}`)
+                            : studentInfoSidebar.student.specialCase}
+                        </span>
+                      </div>
+                    )}
+                  </div>
+                </div>
+
+                {/* Grades */}
+                <div className="space-y-3">
+                  <h3 className="text-sm font-semibold text-foreground">
+                    {t('pages.grades.studentInfo.grades')}
+                  </h3>
+                  <div className="space-y-2 text-sm">
+                    <div className="flex justify-between">
+                      <span className="text-muted-foreground">{t('pages.grades.table.behavior')}</span>
+                      <span className="font-medium">{studentInfoSidebar.student.behavior}</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-muted-foreground">{t('pages.grades.table.applications')}</span>
+                      <span className="font-medium">{studentInfoSidebar.student.applications}</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-muted-foreground">{t('pages.grades.table.notebook')}</span>
+                      <span className="font-medium">{studentInfoSidebar.student.notebook}</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-muted-foreground">{t('pages.grades.table.assignment')}</span>
+                      <span className="font-medium">{studentInfoSidebar.student.assignment}</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-muted-foreground">{t('pages.grades.table.exam')}</span>
+                      <span className="font-medium">{studentInfoSidebar.student.exam}</span>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Attendance */}
+                <div className="space-y-3">
+                  <h3 className="text-sm font-semibold text-foreground">
+                    {t('pages.grades.studentInfo.attendance')}
+                  </h3>
+                  <div className="space-y-2 text-sm">
+                    <div className="flex justify-between">
+                      <span className="text-muted-foreground">{t('pages.grades.table.lateness')}</span>
+                      <span className="font-medium">{studentInfoSidebar.student.lateness}</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-muted-foreground">{t('pages.grades.table.absences')}</span>
+                      <span className="font-medium">{studentInfoSidebar.student.absences}</span>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Averages */}
+                <div className="space-y-3">
+                  <h3 className="text-sm font-semibold text-foreground">
+                    {t('pages.grades.studentInfo.averages')}
+                  </h3>
+                  <div className="space-y-2 text-sm">
+                    <div className="flex justify-between">
+                      <span className="text-muted-foreground">{t('pages.grades.table.activityAverage')}</span>
+                      <span className="font-medium text-primary">{studentInfoSidebar.student.activityAverage.toFixed(2)}</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-muted-foreground">{t('pages.grades.table.finalAverage')}</span>
+                      <span className="font-bold text-lg text-primary">{studentInfoSidebar.student.finalAverage.toFixed(2)}</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-muted-foreground">{t('pages.grades.table.remarks')}</span>
+                      <span className="font-medium">{t(`pages.grades.remarks.${studentInfoSidebar.student.remarks}`)}</span>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Academic Context */}
+                <div className="space-y-3">
+                  <h3 className="text-sm font-semibold text-foreground">
+                    {t('pages.grades.studentInfo.academicContext')}
+                  </h3>
+                  <div className="space-y-2 text-sm">
+                    <div className="flex justify-between">
+                      <span className="text-muted-foreground">{t('pages.grades.studentInfo.year')}</span>
+                      <span className="font-medium">{selectedYear}</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-muted-foreground">{t('pages.grades.studentInfo.term')}</span>
+                      <span className="font-medium">{t(`pages.grades.term${selectedTerm}`)}</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </>
+          )}
+        </SheetContent>
+      </Sheet>
 
       {/* End of Scrollable Content Area */}
       </div>
