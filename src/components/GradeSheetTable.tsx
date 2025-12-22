@@ -422,6 +422,8 @@ export function GradeSheetTable() {
   const updateStudentField = useGradesStore((state) => state.updateStudentField)
   const updateStudent = useGradesStore((state) => state.updateStudent)
   const reorderStudents = useGradesStore((state) => state.reorderStudents)
+  const selectedYear = useGradesStore((state) => state.selectedYear)
+  const selectedTerm = useGradesStore((state) => state.selectedTerm)
   const { addRecord, removeRecord, getStudentRecords, getStudentAbsenceCount, getStudentTardinessCount, records } = useAttendanceStore()
 
   // Handle class selection - updates URL and store stays in sync via GradesPage URL effect
@@ -495,8 +497,8 @@ export function GradeSheetTable() {
     return students
       .filter(student => student.classId === selectedClassId)
       .map(student => {
-        const absenceCount = getStudentAbsenceCount(student.id)
-        const tardinessCount = getStudentTardinessCount(student.id)
+        const absenceCount = getStudentAbsenceCount(student.id, selectedYear, selectedTerm)
+        const tardinessCount = getStudentTardinessCount(student.id, selectedYear, selectedTerm)
         
         const activityAverage = calculateContinuousAssessment(
           student.behavior,
@@ -517,7 +519,7 @@ export function GradeSheetTable() {
           remarks: getRemarksKey(finalAverage)
         }
       })
-  }, [students, records, selectedClassId, getStudentAbsenceCount, getStudentTardinessCount])
+  }, [students, records, selectedClassId, getStudentAbsenceCount, getStudentTardinessCount, selectedYear, selectedTerm])
 
   const handleCellEdit = useCallback((id: string, field: keyof StudentGrade, value: string) => {
     const numValue = Number(value)
@@ -541,6 +543,8 @@ export function GradeSheetTable() {
       classId: 'class-1',
       date: attendanceDate,
       time: attendanceTime,
+      year: selectedYear,
+      term: selectedTerm,
       type: attendanceDialog.type
     })
     
@@ -550,7 +554,7 @@ export function GradeSheetTable() {
     
     toast.success(t(messageKey, { name: studentName }))
     setAttendanceDialog({ open: false, student: null, type: 'absence' })
-  }, [attendanceDialog, attendanceDate, attendanceTime, addRecord, t])
+  }, [attendanceDialog, attendanceDate, attendanceTime, addRecord, t, selectedYear, selectedTerm])
 
   const openAttendanceDialog = useCallback((student: CalculatedStudentGrade, type: 'absence' | 'tardiness') => {
     setAttendanceDate(new Date().toISOString().split('T')[0])
@@ -570,10 +574,10 @@ export function GradeSheetTable() {
 
   const studentRecords = useMemo(() => {
     if (!historyDialog.student) return []
-    return getStudentRecords(historyDialog.student.id).sort(
+    return getStudentRecords(historyDialog.student.id, selectedYear, selectedTerm).sort(
       (a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
     )
-  }, [historyDialog.student, getStudentRecords, records])
+  }, [historyDialog.student, getStudentRecords, records, selectedYear, selectedTerm])
 
   const filteredAndSortedStudents = useMemo(() => {
     let result = [...calculatedStudents]
