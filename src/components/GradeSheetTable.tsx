@@ -1,6 +1,7 @@
 import { useMemo, useCallback, useState, useEffect } from "react"
 import { ArrowUpDown, Search, Users, TrendingUp, CheckCircle, XCircle, UserMinus, Clock, History, Trash2, GripVertical } from "lucide-react"
 import { useTranslation } from "react-i18next"
+import { useNavigate } from "@tanstack/react-router"
 import {
   DndContext,
   closestCenter,
@@ -204,6 +205,7 @@ function SortableStudentRow({
 export function GradeSheetTable() {
   const { t } = useTranslation()
   const { isRTL } = useDirection()
+  const navigate = useNavigate()
   
   // Persistent stores
   const students = useGradesStore((state) => state.students)
@@ -213,6 +215,14 @@ export function GradeSheetTable() {
   const updateStudentField = useGradesStore((state) => state.updateStudentField)
   const reorderStudents = useGradesStore((state) => state.reorderStudents)
   const { addRecord, removeRecord, getStudentRecords, getStudentAbsenceCount, getStudentTardinessCount, records } = useAttendanceStore()
+
+  // Handle class selection - updates URL and store stays in sync via GradesPage URL effect
+  const handleClassSelect = useCallback((classId: string) => {
+    // Update store immediately for instant UI feedback
+    setSelectedClass(classId)
+    // Update URL to keep sidebar in sync
+    navigate({ to: '/grades', search: { class: classId } })
+  }, [setSelectedClass, navigate])
   
   // Get student count for a class
   const getClassStudentCount = useCallback((classId: string) => {
@@ -544,7 +554,7 @@ export function GradeSheetTable() {
             return (
               <button
                 key={cls.id}
-                onClick={() => setSelectedClass(cls.id)}
+                onClick={() => handleClassSelect(cls.id)}
                 className={`
                   flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium
                   whitespace-nowrap transition-all duration-150 ease-out cursor-pointer select-none
