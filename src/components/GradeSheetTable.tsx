@@ -170,14 +170,14 @@ function SortableStudentRow({
       ref={setNodeRef}
       style={style}
       className={`
-        ${getRowColor(student.finalAverage)} 
+        ${!hasSpecialCase ? getRowColor(student.finalAverage) : ''} 
         ${index % 2 === 0 ? 'bg-opacity-50' : ''}
         ${student.specialCase === 'autism' 
-          ? 'border-s-4 border-s-blue-500 dark:border-s-blue-400' 
+          ? 'border-s-4 border-s-blue-500 dark:border-s-blue-400 bg-blue-50/40 dark:bg-blue-950/30 hover:bg-blue-100/50 dark:hover:bg-blue-950/40' 
           : student.specialCase === 'diabetes' 
-            ? 'border-s-4 border-s-orange-500 dark:border-s-orange-400' 
+            ? 'border-s-4 border-s-orange-500 dark:border-s-orange-400 bg-orange-50/40 dark:bg-orange-950/30 hover:bg-orange-100/50 dark:hover:bg-orange-950/40' 
             : hasSpecialCase 
-              ? 'border-s-4 border-s-purple-500 dark:border-s-purple-400' 
+              ? 'border-s-4 border-s-purple-500 dark:border-s-purple-400 bg-purple-50/40 dark:bg-purple-950/30 hover:bg-purple-100/50 dark:hover:bg-purple-950/40' 
               : ''}
       `}
     >
