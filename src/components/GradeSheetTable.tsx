@@ -43,6 +43,12 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import { Label } from "@/components/ui/label"
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip"
 import { useDirection } from "@/hooks/use-direction"
 import { useAttendanceStore } from "@/store/attendance-store"
 import { useGradesStore, type StudentGrade } from "@/store/grades-store"
@@ -60,27 +66,37 @@ interface CalculatedStudentGrade extends StudentGrade {
 type SortField = keyof CalculatedStudentGrade
 type SortDirection = "asc" | "desc" | null
 
+// Field configuration with min/max values for validation
+const FIELD_CONFIG: Record<string, { min: number; max: number; step: number; labelKey: string }> = {
+  behavior: { min: 0, max: 5, step: 0.5, labelKey: 'pages.grades.table.behavior' },
+  applications: { min: 0, max: 5, step: 0.5, labelKey: 'pages.grades.table.applications' },
+  notebook: { min: 0, max: 5, step: 0.5, labelKey: 'pages.grades.table.notebook' },
+  assignment: { min: 0, max: 20, step: 0.5, labelKey: 'pages.grades.table.assignment' },
+  exam: { min: 0, max: 20, step: 0.5, labelKey: 'pages.grades.table.exam' },
+}
+
 // Calculate continuous assessment from all 5 components
-// Each component contributes 0-4 points for a total of 0-20
-// Components: Behavior, Participation (applications), Notebook, Tardiness (4 - count), Absences (4 - count)
+// Each component contributes 0-5 points for a total of 0-25, scaled to 0-20
+// Components: Behavior, Participation (applications), Notebook, Tardiness (5 - count), Absences (5 - count)
 function calculateContinuousAssessment(
-  behavior: number,       // 0-4 score
-  participation: number,  // 0-4 score (applications)
-  notebook: number,       // 0-4 score
+  behavior: number,       // 0-5 score
+  participation: number,  // 0-5 score (applications)
+  notebook: number,       // 0-5 score
   tardinessCount: number, // number of tardiness records
   absenceCount: number    // number of absence records
 ): number {
-  // Behavior, Participation, Notebook are direct scores (0-4)
-  const behaviorScore = Math.min(4, Math.max(0, behavior))
-  const participationScore = Math.min(4, Math.max(0, participation))
-  const notebookScore = Math.min(4, Math.max(0, notebook))
+  // Behavior, Participation, Notebook are direct scores (0-5)
+  const behaviorScore = Math.min(5, Math.max(0, behavior))
+  const participationScore = Math.min(5, Math.max(0, participation))
+  const notebookScore = Math.min(5, Math.max(0, notebook))
   
-  // Tardiness and Absences start at 4, deduct 1 per record (min 0)
-  const tardinessScore = Math.max(0, 4 - tardinessCount)
-  const absenceScore = Math.max(0, 4 - absenceCount)
+  // Tardiness and Absences start at 5, deduct 1 per record (min 0)
+  const tardinessScore = Math.max(0, 5 - tardinessCount)
+  const absenceScore = Math.max(0, 5 - absenceCount)
   
+  // Total out of 25, scaled to 20
   const total = behaviorScore + participationScore + notebookScore + tardinessScore + absenceScore
-  return Number(total.toFixed(2))
+  return Number((total * 20 / 25).toFixed(2))
 }
 
 function calculateFinalAverage(activityAverage: number, assignment: number, exam: number): number {
@@ -459,37 +475,75 @@ export function GradeSheetTable() {
     value: number 
   }) => {
     const isEditing = editingCell?.id === student.id && editingCell?.field === field
+    const config = FIELD_CONFIG[field] || { min: 0, max: 20, step: 0.5, labelKey: field }
+    
+    const handleValidatedEdit = (newValue: string) => {
+      const numValue = parseFloat(newValue)
+      if (isNaN(numValue)) {
+        setEditingCell(null)
+        return
+      }
+      
+      // Clamp value to valid range
+      const clampedValue = Math.min(config.max, Math.max(config.min, numValue))
+      
+      // Show warning if value was clamped
+      if (numValue > config.max) {
+        toast.warning(t('pages.grades.validation.maxReached', { 
+          field: t(config.labelKey), 
+          max: config.max 
+        }))
+      } else if (numValue < config.min) {
+        toast.warning(t('pages.grades.validation.minReached', { 
+          field: t(config.labelKey), 
+          min: config.min 
+        }))
+      }
+      
+      handleCellEdit(student.id, field, clampedValue.toString())
+    }
 
     return (
-      <TableCell 
-        className="text-center cursor-pointer"
-        onClick={() => setEditingCell({ id: student.id, field })}
-      >
-        {isEditing ? (
-          <Input
-            type="number"
-            defaultValue={value}
-            autoFocus
-            className="w-16 h-8 text-center"
-            onBlur={(e) => handleCellEdit(student.id, field, e.target.value)}
-            onKeyDown={(e) => {
-              if (e.key === 'Enter') {
-                handleCellEdit(student.id, field, (e.target as HTMLInputElement).value)
-              }
-              if (e.key === 'Escape') {
-                setEditingCell(null)
-              }
-            }}
-            min={0}
-            max={20}
-            step={0.5}
-          />
-        ) : (
-          <span>{value}</span>
-        )}
-      </TableCell>
+      <TooltipProvider>
+        <Tooltip>
+          <TooltipTrigger asChild>
+            <TableCell 
+              className="text-center cursor-pointer hover:bg-muted/50"
+              onClick={() => setEditingCell({ id: student.id, field })}
+            >
+              {isEditing ? (
+                <Input
+                  type="number"
+                  defaultValue={value}
+                  autoFocus
+                  className="w-16 h-8 text-center"
+                  onBlur={(e) => handleValidatedEdit(e.target.value)}
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter') {
+                      handleValidatedEdit((e.target as HTMLInputElement).value)
+                    }
+                    if (e.key === 'Escape') {
+                      setEditingCell(null)
+                    }
+                  }}
+                  min={config.min}
+                  max={config.max}
+                  step={config.step}
+                />
+              ) : (
+                <span>{value}</span>
+              )}
+            </TableCell>
+          </TooltipTrigger>
+          <TooltipContent side="top">
+            <p className="text-xs">
+              {t(config.labelKey)}: {config.min} - {config.max}
+            </p>
+          </TooltipContent>
+        </Tooltip>
+      </TooltipProvider>
     )
-  }, [editingCell, handleCellEdit])
+  }, [editingCell, handleCellEdit, t])
 
   const AttendanceCell = useCallback(({ 
     student, 
