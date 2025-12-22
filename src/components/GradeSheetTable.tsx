@@ -1,5 +1,5 @@
 import { useMemo, useCallback, useState, useEffect } from "react"
-import { ArrowUpDown, Search, Users, TrendingUp, CheckCircle, XCircle, UserMinus, Clock, History, Trash2, GripVertical, Star } from "lucide-react"
+import { ArrowUpDown, Search, Users, TrendingUp, CheckCircle, XCircle, UserMinus, Clock, History, Trash2, GripVertical, Star, MoreVertical, Move, UserX } from "lucide-react"
 import { useTranslation } from "react-i18next"
 import { useNavigate } from "@tanstack/react-router"
 import {
@@ -130,6 +130,8 @@ interface SortableStudentRowProps {
   updateStudent: (id: string, updates: Partial<StudentGrade>) => void
   EditableCell: React.FC<{ student: CalculatedStudentGrade; field: keyof StudentGrade; value: number }>
   AttendanceCell: React.FC<{ student: CalculatedStudentGrade; type: 'lateness' | 'absences'; count: number }>
+  onMoveStudent: (student: CalculatedStudentGrade) => void
+  onRemoveStudent: (student: CalculatedStudentGrade) => void
   t: (key: string, opts?: Record<string, unknown>) => string
 }
 
@@ -145,6 +147,8 @@ function SortableStudentRow({
   updateStudent,
   EditableCell,
   AttendanceCell,
+  onMoveStudent,
+  onRemoveStudent,
   t,
 }: SortableStudentRowProps) {
   const {
@@ -190,6 +194,33 @@ function SortableStudentRow({
           {t('pages.grades.groups.groupLabel', { number: groupNumber })}
         </TableCell>
       )}
+      {/* Student Management Menu Column */}
+      <TableCell className="text-center">
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <button 
+              className="inline-flex items-center justify-center p-1 rounded hover:bg-muted opacity-60 hover:opacity-100 transition-opacity"
+              onClick={(e) => e.stopPropagation()}
+              aria-label={t('pages.grades.studentManagement.menu')}
+            >
+              <MoreVertical className="h-4 w-4 text-muted-foreground" />
+            </button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="start">
+            <DropdownMenuItem onClick={() => onMoveStudent(student)}>
+              <Move className="h-4 w-4 ltr:mr-2 rtl:ml-2" />
+              {t('pages.grades.studentManagement.moveToClass')}
+            </DropdownMenuItem>
+            <DropdownMenuItem 
+              onClick={() => onRemoveStudent(student)}
+              className="text-destructive focus:text-destructive"
+            >
+              <UserX className="h-4 w-4 ltr:mr-2 rtl:ml-2" />
+              {t('pages.grades.studentManagement.removeFromClass')}
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
+      </TableCell>
       <TableCell className="font-mono text-xs">{student.id}</TableCell>
       <TooltipProvider>
         <Tooltip>
@@ -204,6 +235,7 @@ function SortableStudentRow({
       <TableCell className="whitespace-nowrap max-w-[140px]">
         <span className="flex items-center gap-1">
           <span className="truncate">{student.firstName}</span>
+          {/* Special Case Menu */}
           <DropdownMenu>
             <TooltipProvider delayDuration={300}>
               <Tooltip>
@@ -444,6 +476,8 @@ export function GradeSheetTable() {
   const updateStudentField = useGradesStore((state) => state.updateStudentField)
   const updateStudent = useGradesStore((state) => state.updateStudent)
   const reorderStudents = useGradesStore((state) => state.reorderStudents)
+  const moveStudentToClass = useGradesStore((state) => state.moveStudentToClass)
+  const removeStudentFromClass = useGradesStore((state) => state.removeStudentFromClass)
   const selectedYear = useGradesStore((state) => state.selectedYear)
   const selectedTerm = useGradesStore((state) => state.selectedTerm)
   const { addRecord, removeRecord, getStudentRecords, getStudentAbsenceCount, getStudentTardinessCount, records } = useAttendanceStore()
@@ -491,6 +525,16 @@ export function GradeSheetTable() {
     student: CalculatedStudentGrade | null
   }>({ open: false, student: null })
   const [recordToDelete, setRecordToDelete] = useState<string | null>(null)
+
+  // Student management dialog state
+  const [moveStudentDialog, setMoveStudentDialog] = useState<{
+    open: boolean
+    student: CalculatedStudentGrade | null
+  }>({ open: false, student: null })
+  const [removeStudentDialog, setRemoveStudentDialog] = useState<{
+    open: boolean
+    student: CalculatedStudentGrade | null
+  }>({ open: false, student: null })
 
   // DnD sensors configuration
   const sensors = useSensors(
@@ -594,6 +638,22 @@ export function GradeSheetTable() {
     toast.success(t('pages.grades.attendance.deleted'))
     setRecordToDelete(null)
   }, [removeRecord, t])
+
+  const handleMoveStudent = useCallback((studentId: string, newClassId: string) => {
+    moveStudentToClass(studentId, newClassId)
+    toast.success(t('pages.grades.studentManagement.moved'))
+    setMoveStudentDialog({ open: false, student: null })
+    // Switch to the new class if it's different from current
+    if (newClassId !== selectedClassId) {
+      handleClassSelect(newClassId)
+    }
+  }, [moveStudentToClass, t, selectedClassId, handleClassSelect])
+
+  const handleRemoveStudent = useCallback((studentId: string) => {
+    removeStudentFromClass(studentId)
+    toast.success(t('pages.grades.studentManagement.removed'))
+    setRemoveStudentDialog({ open: false, student: null })
+  }, [removeStudentFromClass, t])
 
   const studentRecords = useMemo(() => {
     if (!historyDialog.student) return []
@@ -1008,6 +1068,7 @@ export function GradeSheetTable() {
                 <TableHead className="w-10"></TableHead>
                 <TableHead className="w-12 text-center">#</TableHead>
                 {showGroups && <TableHead className="w-20 text-center">{t('pages.grades.table.group')}</TableHead>}
+                <TableHead className="w-10"></TableHead>
                 <SortableHeader field="id">{t('pages.grades.table.id')}</SortableHeader>
                 <SortableHeader field="lastName">{t('pages.grades.table.lastName')}</SortableHeader>
                 <SortableHeader field="firstName">{t('pages.grades.table.firstName')}</SortableHeader>
@@ -1049,6 +1110,8 @@ export function GradeSheetTable() {
                       updateStudent={updateStudent}
                       EditableCell={EditableCell}
                       AttendanceCell={AttendanceCell}
+                      onMoveStudent={(s) => setMoveStudentDialog({ open: true, student: s })}
+                      onRemoveStudent={(s) => setRemoveStudentDialog({ open: true, student: s })}
                       t={t}
                     />
                   )
@@ -1182,6 +1245,87 @@ export function GradeSheetTable() {
           <DialogFooter>
             <Button variant="outline" onClick={() => setHistoryDialog({ open: false, student: null })}>
               {t('common.cancel')}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* Move Student Dialog */}
+      <Dialog open={moveStudentDialog.open} onOpenChange={(open) => setMoveStudentDialog({ open, student: open ? moveStudentDialog.student : null })}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>{t('pages.grades.studentManagement.moveToClass')}</DialogTitle>
+          </DialogHeader>
+          
+          {moveStudentDialog.student && (
+            <div className="space-y-4 py-4">
+              <p className="text-sm text-muted-foreground">
+                {t('pages.grades.studentManagement.moveStudentDescription', { 
+                  name: `${moveStudentDialog.student.firstName} ${moveStudentDialog.student.lastName}` 
+                })}
+              </p>
+              
+              <div className="space-y-2">
+                <Label htmlFor="targetClass">{t('pages.grades.studentManagement.selectClass')}</Label>
+                <div className="grid gap-2">
+                  {classes.filter(c => c.id !== moveStudentDialog.student?.classId).map((cls) => (
+                    <Button
+                      key={cls.id}
+                      variant="outline"
+                      className="justify-start"
+                      onClick={() => handleMoveStudent(moveStudentDialog.student!.id, cls.id)}
+                    >
+                      <Move className="h-4 w-4 ltr:mr-2 rtl:ml-2" />
+                      {cls.name}
+                    </Button>
+                  ))}
+                  {classes.filter(c => c.id !== moveStudentDialog.student?.classId).length === 0 && (
+                    <p className="text-sm text-muted-foreground text-center py-4">
+                      {t('pages.grades.studentManagement.noOtherClasses')}
+                    </p>
+                  )}
+                </div>
+              </div>
+            </div>
+          )}
+          
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setMoveStudentDialog({ open: false, student: null })}>
+              {t('common.cancel')}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* Remove Student Dialog */}
+      <Dialog open={removeStudentDialog.open} onOpenChange={(open) => setRemoveStudentDialog({ open, student: open ? removeStudentDialog.student : null })}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>{t('pages.grades.studentManagement.removeFromClass')}</DialogTitle>
+          </DialogHeader>
+          
+          {removeStudentDialog.student && (
+            <div className="space-y-4 py-4">
+              <p className="text-sm text-muted-foreground">
+                {t('pages.grades.studentManagement.removeStudentDescription', { 
+                  name: `${removeStudentDialog.student.firstName} ${removeStudentDialog.student.lastName}` 
+                })}
+              </p>
+              <p className="text-sm font-medium text-destructive">
+                {t('pages.grades.studentManagement.removeWarning')}
+              </p>
+            </div>
+          )}
+          
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setRemoveStudentDialog({ open: false, student: null })}>
+              {t('common.cancel')}
+            </Button>
+            <Button 
+              variant="destructive" 
+              onClick={() => removeStudentDialog.student && handleRemoveStudent(removeStudentDialog.student.id)}
+            >
+              {t('pages.grades.studentManagement.confirmRemove')}
             </Button>
           </DialogFooter>
         </DialogContent>
