@@ -279,9 +279,41 @@ export default function GradesPage() {
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
-              <DropdownMenuItem onClick={() => setYear("2023-2024")}>2023-2024</DropdownMenuItem>
-              <DropdownMenuItem onClick={() => setYear("2024-2025")}>2024-2025</DropdownMenuItem>
-              <DropdownMenuItem onClick={() => setYear("2025-2026")}>2025-2026</DropdownMenuItem>
+              {/* Generate year list: 2 years back + current year */}
+              {(() => {
+                const now = new Date()
+                const month = now.getMonth()
+                const currentYear = now.getFullYear()
+                const currentStartYear = month >= 8 ? currentYear : currentYear - 1
+                const currentAcademicYear = `${currentStartYear}-${currentStartYear + 1}`
+                
+                const years = [
+                  `${currentStartYear - 2}-${currentStartYear - 1}`,
+                  `${currentStartYear - 1}-${currentStartYear}`,
+                  currentAcademicYear
+                ]
+                
+                return years.map((year) => {
+                  const isCurrent = year === currentAcademicYear
+                  const isPast = !isCurrent
+                  
+                  return (
+                    <DropdownMenuItem 
+                      key={year}
+                      onClick={() => isCurrent && setYear(year)}
+                      disabled={isPast}
+                      className={isPast ? 'opacity-50 cursor-not-allowed' : ''}
+                    >
+                      {year}
+                      {isCurrent && (
+                        <span className="ltr:ml-2 rtl:mr-2 text-xs text-muted-foreground">
+                          ({t('pages.grades.yearSelector.current')})
+                        </span>
+                      )}
+                    </DropdownMenuItem>
+                  )
+                })
+              })()}
             </DropdownMenuContent>
          </DropdownMenu>
 
