@@ -1,5 +1,5 @@
 import { useRef, useState, useCallback, useEffect } from "react"
-import { Upload, Plus, Trash2, MoreVertical, Calendar, ChevronDown } from "lucide-react"
+import { Upload, Plus, Trash2, MoreVertical, Calendar, ChevronDown, CheckCircle } from "lucide-react"
 import { useTranslation } from "react-i18next"
 import { useLocation } from "@tanstack/react-router"
 import { GradeSheetTable } from "@/components/GradeSheetTable"
@@ -12,6 +12,7 @@ import {
   DialogContent,
   DialogHeader,
   DialogTitle,
+  DialogDescription,
   DialogFooter,
 } from "@/components/ui/dialog"
 import { Input } from "@/components/ui/input"
@@ -46,6 +47,24 @@ export default function GradesPage() {
   const selectedTerm = useGradesStore((state) => state.selectedTerm)
   const setYear = useGradesStore((state) => state.setYear)
   const setTerm = useGradesStore((state) => state.setTerm)
+
+  const isYearInitialized = useGradesStore((state) => state.isYearInitialized)
+  const initializeYear = useGradesStore((state) => state.initializeYear)
+  
+  // Calculate academic years (current and previous)
+  const getAcademicYearData = useCallback(() => {
+    const now = new Date()
+    const month = now.getMonth() // 0-11
+    const year = now.getFullYear()
+    const startYear = month >= 8 ? year : year - 1
+    return {
+      current: `${startYear}-${startYear + 1}`,
+      previous: `${startYear - 1}-${startYear}`
+    }
+  }, [])
+
+  const academicYears = useState(getAcademicYearData())[0]
+  const [initYear, setInitYear] = useState(academicYears.current)
   
   // File input ref
   const fileInputRef = useRef<HTMLInputElement>(null)
@@ -415,7 +434,6 @@ export default function GradesPage() {
         </DialogContent>
       </Dialog>
 
-      {/* Clear All Classes Dialog */}
       <Dialog open={clearAllDialog} onOpenChange={setClearAllDialog}>
         <DialogContent>
           <DialogHeader>
@@ -434,6 +452,53 @@ export default function GradesPage() {
             </Button>
             <Button variant="destructive" onClick={handleClearAll}>
               {t('common.delete')}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* Initialization Dialog */}
+      <Dialog open={!isYearInitialized} onOpenChange={() => {}}>
+        <DialogContent className="sm:max-w-md" onInteractOutside={e => e.preventDefault()} onEscapeKeyDown={e => e.preventDefault()}>
+          <DialogHeader>
+            <DialogTitle>{t('pages.grades.initYear.title')}</DialogTitle>
+            <DialogDescription>{t('pages.grades.initYear.description')}</DialogDescription>
+          </DialogHeader>
+          <div className="flex items-center justify-center py-6">
+            <div className="w-full max-w-[240px]">
+              <Label htmlFor="initYearSelect" className="sr-only">
+                {t('pages.grades.initYear.label')}
+              </Label>
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button 
+                    id="initYearSelect"
+                    variant="outline" 
+                    className="w-full justify-between font-bold text-xl h-14"
+                  >
+                    {initYear}
+                    <ChevronDown className="h-4 w-4 opacity-50" />
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent className="w-[240px]" align="center">
+                  <DropdownMenuItem disabled className="justify-between">
+                    {academicYears.previous}
+                    <span className="text-muted-foreground text-xs opacity-70">({new Date().getFullYear() - 1})</span>
+                  </DropdownMenuItem>
+                  <DropdownMenuItem 
+                    onClick={() => setInitYear(academicYears.current)}
+                    className="justify-between font-bold bg-secondary/20"
+                  >
+                    {academicYears.current}
+                    <CheckCircle className="h-4 w-4 text-green-600" />
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+            </div>
+          </div>
+          <DialogFooter className="sm:justify-center">
+            <Button type="button" size="lg" onClick={() => initializeYear(initYear)} className="w-full sm:w-auto">
+              {t('common.save')}
             </Button>
           </DialogFooter>
         </DialogContent>
