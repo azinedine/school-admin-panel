@@ -163,6 +163,9 @@
             "term1": "Term 1",
             "term2": "Term 2",
             "term3": "Term 3",
+            "yearSelector": {
+                "current": "current"
+            },
             "initYear": {
                 "title": "Select Academic Year",
                 "description": "Please select the current academic year to initialize the system. The year is automatically suggested based on today's date and must be consecutive (e.g., 2024-2025). Future years are not allowed.",

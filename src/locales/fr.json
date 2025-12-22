@@ -163,6 +163,9 @@
             "term1": "Trimestre 1",
             "term2": "Trimestre 2",
             "term3": "Trimestre 3",
+            "yearSelector": {
+                "current": "actuelle"
+            },
             "initYear": {
                 "title": "Sélectionner l'année scolaire",
                 "description": "Veuillez sélectionner l'année scolaire en cours pour initialiser le système. L'année est suggérée automatiquement en fonction de la date d'aujourd'hui et doit être consécutive (ex : 2024-2025). Les années futures ne sont pas autorisées.",
