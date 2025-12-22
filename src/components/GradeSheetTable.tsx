@@ -1,5 +1,5 @@
 import { useMemo, useCallback, useState, useEffect } from "react"
-import { ArrowUpDown, Search, Users, TrendingUp, CheckCircle, XCircle, UserMinus, Clock, History, Trash2, GripVertical, Star, MoreVertical, Move, UserX } from "lucide-react"
+import { ArrowUpDown, Search, Users, TrendingUp, CheckCircle, XCircle, UserMinus, Clock, History, Trash2, GripVertical, Star, MoreVertical, Move, UserX, UserPlus } from "lucide-react"
 import { useTranslation } from "react-i18next"
 import { useNavigate } from "@tanstack/react-router"
 import {
@@ -478,6 +478,7 @@ export function GradeSheetTable() {
   const reorderStudents = useGradesStore((state) => state.reorderStudents)
   const moveStudentToClass = useGradesStore((state) => state.moveStudentToClass)
   const removeStudentFromClass = useGradesStore((state) => state.removeStudentFromClass)
+  const addStudentToClass = useGradesStore((state) => state.addStudentToClass)
   const selectedYear = useGradesStore((state) => state.selectedYear)
   const selectedTerm = useGradesStore((state) => state.selectedTerm)
   const { addRecord, removeRecord, getStudentRecords, getStudentAbsenceCount, getStudentTardinessCount, records } = useAttendanceStore()
@@ -535,6 +536,13 @@ export function GradeSheetTable() {
     open: boolean
     student: CalculatedStudentGrade | null
   }>({ open: false, student: null })
+  const [addStudentDialog, setAddStudentDialog] = useState(false)
+  const [newStudent, setNewStudent] = useState({
+    id: '',
+    lastName: '',
+    firstName: '',
+    dateOfBirth: '2013-01-01',
+  })
 
   // DnD sensors configuration
   const sensors = useSensors(
@@ -654,6 +662,50 @@ export function GradeSheetTable() {
     toast.success(t('pages.grades.studentManagement.removed'))
     setRemoveStudentDialog({ open: false, student: null })
   }, [removeStudentFromClass, t])
+
+  const handleAddStudent = useCallback(() => {
+    if (!selectedClassId) {
+      toast.error(t('pages.grades.addStudent.noClassSelected'))
+      return
+    }
+
+    // Validation
+    if (!newStudent.lastName.trim() || !newStudent.firstName.trim()) {
+      toast.error(t('pages.grades.addStudent.nameRequired'))
+      return
+    }
+
+    // Check for duplicate ID if provided
+    if (newStudent.id.trim()) {
+      const existingStudent = students.find(s => s.id === newStudent.id.trim())
+      if (existingStudent) {
+        toast.error(t('pages.grades.addStudent.duplicateId'))
+        return
+      }
+    }
+
+    // Add student to class
+    addStudentToClass(selectedClassId, {
+      id: newStudent.id.trim() || undefined,
+      lastName: newStudent.lastName.trim(),
+      firstName: newStudent.firstName.trim(),
+      dateOfBirth: newStudent.dateOfBirth,
+      behavior: 5,
+      applications: 5,
+      notebook: 5,
+      assignment: 0,
+      exam: 0,
+    })
+
+    toast.success(t('pages.grades.addStudent.success'))
+    setAddStudentDialog(false)
+    setNewStudent({
+      id: '',
+      lastName: '',
+      firstName: '',
+      dateOfBirth: '2013-01-01',
+    })
+  }, [selectedClassId, newStudent, students, addStudentToClass, t])
 
   const studentRecords = useMemo(() => {
     if (!historyDialog.student) return []
@@ -997,6 +1049,29 @@ export function GradeSheetTable() {
             </div>
           </div>
 
+          {/* Add Student Button */}
+          {selectedClassId && (
+            <TooltipProvider>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <Button
+                    variant="outline"
+                    size="icon"
+                    onClick={() => setAddStudentDialog(true)}
+                    className="h-8 w-8 sm:w-auto sm:px-3 sm:gap-2"
+                    aria-label={t('pages.grades.addStudent.button')}
+                  >
+                    <UserPlus className="h-4 w-4" />
+                    <span className="hidden sm:inline">{t('pages.grades.addStudent.button')}</span>
+                  </Button>
+                </TooltipTrigger>
+                <TooltipContent side="bottom">
+                  <p>{t('pages.grades.addStudent.button')}</p>
+                </TooltipContent>
+              </Tooltip>
+            </TooltipProvider>
+          )}
+
           {/* Compact Controls */}
           <div className="flex items-center gap-1.5 shrink-0">
           {/* Group Split Toggle */}
@@ -1326,6 +1401,81 @@ export function GradeSheetTable() {
               onClick={() => removeStudentDialog.student && handleRemoveStudent(removeStudentDialog.student.id)}
             >
               {t('pages.grades.studentManagement.confirmRemove')}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* Add Student Dialog */}
+      <Dialog open={addStudentDialog} onOpenChange={setAddStudentDialog}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>{t('pages.grades.addStudent.title')}</DialogTitle>
+          </DialogHeader>
+          
+          <div className="space-y-4 py-4">
+            <div className="grid gap-4">
+              <div className="grid gap-2">
+                <Label htmlFor="studentId">{t('pages.grades.addStudent.id')}</Label>
+                <Input
+                  id="studentId"
+                  placeholder={t('pages.grades.addStudent.idPlaceholder')}
+                  value={newStudent.id}
+                  onChange={(e) => setNewStudent({ ...newStudent, id: e.target.value })}
+                />
+                <p className="text-xs text-muted-foreground">
+                  {t('pages.grades.addStudent.idOptional')}
+                </p>
+              </div>
+
+              <div className="grid gap-2">
+                <Label htmlFor="lastName">{t('pages.grades.addStudent.lastName')} *</Label>
+                <Input
+                  id="lastName"
+                  placeholder={t('pages.grades.addStudent.lastNamePlaceholder')}
+                  value={newStudent.lastName}
+                  onChange={(e) => setNewStudent({ ...newStudent, lastName: e.target.value })}
+                  required
+                />
+              </div>
+
+              <div className="grid gap-2">
+                <Label htmlFor="firstName">{t('pages.grades.addStudent.firstName')} *</Label>
+                <Input
+                  id="firstName"
+                  placeholder={t('pages.grades.addStudent.firstNamePlaceholder')}
+                  value={newStudent.firstName}
+                  onChange={(e) => setNewStudent({ ...newStudent, firstName: e.target.value })}
+                  required
+                />
+              </div>
+
+              <div className="grid gap-2">
+                <Label htmlFor="dateOfBirth">{t('pages.grades.addStudent.dateOfBirth')}</Label>
+                <Input
+                  id="dateOfBirth"
+                  type="date"
+                  value={newStudent.dateOfBirth}
+                  onChange={(e) => setNewStudent({ ...newStudent, dateOfBirth: e.target.value })}
+                />
+              </div>
+            </div>
+          </div>
+          
+          <DialogFooter>
+            <Button variant="outline" onClick={() => {
+              setAddStudentDialog(false)
+              setNewStudent({
+                id: '',
+                lastName: '',
+                firstName: '',
+                dateOfBirth: '2013-01-01',
+              })
+            }}>
+              {t('common.cancel')}
+            </Button>
+            <Button onClick={handleAddStudent} disabled={!newStudent.lastName.trim() || !newStudent.firstName.trim()}>
+              {t('pages.grades.addStudent.add')}
             </Button>
           </DialogFooter>
         </DialogContent>
