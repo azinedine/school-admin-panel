@@ -74,6 +74,7 @@ interface GradesState {
   selectedClassId: string | null
   selectedYear: string
   selectedTerm: Term
+  isYearInitialized: boolean
 }
 
 /**
@@ -83,14 +84,18 @@ interface GradesActions {
   setSelectedClass: (classId: string) => void
   setYear: (year: string) => void
   setTerm: (term: Term) => void
+  initializeYear: (year: string) => void
   addClass: (classData: Omit<Class, 'id'>) => string
   addStudentsToClass: (classId: string, students: (Omit<StudentGrade, 'id' | 'classId'> & { id?: string })[]) => void
   removeClass: (classId: string) => void
   updateStudent: (id: string, updates: Partial<StudentGrade>) => void
   updateStudentField: (id: string, field: keyof StudentGrade, value: number) => void
+  setSpecialCase: (studentId: string, specialCase: string | undefined) => void
   reorderStudents: (classId: string, orderedIds: string[]) => void
   getStudent: (id: string) => StudentGrade | undefined
   getStudentsByClass: (classId: string) => StudentGrade[]
+  getSpecialCaseStudents: () => StudentGrade[]
+  getNormalStudents: () => StudentGrade[]
   clearAllData: () => void
 }
 
@@ -135,6 +140,7 @@ export const useGradesStore = create<GradesStore>()(
         selectedClassId: null,
         selectedYear: DEFAULT_YEAR,
         selectedTerm: 1,
+        isYearInitialized: false,
 
         setSelectedClass: (classId) =>
           set(
@@ -154,6 +160,13 @@ export const useGradesStore = create<GradesStore>()(
             selectedTerm: term,
             students: projectStudents(state.studentRecords, state.selectedYear, term)
           }), false, 'grades/setTerm'),
+
+        initializeYear: (year) =>
+          set(state => ({
+            selectedYear: year,
+            isYearInitialized: true,
+            students: projectStudents(state.studentRecords, year, state.selectedTerm)
+          }), false, 'grades/initializeYear'),
 
         addClass: (classData) => {
           const id = `class-${crypto.randomUUID().slice(0, 8)}`
@@ -311,6 +324,32 @@ export const useGradesStore = create<GradesStore>()(
           return get().students.filter((s) => s.classId === classId)
         },
 
+        setSpecialCase: (studentId, specialCase) =>
+          set(
+            (state) => {
+              const newRecords = state.studentRecords.map((record) =>
+                record.id === studentId
+                  ? { ...record, specialCase }
+                  : record
+              )
+
+              return {
+                studentRecords: newRecords,
+                students: projectStudents(newRecords, state.selectedYear, state.selectedTerm)
+              }
+            },
+            false,
+            'grades/setSpecialCase'
+          ),
+
+        getSpecialCaseStudents: () => {
+          return get().students.filter((s) => s.specialCase !== undefined && s.specialCase !== '')
+        },
+
+        getNormalStudents: () => {
+          return get().students.filter((s) => !s.specialCase || s.specialCase === '')
+        },
+
         clearAllData: () =>
           set(
             { classes: [], studentRecords: [], students: [], selectedClassId: null },
@@ -352,6 +391,7 @@ export const useGradesStore = create<GradesStore>()(
               students: projectStudents(newRecords, DEFAULT_YEAR, 1), // Hydrate view
               selectedYear: DEFAULT_YEAR,
               selectedTerm: 1,
+              isYearInitialized: true // Auto-initialize for migrated users
             } as GradesStore
           }
           return persistedState as GradesStore
