@@ -161,10 +161,10 @@ export default function GradesPage() {
               lastName: lastName || 'Unknown',
               firstName: firstName || 'Unknown',
               dateOfBirth: dob,
-              // Default CA scores to 4/5 (good starting point)
-              behavior: 4,
-              applications: 4,
-              notebook: 4,
+              // Default CA scores to 5/5 (good starting point)
+              behavior: 5,
+              applications: 5,
+              notebook: 5,
               assignment: 0,
               exam: 0,
             })
