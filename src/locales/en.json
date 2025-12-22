@@ -160,6 +160,9 @@
                 "hideGroups": "Hide Groups",
                 "groupLabel": "G{{number}}"
             },
+            "term1": "Term 1",
+            "term2": "Term 2",
+            "term3": "Term 3",
             "specialCase": {
                 "label": "Special Case",
                 "autism": "Autism",

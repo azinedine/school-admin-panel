@@ -160,6 +160,9 @@
                 "hideGroups": "Masquer les groupes",
                 "groupLabel": "G{{number}}"
             },
+            "term1": "Trimestre 1",
+            "term2": "Trimestre 2",
+            "term3": "Trimestre 3",
             "specialCase": {
                 "label": "Cas spécial",
                 "autism": "Autisme",

@@ -160,6 +160,9 @@
                 "hideGroups": "إخفاء الأفواج",
                 "groupLabel": "ف{{number}}"
             },
+            "term1": "الفصل 1",
+            "term2": "الفصل 2",
+            "term3": "الفصل 3",
             "specialCase": {
                 "label": "حالة خاصة",
                 "autism": "توحد",
