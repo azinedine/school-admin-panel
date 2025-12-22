@@ -1,5 +1,5 @@
 import { useRef, useState, useCallback, useEffect } from "react"
-import { Upload, Plus, Trash2 } from "lucide-react"
+import { Upload, Plus, Trash2, MoreVertical } from "lucide-react"
 import { useTranslation } from "react-i18next"
 import { useLocation } from "@tanstack/react-router"
 import { GradeSheetTable } from "@/components/GradeSheetTable"
@@ -16,6 +16,13 @@ import {
 } from "@/components/ui/dialog"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu"
 import { toast } from "sonner"
 import * as XLSX from "xlsx"
 
@@ -233,7 +240,7 @@ export default function GradesPage() {
     setClearAllDialog(false)
   }, [clearAllData, t])
 
-  // Header actions
+  // Header actions - consolidated into dropdown menu
   const headerActions = (
     <>
       {/* Hidden file input */}
@@ -245,44 +252,47 @@ export default function GradesPage() {
         onChange={handleExcelUpload}
       />
       
-      <Button
-        variant="outline"
-        size="sm"
-        onClick={() => fileInputRef.current?.click()}
-        className="gap-1"
-      >
-        <Upload className="h-4 w-4" />
-        {t('pages.grades.empty.uploadExcel')}
-      </Button>
-      <Button
-        variant="outline"
-        size="sm"
-        onClick={() => setAddClassDialog(true)}
-        className="gap-1"
-      >
-        <Plus className="h-4 w-4" />
-        {t('pages.grades.empty.createManually')}
-      </Button>
-      {selectedClassId && (
-        <Button
-          variant="outline"
-          size="sm"
-          className="gap-1 text-destructive hover:text-destructive"
-          onClick={() => setDeleteClassDialog({ open: true, classId: selectedClassId })}
-        >
-          <Trash2 className="h-4 w-4" />
-        </Button>
-      )}
-      {classes.length > 1 && (
-        <Button
-          variant="outline"
-          size="sm"
-          className="text-destructive hover:text-destructive"
-          onClick={() => setClearAllDialog(true)}
-        >
-          {t('pages.grades.deleteClass.clearAll')}
-        </Button>
-      )}
+      <DropdownMenu>
+        <DropdownMenuTrigger asChild>
+          <Button variant="outline" size="sm">
+            <MoreVertical className="h-4 w-4" />
+          </Button>
+        </DropdownMenuTrigger>
+        <DropdownMenuContent align={isRTL ? 'start' : 'end'}>
+          <DropdownMenuItem onClick={() => fileInputRef.current?.click()}>
+            <Upload className="h-4 w-4 ltr:mr-2 rtl:ml-2" />
+            {t('pages.grades.empty.uploadExcel')}
+          </DropdownMenuItem>
+          <DropdownMenuItem onClick={() => setAddClassDialog(true)}>
+            <Plus className="h-4 w-4 ltr:mr-2 rtl:ml-2" />
+            {t('pages.grades.empty.createManually')}
+          </DropdownMenuItem>
+          {selectedClassId && (
+            <>
+              <DropdownMenuSeparator />
+              <DropdownMenuItem 
+                onClick={() => setDeleteClassDialog({ open: true, classId: selectedClassId })}
+                className="text-destructive focus:text-destructive"
+              >
+                <Trash2 className="h-4 w-4 ltr:mr-2 rtl:ml-2" />
+                {t('pages.grades.deleteClass.title')}
+              </DropdownMenuItem>
+            </>
+          )}
+          {classes.length > 1 && (
+            <>
+              <DropdownMenuSeparator />
+              <DropdownMenuItem 
+                onClick={() => setClearAllDialog(true)}
+                className="text-destructive focus:text-destructive"
+              >
+                <Trash2 className="h-4 w-4 ltr:mr-2 rtl:ml-2" />
+                {t('pages.grades.deleteClass.clearAll')}
+              </DropdownMenuItem>
+            </>
+          )}
+        </DropdownMenuContent>
+      </DropdownMenu>
     </>
   )
   
