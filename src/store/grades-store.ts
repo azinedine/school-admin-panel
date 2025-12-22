@@ -46,6 +46,7 @@ interface GradesActions {
   removeClass: (classId: string) => void
   updateStudent: (id: string, updates: Partial<StudentGrade>) => void
   updateStudentField: (id: string, field: keyof StudentGrade, value: number) => void
+  reorderStudents: (classId: string, orderedIds: string[]) => void
   getStudent: (id: string) => StudentGrade | undefined
   getStudentsByClass: (classId: string) => StudentGrade[]
   clearAllData: () => void
@@ -140,6 +141,26 @@ export const useGradesStore = create<GradesStore>()(
             }),
             false,
             'grades/updateStudentField'
+          ),
+
+        reorderStudents: (classId, orderedIds) =>
+          set(
+            (state) => {
+              // Separate students by class
+              const classStudents = state.students.filter(s => s.classId === classId)
+              const otherStudents = state.students.filter(s => s.classId !== classId)
+              
+              // Reorder class students based on orderedIds
+              const reorderedClassStudents = orderedIds
+                .map(id => classStudents.find(s => s.id === id))
+                .filter((s): s is StudentGrade => s !== undefined)
+              
+              return {
+                students: [...otherStudents, ...reorderedClassStudents]
+              }
+            },
+            false,
+            'grades/reorderStudents'
           ),
 
         getStudent: (id) => {
