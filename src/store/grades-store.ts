@@ -25,6 +25,7 @@ export interface StudentGrade {
   notebook: number
   assignment: number
   exam: number
+  specialCase?: string // Optional field for medical/special conditions (autism, diabetes, etc.)
 }
 
 /**
