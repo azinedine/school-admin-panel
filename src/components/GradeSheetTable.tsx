@@ -1,5 +1,5 @@
 import { useMemo, useCallback, useState, useEffect } from "react"
-import { ArrowUpDown, Search, Users, TrendingUp, CheckCircle, XCircle, UserMinus, Clock, History, Trash2, GripVertical, Heart } from "lucide-react"
+import { ArrowUpDown, Search, Users, TrendingUp, CheckCircle, XCircle, UserMinus, Clock, History, Trash2, GripVertical, Star } from "lucide-react"
 import { useTranslation } from "react-i18next"
 import { useNavigate } from "@tanstack/react-router"
 import {
@@ -212,7 +212,7 @@ function SortableStudentRow({
                     <button 
                       className={`shrink-0 p-0.5 rounded hover:bg-muted ${hasSpecialCase ? '' : 'opacity-40 hover:opacity-100'}`}
                     >
-                      <Heart className={`h-3 w-3 ${
+                      <Star className={`h-3 w-3 ${
                         student.specialCase === 'autism' 
                           ? 'text-blue-500 fill-blue-500' 
                           : student.specialCase === 'diabetes' 
