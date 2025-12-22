@@ -120,7 +120,9 @@
             },
             "validation": {
                 "maxReached": "Maximum value for {{field}} is {{max}}",
-                "minReached": "Minimum value for {{field}} is {{min}}"
+                "minReached": "Minimum value for {{field}} is {{min}}",
+                "caAutoCalculated": "Continuous Assessment is calculated automatically from Behavior, Applications, Notebook, Tardiness, and Absences",
+                "exceedsMax": "Grade cannot exceed 20"
             },
             "empty": {
                 "title": "No Classes Yet",

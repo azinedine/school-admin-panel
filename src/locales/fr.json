@@ -120,7 +120,9 @@
             },
             "validation": {
                 "maxReached": "La valeur maximum pour {{field}} est {{max}}",
-                "minReached": "La valeur minimum pour {{field}} est {{min}}"
+                "minReached": "La valeur minimum pour {{field}} est {{min}}",
+                "caAutoCalculated": "L'évaluation continue est calculée automatiquement à partir du Comportement, Applications, Cahier, Retards et Absences",
+                "exceedsMax": "La note ne peut pas dépasser 20"
             },
             "empty": {
                 "title": "Aucune classe",
