@@ -1,11 +1,11 @@
 import { useRef, useState, useCallback, useEffect } from "react"
-import { Upload, Plus, Trash2, MoreVertical } from "lucide-react"
+import { Upload, Plus, Trash2, MoreVertical, Calendar, ChevronDown } from "lucide-react"
 import { useTranslation } from "react-i18next"
 import { useLocation } from "@tanstack/react-router"
 import { GradeSheetTable } from "@/components/GradeSheetTable"
 import { ContentPage } from "@/components/layout/content-page"
 import { useDirection } from "@/hooks/use-direction"
-import { useGradesStore } from "@/store/grades-store"
+import { useGradesStore, type StudentGrade, type Term } from "@/store/grades-store"
 import { Button } from "@/components/ui/button"
 import {
   Dialog,
@@ -16,6 +16,7 @@ import {
 } from "@/components/ui/dialog"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
+import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -38,8 +39,13 @@ export default function GradesPage() {
   const setSelectedClass = useGradesStore((state) => state.setSelectedClass)
   const addClass = useGradesStore((state) => state.addClass)
   const addStudentsToClass = useGradesStore((state) => state.addStudentsToClass)
+
   const removeClass = useGradesStore((state) => state.removeClass)
   const clearAllData = useGradesStore((state) => state.clearAllData)
+  const selectedYear = useGradesStore((state) => state.selectedYear)
+  const selectedTerm = useGradesStore((state) => state.selectedTerm)
+  const setYear = useGradesStore((state) => state.setYear)
+  const setTerm = useGradesStore((state) => state.setTerm)
   
   // File input ref
   const fileInputRef = useRef<HTMLInputElement>(null)
@@ -89,7 +95,7 @@ export default function GradesPage() {
 
         workbook.SheetNames.forEach((sheetName) => {
           const worksheet = workbook.Sheets[sheetName]
-          const rawData = XLSX.utils.sheet_to_json(worksheet, { header: 1 }) as any[][]
+          const rawData = XLSX.utils.sheet_to_json(worksheet, { header: 1 }) as (string | number | boolean | null | undefined)[][]
           if (!rawData || rawData.length < 2) return
 
           // Find header row - first row with multiple non-empty string cells
@@ -109,7 +115,7 @@ export default function GradesPage() {
 
           // Column finder with exact then partial matching
           const findCol = (exactPatterns: string[], partialPatterns: string[]): number => {
-            let idx = headers.findIndex(h => {
+            const idx = headers.findIndex(h => {
               if (typeof h !== 'string') return false
               const hClean = h.trim().toLowerCase()
               return exactPatterns.some(p => hClean === p.toLowerCase())
@@ -145,7 +151,7 @@ export default function GradesPage() {
           const idIdx = findCol(['ID', 'Matricule', 'Code'], ['id', 'matricule', 'code', 'ref'])
           const dobIdx = findCol(['تاريخ الميلاد', 'Date'], ['birth', 'naissance', 'تاريخ'])
 
-          const sheetStudents: any[] = []
+          const sheetStudents: (Omit<StudentGrade, 'id' | 'classId'> & { id?: string })[] = []
           
           for (let i = headerRowIndex + 1; i < rawData.length; i++) {
             const row = rawData[i]
@@ -242,7 +248,34 @@ export default function GradesPage() {
 
   // Header actions - consolidated into dropdown menu
   const headerActions = (
-    <>
+    <div className="flex items-center gap-2">
+      <div className="flex items-center gap-2 ltr:mr-2 rtl:ml-2">
+         {/* Year Selector */}
+         <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="outline" size="sm" className="gap-2 h-9">
+                <Calendar className="h-4 w-4" />
+                <span className="ltr:mr-1 rtl:ml-1">{selectedYear}</span>
+                <ChevronDown className="h-3 w-3 opacity-50" />
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end">
+              <DropdownMenuItem onClick={() => setYear("2023-2024")}>2023-2024</DropdownMenuItem>
+              <DropdownMenuItem onClick={() => setYear("2024-2025")}>2024-2025</DropdownMenuItem>
+              <DropdownMenuItem onClick={() => setYear("2025-2026")}>2025-2026</DropdownMenuItem>
+            </DropdownMenuContent>
+         </DropdownMenu>
+
+         {/* Term Selector */}
+         <Tabs value={String(selectedTerm)} onValueChange={(v) => setTerm(Number(v) as Term)} className="w-auto">
+           <TabsList className="h-9">
+               <TabsTrigger value="1" className="text-xs px-3">{t('pages.grades.term1')}</TabsTrigger>
+               <TabsTrigger value="2" className="text-xs px-3">{t('pages.grades.term2')}</TabsTrigger>
+               <TabsTrigger value="3" className="text-xs px-3">{t('pages.grades.term3')}</TabsTrigger>
+           </TabsList>
+         </Tabs>
+      </div>
+
       {/* Hidden file input */}
       <input
         ref={fileInputRef}
@@ -293,7 +326,7 @@ export default function GradesPage() {
           )}
         </DropdownMenuContent>
       </DropdownMenu>
-    </>
+    </div>
   )
   
   return (
