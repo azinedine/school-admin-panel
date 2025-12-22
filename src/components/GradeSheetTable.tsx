@@ -61,21 +61,26 @@ type SortField = keyof CalculatedStudentGrade
 type SortDirection = "asc" | "desc" | null
 
 // Calculate continuous assessment from all 5 components
+// Each component contributes 0-4 points for a total of 0-20
+// Components: Behavior, Participation (applications), Notebook, Tardiness (4 - count), Absences (4 - count)
 function calculateContinuousAssessment(
-  behavior: number,
-  applications: number,
-  notebook: number,
-  tardinessCount: number,
-  absenceCount: number
+  behavior: number,       // 0-4 score
+  participation: number,  // 0-4 score (applications)
+  notebook: number,       // 0-4 score
+  tardinessCount: number, // number of tardiness records
+  absenceCount: number    // number of absence records
 ): number {
-  const behaviorScore = behavior / 4
-  const applicationsScore = applications / 4
-  const notebookScore = notebook / 4
-  const tardinessScore = Math.max(0, 5 - tardinessCount)
-  const absenceScore = Math.max(0, 5 - absenceCount)
+  // Behavior, Participation, Notebook are direct scores (0-4)
+  const behaviorScore = Math.min(4, Math.max(0, behavior))
+  const participationScore = Math.min(4, Math.max(0, participation))
+  const notebookScore = Math.min(4, Math.max(0, notebook))
   
-  const total = behaviorScore + applicationsScore + notebookScore + tardinessScore + absenceScore
-  return Number((total * 4 / 5).toFixed(2))
+  // Tardiness and Absences start at 4, deduct 1 per record (min 0)
+  const tardinessScore = Math.max(0, 4 - tardinessCount)
+  const absenceScore = Math.max(0, 4 - absenceCount)
+  
+  const total = behaviorScore + participationScore + notebookScore + tardinessScore + absenceScore
+  return Number(total.toFixed(2))
 }
 
 function calculateFinalAverage(activityAverage: number, assignment: number, exam: number): number {
