@@ -118,6 +118,10 @@
                 "absence": "Absence",
                 "tardiness": "Retard"
             },
+            "validation": {
+                "maxReached": "La valeur maximum pour {{field}} est {{max}}",
+                "minReached": "La valeur minimum pour {{field}} est {{min}}"
+            },
             "empty": {
                 "title": "Aucune classe",
                 "description": "Commencez par ajouter votre première classe. Vous pouvez télécharger un fichier Excel avec les données des élèves ou créer une classe manuellement.",
