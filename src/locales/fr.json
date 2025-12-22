@@ -194,6 +194,23 @@
                 "noOtherClasses": "Aucune autre classe disponible",
                 "moved": "Élève déplacé avec succès",
                 "removed": "Élève retiré avec succès"
+            },
+            "addStudent": {
+                "button": "Ajouter un élève",
+                "title": "Ajouter un nouvel élève",
+                "id": "ID de l'élève",
+                "idPlaceholder": "Entrez l'ID de l'élève (optionnel)",
+                "idOptional": "Laisser vide pour générer automatiquement",
+                "lastName": "Nom de famille",
+                "lastNamePlaceholder": "Entrez le nom de famille",
+                "firstName": "Prénom",
+                "firstNamePlaceholder": "Entrez le prénom",
+                "dateOfBirth": "Date de naissance",
+                "add": "Ajouter l'élève",
+                "success": "Élève ajouté avec succès",
+                "nameRequired": "Le prénom et le nom de famille sont requis",
+                "duplicateId": "Un élève avec cet ID existe déjà",
+                "noClassSelected": "Veuillez d'abord sélectionner une classe"
             }
         }
     }

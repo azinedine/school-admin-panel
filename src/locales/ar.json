@@ -194,6 +194,23 @@
                 "noOtherClasses": "لا توجد فصول أخرى متاحة",
                 "moved": "تم نقل الطالب بنجاح",
                 "removed": "تم إزالة الطالب بنجاح"
+            },
+            "addStudent": {
+                "button": "إضافة طالب",
+                "title": "إضافة طالب جديد",
+                "id": "رقم الطالب",
+                "idPlaceholder": "أدخل رقم الطالب (اختياري)",
+                "idOptional": "اتركه فارغاً للإنشاء التلقائي",
+                "lastName": "اللقب",
+                "lastNamePlaceholder": "أدخل اللقب",
+                "firstName": "الاسم",
+                "firstNamePlaceholder": "أدخل الاسم",
+                "dateOfBirth": "تاريخ الميلاد",
+                "add": "إضافة الطالب",
+                "success": "تم إضافة الطالب بنجاح",
+                "nameRequired": "الاسم واللقب مطلوبان",
+                "duplicateId": "يوجد طالب بهذا الرقم بالفعل",
+                "noClassSelected": "يرجى اختيار فصل أولاً"
             }
         }
     }

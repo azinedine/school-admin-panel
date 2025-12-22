@@ -194,6 +194,23 @@
                 "noOtherClasses": "No other classes available",
                 "moved": "Student moved successfully",
                 "removed": "Student removed successfully"
+            },
+            "addStudent": {
+                "button": "Add Student",
+                "title": "Add New Student",
+                "id": "Student ID",
+                "idPlaceholder": "Enter student ID (optional)",
+                "idOptional": "Leave empty to auto-generate",
+                "lastName": "Last Name",
+                "lastNamePlaceholder": "Enter last name",
+                "firstName": "First Name",
+                "firstNamePlaceholder": "Enter first name",
+                "dateOfBirth": "Date of Birth",
+                "add": "Add Student",
+                "success": "Student added successfully",
+                "nameRequired": "First name and last name are required",
+                "duplicateId": "A student with this ID already exists",
+                "noClassSelected": "Please select a class first"
             }
         }
     }
