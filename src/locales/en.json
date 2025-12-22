@@ -159,6 +159,15 @@
                 "showGroups": "Show Groups",
                 "hideGroups": "Hide Groups",
                 "groupLabel": "G{{number}}"
+            },
+            "specialCase": {
+                "label": "Special Case",
+                "autism": "Autism",
+                "diabetes": "Diabetes",
+                "other": "Other Condition",
+                "custom": "Custom...",
+                "enterCustom": "Enter the condition name:",
+                "clear": "Clear"
             }
         }
     }

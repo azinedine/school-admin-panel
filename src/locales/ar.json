@@ -159,6 +159,15 @@
                 "showGroups": "إظهار الأفواج",
                 "hideGroups": "إخفاء الأفواج",
                 "groupLabel": "ف{{number}}"
+            },
+            "specialCase": {
+                "label": "حالة خاصة",
+                "autism": "توحد",
+                "diabetes": "داء السكري",
+                "other": "حالة أخرى",
+                "custom": "مخصص...",
+                "enterCustom": "أدخل اسم الحالة:",
+                "clear": "إزالة"
             }
         }
     }
