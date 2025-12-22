@@ -1,5 +1,5 @@
 import { useMemo, useCallback, useState, useEffect } from "react"
-import { ArrowUpDown, Search, Users, TrendingUp, CheckCircle, XCircle, UserMinus, Clock, History, Trash2, GripVertical } from "lucide-react"
+import { ArrowUpDown, Search, Users, TrendingUp, CheckCircle, XCircle, UserMinus, Clock, History, Trash2, GripVertical, Heart } from "lucide-react"
 import { useTranslation } from "react-i18next"
 import { useNavigate } from "@tanstack/react-router"
 import {
@@ -127,6 +127,7 @@ interface SortableStudentRowProps {
   editingCell: { id: string; field: string } | null
   setEditingCell: (cell: { id: string; field: string } | null) => void
   handleCellEdit: (id: string, field: keyof StudentGrade, value: string) => void
+  updateStudent: (id: string, updates: Partial<StudentGrade>) => void
   EditableCell: React.FC<{ student: CalculatedStudentGrade; field: keyof StudentGrade; value: number }>
   AttendanceCell: React.FC<{ student: CalculatedStudentGrade; type: 'lateness' | 'absences'; count: number }>
   t: (key: string, opts?: Record<string, unknown>) => string
@@ -141,6 +142,7 @@ function SortableStudentRow({
   editingCell,
   setEditingCell,
   handleCellEdit,
+  updateStudent,
   EditableCell,
   AttendanceCell,
   t,
@@ -160,11 +162,24 @@ function SortableStudentRow({
     opacity: isDragging ? 0.5 : 1,
   }
 
+  // Check if student has special case
+  const hasSpecialCase = !!student.specialCase
+
   return (
     <TableRow 
       ref={setNodeRef}
       style={style}
-      className={`${getRowColor(student.finalAverage)} ${index % 2 === 0 ? 'bg-opacity-50' : ''}`}
+      className={`
+        ${getRowColor(student.finalAverage)} 
+        ${index % 2 === 0 ? 'bg-opacity-50' : ''}
+        ${student.specialCase === 'autism' 
+          ? 'border-s-4 border-s-blue-500 dark:border-s-blue-400' 
+          : student.specialCase === 'diabetes' 
+            ? 'border-s-4 border-s-orange-500 dark:border-s-orange-400' 
+            : hasSpecialCase 
+              ? 'border-s-4 border-s-purple-500 dark:border-s-purple-400' 
+              : ''}
+      `}
     >
       <TableCell className="cursor-grab active:cursor-grabbing" {...attributes} {...listeners}>
         <GripVertical className="h-4 w-4 text-muted-foreground" />
@@ -186,16 +201,86 @@ function SortableStudentRow({
           </TooltipContent>
         </Tooltip>
       </TooltipProvider>
-      <TooltipProvider>
-        <Tooltip>
-          <TooltipTrigger asChild>
-            <TableCell className="whitespace-nowrap truncate max-w-[120px]">{student.firstName}</TableCell>
-          </TooltipTrigger>
-          <TooltipContent side="top">
-            <p>{student.firstName}</p>
-          </TooltipContent>
-        </Tooltip>
-      </TooltipProvider>
+      <TableCell className="whitespace-nowrap max-w-[140px]">
+        <span className="flex items-center gap-1">
+          <span className="truncate">{student.firstName}</span>
+          <TooltipProvider>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <button 
+                      className={`shrink-0 p-0.5 rounded hover:bg-muted ${hasSpecialCase ? '' : 'opacity-40 hover:opacity-100'}`}
+                    >
+                      <Heart className={`h-3 w-3 ${
+                        student.specialCase === 'autism' 
+                          ? 'text-blue-500 fill-blue-500' 
+                          : student.specialCase === 'diabetes' 
+                            ? 'text-orange-500 fill-orange-500' 
+                            : hasSpecialCase 
+                              ? 'text-purple-500 fill-purple-500' 
+                              : 'text-muted-foreground'
+                      }`} />
+                    </button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent align="start">
+                    <DropdownMenuItem 
+                      onClick={() => updateStudent(student.id, { specialCase: 'autism' })}
+                      className={student.specialCase === 'autism' ? 'bg-blue-50 dark:bg-blue-950' : ''}
+                    >
+                      <span className="w-2 h-2 rounded-full bg-blue-500 ltr:mr-2 rtl:ml-2" />
+                      {t('pages.grades.specialCase.autism')}
+                    </DropdownMenuItem>
+                    <DropdownMenuItem 
+                      onClick={() => updateStudent(student.id, { specialCase: 'diabetes' })}
+                      className={student.specialCase === 'diabetes' ? 'bg-orange-50 dark:bg-orange-950' : ''}
+                    >
+                      <span className="w-2 h-2 rounded-full bg-orange-500 ltr:mr-2 rtl:ml-2" />
+                      {t('pages.grades.specialCase.diabetes')}
+                    </DropdownMenuItem>
+                    <DropdownMenuItem 
+                      onClick={() => {
+                        const customName = prompt(t('pages.grades.specialCase.enterCustom'))
+                        if (customName && customName.trim()) {
+                          updateStudent(student.id, { specialCase: customName.trim() })
+                        }
+                      }}
+                      className={hasSpecialCase && student.specialCase !== 'autism' && student.specialCase !== 'diabetes' ? 'bg-purple-50 dark:bg-purple-950' : ''}
+                    >
+                      <span className="w-2 h-2 rounded-full bg-purple-500 ltr:mr-2 rtl:ml-2" />
+                      {t('pages.grades.specialCase.custom')}
+                    </DropdownMenuItem>
+                    {hasSpecialCase && (
+                      <>
+                        <DropdownMenuItem 
+                          onClick={() => updateStudent(student.id, { specialCase: undefined })}
+                          className="text-muted-foreground"
+                        >
+                          {t('pages.grades.specialCase.clear')}
+                        </DropdownMenuItem>
+                      </>
+                    )}
+                  </DropdownMenuContent>
+                </DropdownMenu>
+              </TooltipTrigger>
+              {hasSpecialCase && (
+                <TooltipContent side="top" className={`text-xs font-medium ${
+                  student.specialCase === 'autism' 
+                    ? 'bg-blue-50 dark:bg-blue-950 text-blue-700 dark:text-blue-300 border-blue-200' 
+                    : student.specialCase === 'diabetes' 
+                      ? 'bg-orange-50 dark:bg-orange-950 text-orange-700 dark:text-orange-300 border-orange-200' 
+                      : 'bg-purple-50 dark:bg-purple-950 text-purple-700 dark:text-purple-300 border-purple-200'
+                }`}>
+                  {student.specialCase === 'autism' || student.specialCase === 'diabetes' 
+                    ? t(`pages.grades.specialCase.${student.specialCase}`)
+                    : student.specialCase
+                  }
+                </TooltipContent>
+              )}
+            </Tooltip>
+          </TooltipProvider>
+        </span>
+      </TableCell>
       <TableCell className="text-center">{student.dateOfBirth}</TableCell>
       <EditableCell student={student} field="behavior" value={student.behavior} />
       <EditableCell student={student} field="applications" value={student.applications} />
@@ -335,6 +420,7 @@ export function GradeSheetTable() {
   const selectedClassId = useGradesStore((state) => state.selectedClassId)
   const setSelectedClass = useGradesStore((state) => state.setSelectedClass)
   const updateStudentField = useGradesStore((state) => state.updateStudentField)
+  const updateStudent = useGradesStore((state) => state.updateStudent)
   const reorderStudents = useGradesStore((state) => state.reorderStudents)
   const { addRecord, removeRecord, getStudentRecords, getStudentAbsenceCount, getStudentTardinessCount, records } = useAttendanceStore()
 
@@ -882,6 +968,7 @@ export function GradeSheetTable() {
                       editingCell={editingCell}
                       setEditingCell={setEditingCell}
                       handleCellEdit={handleCellEdit}
+                      updateStudent={updateStudent}
                       EditableCell={EditableCell}
                       AttendanceCell={AttendanceCell}
                       t={t}
