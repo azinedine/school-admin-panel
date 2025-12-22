@@ -118,6 +118,10 @@
                 "absence": "Absence",
                 "tardiness": "Tardiness"
             },
+            "validation": {
+                "maxReached": "Maximum value for {{field}} is {{max}}",
+                "minReached": "Minimum value for {{field}} is {{min}}"
+            },
             "empty": {
                 "title": "No Classes Yet",
                 "description": "Get started by adding your first class. You can upload an Excel file with student data or create a class manually.",
