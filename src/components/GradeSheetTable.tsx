@@ -204,11 +204,11 @@ function SortableStudentRow({
       <TableCell className="whitespace-nowrap max-w-[140px]">
         <span className="flex items-center gap-1">
           <span className="truncate">{student.firstName}</span>
-          <TooltipProvider>
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <DropdownMenu>
-                  <DropdownMenuTrigger asChild>
+          <DropdownMenu>
+            <TooltipProvider delayDuration={300}>
+              <Tooltip>
+                <DropdownMenuTrigger asChild>
+                  <TooltipTrigger asChild>
                     <button 
                       className={`shrink-0 p-0.5 rounded hover:bg-muted ${hasSpecialCase ? '' : 'opacity-40 hover:opacity-100'}`}
                     >
@@ -222,63 +222,63 @@ function SortableStudentRow({
                               : 'text-muted-foreground'
                       }`} />
                     </button>
-                  </DropdownMenuTrigger>
-                  <DropdownMenuContent align="start">
-                    <DropdownMenuItem 
-                      onClick={() => updateStudent(student.id, { specialCase: 'autism' })}
-                      className={student.specialCase === 'autism' ? 'bg-blue-50 dark:bg-blue-950' : ''}
-                    >
-                      <span className="w-2 h-2 rounded-full bg-blue-500 ltr:mr-2 rtl:ml-2" />
-                      {t('pages.grades.specialCase.autism')}
-                    </DropdownMenuItem>
-                    <DropdownMenuItem 
-                      onClick={() => updateStudent(student.id, { specialCase: 'diabetes' })}
-                      className={student.specialCase === 'diabetes' ? 'bg-orange-50 dark:bg-orange-950' : ''}
-                    >
-                      <span className="w-2 h-2 rounded-full bg-orange-500 ltr:mr-2 rtl:ml-2" />
-                      {t('pages.grades.specialCase.diabetes')}
-                    </DropdownMenuItem>
-                    <DropdownMenuItem 
-                      onClick={() => {
-                        const customName = prompt(t('pages.grades.specialCase.enterCustom'))
-                        if (customName && customName.trim()) {
-                          updateStudent(student.id, { specialCase: customName.trim() })
-                        }
-                      }}
-                      className={hasSpecialCase && student.specialCase !== 'autism' && student.specialCase !== 'diabetes' ? 'bg-purple-50 dark:bg-purple-950' : ''}
-                    >
-                      <span className="w-2 h-2 rounded-full bg-purple-500 ltr:mr-2 rtl:ml-2" />
-                      {t('pages.grades.specialCase.custom')}
-                    </DropdownMenuItem>
-                    {hasSpecialCase && (
-                      <>
-                        <DropdownMenuItem 
-                          onClick={() => updateStudent(student.id, { specialCase: undefined })}
-                          className="text-muted-foreground"
-                        >
-                          {t('pages.grades.specialCase.clear')}
-                        </DropdownMenuItem>
-                      </>
-                    )}
-                  </DropdownMenuContent>
-                </DropdownMenu>
-              </TooltipTrigger>
-              {hasSpecialCase && (
-                <TooltipContent side="top" className={`text-xs font-medium ${
-                  student.specialCase === 'autism' 
-                    ? 'bg-blue-50 dark:bg-blue-950 text-blue-700 dark:text-blue-300 border-blue-200' 
-                    : student.specialCase === 'diabetes' 
-                      ? 'bg-orange-50 dark:bg-orange-950 text-orange-700 dark:text-orange-300 border-orange-200' 
-                      : 'bg-purple-50 dark:bg-purple-950 text-purple-700 dark:text-purple-300 border-purple-200'
-                }`}>
-                  {student.specialCase === 'autism' || student.specialCase === 'diabetes' 
-                    ? t(`pages.grades.specialCase.${student.specialCase}`)
-                    : student.specialCase
+                  </TooltipTrigger>
+                </DropdownMenuTrigger>
+                {hasSpecialCase && (
+                  <TooltipContent side="top" sideOffset={5} className={`text-xs font-medium ${
+                    student.specialCase === 'autism' 
+                      ? 'bg-blue-50 dark:bg-blue-950 text-blue-700 dark:text-blue-300 border-blue-200' 
+                      : student.specialCase === 'diabetes' 
+                        ? 'bg-orange-50 dark:bg-orange-950 text-orange-700 dark:text-orange-300 border-orange-200' 
+                        : 'bg-purple-50 dark:bg-purple-950 text-purple-700 dark:text-purple-300 border-purple-200'
+                  }`}>
+                    {student.specialCase === 'autism' || student.specialCase === 'diabetes' 
+                      ? t(`pages.grades.specialCase.${student.specialCase}`)
+                      : student.specialCase
+                    }
+                  </TooltipContent>
+                )}
+              </Tooltip>
+            </TooltipProvider>
+            <DropdownMenuContent align="start">
+              <DropdownMenuItem 
+                onClick={() => updateStudent(student.id, { specialCase: 'autism' })}
+                className={student.specialCase === 'autism' ? 'bg-blue-50 dark:bg-blue-950' : ''}
+              >
+                <span className="w-2 h-2 rounded-full bg-blue-500 ltr:mr-2 rtl:ml-2" />
+                {t('pages.grades.specialCase.autism')}
+              </DropdownMenuItem>
+              <DropdownMenuItem 
+                onClick={() => updateStudent(student.id, { specialCase: 'diabetes' })}
+                className={student.specialCase === 'diabetes' ? 'bg-orange-50 dark:bg-orange-950' : ''}
+              >
+                <span className="w-2 h-2 rounded-full bg-orange-500 ltr:mr-2 rtl:ml-2" />
+                {t('pages.grades.specialCase.diabetes')}
+              </DropdownMenuItem>
+              <DropdownMenuItem 
+                onClick={() => {
+                  const customName = prompt(t('pages.grades.specialCase.enterCustom'))
+                  if (customName && customName.trim()) {
+                    updateStudent(student.id, { specialCase: customName.trim() })
                   }
-                </TooltipContent>
+                }}
+                className={hasSpecialCase && student.specialCase !== 'autism' && student.specialCase !== 'diabetes' ? 'bg-purple-50 dark:bg-purple-950' : ''}
+              >
+                <span className="w-2 h-2 rounded-full bg-purple-500 ltr:mr-2 rtl:ml-2" />
+                {t('pages.grades.specialCase.custom')}
+              </DropdownMenuItem>
+              {hasSpecialCase && (
+                <>
+                  <DropdownMenuItem 
+                    onClick={() => updateStudent(student.id, { specialCase: undefined })}
+                    className="text-muted-foreground"
+                  >
+                    {t('pages.grades.specialCase.clear')}
+                  </DropdownMenuItem>
+                </>
               )}
-            </Tooltip>
-          </TooltipProvider>
+            </DropdownMenuContent>
+          </DropdownMenu>
         </span>
       </TableCell>
       <TableCell className="text-center">{student.dateOfBirth}</TableCell>
