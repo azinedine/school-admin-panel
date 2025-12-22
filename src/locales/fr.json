@@ -163,14 +163,24 @@
             "term1": "Trimestre 1",
             "term2": "Trimestre 2",
             "term3": "Trimestre 3",
+            "initYear": {
+                "title": "Sélectionner l'année scolaire",
+                "description": "Veuillez sélectionner l'année scolaire en cours pour initialiser le système. L'année est suggérée automatiquement en fonction de la date d'aujourd'hui et doit être consécutive (ex : 2024-2025). Les années futures ne sont pas autorisées.",
+                "label": "Année scolaire"
+            },
             "specialCase": {
                 "label": "Cas spécial",
-                "autism": "Autisme",
-                "diabetes": "Diabète",
-                "other": "Autre condition",
+                "none": "Aucun",
+                "longAbsence": "Absence prolongée",
+                "exemption": "Exemption",
+                "medical": "Cas médical",
+                "transfer": "Transfert",
                 "custom": "Personnalisé...",
-                "enterCustom": "Entrez le nom de la condition :",
-                "clear": "Effacer"
+                "enterCustom": "Entrez la description du cas spécial :",
+                "clear": "Effacer le cas spécial",
+                "showOnly": "Afficher uniquement les cas spéciaux",
+                "count": "{{count}} cas spécial/spéciaux",
+                "excluded": "Exclus des statistiques"
             }
         }
     }

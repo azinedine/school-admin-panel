@@ -163,14 +163,24 @@
             "term1": "Term 1",
             "term2": "Term 2",
             "term3": "Term 3",
+            "initYear": {
+                "title": "Select Academic Year",
+                "description": "Please select the current academic year to initialize the system. The year is automatically suggested based on today's date and must be consecutive (e.g., 2024-2025). Future years are not allowed.",
+                "label": "Academic Year"
+            },
             "specialCase": {
                 "label": "Special Case",
-                "autism": "Autism",
-                "diabetes": "Diabetes",
-                "other": "Other Condition",
+                "none": "None",
+                "longAbsence": "Long Absence",
+                "exemption": "Exemption",
+                "medical": "Medical Case",
+                "transfer": "Transfer",
                 "custom": "Custom...",
-                "enterCustom": "Enter the condition name:",
-                "clear": "Clear"
+                "enterCustom": "Enter special case description:",
+                "clear": "Clear Special Case",
+                "showOnly": "Show Special Cases Only",
+                "count": "{{count}} special case(s)",
+                "excluded": "Excluded from statistics"
             }
         }
     }
