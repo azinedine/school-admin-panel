@@ -1058,11 +1058,10 @@ export function GradeSheetTable() {
                     variant="outline"
                     size="icon"
                     onClick={() => setAddStudentDialog(true)}
-                    className="h-8 w-8 sm:w-auto sm:px-3 sm:gap-2"
+                    className="h-8 w-8"
                     aria-label={t('pages.grades.addStudent.button')}
                   >
                     <UserPlus className="h-4 w-4" />
-                    <span className="hidden sm:inline">{t('pages.grades.addStudent.button')}</span>
                   </Button>
                 </TooltipTrigger>
                 <TooltipContent side="bottom">
