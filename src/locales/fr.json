@@ -181,6 +181,19 @@
                 "showOnly": "Afficher uniquement les cas spéciaux",
                 "count": "{{count}} cas spécial/spéciaux",
                 "excluded": "Exclus des statistiques"
+            },
+            "studentManagement": {
+                "menu": "Gestion de l'élève",
+                "moveToClass": "Déplacer vers une classe",
+                "removeFromClass": "Retirer de la classe",
+                "moveStudentDescription": "Déplacer {{name}} vers une autre classe :",
+                "removeStudentDescription": "Retirer {{name}} de cette classe ?",
+                "removeWarning": "Cette action est irréversible. L'élève sera définitivement retiré de cette classe.",
+                "confirmRemove": "Retirer l'élève",
+                "selectClass": "Sélectionner la classe cible",
+                "noOtherClasses": "Aucune autre classe disponible",
+                "moved": "Élève déplacé avec succès",
+                "removed": "Élève retiré avec succès"
             }
         }
     }

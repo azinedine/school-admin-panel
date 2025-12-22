@@ -181,6 +181,19 @@
                 "showOnly": "Show Special Cases Only",
                 "count": "{{count}} special case(s)",
                 "excluded": "Excluded from statistics"
+            },
+            "studentManagement": {
+                "menu": "Student Management",
+                "moveToClass": "Move to Class",
+                "removeFromClass": "Remove from Class",
+                "moveStudentDescription": "Move {{name}} to another class:",
+                "removeStudentDescription": "Remove {{name}} from this class?",
+                "removeWarning": "This action cannot be undone. The student will be permanently removed from this class.",
+                "confirmRemove": "Remove Student",
+                "selectClass": "Select Target Class",
+                "noOtherClasses": "No other classes available",
+                "moved": "Student moved successfully",
+                "removed": "Student removed successfully"
             }
         }
     }

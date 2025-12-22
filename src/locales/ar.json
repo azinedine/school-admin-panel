@@ -181,6 +181,19 @@
                 "showOnly": "إظهار الحالات الخاصة فقط",
                 "count": "{{count}} حالة خاصة",
                 "excluded": "مستبعد من الإحصائيات"
+            },
+            "studentManagement": {
+                "menu": "إدارة الطالب",
+                "moveToClass": "نقل إلى فصل",
+                "removeFromClass": "إزالة من الفصل",
+                "moveStudentDescription": "نقل {{name}} إلى فصل آخر:",
+                "removeStudentDescription": "إزالة {{name}} من هذا الفصل؟",
+                "removeWarning": "لا يمكن التراجع عن هذا الإجراء. سيتم إزالة الطالب نهائياً من هذا الفصل.",
+                "confirmRemove": "إزالة الطالب",
+                "selectClass": "اختر الفصل الهدف",
+                "noOtherClasses": "لا توجد فصول أخرى متاحة",
+                "moved": "تم نقل الطالب بنجاح",
+                "removed": "تم إزالة الطالب بنجاح"
             }
         }
     }
