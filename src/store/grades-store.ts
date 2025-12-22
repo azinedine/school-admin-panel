@@ -87,7 +87,10 @@ interface GradesActions {
   initializeYear: (year: string) => void
   addClass: (classData: Omit<Class, 'id'>) => string
   addStudentsToClass: (classId: string, students: (Omit<StudentGrade, 'id' | 'classId'> & { id?: string })[]) => void
+  addStudentToClass: (classId: string, student: Omit<StudentGrade, 'id' | 'classId'> & { id?: string }) => void
   removeClass: (classId: string) => void
+  moveStudentToClass: (studentId: string, newClassId: string) => void
+  removeStudentFromClass: (studentId: string) => void
   updateStudent: (id: string, updates: Partial<StudentGrade>) => void
   updateStudentField: (id: string, field: keyof StudentGrade, value: number) => void
   setSpecialCase: (studentId: string, specialCase: string | undefined) => void
@@ -349,6 +352,72 @@ export const useGradesStore = create<GradesStore>()(
         getNormalStudents: () => {
           return get().students.filter((s) => !s.specialCase || s.specialCase === '')
         },
+
+        addStudentToClass: (classId, studentData) =>
+          set(
+            (state) => {
+              const newRecord: StudentData = {
+                id: studentData.id || crypto.randomUUID(),
+                classId,
+                lastName: studentData.lastName,
+                firstName: studentData.firstName,
+                dateOfBirth: studentData.dateOfBirth,
+                specialCase: studentData.specialCase,
+                grades: {
+                  [state.selectedYear]: {
+                    [state.selectedTerm]: {
+                      behavior: studentData.behavior ?? 5,
+                      applications: studentData.applications ?? 5,
+                      notebook: studentData.notebook ?? 5,
+                      assignment: studentData.assignment ?? 0,
+                      exam: studentData.exam ?? 0,
+                    }
+                  }
+                }
+              }
+
+              const updatedRecords = [...state.studentRecords, newRecord]
+              
+              return {
+                studentRecords: updatedRecords,
+                students: projectStudents(updatedRecords, state.selectedYear, state.selectedTerm)
+              }
+            },
+            false,
+            'grades/addStudentToClass'
+          ),
+
+        moveStudentToClass: (studentId, newClassId) =>
+          set(
+            (state) => {
+              const newRecords = state.studentRecords.map((record) =>
+                record.id === studentId
+                  ? { ...record, classId: newClassId }
+                  : record
+              )
+
+              return {
+                studentRecords: newRecords,
+                students: projectStudents(newRecords, state.selectedYear, state.selectedTerm)
+              }
+            },
+            false,
+            'grades/moveStudentToClass'
+          ),
+
+        removeStudentFromClass: (studentId) =>
+          set(
+            (state) => {
+              const newRecords = state.studentRecords.filter((record) => record.id !== studentId)
+              
+              return {
+                studentRecords: newRecords,
+                students: projectStudents(newRecords, state.selectedYear, state.selectedTerm)
+              }
+            },
+            false,
+            'grades/removeStudentFromClass'
+          ),
 
         clearAllData: () =>
           set(
