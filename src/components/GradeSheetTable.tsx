@@ -1,6 +1,23 @@
 import { useMemo, useCallback, useState, useEffect } from "react"
-import { ArrowUpDown, Search, Users, TrendingUp, CheckCircle, XCircle, UserMinus, Clock, History, Trash2 } from "lucide-react"
+import { ArrowUpDown, Search, Users, TrendingUp, CheckCircle, XCircle, UserMinus, Clock, History, Trash2, GripVertical } from "lucide-react"
 import { useTranslation } from "react-i18next"
+import {
+  DndContext,
+  closestCenter,
+  KeyboardSensor,
+  PointerSensor,
+  useSensor,
+  useSensors,
+  type DragEndEvent,
+} from "@dnd-kit/core"
+import {
+  arrayMove,
+  SortableContext,
+  sortableKeyboardCoordinates,
+  useSortable,
+  verticalListSortingStrategy,
+} from "@dnd-kit/sortable"
+import { CSS } from "@dnd-kit/utilities"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import {
@@ -78,6 +95,112 @@ function getRowColor(average: number): string {
   return "bg-green-50 dark:bg-green-950/20 hover:bg-green-100 dark:hover:bg-green-950/30"
 }
 
+// Sortable student row component - extracted to use useSortable hook properly
+interface SortableStudentRowProps {
+  student: CalculatedStudentGrade
+  index: number
+  studentNumber: number
+  groupNumber: number
+  showGroups: boolean
+  editingCell: { id: string; field: string } | null
+  setEditingCell: (cell: { id: string; field: string } | null) => void
+  handleCellEdit: (id: string, field: keyof StudentGrade, value: string) => void
+  EditableCell: React.FC<{ student: CalculatedStudentGrade; field: keyof StudentGrade; value: number }>
+  AttendanceCell: React.FC<{ student: CalculatedStudentGrade; type: 'lateness' | 'absences'; count: number }>
+  t: (key: string, opts?: Record<string, unknown>) => string
+}
+
+function SortableStudentRow({
+  student,
+  index,
+  studentNumber,
+  groupNumber,
+  showGroups,
+  editingCell,
+  setEditingCell,
+  handleCellEdit,
+  EditableCell,
+  AttendanceCell,
+  t,
+}: SortableStudentRowProps) {
+  const {
+    attributes,
+    listeners,
+    setNodeRef,
+    transform,
+    transition,
+    isDragging,
+  } = useSortable({ id: student.id })
+
+  const style = {
+    transform: CSS.Transform.toString(transform),
+    transition,
+    opacity: isDragging ? 0.5 : 1,
+  }
+
+  return (
+    <TableRow 
+      ref={setNodeRef}
+      style={style}
+      className={`${getRowColor(student.finalAverage)} ${index % 2 === 0 ? 'bg-opacity-50' : ''}`}
+    >
+      <TableCell className="cursor-grab active:cursor-grabbing" {...attributes} {...listeners}>
+        <GripVertical className="h-4 w-4 text-muted-foreground" />
+      </TableCell>
+      <TableCell className="text-center font-semibold">{studentNumber}</TableCell>
+      {showGroups && (
+        <TableCell className={`text-center font-bold ${groupNumber === 1 ? 'text-blue-600 bg-blue-50 dark:bg-blue-950' : 'text-green-600 bg-green-50 dark:bg-green-950'}`}>
+          {t('pages.grades.groups.groupLabel', { number: groupNumber })}
+        </TableCell>
+      )}
+      <TableCell className="font-mono text-xs">{student.id}</TableCell>
+      <TableCell className="font-semibold">{student.lastName}</TableCell>
+      <TableCell>{student.firstName}</TableCell>
+      <TableCell className="text-center">{student.dateOfBirth}</TableCell>
+      <EditableCell student={student} field="behavior" value={student.behavior} />
+      <EditableCell student={student} field="applications" value={student.applications} />
+      <EditableCell student={student} field="notebook" value={student.notebook} />
+      <AttendanceCell student={student} type="lateness" count={student.lateness} />
+      <AttendanceCell student={student} type="absences" count={student.absences} />
+      <TableCell className="text-center font-semibold bg-primary/5 dark:bg-primary/10 text-primary">{student.activityAverage}</TableCell>
+      <TableCell className="text-center font-semibold bg-primary/5 dark:bg-primary/10 cursor-pointer" onClick={() => setEditingCell({ id: student.id, field: 'assignment' })}>
+        {editingCell?.id === student.id && editingCell?.field === 'assignment' ? (
+          <Input
+            type="number"
+            defaultValue={student.assignment}
+            autoFocus
+            className="w-16 h-8 text-center"
+            onBlur={(e) => handleCellEdit(student.id, 'assignment', e.target.value)}
+            onKeyDown={(e) => {
+              if (e.key === 'Enter') handleCellEdit(student.id, 'assignment', (e.target as HTMLInputElement).value)
+              if (e.key === 'Escape') setEditingCell(null)
+            }}
+            min={0} max={20} step={0.5}
+          />
+        ) : student.assignment}
+      </TableCell>
+      <TableCell className="text-center font-semibold bg-primary/5 dark:bg-primary/10 cursor-pointer" onClick={() => setEditingCell({ id: student.id, field: 'exam' })}>
+        {editingCell?.id === student.id && editingCell?.field === 'exam' ? (
+          <Input
+            type="number"
+            defaultValue={student.exam}
+            autoFocus
+            className="w-16 h-8 text-center"
+            onBlur={(e) => handleCellEdit(student.id, 'exam', e.target.value)}
+            onKeyDown={(e) => {
+              if (e.key === 'Enter') handleCellEdit(student.id, 'exam', (e.target as HTMLInputElement).value)
+              if (e.key === 'Escape') setEditingCell(null)
+            }}
+            min={0} max={20} step={0.5}
+          />
+        ) : student.exam}
+      </TableCell>
+      <TableCell className="text-center font-bold text-lg bg-primary/10 dark:bg-primary/20 text-primary">{student.finalAverage.toFixed(2)}</TableCell>
+      <TableCell className="font-semibold whitespace-nowrap truncate max-w-[140px]">{t(`pages.grades.remarks.${student.remarks}`)}</TableCell>
+    </TableRow>
+  )
+}
+
 export function GradeSheetTable() {
   const { t } = useTranslation()
   const { isRTL } = useDirection()
@@ -88,6 +211,7 @@ export function GradeSheetTable() {
   const selectedClassId = useGradesStore((state) => state.selectedClassId)
   const setSelectedClass = useGradesStore((state) => state.setSelectedClass)
   const updateStudentField = useGradesStore((state) => state.updateStudentField)
+  const reorderStudents = useGradesStore((state) => state.reorderStudents)
   const { addRecord, removeRecord, getStudentRecords, getStudentAbsenceCount, getStudentTardinessCount, records } = useAttendanceStore()
   
   // Get student count for a class
@@ -124,6 +248,18 @@ export function GradeSheetTable() {
     student: CalculatedStudentGrade | null
   }>({ open: false, student: null })
   const [recordToDelete, setRecordToDelete] = useState<string | null>(null)
+
+  // DnD sensors configuration
+  const sensors = useSensors(
+    useSensor(PointerSensor, {
+      activationConstraint: {
+        distance: 8, // Require 8px drag before activating
+      },
+    }),
+    useSensor(KeyboardSensor, {
+      coordinateGetter: sortableKeyboardCoordinates,
+    })
+  )
 
   const handleSort = useCallback((field: SortField) => {
     setSortField(prev => {
@@ -252,6 +388,21 @@ export function GradeSheetTable() {
     
     return result
   }, [calculatedStudents, searchQuery, sortField, sortDirection])
+
+  // Handle drag end - reorder students and persist
+  const handleDragEnd = useCallback((event: DragEndEvent) => {
+    const { active, over } = event
+    
+    if (!over || active.id === over.id || !selectedClassId) return
+    
+    const oldIndex = filteredAndSortedStudents.findIndex(s => s.id === active.id)
+    const newIndex = filteredAndSortedStudents.findIndex(s => s.id === over.id)
+    
+    if (oldIndex !== -1 && newIndex !== -1) {
+      const reordered = arrayMove(filteredAndSortedStudents, oldIndex, newIndex)
+      reorderStudents(selectedClassId, reordered.map(s => s.id))
+    }
+  }, [filteredAndSortedStudents, selectedClassId, reorderStudents])
 
   const statistics = useMemo(() => {
     const total = calculatedStudents.length
@@ -498,94 +649,65 @@ export function GradeSheetTable() {
 
       {/* Table */}
       <div className="rounded-md border overflow-x-auto">
-        <Table>
-          <TableHeader className="sticky top-0 bg-background z-10">
-            <TableRow>
-              <TableHead className="w-12 text-center">#</TableHead>
-              {showGroups && <TableHead className="w-20 text-center">{t('pages.grades.table.group')}</TableHead>}
-              <SortableHeader field="id">{t('pages.grades.table.id')}</SortableHeader>
-              <SortableHeader field="lastName">{t('pages.grades.table.lastName')}</SortableHeader>
-              <SortableHeader field="firstName">{t('pages.grades.table.firstName')}</SortableHeader>
-              <SortableHeader field="dateOfBirth">{t('pages.grades.table.dateOfBirth')}</SortableHeader>
-              <SortableHeader field="behavior">{t('pages.grades.table.behavior')}</SortableHeader>
-              <SortableHeader field="applications">{t('pages.grades.table.applications')}</SortableHeader>
-              <SortableHeader field="notebook">{t('pages.grades.table.notebook')}</SortableHeader>
-              <SortableHeader field="lateness">{t('pages.grades.table.lateness')}</SortableHeader>
-              <SortableHeader field="absences">{t('pages.grades.table.absences')}</SortableHeader>
-              <SortableHeader field="activityAverage" highlight>{t('pages.grades.table.activityAverage')}</SortableHeader>
-              <SortableHeader field="assignment" highlight>{t('pages.grades.table.assignment')}</SortableHeader>
-              <SortableHeader field="exam" highlight>{t('pages.grades.table.exam')}</SortableHeader>
-              <SortableHeader field="finalAverage" highlight>{t('pages.grades.table.finalAverage')}</SortableHeader>
-              <SortableHeader field="remarks">{t('pages.grades.table.remarks')}</SortableHeader>
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-            {filteredAndSortedStudents.map((student, index) => {
-              const studentNumber = index + 1
-              const totalStudents = filteredAndSortedStudents.length
-              const midpoint = Math.ceil(totalStudents / 2) // First group gets extra if odd
-              const groupNumber = studentNumber <= midpoint ? 1 : 2
-              
-              return (
-                <TableRow 
-                  key={student.id + '-' + index}
-                  className={`${getRowColor(student.finalAverage)} ${index % 2 === 0 ? 'bg-opacity-50' : ''}`}
-                >
-                  <TableCell className="text-center font-semibold">{studentNumber}</TableCell>
-                  {showGroups && (
-                    <TableCell className={`text-center font-bold ${groupNumber === 1 ? 'text-blue-600 bg-blue-50 dark:bg-blue-950' : 'text-green-600 bg-green-50 dark:bg-green-950'}`}>
-                      {t('pages.grades.groups.groupLabel', { number: groupNumber })}
-                    </TableCell>
-                  )}
-                  <TableCell className="font-mono text-xs">{student.id}</TableCell>
-                  <TableCell className="font-semibold">{student.lastName}</TableCell>
-                  <TableCell>{student.firstName}</TableCell>
-                  <TableCell className="text-center">{student.dateOfBirth}</TableCell>
-                <EditableCell student={student} field="behavior" value={student.behavior} />
-                <EditableCell student={student} field="applications" value={student.applications} />
-                <EditableCell student={student} field="notebook" value={student.notebook} />
-                <AttendanceCell student={student} type="lateness" count={student.lateness} />
-                <AttendanceCell student={student} type="absences" count={student.absences} />
-                <TableCell className="text-center font-semibold bg-primary/5 dark:bg-primary/10 text-primary">{student.activityAverage}</TableCell>
-                <TableCell className="text-center font-semibold bg-primary/5 dark:bg-primary/10 cursor-pointer" onClick={() => setEditingCell({ id: student.id, field: 'assignment' })}>
-                  {editingCell?.id === student.id && editingCell?.field === 'assignment' ? (
-                    <Input
-                      type="number"
-                      defaultValue={student.assignment}
-                      autoFocus
-                      className="w-16 h-8 text-center"
-                      onBlur={(e) => handleCellEdit(student.id, 'assignment', e.target.value)}
-                      onKeyDown={(e) => {
-                        if (e.key === 'Enter') handleCellEdit(student.id, 'assignment', (e.target as HTMLInputElement).value)
-                        if (e.key === 'Escape') setEditingCell(null)
-                      }}
-                      min={0} max={20} step={0.5}
-                    />
-                  ) : student.assignment}
-                </TableCell>
-                <TableCell className="text-center font-semibold bg-primary/5 dark:bg-primary/10 cursor-pointer" onClick={() => setEditingCell({ id: student.id, field: 'exam' })}>
-                  {editingCell?.id === student.id && editingCell?.field === 'exam' ? (
-                    <Input
-                      type="number"
-                      defaultValue={student.exam}
-                      autoFocus
-                      className="w-16 h-8 text-center"
-                      onBlur={(e) => handleCellEdit(student.id, 'exam', e.target.value)}
-                      onKeyDown={(e) => {
-                        if (e.key === 'Enter') handleCellEdit(student.id, 'exam', (e.target as HTMLInputElement).value)
-                        if (e.key === 'Escape') setEditingCell(null)
-                      }}
-                      min={0} max={20} step={0.5}
-                    />
-                  ) : student.exam}
-                </TableCell>
-                <TableCell className="text-center font-bold text-lg bg-primary/10 dark:bg-primary/20 text-primary">{student.finalAverage.toFixed(2)}</TableCell>
-                <TableCell className="font-semibold">{t(`pages.grades.remarks.${student.remarks}`)}</TableCell>
+        <DndContext
+          sensors={sensors}
+          collisionDetection={closestCenter}
+          onDragEnd={handleDragEnd}
+        >
+          <Table>
+            <TableHeader className="sticky top-0 bg-background z-10">
+              <TableRow>
+                <TableHead className="w-10"></TableHead>
+                <TableHead className="w-12 text-center">#</TableHead>
+                {showGroups && <TableHead className="w-20 text-center">{t('pages.grades.table.group')}</TableHead>}
+                <SortableHeader field="id">{t('pages.grades.table.id')}</SortableHeader>
+                <SortableHeader field="lastName">{t('pages.grades.table.lastName')}</SortableHeader>
+                <SortableHeader field="firstName">{t('pages.grades.table.firstName')}</SortableHeader>
+                <SortableHeader field="dateOfBirth">{t('pages.grades.table.dateOfBirth')}</SortableHeader>
+                <SortableHeader field="behavior">{t('pages.grades.table.behavior')}</SortableHeader>
+                <SortableHeader field="applications">{t('pages.grades.table.applications')}</SortableHeader>
+                <SortableHeader field="notebook">{t('pages.grades.table.notebook')}</SortableHeader>
+                <SortableHeader field="lateness">{t('pages.grades.table.lateness')}</SortableHeader>
+                <SortableHeader field="absences">{t('pages.grades.table.absences')}</SortableHeader>
+                <SortableHeader field="activityAverage" highlight>{t('pages.grades.table.activityAverage')}</SortableHeader>
+                <SortableHeader field="assignment" highlight>{t('pages.grades.table.assignment')}</SortableHeader>
+                <SortableHeader field="exam" highlight>{t('pages.grades.table.exam')}</SortableHeader>
+                <SortableHeader field="finalAverage" highlight>{t('pages.grades.table.finalAverage')}</SortableHeader>
+                <SortableHeader field="remarks">{t('pages.grades.table.remarks')}</SortableHeader>
               </TableRow>
-              )
-            })}
-          </TableBody>
-        </Table>
+            </TableHeader>
+            <SortableContext
+              items={filteredAndSortedStudents.map(s => s.id)}
+              strategy={verticalListSortingStrategy}
+            >
+              <TableBody>
+                {filteredAndSortedStudents.map((student, index) => {
+                  const studentNumber = index + 1
+                  const totalStudents = filteredAndSortedStudents.length
+                  const midpoint = Math.ceil(totalStudents / 2)
+                  const groupNumber = studentNumber <= midpoint ? 1 : 2
+                  
+                  return (
+                    <SortableStudentRow
+                      key={student.id}
+                      student={student}
+                      index={index}
+                      studentNumber={studentNumber}
+                      groupNumber={groupNumber}
+                      showGroups={showGroups}
+                      editingCell={editingCell}
+                      setEditingCell={setEditingCell}
+                      handleCellEdit={handleCellEdit}
+                      EditableCell={EditableCell}
+                      AttendanceCell={AttendanceCell}
+                      t={t}
+                    />
+                  )
+                })}
+              </TableBody>
+            </SortableContext>
+          </Table>
+        </DndContext>
       </div>
 
       {/* Attendance Dialog */}
