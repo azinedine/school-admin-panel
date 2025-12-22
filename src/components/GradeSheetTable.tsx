@@ -213,26 +213,34 @@ function SortableStudentRow({
                       className={`shrink-0 p-0.5 rounded hover:bg-muted ${hasSpecialCase ? '' : 'opacity-40 hover:opacity-100'}`}
                     >
                       <Star className={`h-3 w-3 ${
-                        student.specialCase === 'autism' 
-                          ? 'text-blue-500 fill-blue-500' 
-                          : student.specialCase === 'diabetes' 
-                            ? 'text-orange-500 fill-orange-500' 
-                            : hasSpecialCase 
-                              ? 'text-purple-500 fill-purple-500' 
-                              : 'text-muted-foreground'
+                        student.specialCase === 'longAbsence' 
+                          ? 'text-red-500 fill-red-500' 
+                          : student.specialCase === 'exemption' 
+                            ? 'text-blue-500 fill-blue-500' 
+                            : student.specialCase === 'medical'
+                              ? 'text-orange-500 fill-orange-500'
+                              : student.specialCase === 'transfer'
+                                ? 'text-green-500 fill-green-500'
+                                : hasSpecialCase 
+                                  ? 'text-purple-500 fill-purple-500' 
+                                  : 'text-muted-foreground'
                       }`} />
                     </button>
                   </TooltipTrigger>
                 </DropdownMenuTrigger>
                 {hasSpecialCase && (
                   <TooltipContent side="top" sideOffset={5} className={`text-xs font-medium ${
-                    student.specialCase === 'autism' 
-                      ? 'bg-blue-50 dark:bg-blue-950 text-blue-700 dark:text-blue-300 border-blue-200' 
-                      : student.specialCase === 'diabetes' 
-                        ? 'bg-orange-50 dark:bg-orange-950 text-orange-700 dark:text-orange-300 border-orange-200' 
-                        : 'bg-purple-50 dark:bg-purple-950 text-purple-700 dark:text-purple-300 border-purple-200'
+                    student.specialCase === 'longAbsence' 
+                      ? 'bg-red-50 dark:bg-red-950 text-red-700 dark:text-red-300 border-red-200' 
+                      : student.specialCase === 'exemption' 
+                        ? 'bg-blue-50 dark:bg-blue-950 text-blue-700 dark:text-blue-300 border-blue-200' 
+                        : student.specialCase === 'medical'
+                          ? 'bg-orange-50 dark:bg-orange-950 text-orange-700 dark:text-orange-300 border-orange-200'
+                          : student.specialCase === 'transfer'
+                            ? 'bg-green-50 dark:bg-green-950 text-green-700 dark:text-green-300 border-green-200'
+                            : 'bg-purple-50 dark:bg-purple-950 text-purple-700 dark:text-purple-300 border-purple-200'
                   }`}>
-                    {student.specialCase === 'autism' || student.specialCase === 'diabetes' 
+                    {['longAbsence', 'exemption', 'medical', 'transfer'].includes(student.specialCase || '') 
                       ? t(`pages.grades.specialCase.${student.specialCase}`)
                       : student.specialCase
                     }
@@ -242,18 +250,32 @@ function SortableStudentRow({
             </TooltipProvider>
             <DropdownMenuContent align="start">
               <DropdownMenuItem 
-                onClick={() => updateStudent(student.id, { specialCase: 'autism' })}
-                className={student.specialCase === 'autism' ? 'bg-blue-50 dark:bg-blue-950' : ''}
+                onClick={() => updateStudent(student.id, { specialCase: 'longAbsence' })}
+                className={student.specialCase === 'longAbsence' ? 'bg-red-50 dark:bg-red-950' : ''}
               >
-                <span className="w-2 h-2 rounded-full bg-blue-500 ltr:mr-2 rtl:ml-2" />
-                {t('pages.grades.specialCase.autism')}
+                <span className="w-2 h-2 rounded-full bg-red-500 ltr:mr-2 rtl:ml-2" />
+                {t('pages.grades.specialCase.longAbsence')}
               </DropdownMenuItem>
               <DropdownMenuItem 
-                onClick={() => updateStudent(student.id, { specialCase: 'diabetes' })}
-                className={student.specialCase === 'diabetes' ? 'bg-orange-50 dark:bg-orange-950' : ''}
+                onClick={() => updateStudent(student.id, { specialCase: 'exemption' })}
+                className={student.specialCase === 'exemption' ? 'bg-blue-50 dark:bg-blue-950' : ''}
+              >
+                <span className="w-2 h-2 rounded-full bg-blue-500 ltr:mr-2 rtl:ml-2" />
+                {t('pages.grades.specialCase.exemption')}
+              </DropdownMenuItem>
+              <DropdownMenuItem 
+                onClick={() => updateStudent(student.id, { specialCase: 'medical' })}
+                className={student.specialCase === 'medical' ? 'bg-orange-50 dark:bg-orange-950' : ''}
               >
                 <span className="w-2 h-2 rounded-full bg-orange-500 ltr:mr-2 rtl:ml-2" />
-                {t('pages.grades.specialCase.diabetes')}
+                {t('pages.grades.specialCase.medical')}
+              </DropdownMenuItem>
+              <DropdownMenuItem 
+                onClick={() => updateStudent(student.id, { specialCase: 'transfer' })}
+                className={student.specialCase === 'transfer' ? 'bg-green-50 dark:bg-green-950' : ''}
+              >
+                <span className="w-2 h-2 rounded-full bg-green-500 ltr:mr-2 rtl:ml-2" />
+                {t('pages.grades.specialCase.transfer')}
               </DropdownMenuItem>
               <DropdownMenuItem 
                 onClick={() => {
@@ -262,7 +284,7 @@ function SortableStudentRow({
                     updateStudent(student.id, { specialCase: customName.trim() })
                   }
                 }}
-                className={hasSpecialCase && student.specialCase !== 'autism' && student.specialCase !== 'diabetes' ? 'bg-purple-50 dark:bg-purple-950' : ''}
+                className={hasSpecialCase && !['longAbsence', 'exemption', 'medical', 'transfer'].includes(student.specialCase || '') ? 'bg-purple-50 dark:bg-purple-950' : ''}
               >
                 <span className="w-2 h-2 rounded-full bg-purple-500 ltr:mr-2 rtl:ml-2" />
                 {t('pages.grades.specialCase.custom')}
@@ -452,6 +474,7 @@ export function GradeSheetTable() {
   const [sortDirection, setSortDirection] = useState<SortDirection>(null)
   const [editingCell, setEditingCell] = useState<{ id: string; field: string } | null>(null)
   const [showGroups, setShowGroups] = useState(false)
+  const [showSpecialCasesOnly, setShowSpecialCasesOnly] = useState(false)
   
   // Attendance dialog state
   const [attendanceDialog, setAttendanceDialog] = useState<{
@@ -582,6 +605,11 @@ export function GradeSheetTable() {
   const filteredAndSortedStudents = useMemo(() => {
     let result = [...calculatedStudents]
     
+    // Filter by special cases if toggle is on
+    if (showSpecialCasesOnly) {
+      result = result.filter(student => student.specialCase !== undefined && student.specialCase !== '')
+    }
+    
     if (searchQuery) {
       result = result.filter(student =>
         student.lastName.includes(searchQuery) ||
@@ -609,7 +637,7 @@ export function GradeSheetTable() {
     }
     
     return result
-  }, [calculatedStudents, searchQuery, sortField, sortDirection])
+  }, [calculatedStudents, searchQuery, sortField, sortDirection, showSpecialCasesOnly])
 
   // Handle drag end - reorder students and persist
   const handleDragEnd = useCallback((event: DragEndEvent) => {
@@ -627,15 +655,20 @@ export function GradeSheetTable() {
   }, [filteredAndSortedStudents, selectedClassId, reorderStudents])
 
   const statistics = useMemo(() => {
-    const total = calculatedStudents.length
-    if (total === 0) return { total: 0, classAverage: '0', passRate: '0', failRate: '0' }
+    // Exclude special cases from statistics
+    const normalStudents = calculatedStudents.filter(s => !s.specialCase || s.specialCase === '')
+    const total = normalStudents.length
+    const specialCaseCount = calculatedStudents.length - total
     
-    const classAverage = calculatedStudents.reduce((sum, s) => sum + s.finalAverage, 0) / total
-    const passCount = calculatedStudents.filter(s => s.finalAverage >= 10).length
+    if (total === 0) return { total: 0, specialCaseCount, classAverage: '0', passRate: '0', failRate: '0' }
+    
+    const classAverage = normalStudents.reduce((sum, s) => sum + s.finalAverage, 0) / total
+    const passCount = normalStudents.filter(s => s.finalAverage >= 10).length
     const failCount = total - passCount
     
     return {
       total,
+      specialCaseCount,
       classAverage: classAverage.toFixed(2),
       passRate: ((passCount / total) * 100).toFixed(1),
       failRate: ((failCount / total) * 100).toFixed(1),
@@ -890,29 +923,70 @@ export function GradeSheetTable() {
           </div>
         </div>
 
-        {/* Search */}
-        <div className="w-full md:w-auto md:min-w-[280px]">
-          <div className="relative">
-            <Search className="absolute h-4 w-4 top-1/2 -translate-y-1/2 text-muted-foreground ltr:left-3 rtl:right-3" />
-            <Input
-              placeholder={t('pages.grades.search.placeholder')}
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              className="ltr:pl-9 rtl:pr-9"
-            />
+        {/* Search and Controls */}
+        <div className="flex items-center gap-2 w-full md:w-auto">
+          <div className="flex-1 md:flex-none md:min-w-[280px]">
+            <div className="relative">
+              <Search className="absolute h-4 w-4 top-1/2 -translate-y-1/2 text-muted-foreground ltr:left-3 rtl:right-3" />
+              <Input
+                placeholder={t('pages.grades.search.placeholder')}
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="ltr:pl-9 rtl:pr-9"
+              />
+            </div>
+          </div>
+
+          {/* Compact Controls */}
+          <div className="flex items-center gap-1.5 shrink-0">
+          {/* Group Split Toggle */}
+          <TooltipProvider>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Button
+                  variant={showGroups ? "default" : "outline"}
+                  size="icon"
+                  onClick={() => setShowGroups(!showGroups)}
+                  className="h-8 w-8"
+                  aria-label={showGroups ? t('pages.grades.groups.hideGroups') : t('pages.grades.groups.showGroups')}
+                >
+                  <Users className="h-4 w-4" />
+                </Button>
+              </TooltipTrigger>
+              <TooltipContent side="bottom">
+                <p>{showGroups ? t('pages.grades.groups.hideGroups') : t('pages.grades.groups.showGroups')}</p>
+              </TooltipContent>
+            </Tooltip>
+          </TooltipProvider>
+
+          {/* Special Cases Filter */}
+          {statistics.specialCaseCount > 0 && (
+            <TooltipProvider>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <Button
+                    variant={showSpecialCasesOnly ? "default" : "outline"}
+                    size="icon"
+                    onClick={() => setShowSpecialCasesOnly(!showSpecialCasesOnly)}
+                    className="h-8 w-8 relative"
+                    aria-label={t('pages.grades.specialCase.showOnly')}
+                  >
+                    <Star className="h-4 w-4" />
+                    {statistics.specialCaseCount > 0 && (
+                      <span className="absolute -top-1 -right-1 h-4 min-w-4 px-1 flex items-center justify-center text-[10px] font-bold rounded-full bg-primary text-primary-foreground border-2 border-background">
+                        {statistics.specialCaseCount}
+                      </span>
+                    )}
+                  </Button>
+                </TooltipTrigger>
+                <TooltipContent side="bottom">
+                  <p>{t('pages.grades.specialCase.showOnly')}</p>
+                </TooltipContent>
+              </Tooltip>
+            </TooltipProvider>
+          )}
           </div>
         </div>
-
-        {/* Group Split Toggle */}
-        <Button
-          variant={showGroups ? "default" : "outline"}
-          size="sm"
-          onClick={() => setShowGroups(!showGroups)}
-          className="gap-2"
-        >
-          <Users className="h-4 w-4" />
-          {showGroups ? t('pages.grades.groups.hideGroups') : t('pages.grades.groups.showGroups')}
-        </Button>
       </div>
 
       {/* Hints */}
