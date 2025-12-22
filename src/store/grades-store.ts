@@ -94,7 +94,17 @@ export const useGradesStore = create<GradesStore>()(
               students: [
                 ...state.students,
                 ...studentsData.map((s) => ({
-                  ...s,
+                  // Ensure all CA fields default to 0 if not provided
+                  behavior: s.behavior ?? 0,
+                  applications: s.applications ?? 0,
+                  notebook: s.notebook ?? 0,
+                  assignment: s.assignment ?? 0,
+                  exam: s.exam ?? 0,
+                  // Spread other properties
+                  lastName: s.lastName,
+                  firstName: s.firstName,
+                  dateOfBirth: s.dateOfBirth,
+                  // Generate ID if not provided
                   id: s.id || crypto.randomUUID(),
                   classId,
                 })),
