@@ -33,6 +33,7 @@ interface LessonDetailDialogProps {
   prefilledClass?: string
   existingLesson?: DailyPlanEntry
   initialTemplate?: LessonTemplate | null
+  enableScheduling?: boolean
 }
 
 export function LessonDetailDialog({
@@ -46,6 +47,7 @@ export function LessonDetailDialog({
   prefilledClass,
   existingLesson,
   initialTemplate,
+  enableScheduling = false,
 }: LessonDetailDialogProps) {
   const { t } = useTranslation()
   const getAllLessonTemplates = usePrepStore((state) => state.getAllLessonTemplates)
@@ -59,6 +61,10 @@ export function LessonDetailDialog({
     lessonContent: '',
     practiceNotes: '',
     date: '',
+    startTime: '08:00',
+    endTime: '09:00',
+    mode: 'fullClass' as 'fullClass' | 'groups',
+    group: 'first' as 'first' | 'second',
     status: undefined as 'completed' | 'postponed' | 'deleted' | undefined,
     statusNote: '',
     field: '',
@@ -75,12 +81,19 @@ export function LessonDetailDialog({
   // Load existing lesson data or prefilled class when dialog opens
   useEffect(() => {
     if (existingLesson) {
+      // Split timeSlot "08:00-09:00" if needed, but usually it's passed as prop
+      const [start, end] = existingLesson.timeSlot.split('-')
+      
       setFormData({
         class: existingLesson.class,
         lessonTitle: existingLesson.lessonTitle,
         lessonContent: existingLesson.lessonContent,
         practiceNotes: existingLesson.practiceNotes,
         date: existingLesson.date || '',
+        startTime: start || existingLesson.timeSlot, // Fallback
+        endTime: end || '',
+        mode: existingLesson.mode,
+        group: existingLesson.group || 'first',
         status: existingLesson.status,
         statusNote: existingLesson.statusNote || '',
         field: existingLesson.field || '',
@@ -97,7 +110,11 @@ export function LessonDetailDialog({
         lessonTitle: initialTemplate.lessonTitle,
         lessonContent: initialTemplate.lessonContent,
         practiceNotes: initialTemplate.practiceNotes,
-        date: '',
+        date: new Date().toISOString().split('T')[0], // Default to today for scheduling
+        startTime: '08:00',
+        endTime: '09:00',
+        mode: 'fullClass',
+        group: 'first',
         status: undefined,
         statusNote: '',
         field: initialTemplate.field,
@@ -115,6 +132,10 @@ export function LessonDetailDialog({
         lessonContent: '',
         practiceNotes: '',
         date: '',
+        startTime: '08:00',
+        endTime: '09:00',
+        mode: 'fullClass',
+        group: 'first',
         status: undefined,
         statusNote: '',
         field: '',
@@ -163,18 +184,40 @@ export function LessonDetailDialog({
     if (!formData.class.trim() || !formData.lessonTitle.trim() || !formData.date.trim()) {
       return // Basic validation
     }
+    
+    // Construct timeSlot
+    // If not scheduling, use the prop 'timeSlot'
+    // If scheduling, use 'startTime-endTime' OR just 'startTime' if end is empty?
+    // Let's assume timeSlot prop takes precedence if enableScheduling is false
+    
+    let finalTimeSlot = timeSlot
+    let finalGroup = group as DailyPlanEntry['group']
+    let finalMode = 'groups' as DailyPlanEntry['mode']
+
+    if (enableScheduling) {
+       finalTimeSlot = `${formData.startTime}-${formData.endTime}`
+       finalMode = formData.mode
+       finalGroup = formData.mode === 'groups' ? formData.group : undefined
+    }
 
     if (existingLesson && onUpdate) {
       // Update existing lesson
-      onUpdate(existingLesson.id, formData)
+      onUpdate(existingLesson.id, {
+        ...formData,
+        timeSlot: enableScheduling ? finalTimeSlot : undefined, // Only update if scheduling enabled? Or always?
+        mode: enableScheduling ? finalMode : undefined,
+        group: enableScheduling ? finalGroup : undefined,
+      })
     } else {
-      // Create new lesson
       onSave({
         day: day as DailyPlanEntry['day'],
-        timeSlot,
-        group: group as DailyPlanEntry['group'],
-        mode: 'groups', // Default mode
+        timeSlot: finalTimeSlot,
+        mode: finalMode,
+        group: finalGroup,
         ...formData,
+        // Ensure explicit values take precedence if formData also contains them (though they should align)
+        mode: finalMode,
+        group: finalGroup,
       })
     }
 
@@ -267,6 +310,66 @@ export function LessonDetailDialog({
                 onChange={(e) => setFormData({ ...formData, date: e.target.value })}
               />
             </div>
+
+            {enableScheduling && (
+              <div className="grid grid-cols-2 gap-4">
+                <div className="grid gap-2">
+                  <Label htmlFor="startTime">{t('pages.prep.startTime')} *</Label>
+                  <Input
+                    id="startTime"
+                    type="time"
+                    value={formData.startTime}
+                    onChange={(e) => setFormData({ ...formData, startTime: e.target.value })}
+                  />
+                </div>
+                <div className="grid gap-2">
+                  <Label htmlFor="endTime">{t('pages.prep.endTime')} *</Label>
+                  <Input
+                    id="endTime"
+                    type="time"
+                    value={formData.endTime}
+                    onChange={(e) => setFormData({ ...formData, endTime: e.target.value })}
+                  />
+                </div>
+              </div>
+            )}
+
+            {enableScheduling && (
+              <div className="grid grid-cols-2 gap-4">
+                <div className="grid gap-2">
+                  <Label htmlFor="mode">{t('pages.prep.mode')}</Label>
+                  <Select
+                    value={formData.mode}
+                    onValueChange={(value) => setFormData({ ...formData, mode: value as any })}
+                  >
+                    <SelectTrigger id="mode">
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="fullClass">{t('pages.prep.fullClass')}</SelectItem>
+                      <SelectItem value="groups">{t('pages.prep.groups.title')}</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+                {formData.mode === 'groups' && (
+                  <div className="grid gap-2">
+                    <Label htmlFor="group">{t('pages.prep.selectGroup')}</Label>
+                    <Select
+                      value={formData.group}
+                      onValueChange={(value) => setFormData({ ...formData, group: value as any })}
+                    >
+                      <SelectTrigger id="group">
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="first">{t('pages.prep.group1')}</SelectItem>
+                        <SelectItem value="second">{t('pages.prep.group2')}</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                )}
+              </div>
+            )}
 
             <div className="grid gap-2">
               <Label htmlFor="lessonTitle">{t('pages.prep.lessonTitle')} *</Label>
