@@ -38,9 +38,19 @@ export const sidebarData = {
           icon: LayoutDashboard,
         },
         {
-          title: 'nav.classPreparation',
+          title: 'nav.lessonManagement',
           url: '/prep',
           icon: ClipboardCheck,
+          items: [
+            {
+              title: 'nav.addLesson',
+              url: '/prep/add-lesson',
+            },
+            {
+              title: 'nav.lessonPreparation',
+              url: '/prep',
+            },
+          ],
         },
         {
           title: 'nav.attendance',
