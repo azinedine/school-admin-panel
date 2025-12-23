@@ -18,9 +18,10 @@ interface LessonDetailDialogProps {
   onOpenChange: (open: boolean) => void
   onSave: (lesson: Omit<DailyPlanEntry, 'id'>) => void
   onUpdate?: (id: string, updates: Partial<DailyPlanEntry>) => void
-  day: DailyPlanEntry['day']
-  timeSlot: DailyPlanEntry['timeSlot']
-  group: DailyPlanEntry['group']
+  day: string
+  timeSlot: string
+  group: string
+  prefilledClass?: string
   existingLesson?: DailyPlanEntry
 }
 
@@ -32,6 +33,7 @@ export function LessonDetailDialog({
   day,
   timeSlot,
   group,
+  prefilledClass,
   existingLesson,
 }: LessonDetailDialogProps) {
   const { t } = useTranslation()
@@ -43,7 +45,7 @@ export function LessonDetailDialog({
     practiceNotes: '',
   })
 
-  // Load existing lesson data when dialog opens
+  // Load existing lesson data or prefilled class when dialog opens
   useEffect(() => {
     if (existingLesson) {
       setFormData({
@@ -53,15 +55,15 @@ export function LessonDetailDialog({
         practiceNotes: existingLesson.practiceNotes,
       })
     } else {
-      // Reset form for new lesson
+      // Reset form for new lesson, use prefilled class if available
       setFormData({
-        class: '',
+        class: prefilledClass || '',
         lessonTitle: '',
         lessonContent: '',
         practiceNotes: '',
       })
     }
-  }, [existingLesson, open])
+  }, [existingLesson, prefilledClass, open])
 
   const handleSave = () => {
     if (!formData.class.trim() || !formData.lessonTitle.trim()) {
@@ -74,9 +76,9 @@ export function LessonDetailDialog({
     } else {
       // Create new lesson
       onSave({
-        day,
+        day: day as DailyPlanEntry['day'],
         timeSlot,
-        group,
+        group: group as DailyPlanEntry['group'],
         ...formData,
       })
     }
@@ -95,13 +97,17 @@ export function LessonDetailDialog({
 
         <div className="space-y-4 py-4">
           <div className="grid gap-2">
-            <Label htmlFor="class">{t('pages.prep.class')} *</Label>
+            <Label htmlFor="class">{t('pages.prep.class')}</Label>
             <Input
               id="class"
               value={formData.class}
-              onChange={(e) => setFormData({ ...formData, class: e.target.value })}
-              placeholder="1M5"
+              readOnly
+              disabled
+              className="bg-muted cursor-not-allowed"
             />
+            <p className="text-xs text-muted-foreground">
+              {t('pages.prep.classFromTimetable')}
+            </p>
           </div>
 
           <div className="grid gap-2">
