@@ -32,6 +32,7 @@ interface LessonDetailDialogProps {
   group: string
   prefilledClass?: string
   existingLesson?: DailyPlanEntry
+  initialTemplate?: LessonTemplate | null
 }
 
 export function LessonDetailDialog({
@@ -44,12 +45,13 @@ export function LessonDetailDialog({
   group,
   prefilledClass,
   existingLesson,
+  initialTemplate,
 }: LessonDetailDialogProps) {
   const { t } = useTranslation()
   const getAllLessonTemplates = usePrepStore((state) => state.getAllLessonTemplates)
   
   const [selectorOpen, setSelectorOpen] = useState(false)
-  const [selectedTemplate, setSelectedTemplate] = useState<LessonTemplate | null>(null)
+  const [selectedTemplate, setSelectedTemplate] = useState<LessonTemplate | null>(initialTemplate || null)
   
   const [formData, setFormData] = useState({
     class: '',
@@ -87,6 +89,24 @@ export function LessonDetailDialog({
         lessonElements: existingLesson.lessonElements || [],
         assessment: existingLesson.assessment || '',
       })
+      setSelectedTemplate(null)
+    } else if (initialTemplate) {
+       // Populate from initial template
+       setFormData({
+        class: prefilledClass || '',
+        lessonTitle: initialTemplate.lessonTitle,
+        lessonContent: initialTemplate.lessonContent,
+        practiceNotes: initialTemplate.practiceNotes,
+        date: '',
+        status: undefined,
+        statusNote: '',
+        field: initialTemplate.field,
+        learningSegment: initialTemplate.learningSegment,
+        knowledgeResource: initialTemplate.knowledgeResource,
+        lessonElements: [...initialTemplate.lessonElements],
+        assessment: initialTemplate.assessment,
+      })
+      setSelectedTemplate(initialTemplate)
     } else {
       // Reset form for new lesson, use prefilled class if available
       setFormData({
@@ -103,10 +123,9 @@ export function LessonDetailDialog({
         lessonElements: [],
         assessment: '',
       })
+      setSelectedTemplate(null)
     }
-    // Reset template selection when dialog opens
-    setSelectedTemplate(null)
-  }, [existingLesson, prefilledClass, open])
+  }, [existingLesson, prefilledClass, open, initialTemplate])
 
   // Handle template selection
   const handleTemplateSelect = (template: LessonTemplate) => {
