@@ -26,7 +26,6 @@ import {
 export function LessonPrepByClass() {
   const { t } = useTranslation()
   const { 
-    getAllTimetableSlots,
     planEntries,
     addPlanEntry, 
     updatePlanEntry, 
