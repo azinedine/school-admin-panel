@@ -3,16 +3,13 @@ import { createFileRoute } from '@tanstack/react-router'
 import { useTranslation } from 'react-i18next'
 import { Settings, Calendar } from 'lucide-react'
 import { ContentPage } from '@/components/layout/content-page'
-import { DailyPlannerTable } from '@/components/DailyPlannerTable'
 import { TimetableEmptyState } from '@/components/TimetableEmptyState'
 import { TimetableSetupDialog } from '@/components/TimetableSetupDialog'
 import { TermSetupDialog } from '@/components/TermSetupDialog'
-import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs'
+import { LessonPrepByClass } from '@/components/LessonPrepByClass'
 import { Button } from '@/components/ui/button'
 import { Card } from '@/components/ui/card'
-import { usePrepStore, type DailyPlanEntry } from '@/store/prep-store'
-
-const DAYS: DailyPlanEntry['day'][] = ['sunday', 'monday', 'tuesday', 'wednesday', 'thursday']
+import { usePrepStore } from '@/store/prep-store'
 
 function PrepPage() {
   const { t } = useTranslation()
@@ -24,7 +21,6 @@ function PrepPage() {
     getTermDates,
     setTermDates,
   } = usePrepStore()
-  const [selectedDay, setSelectedDay] = useState<DailyPlanEntry['day']>('sunday')
   const [timetableDialogOpen, setTimetableDialogOpen] = useState(false)
   const [termDialogOpen, setTermDialogOpen] = useState(false)
 
@@ -99,7 +95,7 @@ function PrepPage() {
     )
   }
 
-  // Step 3: Show full planner with timetable and term dates
+  // Step 3: Show lesson prep organized by class
   return (
     <ContentPage 
       title={t('pages.prep.title')} 
@@ -125,21 +121,8 @@ function PrepPage() {
         </div>
       }
     >
-      <div className="space-y-6">
-        {/* Day Selector */}
-        <Tabs value={selectedDay} onValueChange={(v) => setSelectedDay(v as DailyPlanEntry['day'])}>
-          <TabsList className="grid w-full grid-cols-5">
-            {DAYS.map((day) => (
-              <TabsTrigger key={day} value={day} className="capitalize">
-                {t(`pages.prep.days.${day}`)}
-              </TabsTrigger>
-            ))}
-          </TabsList>
-        </Tabs>
-
-        {/* Daily Planner Table */}
-        <DailyPlannerTable selectedDay={selectedDay} />
-      </div>
+      {/* Lessons Organized by Class */}
+      <LessonPrepByClass />
 
       {/* Edit Timetable Dialog */}
       <TimetableSetupDialog
