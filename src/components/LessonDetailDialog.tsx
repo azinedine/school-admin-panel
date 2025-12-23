@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
-import { Plus, Trash2 } from 'lucide-react'
+import { Plus, Trash2, X } from 'lucide-react'
 import {
   Dialog,
   DialogContent,
@@ -19,7 +19,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select'
-import { type DailyPlanEntry } from '@/store/prep-store'
+import { type DailyPlanEntry, usePrepStore } from '@/store/prep-store'
 
 interface LessonDetailDialogProps {
   open: boolean
@@ -45,8 +45,9 @@ export function LessonDetailDialog({
   existingLesson,
 }: LessonDetailDialogProps) {
   const { t } = useTranslation()
+  const getAllLessonTemplates = usePrepStore((state) => state.getAllLessonTemplates)
   
-  
+  const [selectedTemplateId, setSelectedTemplateId] = useState<string | null>(null)
   const [formData, setFormData] = useState({
     class: '',
     lessonTitle: '',
@@ -61,6 +62,10 @@ export function LessonDetailDialog({
     lessonElements: [] as string[],
     assessment: '',
   })
+
+  // Get all templates and optionally filter by academic year
+  const allTemplates = getAllLessonTemplates()
+  const availableTemplates = allTemplates // Could be filtered by academic year based on class name
 
   // Load existing lesson data or prefilled class when dialog opens
   useEffect(() => {
@@ -96,7 +101,49 @@ export function LessonDetailDialog({
         assessment: '',
       })
     }
+    // Reset template selection when dialog opens
+    setSelectedTemplateId(null)
   }, [existingLesson, prefilledClass, open])
+
+  // Handle template selection
+  const handleTemplateSelect = (templateId: string) => {
+    if (templateId === 'none') {
+      setSelectedTemplateId(null)
+      return
+    }
+
+    const template = allTemplates.find((t) => t.id === templateId)
+    if (template) {
+      setSelectedTemplateId(templateId)
+      setFormData((prev) => ({
+        ...prev,
+        lessonTitle: template.lessonTitle,
+        field: template.field,
+        learningSegment: template.learningSegment,
+        knowledgeResource: template.knowledgeResource,
+        lessonElements: [...template.lessonElements],
+        assessment: template.assessment,
+        lessonContent: template.lessonContent,
+        practiceNotes: template.practiceNotes,
+      }))
+    }
+  }
+
+  // Clear template selection
+  const handleClearTemplate = () => {
+    setSelectedTemplateId(null)
+    setFormData((prev) => ({
+      ...prev,
+      lessonTitle: '',
+      field: '',
+      learningSegment: '',
+      knowledgeResource: '',
+      lessonElements: [],
+      assessment: '',
+      lessonContent: '',
+      practiceNotes: '',
+    }))
+  }
 
   const handleSave = () => {
     if (!formData.class.trim() || !formData.lessonTitle.trim() || !formData.date.trim()) {
@@ -130,6 +177,53 @@ export function LessonDetailDialog({
         </DialogHeader>
 
         <div className="space-y-6 py-4">
+          {/* Template Selection */}
+          {availableTemplates.length > 0 && (
+            <div className="space-y-4 pb-6 border-b">
+              <h3 className="text-sm font-semibold text-foreground">
+                {t('pages.prep.templateSection')}
+              </h3>
+              <div className="flex gap-2">
+                <div className="flex-1">
+                  <Select
+                    value={selectedTemplateId || 'none'}
+                    onValueChange={handleTemplateSelect}
+                  >
+                    <SelectTrigger>
+                      <SelectValue placeholder={t('pages.prep.selectTemplatePlaceholder')} />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="none">
+                        {t('pages.prep.selectTemplate')}
+                      </SelectItem>
+                      {availableTemplates.map((template) => (
+                        <SelectItem key={template.id} value={template.id}>
+                          {template.lessonTitle} ({t(`pages.addLesson.years.${template.academicYear}`)})
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+                {selectedTemplateId && (
+                  <Button
+                    type="button"
+                    variant="outline"
+                    size="icon"
+                    onClick={handleClearTemplate}
+                    title={t('pages.prep.clearTemplate')}
+                  >
+                    <X className="h-4 w-4" />
+                  </Button>
+                )}
+              </div>
+              {!selectedTemplateId && (
+                <p className="text-xs text-muted-foreground">
+                  {t('pages.prep.selectTemplatePlaceholder')}
+                </p>
+              )}
+            </div>
+          )}
+
           {/* Section 1: Basic Information */}
           <div className="space-y-4">
             <h3 className="text-sm font-semibold text-foreground border-b pb-2">
