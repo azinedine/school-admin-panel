@@ -7,8 +7,12 @@
         "delete": "Delete",
         "edit": "Edit",
         "add": "Add",
+        "update": "Update",
+        "confirm": "Confirm",
         "loading": "Loading...",
-        "noResults": "No results found"
+        "noResults": "No results found",
+        "updateSuccess": "Updated successfully",
+        "actions": "Actions"
     },
     "nav": {
         "mainMenu": "Main menu",
@@ -232,6 +236,36 @@
                 "term": "Term"
             }
         },
+        "addLesson": {
+            "title": "Add New Lesson",
+            "description": "Create a new lesson with all required details",
+            "academicYear": "Academic Year",
+            "academicYearPlaceholder": "Select academic year",
+            "years": {
+                "1st": "1st Year",
+                "2nd": "2nd Year",
+                "3rd": "3rd Year",
+                "4th": "4th Year"
+            },
+            "lessonLibrary": "Lesson Library",
+            "filterByYear": "Filter by Year",
+            "allYears": "All Years",
+            "noLessonsForYear": "No lessons for this year yet",
+            "createFirstLesson": "Create your first lesson template",
+            "lessonsCount": "{{count}} lessons",
+            "edit": "Edit",
+            "delete": "Delete",
+            "duplicate": "Duplicate",
+            "preview": "Preview",
+            "deleteConfirm": "Are you sure you want to delete this lesson template?",
+            "deleteSuccess": "Lesson template deleted successfully",
+            "selectClass": "Select Class",
+            "selectClassPlaceholder": "Select a class",
+            "success": "Lesson added successfully",
+            "addAnother": "Add Another Lesson",
+            "viewPreparation": "View Preparation",
+            "noClassesAvailable": "No classes available. Please create a class first in the Grades page."
+        },
         "prep": {
             "title": "Lesson Preparation",
             "description": "Daily planner and lesson organization",
@@ -340,16 +374,11 @@
                 "elements": "Lesson Elements",
                 "contentEvaluation": "Content & Evaluation"
             },
-            "addLesson": {
-                "title": "Add New Lesson",
-                "description": "Create a new lesson with all required details",
-                "selectClass": "Select Class",
-                "selectClassPlaceholder": "Select a class",
-                "success": "Lesson added successfully",
-                "addAnother": "Add Another Lesson",
-                "viewPreparation": "View Preparation",
-                "noClassesAvailable": "No classes available. Please create a class first in the Grades page."
-            }
+            "templateSection": "Load from Template",
+            "selectTemplate": "Select a template...",
+            "selectTemplatePlaceholder": "Choose a template to auto-fill lesson details",
+            "clearTemplate": "Clear Template",
+            "noTemplatesAvailable": "No templates available. Create templates in the Add Lesson page."
         }
     }
 }

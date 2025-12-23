@@ -7,8 +7,12 @@
         "delete": "Supprimer",
         "edit": "Modifier",
         "add": "Ajouter",
+        "update": "Mettre à jour",
+        "confirm": "Confirmer",
         "loading": "Chargement...",
-        "noResults": "Aucun résultat trouvé"
+        "noResults": "Aucun résultat trouvé",
+        "updateSuccess": "Mis à jour avec succès",
+        "actions": "Actions"
     },
     "nav": {
         "mainMenu": "Menu principal",
@@ -235,6 +239,26 @@
         "addLesson": {
             "title": "Ajouter un nouveau cours",
             "description": "Créer un nouveau cours avec tous les détails requis",
+            "academicYear": "Année scolaire",
+            "academicYearPlaceholder": "Sélectionner l'année scolaire",
+            "years": {
+                "1st": "1ère année",
+                "2nd": "2ème année",
+                "3rd": "3ème année",
+                "4th": "4ème année"
+            },
+            "lessonLibrary": "Bibliothèque de cours",
+            "filterByYear": "Filtrer par année",
+            "allYears": "Toutes les années",
+            "noLessonsForYear": "Aucun cours pour cette année encore",
+            "createFirstLesson": "Créez votre premier modèle de cours",
+            "lessonsCount": "{{count}} cours",
+            "edit": "Modifier",
+            "delete": "Supprimer",
+            "duplicate": "Dupliquer",
+            "preview": "Aperçu",
+            "deleteConfirm": "Êtes-vous sûr de vouloir supprimer ce modèle de cours ?",
+            "deleteSuccess": "Modèle de cours supprimé avec succès",
             "selectClass": "Sélectionner la classe",
             "selectClassPlaceholder": "Sélectionner une classe",
             "success": "Cours ajouté avec succès",
@@ -349,7 +373,12 @@
                 "structure": "Structure du cours",
                 "elements": "Éléments du cours",
                 "contentEvaluation": "Contenu et évaluation"
-            }
+            },
+            "templateSection": "Charger à partir d'un modèle",
+            "selectTemplate": "Sélectionner un modèle...",
+            "selectTemplatePlaceholder": "Choisissez un modèle pour remplir automatiquement les détails du cours",
+            "clearTemplate": "Effacer le modèle",
+            "noTemplatesAvailable": "Aucun modèle disponible. Créez des modèles dans la page Ajouter un cours."
         }
     }
 }

@@ -7,8 +7,12 @@
         "delete": "حذف",
         "edit": "تعديل",
         "add": "إضافة",
+        "update": "تحديث",
+        "confirm": "تأكيد",
         "loading": "جاري التحميل...",
-        "noResults": "لم يتم العثور على نتائج"
+        "noResults": "لم يتم العثور على نتائج",
+        "updateSuccess": "تم التحديث بنجاح",
+        "actions": "إجراءات"
     },
     "nav": {
         "mainMenu": "القائمة الرئيسية",
@@ -235,6 +239,26 @@
         "addLesson": {
             "title": "إضافة درس جديد",
             "description": "إنشاء درس جديد مع جميع التفاصيل المطلوبة",
+            "academicYear": "السنة الدراسية",
+            "academicYearPlaceholder": "اختر السنة الدراسية",
+            "years": {
+                "1st": "السنة الأولى",
+                "2nd": "السنة الثانية",
+                "3rd": "السنة الثالثة",
+                "4th": "السنة الرابعة"
+            },
+            "lessonLibrary": "مكتبة الدروس",
+            "filterByYear": "تصفية حسب السنة",
+            "allYears": "جميع السنوات",
+            "noLessonsForYear": "لا توجد دروس لهذه السنة حتى الآن",
+            "createFirstLesson": "أنشئ أول درس تعليمي",
+            "lessonsCount": "{{count}} درس",
+            "edit": "تحرير",
+            "delete": "حذف",
+            "duplicate": "نسخ",
+            "preview": "معاينة",
+            "deleteConfirm": "هل أنت متأكد من حذف قالب الدرس؟",
+            "deleteSuccess": "تم حذف قالب الدرس بنجاح",
             "selectClass": "اختر الصف",
             "selectClassPlaceholder": "اختر صفًا",
             "success": "تم إضافة الدرس بنجاح",
@@ -349,7 +373,12 @@
                 "structure": "هيكل الدرس",
                 "elements": "عناصر الدرس",
                 "contentEvaluation": "المحتوى والتقويم"
-            }
+            },
+            "templateSection": "تحميل من قالب",
+            "selectTemplate": "اختر قالبًا...",
+            "selectTemplatePlaceholder": "اختر قالبًا لملء تفاصيل الدرس تلقائيًا",
+            "clearTemplate": "مسح القالب",
+            "noTemplatesAvailable": "لا توجد قوالب متاحة. أنشئ قوالب في صفحة إضافة درس."
         }
     }
 }
