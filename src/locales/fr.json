@@ -236,6 +236,7 @@
             "days": {
                 "sunday": "Dimanche",
                 "monday": "Lundi",
+                "tuesday": "Mardi",
                 "wednesday": "Mercredi",
                 "thursday": "Jeudi"
             },
@@ -250,7 +251,34 @@
             "lessonTitle": "Titre du cours",
             "lessonContent": "Contenu du cours",
             "practiceNotes": "Notes pratiques/Applications",
-            "emptySlot": "Cliquez pour ajouter un cours"
+            "emptySlot": "Cliquez pour ajouter un cours",
+            "classFromTimetable": "La classe est déterminée par votre emploi du temps et ne peut pas être modifiée ici",
+            "timetable": {
+                "setup": "Configurer l'emploi du temps",
+                "edit": "Modifier l'emploi du temps",
+                "title": "Emploi du temps hebdomadaire",
+                "description": "Définissez vos jours d'enseignement, créneaux horaires, classes et groupes",
+                "emptyState": {
+                    "title": "Configuration de l'emploi du temps requise",
+                    "description": "Vous devez définir votre emploi du temps d'enseignement avant d'ajouter des préparations de cours. Votre emploi du temps déterminera les jours, créneaux et classes disponibles.",
+                    "action": "Configurer mon emploi du temps"
+                },
+                "form": {
+                    "slot": "Créneau",
+                    "day": "Jour",
+                    "addTimeSlot": "Ajouter un créneau horaire",
+                    "removeSlot": "Supprimer le créneau",
+                    "startTime": "Heure de début",
+                    "endTime": "Heure de fin",
+                    "class": "Classe",
+                    "group": "Groupe",
+                    "save": "Enregistrer l'emploi du temps",
+                    "selectClass": "Sélectionner une classe",
+                    "noClassesAvailable": "Aucune classe disponible. Veuillez d'abord créer des classes.",
+                    "createClassesFirst": "Vous devez créer au moins une classe dans la section Notes avant de configurer votre emploi du temps."
+                },
+                "noSlotsForDay": "Aucun créneau d'enseignement prévu pour ce jour"
+            }
         }
     }
 }

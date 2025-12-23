@@ -236,6 +236,7 @@
             "days": {
                 "sunday": "Sunday",
                 "monday": "Monday",
+                "tuesday": "Tuesday",
                 "wednesday": "Wednesday",
                 "thursday": "Thursday"
             },
@@ -250,7 +251,34 @@
             "lessonTitle": "Lesson Title",
             "lessonContent": "Lesson Content",
             "practiceNotes": "Practice/Application Notes",
-            "emptySlot": "Click to add lesson"
+            "emptySlot": "Click to add lesson",
+            "classFromTimetable": "Class is determined by your timetable and cannot be changed here",
+            "timetable": {
+                "setup": "Set Up Timetable",
+                "edit": "Edit Timetable",
+                "title": "Weekly Teaching Schedule",
+                "description": "Define your teaching days, time slots, classes, and groups",
+                "emptyState": {
+                    "title": "Timetable Setup Required",
+                    "description": "You must define your teaching schedule before adding lesson preparations. Your timetable will determine available days, time slots, and classes.",
+                    "action": "Set Up My Timetable"
+                },
+                "form": {
+                    "slot": "Slot",
+                    "day": "Day",
+                    "addTimeSlot": "Add Time Slot",
+                    "removeSlot": "Remove Slot",
+                    "startTime": "Start Time",
+                    "endTime": "End Time",
+                    "class": "Class",
+                    "group": "Group",
+                    "save": "Save Timetable",
+                    "selectClass": "Select a class",
+                    "noClassesAvailable": "No classes available. Please create classes first.",
+                    "createClassesFirst": "You must create at least one class in the Grades section before setting up your timetable."
+                },
+                "noSlotsForDay": "No teaching slots scheduled for this day"
+            }
         }
     }
 }
