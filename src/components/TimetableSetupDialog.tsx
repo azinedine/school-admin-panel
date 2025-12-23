@@ -36,11 +36,12 @@ interface TimetableSlot {
   startTime: string
   endTime: string
   class: string
-  group: TimetableEntry['group']
+  mode: 'fullClass' | 'groups'
+  group?: 'first' | 'second'  // Optional
 }
 
 const DAYS: TimetableEntry['day'][] = ['sunday', 'monday', 'tuesday', 'wednesday', 'thursday']
-const GROUPS: TimetableEntry['group'][] = ['first', 'second']
+const GROUPS: ('first' | 'second')[] = ['first', 'second']
 
 export function TimetableSetupDialog({
   open,
@@ -62,11 +63,12 @@ export function TimetableSetupDialog({
           startTime: startTime.trim(),
           endTime: endTime.trim(),
           class: entry.class,
-          group: entry.group,
+          mode: entry.mode || 'groups',  // Default to 'groups' for backward compatibility
+          group: entry.group || 'first',
         }
       })
     }
-    // Default: one empty slot
+    // Default: one empty slot in groups mode
     return [
       {
         tempId: crypto.randomUUID(),
@@ -74,6 +76,7 @@ export function TimetableSetupDialog({
         startTime: '08:00',
         endTime: '09:00',
         class: '',
+        mode: 'groups',
         group: 'first',
       },
     ]
@@ -88,6 +91,7 @@ export function TimetableSetupDialog({
         startTime: '08:00',
         endTime: '09:00',
         class: '',
+        mode: 'groups',
         group: 'first',
       },
     ])
@@ -112,6 +116,12 @@ export function TimetableSetupDialog({
       return // Could show toast error
     }
 
+    // Validate that group mode slots have a group selected
+    const hasInvalidGroupSlot = slots.some((s) => s.mode === 'groups' && !s.group)
+    if (hasInvalidGroupSlot) {
+      return // Could show toast error
+    }
+
     if (slots.length === 0) {
       return // Could show toast error
     }
@@ -121,7 +131,8 @@ export function TimetableSetupDialog({
       day: slot.day,
       timeSlot: `${slot.startTime}-${slot.endTime}`,
       class: slot.class.trim(),
-      group: slot.group,
+      mode: slot.mode,
+      ...(slot.mode === 'groups' && slot.group ? { group: slot.group } : {}),
     }))
 
     onSave(timetableEntries)
@@ -221,8 +232,8 @@ export function TimetableSetupDialog({
                         {t('pages.prep.timetable.form.group')}
                       </Label>
                       <Select
-                        value={slot.group}
-                        onValueChange={(v) => updateSlot(slot.tempId, 'group', v as TimetableEntry['group'])}
+                        value={slot.group || ''}
+                        onValueChange={(v) => updateSlot(slot.tempId, 'group', v)}
                       >
                         <SelectTrigger id={`group-${slot.tempId}`}>
                           <SelectValue />
