@@ -179,10 +179,7 @@ export function LessonPrepByClass() {
                     <TableCell colSpan={4} className="text-center py-8 text-muted-foreground">
                       <div className="space-y-4">
                         <p>{t('pages.prep.table.noLessons')}</p>
-                        <Button onClick={handleAddLesson} variant="outline" size="sm">
-                          <Plus className="h-4 w-4 ltr:mr-2 rtl:ml-2" />
-                          {t('pages.prep.addLesson')}
-                        </Button>
+                    
                       </div>
                     </TableCell>
                   </TableRow>
@@ -221,7 +218,7 @@ export function LessonPrepByClass() {
                           )}
                         </div>
                       </TableCell>
-                      <TableCell>
+                      <TableCell className="text-center">
                         <Button 
                           variant="ghost" 
                           size="sm"
@@ -238,7 +235,7 @@ export function LessonPrepByClass() {
             </Table>
           </div>
           
-          <div className="p-4 border-t">
+          <div className="p-4 border-t flex justify-center">
             <Button onClick={handleAddLesson} variant="outline" size="sm">
               <Plus className="h-4 w-4 ltr:mr-2 rtl:ml-2" />
               {t('pages.prep.addLesson')}
@@ -254,8 +251,6 @@ export function LessonPrepByClass() {
         templates={getAllLessonTemplates()}
         addedLessonTitles={addedLessonTitles}
       />
-
-
     </>
   )
 }
