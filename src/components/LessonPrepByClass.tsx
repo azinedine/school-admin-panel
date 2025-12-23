@@ -1,6 +1,6 @@
 import { useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { Trash2, Plus } from 'lucide-react'
+import { Trash2, Plus, Edit2, Check, X } from 'lucide-react'
 import {
   Table,
   TableBody,
@@ -10,6 +10,23 @@ import {
   TableRow,
 } from '@/components/ui/table'
 import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select'
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from '@/components/ui/dialog'
+import { Textarea } from '@/components/ui/textarea'
 import { Card } from '@/components/ui/card'
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { usePrepStore, type DailyPlanEntry, type LessonTemplate } from '@/store/prep-store'
@@ -24,6 +41,7 @@ export function LessonPrepByClass() {
     planEntries,
     addPlanEntry, 
     deletePlanEntry,
+    updatePlanEntry,
     getAllLessonTemplates,
   } = usePrepStore()
   
@@ -37,6 +55,13 @@ export function LessonPrepByClass() {
 
   const [selectedClass, setSelectedClass] = useState<string>(classes[0] || '')
   const [selectorOpen, setSelectorOpen] = useState(false)
+  const [editingId, setEditingId] = useState<string | null>(null)
+  const [editDate, setEditDate] = useState('')
+  const [editTimeSlot, setEditTimeSlot] = useState('')
+  const [statusNoteOpen, setStatusNoteOpen] = useState(false)
+  const [selectedStatusLesson, setSelectedStatusLesson] = useState<DailyPlanEntry | null>(null)
+  const [statusNote, setStatusNote] = useState('')
+  const [pendingStatus, setPendingStatus] = useState<DailyPlanEntry['status'] | null>(null)
   
 
 
@@ -120,8 +145,26 @@ export function LessonPrepByClass() {
   }
 
   // Format date for display
+  // Format date for display (handles YYYY-MM-DD as local date)
   const formatDate = (date?: string) => {
     if (!date) return t('pages.prep.noDate')
+    
+    // Check if YYYY-MM-DD
+    if (date.match(/^\d{4}-\d{2}-\d{2}$/)) {
+      const parts = date.split('-')
+      const year = parseInt(parts[0], 10)
+      const month = parseInt(parts[1], 10) - 1
+      const day = parseInt(parts[2], 10)
+      const localDate = new Date(year, month, day)
+      
+      return localDate.toLocaleDateString(undefined, { 
+        weekday: 'short', 
+        month: 'short', 
+        day: 'numeric' 
+      })
+    }
+    
+    // Fallback for other formats
     return new Date(date).toLocaleDateString(undefined, { 
       weekday: 'short', 
       month: 'short', 
@@ -137,6 +180,91 @@ export function LessonPrepByClass() {
         </div>
       </Card>
     )
+  }
+
+  const handleEdit = (lesson: DailyPlanEntry) => {
+    setEditingId(lesson.id)
+    
+    // Ensure date is in YYYY-MM-DD format for the date input
+    let formattedDate = lesson.date || ''
+    if (formattedDate && !formattedDate.match(/^\d{4}-\d{2}-\d{2}$/)) {
+      // If date is not in YYYY-MM-DD format, try to parse and format it
+      const dateObj = new Date(formattedDate)
+      if (!isNaN(dateObj.getTime())) {
+        formattedDate = dateObj.toISOString().split('T')[0]
+      }
+    }
+    
+    setEditDate(formattedDate)
+    setEditTimeSlot(lesson.timeSlot || '')
+  }
+
+  const handleSaveEdit = (lessonId: string) => {
+    console.log('Attemping to save edit:', { lessonId, editDate, editTimeSlot })
+    
+    // Validate that we have values to save
+    if (!editDate.trim() || !editTimeSlot.trim()) {
+      import('sonner').then(({ toast }) => {
+        toast.error('Please fill in both date and time')
+      })
+      return
+    }
+
+    const updates = {
+      date: editDate.trim(),
+      timeSlot: editTimeSlot.trim(),
+    }
+    
+    console.log('Sending updates to store:', updates)
+    updatePlanEntry(lessonId, updates)
+    
+    // Reset edit state
+    setEditingId(null)
+    setEditDate('')
+    setEditTimeSlot('')
+    
+    // Show success toast
+    import('sonner').then(({ toast }) => {
+      toast.success(t('common.updateSuccess'))
+    })
+  }
+
+  const handleStatusChange = (lesson: DailyPlanEntry, newStatus: string) => {
+    const status = newStatus as DailyPlanEntry['status']
+    
+    // If status requires a note (custom or postponed), open dialog
+    if (status === 'custom' || status === 'postponed') {
+      setSelectedStatusLesson(lesson)
+      setPendingStatus(status)
+      setStatusNote(lesson.statusNote || '')
+      setStatusNoteOpen(true)
+      return
+    }
+
+    // Otherwise update directly
+    updatePlanEntry(lesson.id, { 
+      status,
+      statusNote: undefined 
+    })
+  }
+
+  const handleSaveStatusNote = () => {
+    if (selectedStatusLesson && pendingStatus) {
+      updatePlanEntry(selectedStatusLesson.id, {
+        status: pendingStatus,
+        statusNote: statusNote
+      })
+      setStatusNoteOpen(false)
+      setSelectedStatusLesson(null)
+      setPendingStatus(null)
+      setStatusNote('')
+    }
+  }
+
+  const handleCancelEdit = () => {
+    setEditingId(null)
+    setEditDate('')
+    setEditTimeSlot('')
   }
 
   return (
@@ -168,6 +296,9 @@ export function LessonPrepByClass() {
                   <TableHead>
                     {t('pages.prep.table.lessonTopic')}
                   </TableHead>
+                  <TableHead className="w-[140px]">
+                    {t('pages.prep.status.label')}
+                  </TableHead>
                   <TableHead className="w-[100px] text-center">
                     {t('common.actions')}
                   </TableHead>
@@ -176,7 +307,7 @@ export function LessonPrepByClass() {
               <TableBody>
                 {classLessons.length === 0 ? (
                   <TableRow>
-                    <TableCell colSpan={4} className="text-center py-8 text-muted-foreground">
+                    <TableCell colSpan={5} className="text-center py-8 text-muted-foreground">
                       <div className="space-y-4">
                         <p>{t('pages.prep.table.noLessons')}</p>
                     
@@ -187,10 +318,29 @@ export function LessonPrepByClass() {
                   classLessons.map((lesson) => (
                     <TableRow key={lesson.id}>
                       <TableCell className="font-medium">
-                        {formatDate(lesson.date)}
+                        {editingId === lesson.id ? (
+                          <Input
+                            type="date"
+                            value={editDate}
+                            onChange={(e) => setEditDate(e.target.value)}
+                            className="w-[150px]"
+                          />
+                        ) : (
+                          formatDate(lesson.date)
+                        )}
                       </TableCell>
                       <TableCell className="font-mono text-sm">
-                        {lesson.timeSlot}
+                        {editingId === lesson.id ? (
+                          <Input
+                            type="text"
+                            value={editTimeSlot}
+                            onChange={(e) => setEditTimeSlot(e.target.value)}
+                            placeholder="08:00-09:00"
+                            className="w-[120px]"
+                          />
+                        ) : (
+                          lesson.timeSlot
+                        )}
                       </TableCell>
                       <TableCell>
                         <div className="space-y-1">
@@ -218,15 +368,76 @@ export function LessonPrepByClass() {
                           )}
                         </div>
                       </TableCell>
-                      <TableCell className="text-center">
-                        <Button 
-                          variant="ghost" 
-                          size="sm"
-                          onClick={() => handleDelete(lesson.id)}
-                          className="text-destructive hover:text-destructive"
+                      <TableCell>
+                        <Select
+                          value={lesson.status || 'none'}
+                          onValueChange={(value) => handleStatusChange(lesson, value)}
                         >
-                          <Trash2 className="h-4 w-4" />
-                        </Button>
+                          <SelectTrigger className={`h-8 w-full ${
+                            lesson.status === 'completed' ? 'bg-green-100 text-green-800 border-green-200 dark:bg-green-900 dark:text-green-300 dark:border-green-800' :
+                            lesson.status === 'postponed' ? 'bg-orange-100 text-orange-800 border-orange-200 dark:bg-orange-900 dark:text-orange-300 dark:border-orange-800' :
+                            lesson.status === 'cancelled' ? 'bg-red-100 text-red-800 border-red-200 dark:bg-red-900 dark:text-red-300 dark:border-red-800' :
+                            lesson.status === 'custom' ? 'bg-blue-100 text-blue-800 border-blue-200 dark:bg-blue-900 dark:text-blue-300 dark:border-blue-800' :
+                            ''
+                          }`}>
+                            <SelectValue placeholder={t('pages.prep.status.none')} />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="none">{t('pages.prep.status.none')}</SelectItem>
+                            <SelectItem value="completed">{t('pages.prep.status.completed')}</SelectItem>
+                            <SelectItem value="postponed">{t('pages.prep.status.postponed')}</SelectItem>
+                            <SelectItem value="cancelled">{t('pages.prep.status.cancelled')}</SelectItem>
+                            <SelectItem value="custom">{t('pages.prep.status.custom')}</SelectItem>
+                          </SelectContent>
+                        </Select>
+                        {lesson.statusNote && (
+                          <p className="text-xs text-muted-foreground mt-1 truncate max-w-[120px]" title={lesson.statusNote}>
+                            {lesson.statusNote}
+                          </p>
+                        )}
+                      </TableCell>
+                      <TableCell className="text-center">
+                        <div className="flex items-center justify-center gap-1">
+                          {editingId === lesson.id ? (
+                            <>
+                              <Button 
+                                variant="ghost" 
+                                size="sm"
+                                onClick={() => handleSaveEdit(lesson.id)}
+                                className="text-green-600 hover:text-green-700"
+                              >
+                                <Check className="h-4 w-4" />
+                              </Button>
+                              <Button 
+                                variant="ghost" 
+                                size="sm"
+                                onClick={handleCancelEdit}
+                                className="text-muted-foreground hover:text-foreground"
+                              >
+                                <X className="h-4 w-4" />
+                              </Button>
+                            </>
+                          ) : (
+                            <>
+                              <Button 
+                                variant="ghost" 
+                                size="sm"
+                                onClick={() => handleEdit(lesson)}
+                                className="text-blue-600 hover:text-blue-700"
+                              >
+                                <Edit2 className="h-4 w-4" />
+                              </Button>
+                              <Button 
+                                variant="ghost" 
+                                size="sm"
+                                onClick={() => handleDelete(lesson.id)}
+                                className="text-destructive hover:text-destructive"
+                              >
+                                <Trash2 className="h-4 w-4" />
+                              </Button>
+                            </>
+                          )}
+                        </div>
                       </TableCell>
                     </TableRow>
                   ))
@@ -251,6 +462,40 @@ export function LessonPrepByClass() {
         templates={getAllLessonTemplates()}
         addedLessonTitles={addedLessonTitles}
       />
+
+      <Dialog open={statusNoteOpen} onOpenChange={setStatusNoteOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>
+              {pendingStatus === 'postponed' 
+                ? t('pages.prep.status.postponedReason') 
+                : t('pages.prep.status.addNote')}
+            </DialogTitle>
+            <DialogDescription>
+              {pendingStatus === 'postponed'
+                ? t('pages.prep.status.postponedPlaceholder')
+                : t('common.addNote')}
+            </DialogDescription>
+          </DialogHeader>
+          <div className="py-4">
+            <Textarea
+              value={statusNote}
+              onChange={(e) => setStatusNote(e.target.value)}
+              placeholder={t('common.typeHere')}
+              className="resize-none"
+              rows={3}
+            />
+          </div>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setStatusNoteOpen(false)}>
+              {t('common.cancel')}
+            </Button>
+            <Button onClick={handleSaveStatusNote}>
+              {t('common.save')}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </>
   )
 }
