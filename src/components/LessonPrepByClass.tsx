@@ -87,18 +87,48 @@ export function LessonPrepByClass() {
   }
 
   const handleTemplateSelected = (template: LessonTemplate) => {
-    // Open dialog with selected template and scheduling enabled
-    setDialogState({
-      open: true,
-      day: 'monday', // Default fallback
-      timeSlot: '08:00', // Default fallback
-      group: 'first',
-      prefilledClass: selectedClass,
-      existingLesson: undefined,
-      initialTemplate: template,
+    // Add lesson directly without opening dialog
+    const lessonData = {
+      day: 'monday' as DailyPlanEntry['day'], // Default
+      timeSlot: '08:00-09:00', // Default
+      class: selectedClass,
+      lessonTitle: template.lessonTitle,
+      lessonContent: template.lessonContent,
+      practiceNotes: template.practiceNotes,
+      date: new Date().toISOString().split('T')[0], // Today's date
+      field: template.field,
+      learningSegment: template.learningSegment,
+      knowledgeResource: template.knowledgeResource,
+      lessonElements: [...template.lessonElements],
+      assessment: template.assessment,
+      mode: 'fullClass' as DailyPlanEntry['mode'],
+      group: undefined,
+      status: undefined,
+      statusNote: '',
+    }
+
+    // Check for duplicates
+    const isDuplicate = planEntries.some(entry => 
+      entry.class === lessonData.class && 
+      entry.lessonTitle === lessonData.lessonTitle
+    )
+
+    if (isDuplicate) {
+      import('sonner').then(({ toast }) => {
+        toast.error(t('pages.prep.lessonAlreadyAssigned'))
+      })
+      return
+    }
+
+    // Add the lesson
+    addPlanEntry(lessonData)
+
+    // Show success toast
+    import('sonner').then(({ toast }) => {
+      toast.success(t('pages.prep.addLesson'), {
+        description: template.lessonTitle,
+      })
     })
-    
-    setSelectorOpen(false)
   }
 
   const handleDelete = (id: string) => {
