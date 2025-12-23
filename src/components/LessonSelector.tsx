@@ -57,7 +57,7 @@ export function LessonSelector({
 
   const handleSelect = (template: LessonTemplate) => {
     onSelect(template)
-    onOpenChange(false)
+    // Don't close the dialog - allow adding multiple lessons
   }
 
   return (
