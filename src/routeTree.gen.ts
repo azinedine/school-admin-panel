@@ -25,6 +25,7 @@ import { Route as AuthenticatedAttendanceIndexRouteImport } from './routes/_auth
 import { Route as AuthenticatedAssignmentsIndexRouteImport } from './routes/_authenticated/assignments/index'
 import { Route as AuthenticatedAnalyticsIndexRouteImport } from './routes/_authenticated/analytics/index'
 import { Route as AuthenticatedActivitiesIndexRouteImport } from './routes/_authenticated/activities/index'
+import { Route as AuthenticatedPrepAddLessonRouteImport } from './routes/_authenticated/prep/add-lesson'
 
 const AuthenticatedRouteRoute = AuthenticatedRouteRouteImport.update({
   id: '/_authenticated',
@@ -116,9 +117,16 @@ const AuthenticatedActivitiesIndexRoute =
     path: '/activities/',
     getParentRoute: () => AuthenticatedRouteRoute,
   } as any)
+const AuthenticatedPrepAddLessonRoute =
+  AuthenticatedPrepAddLessonRouteImport.update({
+    id: '/prep/add-lesson',
+    path: '/prep/add-lesson',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof AuthenticatedIndexRoute
+  '/prep/add-lesson': typeof AuthenticatedPrepAddLessonRoute
   '/activities': typeof AuthenticatedActivitiesIndexRoute
   '/analytics': typeof AuthenticatedAnalyticsIndexRoute
   '/assignments': typeof AuthenticatedAssignmentsIndexRoute
@@ -136,6 +144,7 @@ export interface FileRoutesByFullPath {
 }
 export interface FileRoutesByTo {
   '/': typeof AuthenticatedIndexRoute
+  '/prep/add-lesson': typeof AuthenticatedPrepAddLessonRoute
   '/activities': typeof AuthenticatedActivitiesIndexRoute
   '/analytics': typeof AuthenticatedAnalyticsIndexRoute
   '/assignments': typeof AuthenticatedAssignmentsIndexRoute
@@ -155,6 +164,7 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/_authenticated': typeof AuthenticatedRouteRouteWithChildren
   '/_authenticated/': typeof AuthenticatedIndexRoute
+  '/_authenticated/prep/add-lesson': typeof AuthenticatedPrepAddLessonRoute
   '/_authenticated/activities/': typeof AuthenticatedActivitiesIndexRoute
   '/_authenticated/analytics/': typeof AuthenticatedAnalyticsIndexRoute
   '/_authenticated/assignments/': typeof AuthenticatedAssignmentsIndexRoute
@@ -174,6 +184,7 @@ export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/prep/add-lesson'
     | '/activities'
     | '/analytics'
     | '/assignments'
@@ -191,6 +202,7 @@ export interface FileRouteTypes {
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
+    | '/prep/add-lesson'
     | '/activities'
     | '/analytics'
     | '/assignments'
@@ -209,6 +221,7 @@ export interface FileRouteTypes {
     | '__root__'
     | '/_authenticated'
     | '/_authenticated/'
+    | '/_authenticated/prep/add-lesson'
     | '/_authenticated/activities/'
     | '/_authenticated/analytics/'
     | '/_authenticated/assignments/'
@@ -343,11 +356,19 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedActivitiesIndexRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/prep/add-lesson': {
+      id: '/_authenticated/prep/add-lesson'
+      path: '/prep/add-lesson'
+      fullPath: '/prep/add-lesson'
+      preLoaderRoute: typeof AuthenticatedPrepAddLessonRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
   }
 }
 
 interface AuthenticatedRouteRouteChildren {
   AuthenticatedIndexRoute: typeof AuthenticatedIndexRoute
+  AuthenticatedPrepAddLessonRoute: typeof AuthenticatedPrepAddLessonRoute
   AuthenticatedActivitiesIndexRoute: typeof AuthenticatedActivitiesIndexRoute
   AuthenticatedAnalyticsIndexRoute: typeof AuthenticatedAnalyticsIndexRoute
   AuthenticatedAssignmentsIndexRoute: typeof AuthenticatedAssignmentsIndexRoute
@@ -366,6 +387,7 @@ interface AuthenticatedRouteRouteChildren {
 
 const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedIndexRoute: AuthenticatedIndexRoute,
+  AuthenticatedPrepAddLessonRoute: AuthenticatedPrepAddLessonRoute,
   AuthenticatedActivitiesIndexRoute: AuthenticatedActivitiesIndexRoute,
   AuthenticatedAnalyticsIndexRoute: AuthenticatedAnalyticsIndexRoute,
   AuthenticatedAssignmentsIndexRoute: AuthenticatedAssignmentsIndexRoute,
