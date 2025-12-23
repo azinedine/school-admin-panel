@@ -12,7 +12,9 @@
         "loading": "جاري التحميل...",
         "noResults": "لم يتم العثور على نتائج",
         "updateSuccess": "تم التحديث بنجاح",
-        "actions": "إجراءات"
+        "actions": "إجراءات",
+        "addNote": "إضافة ملاحظة",
+        "typeHere": "اكتب هنا..."
     },
     "nav": {
         "mainMenu": "القائمة الرئيسية",
@@ -312,9 +314,11 @@
             "status": {
                 "label": "الحالة",
                 "none": "بدون حالة",
-                "completed": "الدرس مكتمل",
+                "completed": "تم",
                 "postponed": "مؤجل",
-                "deleted": "محذوف من الجدول",
+                "cancelled": "تجاهل",
+                "custom": "أخرى",
+                "addNote": "إضافة ملاحظة",
                 "postponedReason": "سبب التأجيل",
                 "deletedReason": "سبب الحذف",
                 "postponedPlaceholder": "اشرح سبب تأجيل الدرس...",

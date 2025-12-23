@@ -12,7 +12,9 @@
         "loading": "Loading...",
         "noResults": "No results found",
         "updateSuccess": "Updated successfully",
-        "actions": "Actions"
+        "actions": "Actions",
+        "addNote": "Add Note",
+        "typeHere": "Type here..."
     },
     "nav": {
         "mainMenu": "Main menu",
@@ -312,9 +314,11 @@
             "status": {
                 "label": "Status",
                 "none": "No status",
-                "completed": "Lesson completed",
-                "postponed": "Postponed",
-                "deleted": "Deleted from schedule",
+                "completed": "Done",
+                "postponed": "Reported",
+                "cancelled": "Ignored",
+                "custom": "Other",
+                "addNote": "Add Note",
                 "postponedReason": "Reason for postponement",
                 "deletedReason": "Reason for deletion",
                 "postponedPlaceholder": "Explain why the lesson was postponed...",

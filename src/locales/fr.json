@@ -12,7 +12,9 @@
         "loading": "Chargement...",
         "noResults": "Aucun résultat trouvé",
         "updateSuccess": "Mis à jour avec succès",
-        "actions": "Actions"
+        "actions": "Actions",
+        "addNote": "Ajouter une note",
+        "typeHere": "Écrivez ici..."
     },
     "nav": {
         "mainMenu": "Menu principal",
@@ -312,9 +314,11 @@
             "status": {
                 "label": "Statut",
                 "none": "Aucun statut",
-                "completed": "Cours terminé",
+                "completed": "Fait",
                 "postponed": "Reporté",
-                "deleted": "Supprimé du programme",
+                "cancelled": "Ignoré",
+                "custom": "Autre",
+                "addNote": "Ajouter une note",
                 "postponedReason": "Raison du report",
                 "deletedReason": "Raison de la suppression",
                 "postponedPlaceholder": "Expliquez pourquoi le cours a été reporté...",
