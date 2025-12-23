@@ -24,22 +24,34 @@ interface DailyPlannerTableProps {
   selectedDay: DailyPlanEntry['day']
 }
 
-const GROUPS: DailyPlanEntry['group'][] = ['first', 'second']
-
 export function DailyPlannerTable({ selectedDay }: DailyPlannerTableProps) {
   const { t } = useTranslation()
-  const { getTimetableByDay, getPlanByDayAndSlot, addPlanEntry, updatePlanEntry, deletePlanEntry } = usePrepStore()
+  const { 
+    getTimetableByDay, 
+    getPlanByDay,
+    addPlanEntry, 
+    updatePlanEntry, 
+    deletePlanEntry,
+  } = usePrepStore()
   
   // Get timetable slots for selected day
   const timetableSlots = useMemo(() => {
     return getTimetableByDay(selectedDay)
   }, [selectedDay, getTimetableByDay])
 
-  // Get unique time slots for this day
-  const timeSlots = useMemo(() => {
-    const slots = Array.from(new Set(timetableSlots.map(slot => slot.timeSlot)))
-    return slots.sort() // Sort chronologically
-  }, [timetableSlots])
+  // Get all lessons for this day
+  const dayLessons = useMemo(() => {
+    return getPlanByDay(selectedDay).sort((a, b) => {
+      // Sort by time slot first
+      if (a.timeSlot < b.timeSlot) return -1
+      if (a.timeSlot > b.timeSlot) return 1
+      // Then by date if available
+      if (a.date && b.date) {
+        return a.date.localeCompare(b.date)
+      }
+      return 0
+    })
+  }, [selectedDay, getPlanByDay])
   
   const [dialogState, setDialogState] = useState<{
     open: boolean
@@ -50,113 +62,48 @@ export function DailyPlannerTable({ selectedDay }: DailyPlannerTableProps) {
     existingLesson?: DailyPlanEntry
   } | null>(null)
 
-  const handleCellClick = (
-    timeSlot: string,
-    group: string,
-    prefilledClass?: string
-  ) => {
-    const existing = getPlanByDayAndSlot(selectedDay, timeSlot, group)
+  const handleAddLesson = () => {
+    // For adding, use first available timetable slot
+    const firstSlot = timetableSlots[0]
+    if (firstSlot) {
+      setDialogState({
+        open: true,
+        day: selectedDay,
+        timeSlot: firstSlot.timeSlot,
+        group: firstSlot.group || 'first',
+        prefilledClass: firstSlot.class,
+        existingLesson: undefined,
+      })
+    }
+  }
+
+  const handleEditLesson = (lesson: DailyPlanEntry) => {
     setDialogState({
       open: true,
-      day: selectedDay,
-      timeSlot,
-      group,
-      prefilledClass,
-      existingLesson: existing,
+      day: lesson.day,
+      timeSlot: lesson.timeSlot,
+      group: lesson.group || 'first',
+      prefilledClass: lesson.class,
+      existingLesson: lesson,
     })
   }
 
-  const handleDelete = (id: string, e: React.MouseEvent) => {
-    e.stopPropagation()
+  const handleDelete = (id: string) => {
     deletePlanEntry(id)
   }
 
-  // Get timetable entry for specific slot and group
-  const getTimetableSlot = (timeSlot: string, group: string) => {
-    return timetableSlots.find(t => t.timeSlot === timeSlot && t.group === group)
-  }
-
-  const renderCell = (timeSlot: string, group: string) => {
-    const timetableEntry = getTimetableSlot(timeSlot, group)
-    const lesson = getPlanByDayAndSlot(selectedDay, timeSlot, group)
-
-    // If no timetable entry for this slot/group combo, show empty
-    if (!timetableEntry) {
-      return (
-        <div className="min-h-[80px] p-2 flex items-center justify-center">
-          <span className="text-xs text-muted-foreground">-</span>
-        </div>
-      )
-    }
-
-    // If we have a lesson, show it
-    if (lesson) {
-      return (
-        <div className="min-h-[80px] p-2 group relative">
-          <div className="space-y-1">
-            <div className="flex items-start justify-between gap-2">
-              <div className="flex-1 min-w-0">
-                <p className="font-semibold text-sm truncate">{lesson.class}</p>
-                <p className="text-sm text-foreground truncate">{lesson.lessonTitle}</p>
-                {lesson.lessonContent && (
-                  <p className="text-xs text-muted-foreground line-clamp-2 mt-1">
-                    {lesson.lessonContent}
-                  </p>
-                )}
-              </div>
-              <DropdownMenu>
-                <DropdownMenuTrigger asChild onClick={(e) => e.stopPropagation()}>
-                  <Button 
-                    variant="ghost" 
-                    size="icon" 
-                    className="h-6 w-6 opacity-0 group-hover:opacity-100 transition-opacity"
-                  >
-                    <Edit className="h-3 w-3" />
-                  </Button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent align="end">
-                  <DropdownMenuItem onClick={() => handleCellClick(timeSlot, group, timetableEntry.class)}>
-                    <Edit className="h-4 w-4 ltr:mr-2 rtl:ml-2" />
-                    {t('common.edit')}
-                  </DropdownMenuItem>
-                  <DropdownMenuItem 
-                    onClick={(e) => handleDelete(lesson.id, e)}
-                    className="text-destructive focus:text-destructive"
-                  >
-                    <Trash2 className="h-4 w-4 ltr:mr-2 rtl:ml-2" />
-                    {t('common.delete')}
-                  </DropdownMenuItem>
-                </DropdownMenuContent>
-              </DropdownMenu>
-            </div>
-          </div>
-        </div>
-      )
-    }
-
-    // Show empty slot with timetable info (class from timetable)
-    return (
-      <div 
-        className="min-h-[80px] p-2 flex flex-col justify-center cursor-pointer hover:bg-muted/50 transition-colors rounded"
-        onClick={() => handleCellClick(timeSlot, group, timetableEntry.class)}
-      >
-        <div className="text-center space-y-1">
-          <p className="text-xs font-semibold text-muted-foreground">{timetableEntry.class}</p>
-          <Button
-            variant="ghost"
-            size="sm"
-            className="w-full text-muted-foreground hover:text-foreground"
-          >
-            <Plus className="h-3 w-3 ltr:mr-1 rtl:ml-1" />
-            <span className="text-xs">{t('pages.prep.emptySlot')}</span>
-          </Button>
-        </div>
-      </div>
-    )
+  // Format date for display
+  const formatDate = (date?: string) => {
+    if (!date) return t('pages.prep.noDate')
+    return new Date(date).toLocaleDateString(undefined, { 
+      weekday: 'short', 
+      month: 'short', 
+      day: 'numeric' 
+    })
   }
 
   // Show message if no timetable slots for this day
-  if (timeSlots.length === 0) {
+  if (timetableSlots.length === 0) {
     return (
       <Card className="p-8">
         <div className="text-center text-muted-foreground">
@@ -173,34 +120,92 @@ export function DailyPlannerTable({ selectedDay }: DailyPlannerTableProps) {
           <Table>
             <TableHeader>
               <TableRow>
-                <TableHead className="w-[150px] text-center font-bold">
-                  {t('pages.prep.timeSlot')}
+                <TableHead className="w-[150px]">
+                  {t('pages.prep.table.date')}
                 </TableHead>
-                {GROUPS.map((group) => (
-                  <TableHead key={group} className="text-center font-bold min-w-[300px]">
-                    {t(`pages.prep.groups.${group}`)}
-                  </TableHead>
-                ))}
+                <TableHead className="w-[150px]">
+                  {t('pages.prep.table.time')}
+                </TableHead>
+                <TableHead>
+                  {t('pages.prep.table.lessonTopic')}
+                </TableHead>
+                <TableHead className="w-[100px] text-center">
+                  {t('common.actions')}
+                </TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
-              {timeSlots.map((timeSlot) => (
-                <TableRow key={timeSlot}>
-                  <TableCell className="text-center font-semibold bg-muted/30">
-                    {timeSlot}
+              {dayLessons.length === 0 ? (
+                <TableRow>
+                  <TableCell colSpan={4} className="text-center py-8 text-muted-foreground">
+                    <div className="space-y-4">
+                      <p>{t('pages.prep.table.noLessons')}</p>
+                      <Button onClick={handleAddLesson} variant="outline" size="sm">
+                        <Plus className="h-4 w-4 ltr:mr-2 rtl:ml-2" />
+                        {t('pages.prep.table.addFirstLesson')}
+                      </Button>
+                    </div>
                   </TableCell>
-                  {GROUPS.map((group) => (
-                    <TableCell
-                      key={`${timeSlot}-${group}`}
-                    >
-                      {renderCell(timeSlot, group)}
-                    </TableCell>
-                  ))}
                 </TableRow>
-              ))}
+              ) : (
+                dayLessons.map((lesson) => (
+                  <TableRow key={lesson.id}>
+                    <TableCell className="font-medium">
+                      {formatDate(lesson.date)}
+                    </TableCell>
+                    <TableCell className="font-mono text-sm">
+                      {lesson.timeSlot}
+                    </TableCell>
+                    <TableCell>
+                      <div className="space-y-1">
+                        <p className="font-semibold">{lesson.lessonTitle}</p>
+                        {lesson.class && (
+                          <p className="text-xs text-muted-foreground">
+                            {lesson.class}
+                            {lesson.group && lesson.mode === 'groups' && 
+                              ` • ${t(`pages.prep.groups.${lesson.group}`)}`
+                            }
+                          </p>
+                        )}
+                      </div>
+                    </TableCell>
+                    <TableCell>
+                      <DropdownMenu>
+                        <DropdownMenuTrigger asChild>
+                          <Button variant="ghost" size="sm">
+                            <Edit className="h-4 w-4" />
+                          </Button>
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent align="end">
+                          <DropdownMenuItem onClick={() => handleEditLesson(lesson)}>
+                            <Edit className="h-4 w-4 ltr:mr-2 rtl:ml-2" />
+                            {t('common.edit')}
+                          </DropdownMenuItem>
+                          <DropdownMenuItem 
+                            onClick={() => handleDelete(lesson.id)}
+                            className="text-destructive"
+                          >
+                            <Trash2 className="h-4 w-4 ltr:mr-2 rtl:ml-2" />
+                            {t('common.delete')}
+                          </DropdownMenuItem>
+                        </DropdownMenuContent>
+                      </DropdownMenu>
+                    </TableCell>
+                  </TableRow>
+                ))
+              )}
             </TableBody>
           </Table>
         </div>
+        
+        {dayLessons.length > 0 && (
+          <div className="p-4 border-t">
+            <Button onClick={handleAddLesson} variant="outline" size="sm">
+              <Plus className="h-4 w-4 ltr:mr-2 rtl:ml-2" />
+              {t('pages.prep.table.addLesson')}
+            </Button>
+          </div>
+        )}
       </Card>
 
       {dialogState && (
