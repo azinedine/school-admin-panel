@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
-import { Plus, Trash2, X } from 'lucide-react'
+import { Plus, Trash2, X, BookOpen } from 'lucide-react'
 import {
   Dialog,
   DialogContent,
@@ -19,7 +19,8 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select'
-import { type DailyPlanEntry, usePrepStore } from '@/store/prep-store'
+import { type DailyPlanEntry, usePrepStore, type LessonTemplate } from '@/store/prep-store'
+import { LessonSelector } from './LessonSelector'
 
 interface LessonDetailDialogProps {
   open: boolean
@@ -47,7 +48,9 @@ export function LessonDetailDialog({
   const { t } = useTranslation()
   const getAllLessonTemplates = usePrepStore((state) => state.getAllLessonTemplates)
   
-  const [selectedTemplateId, setSelectedTemplateId] = useState<string | null>(null)
+  const [selectorOpen, setSelectorOpen] = useState(false)
+  const [selectedTemplate, setSelectedTemplate] = useState<LessonTemplate | null>(null)
+  
   const [formData, setFormData] = useState({
     class: '',
     lessonTitle: '',
@@ -102,36 +105,28 @@ export function LessonDetailDialog({
       })
     }
     // Reset template selection when dialog opens
-    setSelectedTemplateId(null)
+    setSelectedTemplate(null)
   }, [existingLesson, prefilledClass, open])
 
   // Handle template selection
-  const handleTemplateSelect = (templateId: string) => {
-    if (templateId === 'none') {
-      setSelectedTemplateId(null)
-      return
-    }
-
-    const template = allTemplates.find((t) => t.id === templateId)
-    if (template) {
-      setSelectedTemplateId(templateId)
-      setFormData((prev) => ({
-        ...prev,
-        lessonTitle: template.lessonTitle,
-        field: template.field,
-        learningSegment: template.learningSegment,
-        knowledgeResource: template.knowledgeResource,
-        lessonElements: [...template.lessonElements],
-        assessment: template.assessment,
-        lessonContent: template.lessonContent,
-        practiceNotes: template.practiceNotes,
-      }))
-    }
+  const handleTemplateSelect = (template: LessonTemplate) => {
+    setSelectedTemplate(template)
+    setFormData((prev) => ({
+      ...prev,
+      lessonTitle: template.lessonTitle,
+      field: template.field,
+      learningSegment: template.learningSegment,
+      knowledgeResource: template.knowledgeResource,
+      lessonElements: [...template.lessonElements],
+      assessment: template.assessment,
+      lessonContent: template.lessonContent,
+      practiceNotes: template.practiceNotes,
+    }))
   }
 
   // Clear template selection
   const handleClearTemplate = () => {
-    setSelectedTemplateId(null)
+    setSelectedTemplate(null)
     setFormData((prev) => ({
       ...prev,
       lessonTitle: '',
@@ -183,46 +178,46 @@ export function LessonDetailDialog({
               <h3 className="text-sm font-semibold text-foreground">
                 {t('pages.prep.templateSection')}
               </h3>
-              <div className="flex gap-2">
+              <div className="flex gap-2 items-center">
                 <div className="flex-1">
-                  <Select
-                    value={selectedTemplateId || 'none'}
-                    onValueChange={handleTemplateSelect}
-                  >
-                    <SelectTrigger>
-                      <SelectValue placeholder={t('pages.prep.selectTemplatePlaceholder')} />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="none">
-                        {t('pages.prep.selectTemplate')}
-                      </SelectItem>
-                      {availableTemplates.map((template) => (
-                        <SelectItem key={template.id} value={template.id}>
-                          {template.lessonTitle} ({t(`pages.addLesson.years.${template.academicYear}`)})
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
+                   {selectedTemplate ? (
+                    <div className="flex items-center justify-between p-2 border rounded-md bg-muted/50">
+                      <div className="flex flex-col">
+                        <span className="font-medium text-sm">{selectedTemplate.lessonTitle}</span>
+                        <span className="text-xs text-muted-foreground">{selectedTemplate.field}</span>
+                      </div>
+                      <Button
+                        type="button"
+                        variant="ghost"
+                        size="sm"
+                        onClick={handleClearTemplate}
+                        className="h-8 w-8 p-0"
+                      >
+                         <X className="h-4 w-4" />
+                      </Button>
+                    </div>
+                   ) : (
+                    <Button
+                      type="button"
+                      variant="outline"
+                      className="w-full justify-start text-muted-foreground"
+                      onClick={() => setSelectorOpen(true)}
+                    >
+                      <BookOpen className="w-4 h-4 mr-2 rtl:ml-2" />
+                      {t('pages.prep.selectFromLibrary')}
+                    </Button>
+                   )}
                 </div>
-                {selectedTemplateId && (
-                  <Button
-                    type="button"
-                    variant="outline"
-                    size="icon"
-                    onClick={handleClearTemplate}
-                    title={t('pages.prep.clearTemplate')}
-                  >
-                    <X className="h-4 w-4" />
-                  </Button>
-                )}
               </div>
-              {!selectedTemplateId && (
-                <p className="text-xs text-muted-foreground">
-                  {t('pages.prep.selectTemplatePlaceholder')}
-                </p>
-              )}
             </div>
           )}
+
+          <LessonSelector
+            open={selectorOpen}
+            onOpenChange={setSelectorOpen}
+            onSelect={handleTemplateSelect}
+            templates={availableTemplates}
+          />
 
           {/* Section 1: Basic Information */}
           <div className="space-y-4">
