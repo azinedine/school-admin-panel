@@ -274,10 +274,23 @@
                     "group": "Groupe",
                     "save": "Enregistrer l'emploi du temps",
                     "selectClass": "Sélectionner une classe",
+                    "useGroups": "Diviser en groupes",
                     "noClassesAvailable": "Aucune classe disponible. Veuillez d'abord créer des classes.",
                     "createClassesFirst": "Vous devez créer au moins une classe dans la section Notes avant de configurer votre emploi du temps."
                 },
                 "noSlotsForDay": "Aucun créneau d'enseignement prévu pour ce jour"
+            },
+            "termSetup": {
+                "title": "Définir les dates du trimestre",
+                "description": "Définissez les dates de début et de fin du trimestre scolaire pour organiser les cours par semaines",
+                "startDate": "Date de début du trimestre",
+                "endDate": "Date de fin du trimestre",
+                "weekCount": "Ce trimestre aura {{count}} semaines",
+                "errors": {
+                    "required": "Les dates de début et de fin sont requises",
+                    "invalidRange": "La date de fin doit être postérieure à la date de début",
+                    "tooLong": "Le trimestre ne peut pas dépasser 52 semaines"
+                }
             }
         }
     }

@@ -274,10 +274,23 @@
                     "group": "Group",
                     "save": "Save Timetable",
                     "selectClass": "Select a class",
+                    "useGroups": "Divide into groups",
                     "noClassesAvailable": "No classes available. Please create classes first.",
                     "createClassesFirst": "You must create at least one class in the Grades section before setting up your timetable."
                 },
                 "noSlotsForDay": "No teaching slots scheduled for this day"
+            },
+            "termSetup": {
+                "title": "Set Term Dates",
+                "description": "Define the start and end dates for the school term to organize lessons by weeks",
+                "startDate": "Term Start Date",
+                "endDate": "Term End Date",
+                "weekCount": "This term will have {{count}} weeks",
+                "errors": {
+                    "required": "Both start and end dates are required",
+                    "invalidRange": "End date must be after start date",
+                    "tooLong": "Term cannot exceed 52 weeks"
+                }
             }
         }
     }
