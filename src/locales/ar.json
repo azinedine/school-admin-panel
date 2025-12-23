@@ -280,6 +280,12 @@
                 "first": "المجموعة الأولى",
                 "second": "المجموعة الثانية"
             },
+            "selectFromLibrary": "اختر من المكتبة",
+            "searchLessons": "البحث عن الدروس...",
+            "filterBySubject": "تصفية حسب المادة",
+            "allSubjects": "جميع المواد",
+            "noLessonsFound": "لم يتم العثور على دروس",
+            "select": "اختر",
             "timeSlot": "الفترة الزمنية",
             "addLesson": "إضافة درس",
             "editLesson": "تعديل الدرس",

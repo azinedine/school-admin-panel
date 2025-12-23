@@ -280,6 +280,12 @@
                 "first": "First Group",
                 "second": "Second Group"
             },
+            "selectFromLibrary": "Select from Library",
+            "searchLessons": "Search lessons...",
+            "filterBySubject": "Filter by Subject",
+            "allSubjects": "All Subjects",
+            "noLessonsFound": "No lessons found",
+            "select": "Select",
             "timeSlot": "Time Slot",
             "addLesson": "Add Lesson",
             "editLesson": "Edit Lesson",

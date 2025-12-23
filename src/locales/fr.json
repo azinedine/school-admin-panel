@@ -280,6 +280,12 @@
                 "first": "Premier groupe",
                 "second": "Deuxième groupe"
             },
+            "selectFromLibrary": "Sélectionner dans la bibliothèque",
+            "searchLessons": "Rechercher des cours...",
+            "filterBySubject": "Filtrer par matière",
+            "allSubjects": "Toutes les matières",
+            "noLessonsFound": "Aucun cours trouvé",
+            "select": "Sélectionner",
             "timeSlot": "Créneau horaire",
             "addLesson": "Ajouter un cours",
             "editLesson": "Modifier le cours",
