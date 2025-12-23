@@ -14,7 +14,9 @@
         "mainMenu": "Main menu",
         "settingsAndNews": "Settings and news",
         "overview": "Overview",
-        "classPreparation": "Class Preparation",
+        "lessonManagement": "Lesson Management",
+        "addLesson": "Add Lesson",
+        "lessonPreparation": "Lesson Preparation",
         "attendance": "Attendance",
         "exams": "Exams",
         "assignmentManagement": "Assignment management",
@@ -312,6 +314,41 @@
                     "invalidRange": "End date must be after start date",
                     "tooLong": "Term cannot exceed 52 weeks"
                 }
+            },
+            "lessonStructure": {
+                "title": "Lesson Structure",
+                "field": "Field / Subject Area",
+                "fieldPlaceholder": "Enter the field",
+                "learningSegment": "Learning Segment",
+                "learningSegmentPlaceholder": "Enter the learning segment",
+                "knowledgeResource": "Knowledge Resource",
+                "knowledgeResourcePlaceholder": "Enter the knowledge resource"
+            },
+            "lessonElements": {
+                "title": "Lesson Elements",
+                "addElement": "Add Element",
+                "removeElement": "Remove Element",
+                "elementPlaceholder": "Enter lesson element",
+                "noElements": "No elements yet. Add your first lesson element.",
+                "elementNumber": "Element {{number}}"
+            },
+            "assessment": "Assessment / Evaluation",
+            "assessmentPlaceholder": "Enter assessment and evaluation notes",
+            "sections": {
+                "basicInfo": "Basic Information",
+                "structure": "Lesson Structure",
+                "elements": "Lesson Elements",
+                "contentEvaluation": "Content & Evaluation"
+            },
+            "addLesson": {
+                "title": "Add New Lesson",
+                "description": "Create a new lesson with all required details",
+                "selectClass": "Select Class",
+                "selectClassPlaceholder": "Select a class",
+                "success": "Lesson added successfully",
+                "addAnother": "Add Another Lesson",
+                "viewPreparation": "View Preparation",
+                "noClassesAvailable": "No classes available. Please create a class first in the Grades page."
             }
         }
     }

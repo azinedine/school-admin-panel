@@ -14,7 +14,9 @@
         "mainMenu": "القائمة الرئيسية",
         "settingsAndNews": "الإعدادات والأخبار",
         "overview": "نظرة عامة",
-        "classPreparation": "تحضير الدروس",
+        "lessonManagement": "إدارة الدروس",
+        "addLesson": "إضافة درس",
+        "lessonPreparation": "تحضير الدروس",
         "attendance": "الحضور",
         "exams": "الامتحانات",
         "assignmentManagement": "إدارة الواجبات",
@@ -229,6 +231,16 @@
                 "year": "السنة الدراسية",
                 "term": "الفصل"
             }
+        },
+        "addLesson": {
+            "title": "إضافة درس جديد",
+            "description": "إنشاء درس جديد مع جميع التفاصيل المطلوبة",
+            "selectClass": "اختر الصف",
+            "selectClassPlaceholder": "اختر صفًا",
+            "success": "تم إضافة الدرس بنجاح",
+            "addAnother": "إضافة درس آخر",
+            "viewPreparation": "عرض التحضير",
+            "noClassesAvailable": "لا توجد صفوف متاحة. يرجى إنشاء صف أولاً في صفحة الصفوف."
         },
         "prep": {
             "title": "تحضير الدروس",

@@ -14,7 +14,9 @@
         "mainMenu": "Menu principal",
         "settingsAndNews": "Paramètres et actualités",
         "overview": "Aperçu",
-        "classPreparation": "Préparation de cours",
+        "lessonManagement": "Gestion des cours",
+        "addLesson": "Ajouter un cours",
+        "lessonPreparation": "Préparation de cours",
         "attendance": "Présence",
         "exams": "Examens",
         "assignmentManagement": "Gestion des devoirs",
@@ -229,6 +231,16 @@
                 "year": "Année académique",
                 "term": "Trimestre"
             }
+        },
+        "addLesson": {
+            "title": "Ajouter un nouveau cours",
+            "description": "Créer un nouveau cours avec tous les détails requis",
+            "selectClass": "Sélectionner la classe",
+            "selectClassPlaceholder": "Sélectionner une classe",
+            "success": "Cours ajouté avec succès",
+            "addAnother": "Ajouter un autre cours",
+            "viewPreparation": "Voir la préparation",
+            "noClassesAvailable": "Aucune classe disponible. Veuillez d'abord créer une classe dans la page Classes."
         },
         "prep": {
             "title": "Préparation des cours",
