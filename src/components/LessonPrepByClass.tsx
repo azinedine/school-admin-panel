@@ -1,6 +1,6 @@
 import { useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { Edit2, Trash2, Plus } from 'lucide-react'
+import { Trash2, Plus } from 'lucide-react'
 import {
   Table,
   TableBody,
@@ -14,21 +14,15 @@ import { Card } from '@/components/ui/card'
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { usePrepStore, type DailyPlanEntry, type LessonTemplate } from '@/store/prep-store'
 import { useGradesStore } from '@/store/grades-store'
-import { LessonDetailDialog } from './LessonDetailDialog'
+
 import { LessonSelector } from './LessonSelector'
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu'
+
 
 export function LessonPrepByClass() {
   const { t } = useTranslation()
   const { 
     planEntries,
     addPlanEntry, 
-    updatePlanEntry, 
     deletePlanEntry,
     getAllLessonTemplates,
   } = usePrepStore()
@@ -44,15 +38,7 @@ export function LessonPrepByClass() {
   const [selectedClass, setSelectedClass] = useState<string>(classes[0] || '')
   const [selectorOpen, setSelectorOpen] = useState(false)
   
-  const [dialogState, setDialogState] = useState<{
-    open: boolean
-    day: string
-    timeSlot: string
-    group: string
-    prefilledClass?: string
-    existingLesson?: DailyPlanEntry
-    initialTemplate?: LessonTemplate | null
-  } | null>(null)
+
 
   // Get lessons for selected class
   const classLessons = useMemo(() => {
@@ -71,16 +57,14 @@ export function LessonPrepByClass() {
       })
   }, [planEntries, selectedClass])
 
-  const handleEditLesson = (lesson: DailyPlanEntry) => {
-    setDialogState({
-      open: true,
-      day: lesson.day,
-      timeSlot: lesson.timeSlot,
-      group: lesson.group || 'first',
-      prefilledClass: lesson.class,
-      existingLesson: lesson,
-    })
-  }
+  // Get list of already-added lesson titles for the selected class
+  const addedLessonTitles = useMemo(() => {
+    return planEntries
+      .filter(entry => entry.class === selectedClass)
+      .map(entry => entry.lessonTitle)
+  }, [planEntries, selectedClass])
+
+
 
   const handleAddLesson = () => {
     setSelectorOpen(true)
@@ -238,26 +222,14 @@ export function LessonPrepByClass() {
                         </div>
                       </TableCell>
                       <TableCell>
-                        <DropdownMenu>
-                          <DropdownMenuTrigger asChild>
-                            <Button variant="ghost" size="sm">
-                              <Edit2 className="h-4 w-4" />
-                            </Button>
-                          </DropdownMenuTrigger>
-                          <DropdownMenuContent align="end">
-                            <DropdownMenuItem onClick={() => handleEditLesson(lesson)}>
-                              <Edit2 className="h-4 w-4 ltr:mr-2 rtl:ml-2" />
-                              {t('common.edit')}
-                            </DropdownMenuItem>
-                            <DropdownMenuItem 
-                              onClick={() => handleDelete(lesson.id)}
-                              className="text-destructive"
-                            >
-                              <Trash2 className="h-4 w-4 ltr:mr-2 rtl:ml-2" />
-                              {t('common.delete')}
-                            </DropdownMenuItem>
-                          </DropdownMenuContent>
-                        </DropdownMenu>
+                        <Button 
+                          variant="ghost" 
+                          size="sm"
+                          onClick={() => handleDelete(lesson.id)}
+                          className="text-destructive hover:text-destructive"
+                        >
+                          <Trash2 className="h-4 w-4" />
+                        </Button>
                       </TableCell>
                     </TableRow>
                   ))
@@ -280,25 +252,10 @@ export function LessonPrepByClass() {
         onOpenChange={setSelectorOpen}
         onSelect={handleTemplateSelected}
         templates={getAllLessonTemplates()}
+        addedLessonTitles={addedLessonTitles}
       />
 
-      {dialogState && (
-        <LessonDetailDialog
-          open={dialogState.open}
-          onOpenChange={(open) => {
-            if (!open) setDialogState(null)
-          }}
-          day={dialogState.day}
-          timeSlot={dialogState.timeSlot}
-          group={dialogState.group}
-          prefilledClass={dialogState.prefilledClass}
-          existingLesson={dialogState.existingLesson}
-          initialTemplate={dialogState.initialTemplate}
-          enableScheduling={true}
-          onSave={addPlanEntry}
-          onUpdate={updatePlanEntry}
-        />
-      )}
+
     </>
   )
 }
