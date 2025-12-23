@@ -262,6 +262,8 @@
             "selectClass": "اختر الصف",
             "selectClassPlaceholder": "اختر صفًا",
             "success": "تم إضافة الدرس بنجاح",
+            "duplicateLesson": "هذا الدرس موجود بالفعل",
+            "duplicateLessonDesc": "هذا الدرس موجود بالفعل بنفس العنوان والميدان والمقطع التعلمي والمورد المعرفي.",
             "addAnother": "إضافة درس آخر",
             "viewPreparation": "عرض التحضير",
             "noClassesAvailable": "لا توجد صفوف متاحة. يرجى إنشاء صف أولاً في صفحة الصفوف."
@@ -300,6 +302,7 @@
             "class": "الفصل",
             "date": "التاريخ",
             "lessonTitle": "عنوان الدرس",
+            "lessonAlreadyAssigned": "هذا الدرس معين بالفعل لهذا الفصل",
             "lessonContent": "محتوى الدرس",
             "practiceNotes": "ملاحظات التطبيق",
             "emptySlot": "انقر لإضافة درس",

@@ -262,6 +262,8 @@
             "selectClass": "Select Class",
             "selectClassPlaceholder": "Select a class",
             "success": "Lesson added successfully",
+            "duplicateLesson": "This lesson already exists",
+            "duplicateLessonDesc": "This lesson already exists with the same Title, Field, Learning Segment, and Knowledge Resource.",
             "addAnother": "Add Another Lesson",
             "viewPreparation": "View Preparation",
             "noClassesAvailable": "No classes available. Please create a class first in the Grades page."
@@ -300,6 +302,7 @@
             "class": "Class",
             "date": "Date",
             "lessonTitle": "Lesson Title",
+            "lessonAlreadyAssigned": "This lesson is already assigned to this class",
             "lessonContent": "Lesson Content",
             "practiceNotes": "Practice/Application Notes",
             "emptySlot": "Click to add lesson",

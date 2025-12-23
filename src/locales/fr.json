@@ -262,6 +262,8 @@
             "selectClass": "Sélectionner la classe",
             "selectClassPlaceholder": "Sélectionner une classe",
             "success": "Cours ajouté avec succès",
+            "duplicateLesson": "Ce cours existe déjà",
+            "duplicateLessonDesc": "Ce cours existe déjà avec le même Titre, Domaine, Séquence d'apprentissage et Ressource de connaissance.",
             "addAnother": "Ajouter un autre cours",
             "viewPreparation": "Voir la préparation",
             "noClassesAvailable": "Aucune classe disponible. Veuillez d'abord créer une classe dans la page Classes."
@@ -300,6 +302,7 @@
             "class": "Classe",
             "date": "Date",
             "lessonTitle": "Titre du cours",
+            "lessonAlreadyAssigned": "Ce cours est déjà attribué à cette classe",
             "lessonContent": "Contenu du cours",
             "practiceNotes": "Notes pratiques/Applications",
             "emptySlot": "Cliquez pour ajouter un cours",
