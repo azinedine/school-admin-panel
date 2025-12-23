@@ -248,11 +248,32 @@
             "addLesson": "Add Lesson",
             "editLesson": "Edit Lesson",
             "class": "Class",
+            "date": "Date",
             "lessonTitle": "Lesson Title",
             "lessonContent": "Lesson Content",
             "practiceNotes": "Practice/Application Notes",
             "emptySlot": "Click to add lesson",
             "classFromTimetable": "Class is determined by your timetable and cannot be changed here",
+            "noDate": "No date set",
+            "status": {
+                "label": "Status",
+                "none": "No status",
+                "completed": "Lesson completed",
+                "postponed": "Postponed",
+                "deleted": "Deleted from schedule",
+                "postponedReason": "Reason for postponement",
+                "deletedReason": "Reason for deletion",
+                "postponedPlaceholder": "Explain why the lesson was postponed...",
+                "deletedPlaceholder": "Explain why the lesson was deleted from schedule..."
+            },
+            "table": {
+                "date": "Date",
+                "time": "Time",
+                "lessonTopic": "Lesson Topic",
+                "noLessons": "No lessons planned for this day yet",
+                "addFirstLesson": "Add First Lesson",
+                "addLesson": "Add Lesson"
+            },
             "timetable": {
                 "setup": "Set Up Timetable",
                 "edit": "Edit Timetable",

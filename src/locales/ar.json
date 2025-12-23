@@ -248,11 +248,32 @@
             "addLesson": "إضافة درس",
             "editLesson": "تعديل الدرس",
             "class": "الفصل",
+            "date": "التاريخ",
             "lessonTitle": "عنوان الدرس",
             "lessonContent": "محتوى الدرس",
             "practiceNotes": "ملاحظات التطبيق",
             "emptySlot": "انقر لإضافة درس",
             "classFromTimetable": "يتم تحديد الفصل من جدولك الزمني ولا يمكن تغييره هنا",
+            "noDate": "لم يتم تحديد تاريخ",
+            "status": {
+                "label": "الحالة",
+                "none": "بدون حالة",
+                "completed": "الدرس مكتمل",
+                "postponed": "مؤجل",
+                "deleted": "محذوف من الجدول",
+                "postponedReason": "سبب التأجيل",
+                "deletedReason": "سبب الحذف",
+                "postponedPlaceholder": "اشرح سبب تأجيل الدرس...",
+                "deletedPlaceholder": "اشرح سبب حذف الدرس من الجدول..."
+            },
+            "table": {
+                "date": "التاريخ",
+                "time": "الوقت",
+                "lessonTopic": "موضوع الدرس",
+                "noLessons": "لا توجد دروس مخططة لهذا اليوم بعد",
+                "addFirstLesson": "إضافة أول درس",
+                "addLesson": "إضافة درس"
+            },
             "timetable": {
                 "setup": "إعداد الجدول الزمني",
                 "edit": "تعديل الجدول الزمني",
@@ -291,6 +312,31 @@
                     "invalidRange": "يجب أن يكون تاريخ النهاية بعد تاريخ البداية",
                     "tooLong": "لا يمكن أن يتجاوز الفصل الدراسي 52 أسبوعًا"
                 }
+            },
+            "lessonStructure": {
+                "title": "هيكل الدرس",
+                "field": "الميدان",
+                "fieldPlaceholder": "أدخل الميدان",
+                "learningSegment": "المقطع التعلمي",
+                "learningSegmentPlaceholder": "أدخل المقطع التعلمي",
+                "knowledgeResource": "المورد المعرفي",
+                "knowledgeResourcePlaceholder": "أدخل المورد المعرفي"
+            },
+            "lessonElements": {
+                "title": "عناصر الدرس",
+                "addElement": "إضافة عنصر",
+                "removeElement": "حذف العنصر",
+                "elementPlaceholder": "أدخل عنصر الدرس",
+                "noElements": "لا توجد عناصر بعد. أضف عنصر الدرس الأول.",
+                "elementNumber": "عنصر {{number}}"
+            },
+            "assessment": "التقويم",
+            "assessmentPlaceholder": "أدخل ملاحظات التقويم والتقييم",
+            "sections": {
+                "basicInfo": "معلومات أساسية",
+                "structure": "هيكل الدرس",
+                "elements": "عناصر الدرس",
+                "contentEvaluation": "المحتوى والتقويم"
             }
         }
     }

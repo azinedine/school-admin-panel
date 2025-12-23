@@ -248,11 +248,32 @@
             "addLesson": "Ajouter un cours",
             "editLesson": "Modifier le cours",
             "class": "Classe",
+            "date": "Date",
             "lessonTitle": "Titre du cours",
             "lessonContent": "Contenu du cours",
             "practiceNotes": "Notes pratiques/Applications",
             "emptySlot": "Cliquez pour ajouter un cours",
             "classFromTimetable": "La classe est déterminée par votre emploi du temps et ne peut pas être modifiée ici",
+            "noDate": "Aucune date définie",
+            "status": {
+                "label": "Statut",
+                "none": "Aucun statut",
+                "completed": "Cours terminé",
+                "postponed": "Reporté",
+                "deleted": "Supprimé du programme",
+                "postponedReason": "Raison du report",
+                "deletedReason": "Raison de la suppression",
+                "postponedPlaceholder": "Expliquez pourquoi le cours a été reporté...",
+                "deletedPlaceholder": "Expliquez pourquoi le cours a été supprimé du programme..."
+            },
+            "table": {
+                "date": "Date",
+                "time": "Heure",
+                "lessonTopic": "Sujet du cours",
+                "noLessons": "Aucun cours prévu pour ce jour",
+                "addFirstLesson": "Ajouter le premier cours",
+                "addLesson": "Ajouter un cours"
+            },
             "timetable": {
                 "setup": "Configurer l'emploi du temps",
                 "edit": "Modifier l'emploi du temps",
@@ -291,6 +312,31 @@
                     "invalidRange": "La date de fin doit être postérieure à la date de début",
                     "tooLong": "Le trimestre ne peut pas dépasser 52 semaines"
                 }
+            },
+            "lessonStructure": {
+                "title": "Structure du cours",
+                "field": "Domaine / Champ disciplinaire",
+                "fieldPlaceholder": "Entrez le domaine",
+                "learningSegment": "Séquence d'apprentissage",
+                "learningSegmentPlaceholder": "Entrez la séquence d'apprentissage",
+                "knowledgeResource": "Ressource de connaissance",
+                "knowledgeResourcePlaceholder": "Entrez la ressource de connaissance"
+            },
+            "lessonElements": {
+                "title": "Éléments du cours",
+                "addElement": "Ajouter un élément",
+                "removeElement": "Supprimer l'élément",
+                "elementPlaceholder": "Entrez l'élément du cours",
+                "noElements": "Aucun élément. Ajoutez le premier élément du cours.",
+                "elementNumber": "Élément {{number}}"
+            },
+            "assessment": "Évaluation",
+            "assessmentPlaceholder": "Entrez les notes d'évaluation",
+            "sections": {
+                "basicInfo": "Informations de base",
+                "structure": "Structure du cours",
+                "elements": "Éléments du cours",
+                "contentEvaluation": "Contenu et évaluation"
             }
         }
     }
