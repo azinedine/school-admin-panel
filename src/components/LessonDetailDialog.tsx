@@ -165,20 +165,65 @@ export function LessonDetailDialog({
 
   }, [existingLesson, prefilledClass, open, initialTemplate])
 
-  // Handle template selection
+  // Handle template selection - save directly
   const handleTemplateSelect = (template: LessonTemplate) => {
-    setSelectedTemplate(template)
-    setFormData((prev) => ({
-      ...prev,
+    // Prepare the lesson data from template
+    const lessonData = {
+      class: prefilledClass || formData.class,
       lessonTitle: template.lessonTitle,
+      lessonContent: template.lessonContent,
+      practiceNotes: template.practiceNotes,
+      date: formData.date || new Date().toISOString().split('T')[0],
       field: template.field,
       learningSegment: template.learningSegment,
       knowledgeResource: template.knowledgeResource,
       lessonElements: [...template.lessonElements],
       assessment: template.assessment,
-      lessonContent: template.lessonContent,
-      practiceNotes: template.practiceNotes,
-    }))
+      mode: formData.mode,
+      group: formData.group,
+      status: undefined,
+      statusNote: '',
+    }
+
+    // Check for duplicates
+    const isDuplicate = planEntries.some(entry => 
+      entry.class === lessonData.class && 
+      entry.lessonTitle === lessonData.lessonTitle &&
+      (!existingLesson || entry.id !== existingLesson.id)
+    )
+
+    if (isDuplicate) {
+      toast.error(t('pages.prep.lessonAlreadyAssigned'))
+      return
+    }
+
+    // Construct timeSlot
+    let finalTimeSlot = timeSlot
+    let finalGroup = group as DailyPlanEntry['group']
+    let finalMode = 'groups' as DailyPlanEntry['mode']
+
+    if (enableScheduling) {
+      finalTimeSlot = `${formData.startTime}-${formData.endTime}`
+      finalMode = formData.mode
+      finalGroup = formData.mode === 'groups' ? formData.group : undefined
+    }
+
+    // Save the lesson directly
+    onSave({
+      day: day as DailyPlanEntry['day'],
+      timeSlot: finalTimeSlot,
+      ...lessonData,
+      mode: finalMode,
+      group: finalGroup,
+    })
+
+    // Show success toast
+    toast.success(t('pages.prep.addLesson'), {
+      description: template.lessonTitle,
+    })
+
+    // Close the selector
+    setSelectorOpen(false)
   }
 
   // Clear template selection
