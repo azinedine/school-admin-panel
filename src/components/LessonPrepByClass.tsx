@@ -1,7 +1,6 @@
 import { useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Edit2, Trash2, Plus } from 'lucide-react'
-import { Link } from '@tanstack/react-router'
 import {
   Table,
   TableBody,
@@ -81,6 +80,19 @@ export function LessonPrepByClass() {
     })
   }
 
+  const handleAddLesson = () => {
+    // For now, default to current date or empty date
+    // User will select date in dialog
+    setDialogState({
+      open: true,
+      day: 'monday', // Default fallback, user should change
+      timeSlot: '08:00', // Default fallback
+      group: 'first',
+      prefilledClass: selectedClass,
+      existingLesson: undefined,
+    })
+  }
+
   const handleDelete = (id: string) => {
     deletePlanEntry(id)
   }
@@ -145,12 +157,10 @@ export function LessonPrepByClass() {
                     <TableCell colSpan={4} className="text-center py-8 text-muted-foreground">
                       <div className="space-y-4">
                         <p>{t('pages.prep.table.noLessons')}</p>
-                        <Link to="/prep/add-lesson">
-                          <Button variant="outline" size="sm">
-                            <Plus className="h-4 w-4 ltr:mr-2 rtl:ml-2" />
-                            {t('pages.prep.addLesson')}
-                          </Button>
-                        </Link>
+                        <Button onClick={handleAddLesson} variant="outline" size="sm">
+                          <Plus className="h-4 w-4 ltr:mr-2 rtl:ml-2" />
+                          {t('pages.prep.addLesson')}
+                        </Button>
                       </div>
                     </TableCell>
                   </TableRow>
@@ -218,16 +228,12 @@ export function LessonPrepByClass() {
             </Table>
           </div>
           
-          {classLessons.length > 0 && (
-            <div className="p-4 border-t">
-              <Link to="/prep/add-lesson">
-                <Button variant="outline" size="sm">
-                  <Plus className="h-4 w-4 ltr:mr-2 rtl:ml-2" />
-                  {t('pages.prep.addLesson')}
-                </Button>
-              </Link>
-            </div>
-          )}
+          <div className="p-4 border-t">
+            <Button onClick={handleAddLesson} variant="outline" size="sm">
+              <Plus className="h-4 w-4 ltr:mr-2 rtl:ml-2" />
+              {t('pages.prep.addLesson')}
+            </Button>
+          </div>
         </Card>
       </div>
 
