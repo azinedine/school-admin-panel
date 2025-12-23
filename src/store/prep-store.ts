@@ -14,6 +14,14 @@ export interface DailyPlanEntry {
   practiceNotes: string
   weekNumber?: number  // Week of term (1, 2, 3...)
   date?: string  // Specific date (YYYY-MM-DD)
+  status?: 'completed' | 'postponed' | 'deleted'
+  statusNote?: string  // Custom note for postponed/deleted status
+  // Detailed lesson structure
+  field?: string  // الميدان - Field / Subject Area
+  learningSegment?: string  // المقطع التعلمي - Learning Segment
+  knowledgeResource?: string  // المورد المعرفي - Knowledge Resource
+  lessonElements?: string[]  // عناصر الدرس - Lesson Elements (list)
+  assessment?: string  // تقويم - Assessment / Evaluation
 }
 
 export interface TimetableEntry {
