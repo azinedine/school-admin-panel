@@ -150,6 +150,23 @@ function AddLessonPage() {
       toast.success(t('common.updateSuccess') || 'Template updated successfully')
     } else {
       // Add new template
+      // Check for duplicates
+      const isDuplicate = allLessons.some(
+        (lesson) =>
+          lesson.academicYear === formData.academicYear &&
+          lesson.lessonTitle.trim().toLowerCase() === formData.lessonTitle.trim().toLowerCase() &&
+          lesson.field?.trim().toLowerCase() === formData.field?.trim().toLowerCase() &&
+          lesson.learningSegment?.trim().toLowerCase() === formData.learningSegment?.trim().toLowerCase() &&
+          lesson.knowledgeResource?.trim().toLowerCase() === formData.knowledgeResource?.trim().toLowerCase()
+      )
+
+      if (isDuplicate) {
+        toast.error(t('pages.addLesson.duplicateLesson'), {
+          description: t('pages.addLesson.duplicateLessonDesc'),
+        })
+        return
+      }
+
       addLessonTemplate(formData)
       toast.success(t('pages.addLesson.success'), {
         description: formData.lessonTitle,
