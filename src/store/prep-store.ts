@@ -33,6 +33,21 @@ export interface TimetableEntry {
   group?: 'first' | 'second'  // Optional, only for 'groups' mode
 }
 
+// Lesson Template - reusable lessons organized by academic year
+export interface LessonTemplate {
+  id: string
+  academicYear: '1st' | '2nd' | '3rd' | '4th'
+  lessonTitle: string
+  field: string
+  learningSegment: string
+  knowledgeResource: string
+  lessonElements: string[]
+  assessment: string
+  lessonContent: string
+  practiceNotes: string
+  createdAt: string
+}
+
 // State interface
 interface PrepState {
   planEntries: DailyPlanEntry[]
@@ -40,6 +55,7 @@ interface PrepState {
   isTimetableInitialized: boolean
   termStartDate: string | null
   termEndDate: string | null
+  lessonTemplates: LessonTemplate[]
 }
 
 // Actions interface
@@ -65,6 +81,13 @@ interface PrepActions {
   setTermDates: (startDate: string, endDate: string) => void
   getTermDates: () => { startDate: string | null; endDate: string | null }
   clearTermDates: () => void
+  
+  // Lesson template actions
+  addLessonTemplate: (template: Omit<LessonTemplate, 'id' | 'createdAt'>) => void
+  updateLessonTemplate: (id: string, updates: Partial<LessonTemplate>) => void
+  deleteLessonTemplate: (id: string) => void
+  getLessonTemplatesByYear: (year: LessonTemplate['academicYear']) => LessonTemplate[]
+  getAllLessonTemplates: () => LessonTemplate[]
 }
 
 // Combined store type
@@ -80,6 +103,7 @@ export const usePrepStore = create<PrepStore>()(
       isTimetableInitialized: false,
       termStartDate: null,
       termEndDate: null,
+      lessonTemplates: [],
 
       // Lesson plan actions
       addPlanEntry: (entry) =>
@@ -176,6 +200,39 @@ export const usePrepStore = create<PrepStore>()(
           termStartDate: null,
           termEndDate: null,
         }),
+
+      // Lesson template actions
+      addLessonTemplate: (template) =>
+        set((state) => ({
+          lessonTemplates: [
+            ...state.lessonTemplates,
+            {
+              ...template,
+              id: crypto.randomUUID(),
+              createdAt: new Date().toISOString(),
+            },
+          ],
+        })),
+
+      updateLessonTemplate: (id, updates) =>
+        set((state) => ({
+          lessonTemplates: state.lessonTemplates.map((template) =>
+            template.id === id ? { ...template, ...updates } : template
+          ),
+        })),
+
+      deleteLessonTemplate: (id) =>
+        set((state) => ({
+          lessonTemplates: state.lessonTemplates.filter((template) => template.id !== id),
+        })),
+
+      getLessonTemplatesByYear: (year) => {
+        return get().lessonTemplates.filter((template) => template.academicYear === year)
+      },
+
+      getAllLessonTemplates: () => {
+        return get().lessonTemplates
+      },
     }),
     {
       name: 'school-admin-prep',
