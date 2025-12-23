@@ -19,6 +19,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select'
+import { Switch } from '@/components/ui/switch'
 import { type TimetableEntry } from '@/store/prep-store'
 import { useGradesStore } from '@/store/grades-store'
 import { Card } from '@/components/ui/card'
@@ -101,7 +102,7 @@ export function TimetableSetupDialog({
     setSlots(slots.filter((s) => s.tempId !== tempId))
   }
 
-  const updateSlot = (tempId: string, field: keyof TimetableSlot, value: string) => {
+  const updateSlot = (tempId: string, field: keyof TimetableSlot, value: string | undefined) => {
     setSlots(
       slots.map((s) =>
         s.tempId === tempId ? { ...s, [field]: value } : s
@@ -225,11 +226,38 @@ export function TimetableSetupDialog({
                         onChange={(e) => updateSlot(slot.tempId, 'endTime', e.target.value)}
                       />
                     </div>
+                  </div>
 
-                    {/* Group */}
+                  {/* Group Toggle */}
+                  <div className="flex items-center justify-between space-x-2 rtl:space-x-reverse">
+                    <Label htmlFor={`group-toggle-${slot.tempId}`} className="text-sm cursor-pointer">
+                      {t('pages.prep.timetable.form.useGroups')}
+                    </Label>
+                    <Switch
+                      id={`group-toggle-${slot.tempId}`}
+                      checked={slot.mode === 'groups'}
+                      onCheckedChange={(checked) => {
+                        // Update both mode and group in one operation
+                        setSlots(
+                          slots.map((s) =>
+                            s.tempId === slot.tempId
+                              ? {
+                                  ...s,
+                                  mode: checked ? 'groups' : 'fullClass',
+                                  group: checked ? (s.group || 'first') : undefined,
+                                }
+                              : s
+                          )
+                        )
+                      }}
+                    />
+                  </div>
+
+                  {/* Group - Only shown when groups mode is enabled */}
+                  {slot.mode === 'groups' && (
                     <div className="space-y-1.5">
                       <Label htmlFor={`group-${slot.tempId}`} className="text-xs">
-                        {t('pages.prep.timetable.form.group')}
+                        {t('pages.prep.timetable.form.group')} *
                       </Label>
                       <Select
                         value={slot.group || ''}
@@ -247,7 +275,7 @@ export function TimetableSetupDialog({
                         </SelectContent>
                       </Select>
                     </div>
-                  </div>
+                  )}
 
                   {/* Class - Full width */}
                   <div className="space-y-1.5">
