@@ -12,6 +12,8 @@ export interface DailyPlanEntry {
   lessonTitle: string
   lessonContent: string
   practiceNotes: string
+  weekNumber?: number  // Week of term (1, 2, 3...)
+  date?: string  // Specific date (YYYY-MM-DD)
 }
 
 export interface TimetableEntry {
@@ -28,6 +30,8 @@ interface PrepState {
   planEntries: DailyPlanEntry[]
   timetable: TimetableEntry[]
   isTimetableInitialized: boolean
+  termStartDate: string | null
+  termEndDate: string | null
 }
 
 // Actions interface
@@ -38,6 +42,8 @@ interface PrepActions {
   deletePlanEntry: (id: string) => void
   getPlanByDay: (day: DailyPlanEntry['day']) => DailyPlanEntry[]
   getPlanByDayAndSlot: (day: string, timeSlot: string, group: string) => DailyPlanEntry | undefined
+  getPlanByWeek: (weekNumber: number) => DailyPlanEntry[]
+  getPlanByWeekAndDay: (weekNumber: number, day: DailyPlanEntry['day']) => DailyPlanEntry[]
   clearAllPlans: () => void
   
   // Timetable actions
@@ -46,6 +52,11 @@ interface PrepActions {
   getAllTimetableSlots: () => TimetableEntry[]
   initializeTimetable: (entries: Omit<TimetableEntry, 'id'>[]) => void
   clearTimetable: () => void
+  
+  // Term date actions
+  setTermDates: (startDate: string, endDate: string) => void
+  getTermDates: () => { startDate: string | null; endDate: string | null }
+  clearTermDates: () => void
 }
 
 // Combined store type
@@ -59,6 +70,8 @@ export const usePrepStore = create<PrepStore>()(
       planEntries: [],
       timetable: [],
       isTimetableInitialized: false,
+      termStartDate: null,
+      termEndDate: null,
 
       // Lesson plan actions
       addPlanEntry: (entry) =>
@@ -94,6 +107,16 @@ export const usePrepStore = create<PrepStore>()(
         )
       },
 
+      getPlanByWeek: (weekNumber) => {
+        return get().planEntries.filter((entry) => entry.weekNumber === weekNumber)
+      },
+
+      getPlanByWeekAndDay: (weekNumber, day) => {
+        return get().planEntries.filter(
+          (entry) => entry.weekNumber === weekNumber && entry.day === day
+        )
+      },
+
       clearAllPlans: () => set({ planEntries: [] }),
 
       // Timetable actions
@@ -126,6 +149,24 @@ export const usePrepStore = create<PrepStore>()(
         set({
           timetable: [],
           isTimetableInitialized: false,
+        }),
+
+      // Term date actions
+      setTermDates: (startDate, endDate) =>
+        set({
+          termStartDate: startDate,
+          termEndDate: endDate,
+        }),
+
+      getTermDates: () => ({
+        startDate: get().termStartDate,
+        endDate: get().termEndDate,
+      }),
+
+      clearTermDates: () =>
+        set({
+          termStartDate: null,
+          termEndDate: null,
         }),
     }),
     {
