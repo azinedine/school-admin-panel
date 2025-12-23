@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
+import { toast } from 'sonner'
 import { Plus, Trash2, X, BookOpen } from 'lucide-react'
 import {
   Dialog,
@@ -53,6 +54,7 @@ export function LessonDetailDialog({
 }: LessonDetailDialogProps) {
   const { t } = useTranslation()
   const getAllLessonTemplates = usePrepStore((state) => state.getAllLessonTemplates)
+  const planEntries = usePrepStore((state) => state.planEntries)
   
   const [selectorOpen, setSelectorOpen] = useState(false)
   const [selectedTemplate, setSelectedTemplate] = useState<LessonTemplate | null>(initialTemplate || null)
@@ -160,6 +162,7 @@ export function LessonDetailDialog({
       setSelectedTemplate(null)
       setActiveGroups(['first'])
     }
+
   }, [existingLesson, prefilledClass, open, initialTemplate])
 
   // Handle template selection
@@ -197,6 +200,18 @@ export function LessonDetailDialog({
   const handleSave = () => {
     if (!formData.class.trim() || !formData.lessonTitle.trim() || !formData.date.trim()) {
       return // Basic validation
+    }
+
+    // Check for duplicates
+    const isDuplicate = planEntries.some(entry => 
+      entry.class === formData.class && 
+      entry.lessonTitle === formData.lessonTitle &&
+      (!existingLesson || entry.id !== existingLesson.id)
+    )
+
+    if (isDuplicate) {
+      toast.error(t('pages.prep.lessonAlreadyAssigned'))
+      return
     }
     
     // Construct timeSlot
