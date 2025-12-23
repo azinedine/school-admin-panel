@@ -1,6 +1,6 @@
 import { useState, useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
-import { Search, Filter, BookOpen } from 'lucide-react'
+import { Search, Filter, BookOpen, CheckCircle2 } from 'lucide-react'
 import {
   Dialog,
   DialogContent,
@@ -24,6 +24,7 @@ interface LessonSelectorProps {
   onOpenChange: (open: boolean) => void
   onSelect: (template: LessonTemplate) => void
   templates: LessonTemplate[]
+  addedLessonTitles?: string[]
 }
 
 export function LessonSelector({
@@ -31,6 +32,7 @@ export function LessonSelector({
   onOpenChange,
   onSelect,
   templates,
+  addedLessonTitles = [],
 }: LessonSelectorProps) {
   const { t } = useTranslation()
   const [searchTerm, setSearchTerm] = useState('')
@@ -103,41 +105,53 @@ export function LessonSelector({
             </div>
           ) : (
             <div className="space-y-3">
-              {filteredTemplates.map((template) => (
-                <div
-                  key={template.id}
-                  className="flex items-start justify-between p-4 rounded-lg border bg-card hover:bg-accent/50 transition-colors cursor-pointer group"
-                  onClick={() => handleSelect(template)}
-                >
-                  <div className="space-y-1">
-                    <h4 className="font-semibold text-foreground group-hover:text-primary transition-colors">
-                      {template.lessonTitle}
-                    </h4>
-                    <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                      <Badge variant="secondary" className="text-xs font-normal">
-                        {t(`pages.addLesson.years.${template.academicYear}`)}
-                      </Badge>
-                      {template.field && (
-                        <>
-                          <span>•</span>
-                          <span>{template.field}</span>
-                        </>
+              {filteredTemplates.map((template) => {
+                const isAdded = addedLessonTitles.includes(template.lessonTitle)
+                
+                return (
+                  <div
+                    key={template.id}
+                    className="flex items-start justify-between p-4 rounded-lg border bg-card hover:bg-accent/50 transition-colors cursor-pointer group"
+                    onClick={() => handleSelect(template)}
+                  >
+                    <div className="space-y-1 flex-1">
+                      <div className="flex items-center gap-2">
+                        <h4 className="font-semibold text-foreground group-hover:text-primary transition-colors">
+                          {template.lessonTitle}
+                        </h4>
+                        {isAdded && (
+                          <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200">
+                            <CheckCircle2 className="h-3 w-3" />
+                            {t('pages.prep.alreadyAdded')}
+                          </span>
+                        )}
+                      </div>
+                      <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                        <Badge variant="secondary" className="text-xs font-normal">
+                          {t(`pages.addLesson.years.${template.academicYear}`)}
+                        </Badge>
+                        {template.field && (
+                          <>
+                            <span>•</span>
+                            <span>{template.field}</span>
+                          </>
+                        )}
+                      </div>
+                      {template.learningSegment && (
+                        <p className="text-xs text-muted-foreground pt-1 line-clamp-1">
+                          {template.learningSegment}
+                        </p>
                       )}
                     </div>
-                    {template.learningSegment && (
-                      <p className="text-xs text-muted-foreground pt-1 line-clamp-1">
-                        {template.learningSegment}
-                      </p>
-                    )}
+                    <Button
+                      size="sm"
+                      className="opacity-0 group-hover:opacity-100 transition-opacity"
+                    >
+                      {t('pages.prep.select')}
+                    </Button>
                   </div>
-                  <Button
-                    size="sm"
-                    className="opacity-0 group-hover:opacity-100 transition-opacity"
-                  >
-                    {t('pages.prep.select')}
-                  </Button>
-                </div>
-              ))}
+                )
+              })}
             </div>
           )}
         </div>
