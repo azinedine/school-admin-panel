@@ -1,6 +1,7 @@
 import { useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { Plus, Edit, Trash2 } from 'lucide-react'
+import { Edit2, Trash2, Plus } from 'lucide-react'
+import { Link } from '@tanstack/react-router'
 import {
   Table,
   TableBody,
@@ -68,25 +69,7 @@ export function LessonPrepByClass() {
       })
   }, [planEntries, selectedClass])
 
-  // Get first timetable slot for selected class
-  const getFirstSlotForClass = () => {
-    const timetable = getAllTimetableSlots()
-    return timetable.find(slot => slot.class === selectedClass)
-  }
 
-  const handleAddLesson = () => {
-    const firstSlot = getFirstSlotForClass()
-    if (firstSlot) {
-      setDialogState({
-        open: true,
-        day: firstSlot.day,
-        timeSlot: firstSlot.timeSlot,
-        group: firstSlot.group || 'first',
-        prefilledClass: selectedClass,
-        existingLesson: undefined,
-      })
-    }
-  }
 
   const handleEditLesson = (lesson: DailyPlanEntry) => {
     setDialogState({
@@ -163,10 +146,12 @@ export function LessonPrepByClass() {
                     <TableCell colSpan={4} className="text-center py-8 text-muted-foreground">
                       <div className="space-y-4">
                         <p>{t('pages.prep.table.noLessons')}</p>
-                        <Button onClick={handleAddLesson} variant="outline" size="sm">
-                          <Plus className="h-4 w-4 ltr:mr-2 rtl:ml-2" />
-                          {t('pages.prep.table.addFirstLesson')}
-                        </Button>
+                        <Link to="/prep/add-lesson">
+                          <Button variant="outline" size="sm">
+                            <Plus className="h-4 w-4 ltr:mr-2 rtl:ml-2" />
+                            {t('pages.prep.addLesson')}
+                          </Button>
+                        </Link>
                       </div>
                     </TableCell>
                   </TableRow>
@@ -209,12 +194,12 @@ export function LessonPrepByClass() {
                         <DropdownMenu>
                           <DropdownMenuTrigger asChild>
                             <Button variant="ghost" size="sm">
-                              <Edit className="h-4 w-4" />
+                              <Edit2 className="h-4 w-4" />
                             </Button>
                           </DropdownMenuTrigger>
                           <DropdownMenuContent align="end">
                             <DropdownMenuItem onClick={() => handleEditLesson(lesson)}>
-                              <Edit className="h-4 w-4 ltr:mr-2 rtl:ml-2" />
+                              <Edit2 className="h-4 w-4 ltr:mr-2 rtl:ml-2" />
                               {t('common.edit')}
                             </DropdownMenuItem>
                             <DropdownMenuItem 
@@ -236,10 +221,12 @@ export function LessonPrepByClass() {
           
           {classLessons.length > 0 && (
             <div className="p-4 border-t">
-              <Button onClick={handleAddLesson} variant="outline" size="sm">
-                <Plus className="h-4 w-4 ltr:mr-2 rtl:ml-2" />
-                {t('pages.prep.table.addLesson')}
-              </Button>
+              <Link to="/prep/add-lesson">
+                <Button variant="outline" size="sm">
+                  <Plus className="h-4 w-4 ltr:mr-2 rtl:ml-2" />
+                  {t('pages.prep.addLesson')}
+                </Button>
+              </Link>
             </div>
           )}
         </Card>
