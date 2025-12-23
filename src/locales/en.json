@@ -290,6 +290,7 @@
             "startTime": "Start Time",
             "endTime": "End Time",
             "selectGroup": "Select Group",
+            "selectAtLeastOneGroup": "Please select at least one group",
             "group1": "Group 1",
             "group2": "Group 2",
             "fullClass": "Full Class",

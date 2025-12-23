@@ -290,6 +290,7 @@
             "startTime": "وقت البدء",
             "endTime": "وقت الفراغ",
             "selectGroup": "اختر المجموعة",
+            "selectAtLeastOneGroup": "يرجى اختيار مجموعة واحدة على الأقل",
             "group1": "المجموعة 1",
             "group2": "المجموعة 2",
             "fullClass": "فوج كامل",
