@@ -4,28 +4,48 @@ import { persist } from 'zustand/middleware'
 // Data types
 export interface DailyPlanEntry {
   id: string
-  day: 'sunday' | 'monday' | 'wednesday' | 'thursday'
-  timeSlot: '08:00-09:00' | '09:00-10:00' | '10:00-11:00' | '11:00-12:00'
-  group: 'first' | 'second'
+  day: 'sunday' | 'monday' | 'tuesday' | 'wednesday' | 'thursday'
+  timeSlot: string  // Changed to string to support dynamic time slots
   class: string
+  mode: 'fullClass' | 'groups'
+  group?: 'first' | 'second'  // Optional, only for 'groups' mode
   lessonTitle: string
   lessonContent: string
   practiceNotes: string
 }
 
+export interface TimetableEntry {
+  id: string
+  day: 'sunday' | 'monday' | 'tuesday' | 'wednesday' | 'thursday'
+  timeSlot: string  // e.g., "08:00-09:00"
+  class: string
+  mode: 'fullClass' | 'groups'
+  group?: 'first' | 'second'  // Optional, only for 'groups' mode
+}
+
 // State interface
 interface PrepState {
   planEntries: DailyPlanEntry[]
+  timetable: TimetableEntry[]
+  isTimetableInitialized: boolean
 }
 
 // Actions interface
 interface PrepActions {
+  // Lesson plan actions
   addPlanEntry: (entry: Omit<DailyPlanEntry, 'id'>) => void
   updatePlanEntry: (id: string, updates: Partial<DailyPlanEntry>) => void
   deletePlanEntry: (id: string) => void
   getPlanByDay: (day: DailyPlanEntry['day']) => DailyPlanEntry[]
-  getPlanByDayAndSlot: (day: DailyPlanEntry['day'], timeSlot: DailyPlanEntry['timeSlot'], group: DailyPlanEntry['group']) => DailyPlanEntry | undefined
+  getPlanByDayAndSlot: (day: string, timeSlot: string, group: string) => DailyPlanEntry | undefined
   clearAllPlans: () => void
+  
+  // Timetable actions
+  setTimetable: (entries: Omit<TimetableEntry, 'id'>[]) => void
+  getTimetableByDay: (day: TimetableEntry['day']) => TimetableEntry[]
+  getAllTimetableSlots: () => TimetableEntry[]
+  initializeTimetable: (entries: Omit<TimetableEntry, 'id'>[]) => void
+  clearTimetable: () => void
 }
 
 // Combined store type
@@ -37,8 +57,10 @@ export const usePrepStore = create<PrepStore>()(
     (set, get) => ({
       // Initial state
       planEntries: [],
+      timetable: [],
+      isTimetableInitialized: false,
 
-      // Actions
+      // Lesson plan actions
       addPlanEntry: (entry) =>
         set((state) => ({
           planEntries: [
@@ -73,6 +95,38 @@ export const usePrepStore = create<PrepStore>()(
       },
 
       clearAllPlans: () => set({ planEntries: [] }),
+
+      // Timetable actions
+      setTimetable: (entries) =>
+        set({
+          timetable: entries.map((entry) => ({
+            ...entry,
+            id: crypto.randomUUID(),
+          })),
+        }),
+
+      getTimetableByDay: (day) => {
+        return get().timetable.filter((entry) => entry.day === day)
+      },
+
+      getAllTimetableSlots: () => {
+        return get().timetable
+      },
+
+      initializeTimetable: (entries) =>
+        set({
+          timetable: entries.map((entry) => ({
+            ...entry,
+            id: crypto.randomUUID(),
+          })),
+          isTimetableInitialized: true,
+        }),
+
+      clearTimetable: () =>
+        set({
+          timetable: [],
+          isTimetableInitialized: false,
+        }),
     }),
     {
       name: 'school-admin-prep',
