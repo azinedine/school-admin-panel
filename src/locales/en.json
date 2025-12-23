@@ -288,6 +288,7 @@
             "allSubjects": "All Subjects",
             "noLessonsFound": "No lessons found",
             "select": "Select",
+            "alreadyAdded": "Already Added",
             "timeSlot": "Time Slot",
             "startTime": "Start Time",
             "endTime": "End Time",
