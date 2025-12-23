@@ -288,6 +288,7 @@
             "allSubjects": "جميع المواد",
             "noLessonsFound": "لم يتم العثور على دروس",
             "select": "اختر",
+            "alreadyAdded": "تمت الإضافة",
             "timeSlot": "الفترة الزمنية",
             "startTime": "وقت البدء",
             "endTime": "وقت الفراغ",
