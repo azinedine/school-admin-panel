@@ -12,9 +12,10 @@ import {
 import { Button } from '@/components/ui/button'
 import { Card } from '@/components/ui/card'
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs'
-import { usePrepStore, type DailyPlanEntry } from '@/store/prep-store'
+import { usePrepStore, type DailyPlanEntry, type LessonTemplate } from '@/store/prep-store'
 import { useGradesStore } from '@/store/grades-store'
 import { LessonDetailDialog } from './LessonDetailDialog'
+import { LessonSelector } from './LessonSelector'
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -29,6 +30,7 @@ export function LessonPrepByClass() {
     addPlanEntry, 
     updatePlanEntry, 
     deletePlanEntry,
+    getAllLessonTemplates,
   } = usePrepStore()
   
   // Get all classes from grades system
@@ -40,6 +42,7 @@ export function LessonPrepByClass() {
   }, [gradesClasses])
 
   const [selectedClass, setSelectedClass] = useState<string>(classes[0] || '')
+  const [selectorOpen, setSelectorOpen] = useState(false)
   
   const [dialogState, setDialogState] = useState<{
     open: boolean
@@ -48,6 +51,7 @@ export function LessonPrepByClass() {
     group: string
     prefilledClass?: string
     existingLesson?: DailyPlanEntry
+    initialTemplate?: LessonTemplate | null
   } | null>(null)
 
   // Get lessons for selected class
@@ -67,8 +71,6 @@ export function LessonPrepByClass() {
       })
   }, [planEntries, selectedClass])
 
-
-
   const handleEditLesson = (lesson: DailyPlanEntry) => {
     setDialogState({
       open: true,
@@ -81,16 +83,53 @@ export function LessonPrepByClass() {
   }
 
   const handleAddLesson = () => {
-    // For now, default to current date or empty date
-    // User will select date in dialog
-    setDialogState({
-      open: true,
-      day: 'monday', // Default fallback, user should change
-      timeSlot: '08:00', // Default fallback
+    setSelectorOpen(true)
+  }
+
+  const handleTemplateSelected = (template: LessonTemplate) => {
+    // Check for duplicates
+    const isDuplicate = classLessons.some(
+      (l) => l.lessonTitle === template.lessonTitle
+    )
+
+    if (isDuplicate) {
+      // Ideally show a toast here, but for now just don't add
+      setSelectorOpen(false)
+      return
+    }
+
+    const today = new Date()
+    const days = ['sunday', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday'] as const
+    const dayName = days[today.getDay()]
+    // Map Friday/Saturday to Sunday if needed, or just keep as is? 
+    // The type DailyPlanEntry expects specific days. 
+    // Weekend handling: default to Sunday if weekend?
+    let targetDay = dayName as DailyPlanEntry['day']
+    if (dayName === 'friday' || dayName === 'saturday') {
+      targetDay = 'sunday'
+    }
+
+    // Add lesson immediately
+    addPlanEntry({
+      day: targetDay,
+      timeSlot: '08:00', // Default slot
+      class: selectedClass,
+      mode: 'groups', // Default mode
       group: 'first',
-      prefilledClass: selectedClass,
-      existingLesson: undefined,
+      lessonTitle: template.lessonTitle,
+      lessonContent: template.lessonContent,
+      practiceNotes: template.practiceNotes,
+      date: today.toISOString().split('T')[0],
+      status: undefined,
+      statusNote: '',
+      field: template.field,
+      learningSegment: template.learningSegment,
+      knowledgeResource: template.knowledgeResource,
+      lessonElements: template.lessonElements ? [...template.lessonElements] : [],
+      assessment: template.assessment,
     })
+
+    setSelectorOpen(false)
   }
 
   const handleDelete = (id: string) => {
@@ -237,6 +276,13 @@ export function LessonPrepByClass() {
         </Card>
       </div>
 
+      <LessonSelector
+        open={selectorOpen}
+        onOpenChange={setSelectorOpen}
+        onSelect={handleTemplateSelected}
+        templates={getAllLessonTemplates()}
+      />
+
       {dialogState && (
         <LessonDetailDialog
           open={dialogState.open}
@@ -248,6 +294,7 @@ export function LessonPrepByClass() {
           group={dialogState.group}
           prefilledClass={dialogState.prefilledClass}
           existingLesson={dialogState.existingLesson}
+          initialTemplate={dialogState.initialTemplate}
           onSave={addPlanEntry}
           onUpdate={updatePlanEntry}
         />
