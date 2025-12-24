@@ -293,6 +293,11 @@ export function LessonPrepByClass() {
                       </TableCell>
                       <TableCell className="font-mono text-sm">
                         {lesson.timeSlot}
+                        {lesson.secondaryTimeSlot && (
+                          <span className="block text-xs text-muted-foreground">
+                            & {lesson.secondaryTimeSlot}
+                          </span>
+                        )}
                       </TableCell>
                       <TableCell>
                         <div className="space-y-1">
@@ -318,11 +323,7 @@ export function LessonPrepByClass() {
                               {lesson.statusNote}
                             </p>
                           )}
-                          {lesson.group && lesson.mode === 'groups' && (
-                            <p className="text-xs text-muted-foreground">
-                              {t(`pages.prep.groups.${lesson.group}`)}
-                            </p>
-                          )}
+
                         </div>
                       </TableCell>
                       <TableCell>
