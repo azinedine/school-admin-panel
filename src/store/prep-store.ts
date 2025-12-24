@@ -24,6 +24,7 @@ export interface DailyPlanEntry {
   assessment?: string  // تقويم - Assessment / Evaluation
   homework?: boolean  // واجب منزلي - Homework
   practicalWork?: boolean  // عمل تطبيقي - Practical Work
+  secondaryTimeSlot?: string // توقيت الحصة الثانية - Secondary Time Slot
 }
 
 export interface TimetableEntry {
@@ -47,6 +48,7 @@ export interface LessonTemplate {
   assessment: string
   homework?: boolean
   practicalWork?: boolean
+  secondaryTimeSlot?: string
   lessonContent: string
   practiceNotes: string
   createdAt: string
