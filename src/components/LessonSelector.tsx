@@ -17,6 +17,8 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select'
+import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs'
+import { useEffect } from 'react'
 import type { LessonTemplate } from '@/store/prep-store'
 
 interface LessonSelectorProps {
@@ -25,6 +27,7 @@ interface LessonSelectorProps {
   onSelect: (template: LessonTemplate) => void
   templates: LessonTemplate[]
   addedLessonTitles?: string[]
+  defaultYear?: '1st' | '2nd' | '3rd' | '4th'
 }
 
 export function LessonSelector({
@@ -33,10 +36,18 @@ export function LessonSelector({
   onSelect,
   templates,
   addedLessonTitles = [],
+  defaultYear = '1st',
 }: LessonSelectorProps) {
   const { t } = useTranslation()
   const [searchTerm, setSearchTerm] = useState('')
   const [selectedField, setSelectedField] = useState<string>('all')
+  const [selectedYear, setSelectedYear] = useState<string>(defaultYear)
+
+  useEffect(() => {
+    if (open) {
+      setSelectedYear(defaultYear)
+    }
+  }, [open, defaultYear])
 
   // Get unique fields for filter
   const fields = useMemo(() => {
@@ -52,10 +63,11 @@ export function LessonSelector({
         .includes(searchTerm.toLowerCase())
       const matchesField =
         selectedField === 'all' || template.field === selectedField
+      const matchesYear = template.academicYear === selectedYear
 
-      return matchesSearch && matchesField
+      return matchesSearch && matchesField && matchesYear
     })
-  }, [templates, searchTerm, selectedField])
+  }, [templates, searchTerm, selectedField, selectedYear])
 
   const handleSelect = (template: LessonTemplate) => {
     onSelect(template)
@@ -68,6 +80,22 @@ export function LessonSelector({
         <DialogHeader className="p-6 pb-4 border-b">
           <DialogTitle>{t('pages.prep.selectFromLibrary')}</DialogTitle>
         </DialogHeader>
+
+        <div className="border-b px-4 bg-muted/10">
+          <Tabs value={selectedYear} onValueChange={setSelectedYear} className="w-full">
+            <TabsList className="w-full justify-start rounded-none border-b-0 bg-transparent p-0 h-auto">
+              {['1st', '2nd', '3rd', '4th'].map((year) => (
+                <TabsTrigger
+                  key={year}
+                  value={year}
+                  className="rounded-none border-b-2 border-transparent px-4 py-2 font-medium text-muted-foreground shadow-none data-[state=active]:border-primary data-[state=active]:text-primary hover:text-foreground transition-colors"
+                >
+                  {t(`pages.addLesson.years.${year}`)}
+                </TabsTrigger>
+              ))}
+            </TabsList>
+          </Tabs>
+        </div>
 
         <div className="p-4 space-y-4 bg-muted/30 border-b">
           <div className="flex gap-2">
