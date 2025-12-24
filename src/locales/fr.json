@@ -324,6 +324,25 @@
                 "postponedPlaceholder": "Expliquez pourquoi le cours a été reporté...",
                 "deletedPlaceholder": "Expliquez pourquoi le cours a été supprimé du programme..."
             },
+            "details": {
+                "title": "Détails du cours",
+                "field": "Matière",
+                "learningSegment": "Segment d'apprentissage",
+                "knowledgeResource": "Ressource de connaissances",
+                "lessonElements": "Éléments du cours",
+                "assessment": "Évaluation",
+                "practicalWork": "Travaux pratiques",
+                "homework": "Devoirs",
+                "yes": "Oui",
+                "no": "Non",
+                "groups": "Groupes",
+                "group1": "Groupe 1",
+                "group2": "Groupe 2",
+                "executionDetails": "Détails d'exécution",
+                "coreContent": "Contenu du cours",
+                "saveChanges": "Enregistrer les modifications",
+                "edit": "Modifier"
+            },
             "table": {
                 "date": "Date",
                 "time": "Heure",
