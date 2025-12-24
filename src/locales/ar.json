@@ -353,6 +353,7 @@
             "table": {
                 "date": "التاريخ",
                 "time": "الوقت",
+                "schedule": "الجدولة",
                 "lessonTopic": "موضوع الدرس",
                 "noLessons": "لا توجد دروس مخططة لهذا اليوم بعد",
                 "addFirstLesson": "إضافة أول درس",
