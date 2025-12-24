@@ -7,7 +7,6 @@ import {
   SheetHeader,
   SheetTitle,
 } from '@/components/ui/sheet'
-import { Badge } from '@/components/ui/badge'
 import { Separator } from '@/components/ui/separator'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -38,6 +37,7 @@ export function LessonDetailsSheet({
   // Form State
   const [date, setDate] = useState('')
   const [timeSlot, setTimeSlot] = useState('')
+  const [secondaryTimeSlot, setSecondaryTimeSlot] = useState('')
   const [practicalWork, setPracticalWork] = useState(false)
   const [homework, setHomework] = useState(false)
 
@@ -46,6 +46,7 @@ export function LessonDetailsSheet({
     if (lesson) {
       setDate(lesson.date || '')
       setTimeSlot(lesson.timeSlot || '')
+      setSecondaryTimeSlot(lesson.secondaryTimeSlot || '')
       setPracticalWork(lesson.practicalWork || false)
       setHomework(lesson.homework || false)
     }
@@ -56,6 +57,7 @@ export function LessonDetailsSheet({
       onSave(lesson.id, {
         date,
         timeSlot,
+        secondaryTimeSlot,
         practicalWork,
         homework,
       })
@@ -75,6 +77,10 @@ export function LessonDetailsSheet({
       })
     : t('pages.prep.noDate')
 
+  const timeDisplay = lesson.secondaryTimeSlot 
+    ? `${lesson.timeSlot} & ${lesson.secondaryTimeSlot}`
+    : lesson.timeSlot
+
   return (
     <Sheet open={open} onOpenChange={onOpenChange}>
       <SheetContent
@@ -93,7 +99,7 @@ export function LessonDetailsSheet({
                     <Clock className="h-4 w-4" />
                     <span className="font-medium">{formattedDate}</span>
                     <span className="text-muted-foreground">•</span>
-                    <span>{lesson.timeSlot}</span>
+                    <span>{timeDisplay}</span>
                   </div>
                 </SheetDescription>
               )}
@@ -110,7 +116,7 @@ export function LessonDetailsSheet({
 
               {editMode ? (
                 <div className="space-y-4 pl-6 rtl:pr-6 rtl:pl-0">
-                  <div className="grid grid-cols-2 gap-4">
+                  <div className="space-y-4">
                     <div className="space-y-2">
                       <Label>{t('pages.prep.table.date')}</Label>
                       <Input 
@@ -119,13 +125,24 @@ export function LessonDetailsSheet({
                         onChange={(e) => setDate(e.target.value)} 
                       />
                     </div>
-                    <div className="space-y-2">
-                      <Label>{t('pages.prep.table.time')}</Label>
-                      <Input 
-                        value={timeSlot} 
-                        onChange={(e) => setTimeSlot(e.target.value)}
-                        placeholder="08:00-09:00" 
-                      />
+                    
+                    <div className="grid grid-cols-2 gap-4">
+                      <div className="space-y-2">
+                        <Label>{t('pages.prep.details.firstSessionHour')}</Label>
+                        <Input 
+                          value={timeSlot} 
+                          onChange={(e) => setTimeSlot(e.target.value)}
+                          placeholder="08:00-09:00" 
+                        />
+                      </div>
+                      <div className="space-y-2">
+                        <Label>{t('pages.prep.details.secondSessionHour')}</Label>
+                        <Input 
+                          value={secondaryTimeSlot} 
+                          onChange={(e) => setSecondaryTimeSlot(e.target.value)}
+                          placeholder="10:00-11:00" 
+                        />
+                      </div>
                     </div>
                   </div>
 
@@ -153,6 +170,23 @@ export function LessonDetailsSheet({
               ) : (
                 // Read Only Execution View
                 <div className="space-y-3 pl-6 rtl:pr-6 rtl:pl-0">
+                  <div className="grid grid-cols-2 gap-4 text-sm mb-2">
+                     <div className="space-y-1">
+                        <span className="text-muted-foreground block text-xs uppercase tracking-wider font-semibold">
+                          {t('pages.prep.details.firstSessionHour')}
+                        </span>
+                        <span className="font-mono">{lesson.timeSlot}</span>
+                     </div>
+                     {lesson.secondaryTimeSlot && (
+                       <div className="space-y-1">
+                          <span className="text-muted-foreground block text-xs uppercase tracking-wider font-semibold">
+                            {t('pages.prep.details.secondSessionHour')}
+                          </span>
+                          <span className="font-mono">{lesson.secondaryTimeSlot}</span>
+                       </div>
+                     )}
+                  </div>
+
                    <div className="flex gap-4">
                     <div className={`flex items-center gap-2 px-3 py-1.5 rounded-full border text-sm ${
                       lesson.practicalWork 
@@ -174,18 +208,6 @@ export function LessonDetailsSheet({
                       <span>{lesson.homework ? t('pages.prep.details.yes') : t('pages.prep.details.no')}</span>
                     </div>
                   </div>
-                   {lesson.mode === 'groups' && (
-                      <div className="flex items-center gap-2 text-sm mt-2">
-                        <Badge variant={lesson.group === 'first' ? 'default' : 'outline'}>
-                          {t('pages.prep.details.group1')}
-                        </Badge>
-                        <span className="text-muted-foreground">
-                          {lesson.group === 'first' 
-                            ? lesson.timeSlot 
-                            : t('pages.prep.details.group2') + ' (' + t('pages.prep.table.time') + ')'}
-                        </span>
-                      </div>
-                    )}
                 </div>
               )}
             </div>
