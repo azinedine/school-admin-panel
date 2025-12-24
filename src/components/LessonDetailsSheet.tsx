@@ -19,9 +19,10 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select'
+import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import type { DailyPlanEntry } from '@/store/prep-store'
 import { useTranslation } from 'react-i18next'
-import { Clock, BookOpen, List, CheckCircle2, Save } from 'lucide-react'
+import { Clock, BookOpen, List, CheckCircle2, Save, Users, User } from 'lucide-react'
 
 const TIME_SLOTS = [
   "08:00-09:00",
@@ -54,9 +55,10 @@ export function LessonDetailsSheet({
   // Form State
   const [date, setDate] = useState('')
   const [timeSlot, setTimeSlot] = useState('')
-  const [secondaryTimeSlot, setSecondaryTimeSlot] = useState<string>('none') // Default to 'none' string internally if empty
+  const [secondaryTimeSlot, setSecondaryTimeSlot] = useState<string>('none')
   const [practicalWork, setPracticalWork] = useState(false)
   const [homework, setHomework] = useState(false)
+  const [mode, setMode] = useState<'fullClass' | 'groups'>('fullClass')
 
   // Initialize state when lesson changes
   useEffect(() => {
@@ -66,6 +68,7 @@ export function LessonDetailsSheet({
       setSecondaryTimeSlot(lesson.secondaryTimeSlot || 'none')
       setPracticalWork(lesson.practicalWork || false)
       setHomework(lesson.homework || false)
+      setMode(lesson.mode || 'fullClass')
     }
   }, [lesson])
 
@@ -77,6 +80,7 @@ export function LessonDetailsSheet({
         secondaryTimeSlot: secondaryTimeSlot === 'none' ? undefined : secondaryTimeSlot,
         practicalWork,
         homework,
+        mode,
       })
       onOpenChange(false)
     }
@@ -98,6 +102,11 @@ export function LessonDetailsSheet({
     ? `${lesson.timeSlot} & ${lesson.secondaryTimeSlot}`
     : lesson.timeSlot
 
+  // Dynamic Labels based on Mode
+  const isGroups = mode === 'groups'
+  const timeSlotLabel = isGroups ? t('pages.prep.details.group1Time') : t('pages.prep.details.firstSessionHour')
+  const secondaryTimeSlotLabel = isGroups ? t('pages.prep.details.group2Time') : t('pages.prep.details.secondSessionHour')
+
   return (
     <Sheet open={open} onOpenChange={onOpenChange}>
       <SheetContent
@@ -118,6 +127,12 @@ export function LessonDetailsSheet({
                     <span className="text-muted-foreground">•</span>
                     <span>{timeDisplay}</span>
                   </div>
+                  {lesson.mode === 'groups' && (
+                     <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                        <Users className="h-4 w-4" />
+                        <span>{t('pages.prep.details.groups')}</span>
+                     </div>
+                  )}
                 </SheetDescription>
               )}
             </SheetHeader>
@@ -133,6 +148,24 @@ export function LessonDetailsSheet({
 
               {editMode ? (
                 <div className="space-y-4 pl-6 rtl:pr-6 rtl:pl-0">
+                  
+                  {/* Mode Toggle */}
+                  <div className="space-y-2">
+                    <Label>{t('pages.prep.details.schedulingMode')}</Label>
+                    <Tabs value={mode} onValueChange={(val) => setMode(val as 'fullClass' | 'groups')} className="w-full">
+                      <TabsList className="grid w-full grid-cols-2">
+                        <TabsTrigger value="fullClass" className="gap-2">
+                          <User className="h-4 w-4" />
+                          {t('pages.prep.details.fullClass')}
+                        </TabsTrigger>
+                        <TabsTrigger value="groups" className="gap-2">
+                          <Users className="h-4 w-4" />
+                          {t('pages.prep.details.groups')}
+                        </TabsTrigger>
+                      </TabsList>
+                    </Tabs>
+                  </div>
+
                   <div className="space-y-4">
                     <div className="space-y-2">
                       <Label>{t('pages.prep.table.date')}</Label>
@@ -145,7 +178,7 @@ export function LessonDetailsSheet({
                     
                     <div className="grid grid-cols-2 gap-4">
                       <div className="space-y-2">
-                        <Label>{t('pages.prep.details.firstSessionHour')}</Label>
+                        <Label>{timeSlotLabel}</Label>
                         <Select value={timeSlot} onValueChange={setTimeSlot}>
                           <SelectTrigger>
                             <SelectValue placeholder={t('pages.prep.table.time')} />
@@ -158,10 +191,10 @@ export function LessonDetailsSheet({
                         </Select>
                       </div>
                       <div className="space-y-2">
-                        <Label>{t('pages.prep.details.secondSessionHour')}</Label>
+                        <Label>{secondaryTimeSlotLabel}</Label>
                         <Select value={secondaryTimeSlot} onValueChange={setSecondaryTimeSlot}>
                           <SelectTrigger>
-                            <SelectValue placeholder={t('pages.prep.status.none')} />
+                             <SelectValue placeholder={t('pages.prep.status.none')} />
                           </SelectTrigger>
                           <SelectContent>
                             <SelectItem value="none">{t('pages.prep.status.none')}</SelectItem>
@@ -201,14 +234,14 @@ export function LessonDetailsSheet({
                   <div className="grid grid-cols-2 gap-4 text-sm mb-2">
                      <div className="space-y-1">
                         <span className="text-muted-foreground block text-xs uppercase tracking-wider font-semibold">
-                          {t('pages.prep.details.firstSessionHour')}
+                          {lesson.mode === 'groups' ? t('pages.prep.details.group1Time') : t('pages.prep.details.firstSessionHour')}
                         </span>
                         <span className="font-mono">{lesson.timeSlot}</span>
                      </div>
                      {lesson.secondaryTimeSlot && (
                        <div className="space-y-1">
                           <span className="text-muted-foreground block text-xs uppercase tracking-wider font-semibold">
-                            {t('pages.prep.details.secondSessionHour')}
+                             {lesson.mode === 'groups' ? t('pages.prep.details.group2Time') : t('pages.prep.details.secondSessionHour')}
                           </span>
                           <span className="font-mono">{lesson.secondaryTimeSlot}</span>
                        </div>
