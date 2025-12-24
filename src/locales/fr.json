@@ -343,7 +343,12 @@
                 "saveChanges": "Enregistrer les modifications",
                 "edit": "Modifier",
                 "firstSessionHour": "Première heure de séance",
-                "secondSessionHour": "Deuxième heure de séance (Facultatif)"
+                "secondSessionHour": "Deuxième heure de séance (Facultatif)",
+                "schedulingMode": "Mode de planification",
+                "fullClass": "Classe entière",
+                "groups": "Groupes",
+                "group1Time": "Temps du groupe 1",
+                "group2Time": "Temps du groupe 2"
             },
             "table": {
                 "date": "Date",
