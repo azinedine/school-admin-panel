@@ -33,6 +33,7 @@ import { usePrepStore, type DailyPlanEntry, type LessonTemplate } from '@/store/
 import { useGradesStore } from '@/store/grades-store'
 
 import { LessonSelector } from './LessonSelector'
+import { LessonDetailsSheet } from './LessonDetailsSheet'
 
 
 export function LessonPrepByClass() {
@@ -62,6 +63,15 @@ export function LessonPrepByClass() {
   const [selectedStatusLesson, setSelectedStatusLesson] = useState<DailyPlanEntry | null>(null)
   const [statusNote, setStatusNote] = useState('')
   const [pendingStatus, setPendingStatus] = useState<DailyPlanEntry['status'] | null>(null)
+  
+  // Lesson Details Sheet state
+  const [detailsOpen, setDetailsOpen] = useState(false)
+  const [detailsLesson, setDetailsLesson] = useState<DailyPlanEntry | null>(null)
+
+  const handleViewDetails = (lesson: DailyPlanEntry) => {
+    setDetailsLesson(lesson)
+    setDetailsOpen(true)
+  }
   
 
 
@@ -345,7 +355,12 @@ export function LessonPrepByClass() {
                       <TableCell>
                         <div className="space-y-1">
                           <div className="flex items-center gap-2">
-                            <p className="font-semibold">{lesson.lessonTitle}</p>
+                            <p 
+                              className="font-semibold cursor-pointer hover:underline text-primary"
+                              onClick={() => handleViewDetails(lesson)}
+                            >
+                              {lesson.lessonTitle}
+                            </p>
                             {lesson.status && (
                               <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium ${
                                 lesson.status === 'completed' ? 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200' :
@@ -496,6 +511,12 @@ export function LessonPrepByClass() {
           </DialogFooter>
         </DialogContent>
       </Dialog>
+
+      <LessonDetailsSheet
+        open={detailsOpen}
+        onOpenChange={setDetailsOpen}
+        lesson={detailsLesson}
+      />
     </>
   )
 }
