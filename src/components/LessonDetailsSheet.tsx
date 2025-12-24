@@ -12,9 +12,27 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Switch } from '@/components/ui/switch'
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select'
 import type { DailyPlanEntry } from '@/store/prep-store'
 import { useTranslation } from 'react-i18next'
 import { Clock, BookOpen, List, CheckCircle2, Save } from 'lucide-react'
+
+const TIME_SLOTS = [
+  "08:00-09:00",
+  "09:00-10:00",
+  "10:00-11:00",
+  "11:00-12:00",
+  "13:00-14:00",
+  "14:00-15:00",
+  "15:00-16:00",
+  "16:00-17:00"
+]
 
 interface LessonDetailsSheetProps {
   open: boolean
@@ -37,7 +55,7 @@ export function LessonDetailsSheet({
   // Form State
   const [date, setDate] = useState('')
   const [timeSlot, setTimeSlot] = useState('')
-  const [secondaryTimeSlot, setSecondaryTimeSlot] = useState('')
+  const [secondaryTimeSlot, setSecondaryTimeSlot] = useState<string>('none') // Default to 'none' string internally if empty
   const [practicalWork, setPracticalWork] = useState(false)
   const [homework, setHomework] = useState(false)
 
@@ -46,7 +64,7 @@ export function LessonDetailsSheet({
     if (lesson) {
       setDate(lesson.date || '')
       setTimeSlot(lesson.timeSlot || '')
-      setSecondaryTimeSlot(lesson.secondaryTimeSlot || '')
+      setSecondaryTimeSlot(lesson.secondaryTimeSlot || 'none')
       setPracticalWork(lesson.practicalWork || false)
       setHomework(lesson.homework || false)
     }
@@ -57,7 +75,7 @@ export function LessonDetailsSheet({
       onSave(lesson.id, {
         date,
         timeSlot,
-        secondaryTimeSlot,
+        secondaryTimeSlot: secondaryTimeSlot === 'none' ? undefined : secondaryTimeSlot,
         practicalWork,
         homework,
       })
@@ -129,19 +147,30 @@ export function LessonDetailsSheet({
                     <div className="grid grid-cols-2 gap-4">
                       <div className="space-y-2">
                         <Label>{t('pages.prep.details.firstSessionHour')}</Label>
-                        <Input 
-                          value={timeSlot} 
-                          onChange={(e) => setTimeSlot(e.target.value)}
-                          placeholder="08:00-09:00" 
-                        />
+                        <Select value={timeSlot} onValueChange={setTimeSlot}>
+                          <SelectTrigger>
+                            <SelectValue placeholder={t('pages.prep.table.time')} />
+                          </SelectTrigger>
+                          <SelectContent>
+                            {TIME_SLOTS.map(slot => (
+                              <SelectItem key={slot} value={slot}>{slot}</SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
                       </div>
                       <div className="space-y-2">
                         <Label>{t('pages.prep.details.secondSessionHour')}</Label>
-                        <Input 
-                          value={secondaryTimeSlot} 
-                          onChange={(e) => setSecondaryTimeSlot(e.target.value)}
-                          placeholder="10:00-11:00" 
-                        />
+                        <Select value={secondaryTimeSlot} onValueChange={setSecondaryTimeSlot}>
+                          <SelectTrigger>
+                            <SelectValue placeholder={t('pages.prep.status.none')} />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="none">{t('pages.prep.status.none')}</SelectItem>
+                            {TIME_SLOTS.map(slot => (
+                              <SelectItem key={slot} value={slot}>{slot}</SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
                       </div>
                     </div>
                   </div>
