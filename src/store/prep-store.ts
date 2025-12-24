@@ -22,6 +22,8 @@ export interface DailyPlanEntry {
   knowledgeResource?: string  // المورد المعرفي - Knowledge Resource
   lessonElements?: string[]  // عناصر الدرس - Lesson Elements (list)
   assessment?: string  // تقويم - Assessment / Evaluation
+  homework?: boolean  // واجب منزلي - Homework
+  practicalWork?: boolean  // عمل تطبيقي - Practical Work
 }
 
 export interface TimetableEntry {
@@ -43,6 +45,8 @@ export interface LessonTemplate {
   knowledgeResource: string
   lessonElements: string[]
   assessment: string
+  homework?: boolean
+  practicalWork?: boolean
   lessonContent: string
   practiceNotes: string
   createdAt: string
