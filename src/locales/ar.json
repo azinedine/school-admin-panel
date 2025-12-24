@@ -341,7 +341,9 @@
                 "executionDetails": "تفاصيل التنفيذ",
                 "coreContent": "محتوى الدرس",
                 "saveChanges": "حفظ التغييرات",
-                "edit": "تعديل"
+                "edit": "تعديل",
+                "firstSessionHour": "ساعة الحصة الأولى",
+                "secondSessionHour": "ساعة الحصة الثانية (اختياري)"
             },
             "table": {
                 "date": "التاريخ",
