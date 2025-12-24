@@ -1,6 +1,6 @@
 import { useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { Trash2, Plus, Edit2, Check, X } from 'lucide-react'
+import { Trash2, Plus, Edit2 } from 'lucide-react'
 import {
   Table,
   TableBody,
@@ -10,7 +10,7 @@ import {
   TableRow,
 } from '@/components/ui/table'
 import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
+
 import {
   Select,
   SelectContent,
@@ -56,9 +56,6 @@ export function LessonPrepByClass() {
 
   const [selectedClass, setSelectedClass] = useState<string>(classes[0] || '')
   const [selectorOpen, setSelectorOpen] = useState(false)
-  const [editingId, setEditingId] = useState<string | null>(null)
-  const [editDate, setEditDate] = useState('')
-  const [editTimeSlot, setEditTimeSlot] = useState('')
   const [statusNoteOpen, setStatusNoteOpen] = useState(false)
   const [selectedStatusLesson, setSelectedStatusLesson] = useState<DailyPlanEntry | null>(null)
   const [statusNote, setStatusNote] = useState('')
@@ -67,10 +64,23 @@ export function LessonPrepByClass() {
   // Lesson Details Sheet state
   const [detailsOpen, setDetailsOpen] = useState(false)
   const [detailsLesson, setDetailsLesson] = useState<DailyPlanEntry | null>(null)
+  const [editMode, setEditMode] = useState(false)
 
   const handleViewDetails = (lesson: DailyPlanEntry) => {
     setDetailsLesson(lesson)
+    setEditMode(false)
     setDetailsOpen(true)
+  }
+
+  const handleEdit = (lesson: DailyPlanEntry) => {
+    setDetailsLesson(lesson)
+    setEditMode(true)
+    setDetailsOpen(true)
+  }
+  
+  const handleSaveDetails = (id: string, updates: Partial<DailyPlanEntry>) => {
+    updatePlanEntry(id, updates)
+    // Optional: Add toast success here if needed, but the store update is reactive
   }
   
 
@@ -192,52 +202,7 @@ export function LessonPrepByClass() {
     )
   }
 
-  const handleEdit = (lesson: DailyPlanEntry) => {
-    setEditingId(lesson.id)
-    
-    // Ensure date is in YYYY-MM-DD format for the date input
-    let formattedDate = lesson.date || ''
-    if (formattedDate && !formattedDate.match(/^\d{4}-\d{2}-\d{2}$/)) {
-      // If date is not in YYYY-MM-DD format, try to parse and format it
-      const dateObj = new Date(formattedDate)
-      if (!isNaN(dateObj.getTime())) {
-        formattedDate = dateObj.toISOString().split('T')[0]
-      }
-    }
-    
-    setEditDate(formattedDate)
-    setEditTimeSlot(lesson.timeSlot || '')
-  }
 
-  const handleSaveEdit = (lessonId: string) => {
-    console.log('Attemping to save edit:', { lessonId, editDate, editTimeSlot })
-    
-    // Validate that we have values to save
-    if (!editDate.trim() || !editTimeSlot.trim()) {
-      import('sonner').then(({ toast }) => {
-        toast.error('Please fill in both date and time')
-      })
-      return
-    }
-
-    const updates = {
-      date: editDate.trim(),
-      timeSlot: editTimeSlot.trim(),
-    }
-    
-    console.log('Sending updates to store:', updates)
-    updatePlanEntry(lessonId, updates)
-    
-    // Reset edit state
-    setEditingId(null)
-    setEditDate('')
-    setEditTimeSlot('')
-    
-    // Show success toast
-    import('sonner').then(({ toast }) => {
-      toast.success(t('common.updateSuccess'))
-    })
-  }
 
   const handleStatusChange = (lesson: DailyPlanEntry, newStatus: string) => {
     const status = newStatus as DailyPlanEntry['status']
@@ -271,11 +236,7 @@ export function LessonPrepByClass() {
     }
   }
 
-  const handleCancelEdit = () => {
-    setEditingId(null)
-    setEditDate('')
-    setEditTimeSlot('')
-  }
+
 
   return (
     <>
@@ -328,29 +289,10 @@ export function LessonPrepByClass() {
                   classLessons.map((lesson) => (
                     <TableRow key={lesson.id}>
                       <TableCell className="font-medium">
-                        {editingId === lesson.id ? (
-                          <Input
-                            type="date"
-                            value={editDate}
-                            onChange={(e) => setEditDate(e.target.value)}
-                            className="w-[150px]"
-                          />
-                        ) : (
-                          formatDate(lesson.date)
-                        )}
+                        {formatDate(lesson.date)}
                       </TableCell>
                       <TableCell className="font-mono text-sm">
-                        {editingId === lesson.id ? (
-                          <Input
-                            type="text"
-                            value={editTimeSlot}
-                            onChange={(e) => setEditTimeSlot(e.target.value)}
-                            placeholder="08:00-09:00"
-                            className="w-[120px]"
-                          />
-                        ) : (
-                          lesson.timeSlot
-                        )}
+                        {lesson.timeSlot}
                       </TableCell>
                       <TableCell>
                         <div className="space-y-1">
@@ -413,45 +355,22 @@ export function LessonPrepByClass() {
                       </TableCell>
                       <TableCell className="text-center">
                         <div className="flex items-center justify-center gap-1">
-                          {editingId === lesson.id ? (
-                            <>
-                              <Button 
-                                variant="ghost" 
-                                size="sm"
-                                onClick={() => handleSaveEdit(lesson.id)}
-                                className="text-green-600 hover:text-green-700"
-                              >
-                                <Check className="h-4 w-4" />
-                              </Button>
-                              <Button 
-                                variant="ghost" 
-                                size="sm"
-                                onClick={handleCancelEdit}
-                                className="text-muted-foreground hover:text-foreground"
-                              >
-                                <X className="h-4 w-4" />
-                              </Button>
-                            </>
-                          ) : (
-                            <>
-                              <Button 
-                                variant="ghost" 
-                                size="sm"
-                                onClick={() => handleEdit(lesson)}
-                                className="text-blue-600 hover:text-blue-700"
-                              >
-                                <Edit2 className="h-4 w-4" />
-                              </Button>
-                              <Button 
-                                variant="ghost" 
-                                size="sm"
-                                onClick={() => handleDelete(lesson.id)}
-                                className="text-destructive hover:text-destructive"
-                              >
-                                <Trash2 className="h-4 w-4" />
-                              </Button>
-                            </>
-                          )}
+                          <Button 
+                            variant="ghost" 
+                            size="sm"
+                            onClick={() => handleEdit(lesson)}
+                            className="text-blue-600 hover:text-blue-700"
+                          >
+                            <Edit2 className="h-4 w-4" />
+                          </Button>
+                          <Button 
+                            variant="ghost" 
+                            size="sm"
+                            onClick={() => handleDelete(lesson.id)}
+                            className="text-destructive hover:text-destructive"
+                          >
+                            <Trash2 className="h-4 w-4" />
+                          </Button>
                         </div>
                       </TableCell>
                     </TableRow>
@@ -516,6 +435,8 @@ export function LessonPrepByClass() {
         open={detailsOpen}
         onOpenChange={setDetailsOpen}
         lesson={detailsLesson}
+        editMode={editMode}
+        onSave={handleSaveDetails}
       />
     </>
   )
