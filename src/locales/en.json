@@ -343,7 +343,12 @@
                 "saveChanges": "Save Changes",
                 "edit": "Edit",
                 "firstSessionHour": "First Session Hour",
-                "secondSessionHour": "Second Session Hour (Optional)"
+                "secondSessionHour": "Second Session Hour (Optional)",
+                "schedulingMode": "Scheduling Mode",
+                "fullClass": "Full Class",
+                "groups": "Groups",
+                "group1Time": "Group 1 Time",
+                "group2Time": "Group 2 Time"
             },
             "table": {
                 "date": "Date",
