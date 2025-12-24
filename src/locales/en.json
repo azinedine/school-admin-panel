@@ -341,7 +341,9 @@
                 "executionDetails": "Execution Details",
                 "coreContent": "Lesson Content",
                 "saveChanges": "Save Changes",
-                "edit": "Edit"
+                "edit": "Edit",
+                "firstSessionHour": "First Session Hour",
+                "secondSessionHour": "Second Session Hour (Optional)"
             },
             "table": {
                 "date": "Date",
