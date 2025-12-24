@@ -341,7 +341,9 @@
                 "executionDetails": "Détails d'exécution",
                 "coreContent": "Contenu du cours",
                 "saveChanges": "Enregistrer les modifications",
-                "edit": "Modifier"
+                "edit": "Modifier",
+                "firstSessionHour": "Première heure de séance",
+                "secondSessionHour": "Deuxième heure de séance (Facultatif)"
             },
             "table": {
                 "date": "Date",
