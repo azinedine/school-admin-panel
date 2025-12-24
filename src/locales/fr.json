@@ -353,6 +353,7 @@
             "table": {
                 "date": "Date",
                 "time": "Heure",
+                "schedule": "Emploi du temps",
                 "lessonTopic": "Sujet du cours",
                 "noLessons": "Aucun cours prévu pour ce jour",
                 "addFirstLesson": "Ajouter le premier cours",
