@@ -77,7 +77,7 @@ export function LessonDetailsSheet({
       onSave(lesson.id, {
         date,
         timeSlot,
-        secondaryTimeSlot: secondaryTimeSlot === 'none' ? undefined : secondaryTimeSlot,
+        secondaryTimeSlot: (mode === 'groups' && secondaryTimeSlot !== 'none') ? secondaryTimeSlot : undefined,
         practicalWork,
         homework,
         mode,
@@ -176,7 +176,37 @@ export function LessonDetailsSheet({
                       />
                     </div>
                     
-                    <div className="grid grid-cols-2 gap-4">
+                    {mode === 'groups' ? (
+                      <div className="grid grid-cols-2 gap-4">
+                        <div className="space-y-2">
+                          <Label>{timeSlotLabel}</Label>
+                          <Select value={timeSlot} onValueChange={setTimeSlot}>
+                            <SelectTrigger>
+                              <SelectValue placeholder={t('pages.prep.table.time')} />
+                            </SelectTrigger>
+                            <SelectContent>
+                              {TIME_SLOTS.map(slot => (
+                                <SelectItem key={slot} value={slot}>{slot}</SelectItem>
+                              ))}
+                            </SelectContent>
+                          </Select>
+                        </div>
+                        <div className="space-y-2">
+                          <Label>{secondaryTimeSlotLabel}</Label>
+                          <Select value={secondaryTimeSlot} onValueChange={setSecondaryTimeSlot}>
+                            <SelectTrigger>
+                               <SelectValue placeholder={t('pages.prep.status.none')} />
+                            </SelectTrigger>
+                            <SelectContent>
+                              <SelectItem value="none">{t('pages.prep.status.none')}</SelectItem>
+                              {TIME_SLOTS.map(slot => (
+                                <SelectItem key={slot} value={slot}>{slot}</SelectItem>
+                              ))}
+                            </SelectContent>
+                          </Select>
+                        </div>
+                      </div>
+                    ) : (
                       <div className="space-y-2">
                         <Label>{timeSlotLabel}</Label>
                         <Select value={timeSlot} onValueChange={setTimeSlot}>
@@ -190,21 +220,7 @@ export function LessonDetailsSheet({
                           </SelectContent>
                         </Select>
                       </div>
-                      <div className="space-y-2">
-                        <Label>{secondaryTimeSlotLabel}</Label>
-                        <Select value={secondaryTimeSlot} onValueChange={setSecondaryTimeSlot}>
-                          <SelectTrigger>
-                             <SelectValue placeholder={t('pages.prep.status.none')} />
-                          </SelectTrigger>
-                          <SelectContent>
-                            <SelectItem value="none">{t('pages.prep.status.none')}</SelectItem>
-                            {TIME_SLOTS.map(slot => (
-                              <SelectItem key={slot} value={slot}>{slot}</SelectItem>
-                            ))}
-                          </SelectContent>
-                        </Select>
-                      </div>
-                    </div>
+                    )}
                   </div>
 
                   <div className="flex flex-col gap-4 pt-2">
