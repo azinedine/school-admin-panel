@@ -110,6 +110,18 @@ export function LessonPrepByClass() {
       .map(entry => entry.lessonTitle)
   }, [planEntries, selectedClass])
 
+  // Determine default year for selector based on class grade
+  const defaultSelectorYear = useMemo(() => {
+    const classData = gradesClasses.find(c => c.name === selectedClass)
+    const grade = classData?.grade || ''
+    
+    if (grade.startsWith('1')) return '1st'
+    if (grade.startsWith('2')) return '2nd'
+    if (grade.startsWith('3')) return '3rd'
+    if (grade.startsWith('4')) return '4th'
+    return '1st'
+  }, [selectedClass, gradesClasses])
+
 
 
   const handleAddLesson = () => {
@@ -413,6 +425,7 @@ export function LessonPrepByClass() {
         onSelect={handleTemplateSelected}
         templates={getAllLessonTemplates()}
         addedLessonTitles={addedLessonTitles}
+        defaultYear={defaultSelectorYear}
       />
 
       <Dialog open={statusNoteOpen} onOpenChange={setStatusNoteOpen}>
