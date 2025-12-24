@@ -324,6 +324,21 @@
                 "postponedPlaceholder": "اشرح سبب تأجيل الدرس...",
                 "deletedPlaceholder": "اشرح سبب حذف الدرس من الجدول..."
             },
+            "details": {
+                "title": "تفاصيل الدرس",
+                "field": "الميدان",
+                "learningSegment": "المقطع التعلمي",
+                "knowledgeResource": "المورد المعرفي",
+                "lessonElements": "عناصر الدرس",
+                "assessment": "التقويم",
+                "practicalWork": "عمل تطبيقي",
+                "homework": "واجب منزلي",
+                "yes": "نعم",
+                "no": "لا",
+                "groups": "المجموعات",
+                "group1": "الفوج 1",
+                "group2": "الفوج 2"
+            },
             "table": {
                 "date": "التاريخ",
                 "time": "الوقت",
