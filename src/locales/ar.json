@@ -337,7 +337,11 @@
                 "no": "لا",
                 "groups": "المجموعات",
                 "group1": "الفوج 1",
-                "group2": "الفوج 2"
+                "group2": "الفوج 2",
+                "executionDetails": "تفاصيل التنفيذ",
+                "coreContent": "محتوى الدرس",
+                "saveChanges": "حفظ التغييرات",
+                "edit": "تعديل"
             },
             "table": {
                 "date": "التاريخ",
