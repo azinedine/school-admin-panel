@@ -353,6 +353,7 @@
             "table": {
                 "date": "Date",
                 "time": "Time",
+                "schedule": "Schedule",
                 "lessonTopic": "Lesson Topic",
                 "noLessons": "No lessons planned for this day yet",
                 "addFirstLesson": "Add First Lesson",
