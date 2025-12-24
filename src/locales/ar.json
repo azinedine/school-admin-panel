@@ -343,7 +343,12 @@
                 "saveChanges": "حفظ التغييرات",
                 "edit": "تعديل",
                 "firstSessionHour": "ساعة الحصة الأولى",
-                "secondSessionHour": "ساعة الحصة الثانية (اختياري)"
+                "secondSessionHour": "ساعة الحصة الثانية (اختياري)",
+                "schedulingMode": "طريقة الجدولة",
+                "fullClass": "القسم كامل",
+                "groups": "أفواج",
+                "group1Time": "توقيت الفوج 1",
+                "group2Time": "توقيت الفوج 2"
             },
             "table": {
                 "date": "التاريخ",
