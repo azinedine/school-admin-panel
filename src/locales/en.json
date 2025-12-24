@@ -324,6 +324,25 @@
                 "postponedPlaceholder": "Explain why the lesson was postponed...",
                 "deletedPlaceholder": "Explain why the lesson was deleted from schedule..."
             },
+            "details": {
+                "title": "Lesson Details",
+                "field": "Field",
+                "learningSegment": "Learning Segment",
+                "knowledgeResource": "Knowledge Resource",
+                "lessonElements": "Lesson Elements",
+                "assessment": "Assessment",
+                "practicalWork": "Practical Work",
+                "homework": "Homework",
+                "yes": "Yes",
+                "no": "No",
+                "groups": "Groups",
+                "group1": "Group 1",
+                "group2": "Group 2",
+                "executionDetails": "Execution Details",
+                "coreContent": "Lesson Content",
+                "saveChanges": "Save Changes",
+                "edit": "Edit"
+            },
             "table": {
                 "date": "Date",
                 "time": "Time",
