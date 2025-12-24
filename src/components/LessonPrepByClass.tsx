@@ -9,6 +9,7 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table'
+import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 
 import {
@@ -262,7 +263,7 @@ export function LessonPrepByClass() {
                     {t('pages.prep.table.date')}
                   </TableHead>
                   <TableHead className="w-[150px]">
-                    {t('pages.prep.table.time')}
+                    {t('pages.prep.table.schedule')}
                   </TableHead>
                   <TableHead>
                     {t('pages.prep.table.lessonTopic')}
@@ -291,13 +292,29 @@ export function LessonPrepByClass() {
                       <TableCell className="font-medium">
                         {formatDate(lesson.date)}
                       </TableCell>
-                      <TableCell className="font-mono text-sm">
-                        {lesson.timeSlot}
-                        {lesson.secondaryTimeSlot && (
-                          <span className="block text-xs text-muted-foreground">
-                            & {lesson.secondaryTimeSlot}
-                          </span>
-                        )}
+                      <TableCell className="text-sm">
+                        <div className="flex flex-col gap-1.5 align-top">
+                          {lesson.mode === 'groups' ? (
+                            <>
+                              <Badge variant="outline" className="w-fit h-5 text-[10px] px-1.5 bg-purple-50 text-purple-700 border-purple-200">
+                                {t('pages.prep.details.groups')}
+                              </Badge>
+                              <div className="space-y-0.5 text-xs font-mono text-muted-foreground">
+                                <div><span className="font-semibold text-foreground">G1:</span> {lesson.timeSlot}</div>
+                                <div><span className="font-semibold text-foreground">G2:</span> {lesson.secondaryTimeSlot || '-'}</div>
+                              </div>
+                            </>
+                          ) : (
+                            <>
+                              <Badge variant="outline" className="w-fit h-5 text-[10px] px-1.5 bg-blue-50 text-blue-700 border-blue-200">
+                                {t('pages.prep.details.fullClass')}
+                              </Badge>
+                              <div className="text-xs font-mono text-muted-foreground">
+                                {lesson.timeSlot}
+                              </div>
+                            </>
+                          )}
+                        </div>
                       </TableCell>
                       <TableCell>
                         <div className="space-y-1">
