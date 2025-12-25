@@ -26,19 +26,26 @@ export const municipalities: Record<string, { id: string; name: string; nameAr: 
 }
 
 export const institutions: Record<string, { id: string; name: string; nameAr: string }[]> = {
+  // Algiers
   '1601': [
-    { id: 'inst_1', name: 'CEM Emir Abdelkader', nameAr: 'متوسطة الأمير عبد القادر' },
-    { id: 'inst_2', name: 'Lycée Okba', nameAr: 'ثانوية عقبة' },
+    { id: 'inst_1601_1', name: 'CEM Emir Abdelkader', nameAr: 'متوسطة الأمير عبد القادر' },
+    { id: 'inst_1601_2', name: 'Lycée Okba', nameAr: 'ثانوية عقبة' },
   ],
-  '1611': [
-    { id: 'inst_3', name: 'CEM Bouzareah', nameAr: 'متوسطة بوزريعة' },
-  ],
-  '3101': [
-    { id: 'inst_4', name: 'Lycée Lotfi', nameAr: 'ثانوية لطفي' },
-  ],
-  '2501': [
-    { id: 'inst_5', name: 'Technicum', nameAr: 'متقن قسنطينة' },
-  ]
+  '1602': [{ id: 'inst_1602_1', name: 'CEM Sidi M\'Hamed', nameAr: 'متوسطة سيدي امحمد' }],
+  '1603': [{ id: 'inst_1603_1', name: 'CEM El Madania', nameAr: 'متوسطة المدنية' }],
+  '1604': [{ id: 'inst_1604_1', name: 'Lycée Belouizdad', nameAr: 'ثانوية بلوزداد' }],
+  '1605': [{ id: 'inst_1605_1', name: 'CEM Bab El Oued', nameAr: 'متوسطة باب الواد' }],
+  '1611': [{ id: 'inst_1611_1', name: 'CEM Bouzareah', nameAr: 'متوسطة بوزريعة' }],
+  
+  // Oran
+  '3101': [{ id: 'inst_3101_1', name: 'Lycée Lotfi', nameAr: 'ثانوية لطفي' }],
+  '3102': [{ id: 'inst_3102_1', name: 'Lycée Bir El Djir', nameAr: 'ثانوية بئر الجير' }],
+  '3103': [{ id: 'inst_3103_1', name: 'Technicum Es Senia', nameAr: 'متقن السانية' }],
+
+  // Constantine
+  '2501': [{ id: 'inst_2501_1', name: 'Technicum Constantine', nameAr: 'متقن قسنطينة' }],
+  '2502': [{ id: 'inst_2502_1', name: 'Lycée El Khroub', nameAr: 'ثانوية الخروب' }],
+  '2503': [{ id: 'inst_2503_1', name: 'CEM Ain Smara', nameAr: 'متوسطة عين سمارة' }],
 }
 
 export const subjectsList = [
