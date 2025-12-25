@@ -15,7 +15,8 @@
         "actions": "Actions",
         "addNote": "Add Note",
         "typeHere": "Type here...",
-        "processing": "Processing..."
+        "processing": "Processing...",
+        "next": "Next"
     },
     "auth": {
         "login": {
