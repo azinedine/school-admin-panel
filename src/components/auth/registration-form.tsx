@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { useForm } from 'react-hook-form'
+import type { AxiosError } from 'axios'
 import { zodResolver } from '@hookform/resolvers/zod'
 import * as z from 'zod'
 import { useTranslation } from 'react-i18next'
@@ -145,13 +146,13 @@ export function RegistrationForm({ onSuccess }: RegistrationFormProps) {
         onSuccess: () => {
             if (onSuccess) onSuccess();
         },
-        onError: (error: any) => {
+        onError: (error: AxiosError<{ message: string, errors?: Record<string, string[]> }>) => {
              // Map server errors to form fields
              if (error.response?.data?.errors) {
                  const serverErrors = error.response.data.errors;
                  Object.keys(serverErrors).forEach((key) => {
-                     // @ts-expect-error - dynamic key mapping to form structure
-                     form.setError(key, {
+                     // Map server errors to form fields
+                     form.setError(key as any, {
                          type: "server",
                          message: serverErrors[key][0]
                      });
