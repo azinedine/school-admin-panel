@@ -17,6 +17,12 @@ export interface User {
   class?: string
   linkedStudentId?: string
   created_at: string
+  can?: {
+    viewAny: boolean
+    create: boolean
+    update: boolean
+    delete: boolean
+  }
 }
 
 export interface Notification {
