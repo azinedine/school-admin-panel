@@ -28,11 +28,26 @@
         },
         "register": {
             "title": "Create an account",
+            "step1Desc": "Enter your personal details",
+            "step2Desc": "Complete your profile as {{role}}",
             "description": "Enter your details to create your account",
             "name": "Full Name",
-            "submit": "Sign Up",
+            "role": "I am a...",
+            "submit": "Create Account",
             "hasAccount": "Already have an account?",
-            "success": "Account created successfully"
+            "success": "Account created successfully",
+            "institution": "Institution",
+            "subjects": "Subjects (comma separated)",
+            "levels": "Levels (comma separated)",
+            "level": "Level",
+            "class": "Class",
+            "linkedStudent": "Linked Student ID"
+        },
+        "roles": {
+            "admin": "Administrator",
+            "teacher": "Teacher",
+            "student": "Student",
+            "parent": "Parent"
         }
     },
     "nav": {
