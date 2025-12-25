@@ -36,6 +36,16 @@ apiClient.interceptors.request.use(
   }
 )
 
+// Define an auth object for authentication-related API calls
+export const auth = {
+  logout: async () => {
+    return apiClient.post('/logout')
+  },
+  deleteUser: async () => {
+    return apiClient.delete('/user')
+  },
+}
+
 /**
  * Response interceptor - Handle errors globally
  */
