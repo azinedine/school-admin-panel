@@ -16,17 +16,13 @@ import type { NavGroup as NavGroupType } from './types'
 import { useDirection } from '@/hooks/use-direction'
 import { useGradesStore } from '@/store/grades-store'
 
+
+
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   const { isRTL } = useDirection()
   const { t } = useTranslation()
   const classes = useGradesStore((state) => state.classes)
-  
-  // Use sidebar data or fallback to default
-  const userData = {
-    name: sidebarData.user.name,
-    email: sidebarData.user.email,
-    avatar: sidebarData.user.avatar,
-  }
+
 
   // Build dynamic nav groups with live classes
   const dynamicNavGroups = useMemo(() => {
@@ -91,7 +87,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         ))}
       </SidebarContent>
       <SidebarFooter>
-        <NavUser user={userData} />
+        <NavUser />
       </SidebarFooter>
       <SidebarRail />
     </Sidebar>
