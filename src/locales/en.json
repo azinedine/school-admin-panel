@@ -46,6 +46,10 @@
             "levels": "Levels (comma separated)",
             "level": "Level",
             "class": "Class",
+            "selectWilaya": "Select Wilaya",
+            "selectMunicipality": "Select Municipality",
+            "selectInstitution": "Select Institution",
+            "selectClass": "Select Class",
             "linkedStudent": "Linked Student ID"
         },
         "roles": {
