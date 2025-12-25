@@ -16,6 +16,7 @@ export interface User {
   levels?: string[]
   class?: string
   linkedStudentId?: string
+  created_at: string
 }
 
 export interface Notification {
