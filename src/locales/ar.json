@@ -14,7 +14,8 @@
         "updateSuccess": "تم التحديث بنجاح",
         "actions": "إجراءات",
         "addNote": "إضافة ملاحظة",
-        "typeHere": "اكتب هنا..."
+        "typeHere": "اكتب هنا...",
+        "processing": "جاري المعالجة..."
     },
     "auth": {
         "login": {
