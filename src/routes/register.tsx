@@ -1,7 +1,8 @@
 import { useState, useEffect } from 'react'
-import { createFileRoute, redirect, useNavigate, Link } from '@tanstack/react-router'
+import { createFileRoute, redirect, Link } from '@tanstack/react-router'
 import { useTranslation } from 'react-i18next'
 import { useAuthStore } from '@/store/auth-store'
+import { useRegister } from '@/hooks/use-auth'
 import type { User } from '@/store/types'
 import { Button } from '@/components/ui/button'
 import { LanguageSwitcher } from '@/components/language-switcher'
@@ -10,7 +11,6 @@ import { Label } from '@/components/ui/label'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from '@/components/ui/card'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { Checkbox } from '@/components/ui/checkbox'
-import { toast } from 'sonner'
 import { Eye, EyeOff, UserPlus, ArrowLeft, ArrowRight, School, BookOpen, Users, User as UserIcon } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { wilayas, municipalities, institutions, subjectsList, classesList } from '@/data/mock-locations'
@@ -27,11 +27,9 @@ export const Route = createFileRoute('/register')({
 function RegisterPage() {
   const { t, i18n } = useTranslation()
   const isRTL = i18n.dir() === 'rtl'
-  const navigate = useNavigate()
-  const login = useAuthStore((state) => state.login)
   
   const [step, setStep] = useState(1)
-  const [loading, setLoading] = useState(false)
+
   
   // Step 1 Data
   const [name, setName] = useState('')
@@ -87,50 +85,33 @@ function RegisterPage() {
     )
   }
 
-  const handleRegister = async (e: React.FormEvent) => {
+  const { mutate: registerUser, isPending: loading } = useRegister()
+  
+  // Note: Backend requires basic info first. 
+  // Profile info (wilaya, role, etc) will be sent but ignored by backend unless we update backend.
+  // For now, we prioritize connecting the auth flow.
+
+  const handleRegister = (e: React.FormEvent) => {
     e.preventDefault()
-    setLoading(true)
     
-    // Simulate API call
-    setTimeout(() => {
-        // Get Names
-        const wilayaData = wilayas.find(w => w.code === selectedWilaya)
-        const muniData = municipalities[selectedWilaya]?.find(m => m.id === selectedMunicipality)
-        const instData = institutions[selectedMunicipality]?.find(i => i.id === selectedInstitution)
-        
-        // Map subject IDs to Names/Strings
-        const subjectNames = selectedSubjects.map(id => {
-            const s = subjectsList.find(sub => sub.id === id)
-            return isRTL ? s?.nameAr || id : s?.name || id
-        })
-
-        // Map level IDs to Names
-        const levelNames = selectedLevels.map(id => {
-             const l = classesList.find(c => c.id === id)
-             return l?.name || id
-        })
-
-      const newUser: User = {
-        id: Math.floor(Math.random() * 1000) + 1,
+    // Construct the payload matching backend expectations + extra fields for potential future use
+    const payload = {
         name,
         email,
+        password,
+        password_confirmation: password, // UI doesn't have confirmation, so we assume correctness
+        // Extra fields - passed along in case backend is updated to handle them
         role,
-        wilaya: isRTL ? wilayaData?.nameAr : wilayaData?.name,
-        municipality: isRTL ? muniData?.nameAr : muniData?.name,
-        institution: isRTL ? instData?.nameAr : instData?.name,
-        
-        // Optional fields based on role
-        subjects: role === 'teacher' ? subjectNames : undefined,
-        levels: role === 'teacher' ? levelNames : undefined,
-        class: role === 'student' ? selectedClass : undefined,
-        linkedStudentId: role === 'parent' ? linkedStudentId : undefined
-      }
+        wilaya: selectedWilaya,
+        municipality: selectedMunicipality,
+        institution: selectedInstitution,
+        subjects: selectedSubjects,
+        levels: selectedLevels,
+        class: selectedClass,
+        linkedStudentId: linkedStudentId
+    }
 
-      login(newUser, 'mock-jwt-token')
-      
-      toast.success(t('auth.register.success') || 'Account created successfully')
-      navigate({ to: '/' })
-    }, 800)
+    registerUser(payload)
   }
 
   const renderStepIcon = () => {
