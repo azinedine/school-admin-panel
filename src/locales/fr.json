@@ -16,7 +16,8 @@
         "addNote": "Ajouter une note",
         "typeHere": "Écrivez ici...",
         "processing": "Traitement en cours...",
-        "next": "Suivant"
+        "next": "Suivant",
+        "back": "Retour"
     },
     "auth": {
         "login": {
