@@ -54,6 +54,16 @@ export interface LessonTemplate {
   createdAt: string
 }
 
+// Memo Template
+export interface MemoTemplate {
+  id: string
+  title: string
+  content: string
+  createdAt: string
+  reference?: string
+  date?: string
+}
+
 // State interface
 interface PrepState {
   planEntries: DailyPlanEntry[]
@@ -62,6 +72,7 @@ interface PrepState {
   termStartDate: string | null
   termEndDate: string | null
   lessonTemplates: LessonTemplate[]
+  memos: MemoTemplate[]
 }
 
 // Actions interface
@@ -94,6 +105,12 @@ interface PrepActions {
   deleteLessonTemplate: (id: string) => void
   getLessonTemplatesByYear: (year: LessonTemplate['academicYear']) => LessonTemplate[]
   getAllLessonTemplates: () => LessonTemplate[]
+
+  // Memo actions
+  addMemo: (memo: Omit<MemoTemplate, 'id' | 'createdAt'>) => void
+  updateMemo: (id: string, updates: Partial<MemoTemplate>) => void
+  deleteMemo: (id: string) => void
+  getAllMemos: () => MemoTemplate[]
 }
 
 // Combined store type
@@ -110,6 +127,7 @@ export const usePrepStore = create<PrepStore>()(
       termStartDate: null,
       termEndDate: null,
       lessonTemplates: [],
+      memos: [],
 
       // Lesson plan actions
       addPlanEntry: (entry) =>
@@ -238,6 +256,35 @@ export const usePrepStore = create<PrepStore>()(
 
       getAllLessonTemplates: () => {
         return get().lessonTemplates
+      },
+
+      // Memo actions
+      addMemo: (memo) =>
+        set((state) => ({
+          memos: [
+            ...state.memos,
+            {
+              ...memo,
+              id: crypto.randomUUID(),
+              createdAt: new Date().toISOString(),
+            },
+          ],
+        })),
+
+      updateMemo: (id, updates) =>
+        set((state) => ({
+          memos: state.memos.map((memo) =>
+            memo.id === id ? { ...memo, ...updates } : memo
+          ),
+        })),
+
+      deleteMemo: (id) =>
+        set((state) => ({
+          memos: state.memos.filter((memo) => memo.id !== id),
+        })),
+
+      getAllMemos: () => {
+        return get().memos
       },
     }),
     {
