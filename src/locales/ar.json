@@ -46,6 +46,10 @@
             "levels": "المستويات (مفصولة بفاصلة)",
             "level": "المستوى",
             "class": "القسم",
+            "selectWilaya": "اختر الولاية",
+            "selectMunicipality": "اختر البلدية",
+            "selectInstitution": "اختر المؤسسة",
+            "selectClass": "اختر القسم",
             "linkedStudent": "معرف الطالب المرتبط"
         },
         "roles": {
