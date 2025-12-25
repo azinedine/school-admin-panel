@@ -335,9 +335,25 @@
                 "homework": "واجب منزلي",
                 "yes": "نعم",
                 "no": "لا",
-                "groups": "المجموعات",
                 "group1": "الفوج 1",
                 "group2": "الفوج 2",
+            "memos": {
+                "title": "المذكرات",
+                "description": "إدارة المذكرات والملاحظات الإدارية",
+                "addMemo": "إضافة مذكرة",
+                "editMemo": "تعديل المذكرة",
+                "emptyState": "لا توجد مذكرات بعد",
+                "createFirst": "أنشئ أول مذكرة لك",
+                "deleteConfirm": "هل أنت متأكد من حذف هذه المذكرة؟",
+                "form": {
+                    "title": "العنوان",
+                    "titlePlaceholder": "موضوع المذكرة",
+                    "reference": "المرجع",
+                    "date": "التاريخ",
+                    "content": "المحتوى",
+                    "contentPlaceholder": "اكتب محتوى المذكرة هنا..."
+                }
+            },
                 "executionDetails": "تفاصيل التنفيذ",
                 "coreContent": "محتوى الدرس",
                 "saveChanges": "حفظ التغييرات",
