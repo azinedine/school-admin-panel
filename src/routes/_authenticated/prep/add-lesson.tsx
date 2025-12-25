@@ -29,6 +29,8 @@ import {
 } from '@/components/ui/alert-dialog'
 import { usePrepStore } from '@/store/prep-store'
 import { toast } from 'sonner'
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
+import { MemoLibrary } from '@/components/MemoLibrary'
 
 const ACADEMIC_YEARS: Array<LessonTemplate['academicYear']> = ['1st', '2nd', '3rd', '4th']
 
@@ -178,10 +180,16 @@ function AddLessonPage() {
 
   return (
     <ContentPage
-      title={t('pages.addLesson.title')}
-      description={t('pages.addLesson.description')}
+      title={t('nav.lessonManagement')}
     >
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+      <Tabs defaultValue="lessons" className="space-y-6">
+        <TabsList>
+          <TabsTrigger value="lessons">{t('pages.addLesson.title')}</TabsTrigger>
+          <TabsTrigger value="memos">{t('pages.prep.memos.title')}</TabsTrigger>
+        </TabsList>
+
+        <TabsContent value="lessons" className="space-y-6">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Left Column: Lesson Creation Form */}
         <div className="space-y-6">
           <Card className="p-6">
@@ -427,7 +435,13 @@ function AddLessonPage() {
             onDuplicate={handleDuplicate}
           />
         </div>
-      </div>
+        </div>
+      </TabsContent>
+
+      <TabsContent value="memos">
+        <MemoLibrary />
+      </TabsContent>
+      </Tabs>
 
       {/* Delete Confirmation Dialog */}
       <AlertDialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen}>
