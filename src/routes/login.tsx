@@ -1,13 +1,13 @@
 import { useState } from 'react'
-import { createFileRoute, redirect, useNavigate, Link } from '@tanstack/react-router'
+import { createFileRoute, redirect, Link } from '@tanstack/react-router'
 import { useTranslation } from 'react-i18next'
 import { useAuthStore } from '@/store/auth-store'
+import { useLogin } from '@/hooks/use-auth'
 import { Button } from '@/components/ui/button'
 import { LanguageSwitcher } from '@/components/language-switcher'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from '@/components/ui/card'
-import { toast } from 'sonner'
 import { Eye, EyeOff, LogIn } from 'lucide-react'
 
 export const Route = createFileRoute('/login')({
@@ -22,30 +22,15 @@ export const Route = createFileRoute('/login')({
 function LoginPage() {
   const { t, i18n } = useTranslation()
   const isRTL = i18n.dir() === 'rtl'
-  const navigate = useNavigate()
-  const login = useAuthStore((state) => state.login)
+  const { mutate: loginUser, isPending: loading } = useLogin()
   
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [showPassword, setShowPassword] = useState(false)
-  const [loading, setLoading] = useState(false)
 
-  const handleLogin = async (e: React.FormEvent) => {
+  const handleLogin = (e: React.FormEvent) => {
     e.preventDefault()
-    setLoading(true)
-    
-    // Simulate API call
-    setTimeout(() => {
-      login({
-        id: 1,
-        name: 'Admin User',
-        email: email,
-        role: 'admin'
-      }, 'mock-jwt-token')
-      
-      toast.success(t('auth.login.success') || 'Logged in successfully')
-      navigate({ to: '/' })
-    }, 800)
+    loginUser({ email, password })
   }
 
   return (
