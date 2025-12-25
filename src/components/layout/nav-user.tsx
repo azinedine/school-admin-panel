@@ -23,8 +23,7 @@ import {
   SidebarMenuItem,
   useSidebar,
 } from '@/components/ui/sidebar'
-import { useAuthStore } from '@/store/auth-store'
-import { useNavigate } from '@tanstack/react-router'
+import { useLogout } from '@/hooks/use-auth'
 
 export function NavUser({
   user,
@@ -38,12 +37,10 @@ export function NavUser({
   const { isMobile } = useSidebar()
   const { t } = useTranslation()
 
-  const { logout } = useAuthStore()
-  const navigate = useNavigate()
+  const { mutate: logoutUser } = useLogout()
 
   const handleLogout = () => {
-    logout()
-    navigate({ to: '/login' })
+    logoutUser()
   }
 
   return (
