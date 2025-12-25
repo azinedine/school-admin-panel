@@ -211,7 +211,7 @@ function RegisterPage() {
                 </div>
                 <div className="space-y-2">
                     <Label>{t('auth.register.role')}</Label>
-                    <Select value={role} onValueChange={(v: any) => setRole(v)}>
+                    <Select value={role} onValueChange={(v: User['role']) => setRole(v)}>
                         <SelectTrigger>
                             <SelectValue />
                         </SelectTrigger>
