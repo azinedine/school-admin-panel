@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { createFileRoute, redirect, useNavigate, Link } from '@tanstack/react-router'
 import { useTranslation } from 'react-i18next'
 import { useAuthStore } from '@/store/auth-store'
@@ -8,9 +8,11 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from '@/components/ui/card'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
+import { Checkbox } from '@/components/ui/checkbox'
 import { toast } from 'sonner'
 import { Eye, EyeOff, UserPlus, ArrowLeft, ArrowRight, School, BookOpen, Users, User as UserIcon } from 'lucide-react'
 import { cn } from '@/lib/utils'
+import { wilayas, municipalities, institutions, subjectsList, classesList } from '@/data/mock-locations'
 
 export const Route = createFileRoute('/register')({
   beforeLoad: () => {
@@ -38,11 +40,26 @@ function RegisterPage() {
   const [showPassword, setShowPassword] = useState(false)
 
   // Step 2 Data
-  const [institution, setInstitution] = useState('')
-  const [subjects, setSubjects] = useState('')
-  const [levels, setLevels] = useState('')
-  const [studentClass, setStudentClass] = useState('')
+  const [selectedWilaya, setSelectedWilaya] = useState('')
+  const [selectedMunicipality, setSelectedMunicipality] = useState('')
+  const [selectedInstitution, setSelectedInstitution] = useState('')
+  
+  // Subjects (Multiple selection for Teacher)
+  const [selectedSubjects, setSelectedSubjects] = useState<string[]>([])
+  
+  const [selectedLevel, setSelectedLevel] = useState('') // For Teacher
+  const [selectedClass, setSelectedClass] = useState('') // For Student
   const [linkedStudentId, setLinkedStudentId] = useState('')
+
+  // Reset downstream selections when upstream changes
+  useEffect(() => {
+    setSelectedMunicipality('')
+    setSelectedInstitution('')
+  }, [selectedWilaya])
+
+  useEffect(() => {
+    setSelectedInstitution('')
+  }, [selectedMunicipality])
 
   const handleNext = (e: React.FormEvent) => {
     e.preventDefault()
@@ -52,6 +69,14 @@ function RegisterPage() {
   const handleBack = () => {
     setStep(1)
   }
+  
+  const toggleSubject = (subjectId: string) => {
+    setSelectedSubjects(prev => 
+      prev.includes(subjectId) 
+        ? prev.filter(id => id !== subjectId)
+        : [...prev, subjectId]
+    )
+  }
 
   const handleRegister = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -59,16 +84,30 @@ function RegisterPage() {
     
     // Simulate API call
     setTimeout(() => {
+        // Get Names
+        const wilayaData = wilayas.find(w => w.code === selectedWilaya)
+        const muniData = municipalities[selectedWilaya]?.find(m => m.id === selectedMunicipality)
+        const instData = institutions[selectedMunicipality]?.find(i => i.id === selectedInstitution)
+        
+        // Map subject IDs to Names/Strings
+        const subjectNames = selectedSubjects.map(id => {
+            const s = subjectsList.find(sub => sub.id === id)
+            return isRTL ? s?.nameAr || id : s?.name || id
+        })
+
       const newUser: User = {
         id: Math.floor(Math.random() * 1000) + 1,
         name,
         email,
         role,
-        institution,
+        wilaya: isRTL ? wilayaData?.nameAr : wilayaData?.name,
+        municipality: isRTL ? muniData?.nameAr : muniData?.name,
+        institution: isRTL ? instData?.nameAr : instData?.name,
+        
         // Optional fields based on role
-        subjects: role === 'teacher' ? subjects.split(',').map(s => s.trim()) : undefined,
-        levels: role === 'teacher' ? levels.split(',').map(l => l.trim()) : role === 'student' ? [levels] : undefined,
-        class: role === 'student' ? studentClass : undefined,
+        subjects: role === 'teacher' ? subjectNames : undefined,
+        levels: role === 'teacher' ? [selectedLevel] : undefined,
+        class: role === 'student' ? selectedClass : undefined,
         linkedStudentId: role === 'parent' ? linkedStudentId : undefined
       }
 
@@ -104,7 +143,6 @@ function RegisterPage() {
             {step === 1 ? t('auth.register.step1Desc') : t('auth.register.step2Desc', { role: t(`auth.roles.${role}`) })}
           </CardDescription>
           
-          {/* Progress Indicator */}
           <div className="flex gap-2 justify-center mt-4">
             <div className={cn("h-1 w-8 rounded-full transition-colors", step >= 1 ? "bg-primary" : "bg-muted")} />
             <div className={cn("h-1 w-8 rounded-full transition-colors", step >= 2 ? "bg-primary" : "bg-muted")} />
@@ -115,7 +153,6 @@ function RegisterPage() {
           <CardContent className="space-y-4">
             {step === 1 ? (
               <>
-                {/* Step 1: General Info */}
                 <div className="space-y-2">
                   <Label htmlFor="name">{t('auth.register.name')}</Label>
                   <Input 
@@ -158,7 +195,6 @@ function RegisterPage() {
                     </Button>
                   </div>
                 </div>
-                {/* Role Selection */}
                 <div className="space-y-2">
                     <Label>{t('auth.register.role')}</Label>
                     <Select value={role} onValueChange={(v: any) => setRole(v)}>
@@ -176,38 +212,86 @@ function RegisterPage() {
               </>
             ) : (
               <>
-                {/* Step 2: Role Specifics */}
+                {/* Location Hierarchy */}
+                <div className="grid grid-cols-2 gap-4">
+                    <div className="space-y-2">
+                        <Label>{t('auth.register.wilaya')}</Label>
+                        <Select value={selectedWilaya} onValueChange={setSelectedWilaya} required>
+                            <SelectTrigger>
+                                <SelectValue placeholder={t('common.select')} />
+                            </SelectTrigger>
+                            <SelectContent>
+                                {wilayas.map(w => (
+                                    <SelectItem key={w.code} value={w.code}>
+                                        {w.code} - {isRTL ? w.nameAr : w.name}
+                                    </SelectItem>
+                                ))}
+                            </SelectContent>
+                        </Select>
+                    </div>
+                    <div className="space-y-2">
+                        <Label>{t('auth.register.municipality')}</Label>
+                        <Select value={selectedMunicipality} onValueChange={setSelectedMunicipality} disabled={!selectedWilaya} required>
+                            <SelectTrigger>
+                                <SelectValue placeholder={t('common.select')} />
+                            </SelectTrigger>
+                            <SelectContent>
+                                {selectedWilaya && municipalities[selectedWilaya]?.map(m => (
+                                    <SelectItem key={m.id} value={m.id}>
+                                        {isRTL ? m.nameAr : m.name}
+                                    </SelectItem>
+                                ))}
+                            </SelectContent>
+                        </Select>
+                    </div>
+                </div>
+
                 <div className="space-y-2">
-                    <Label htmlFor="institution">{t('auth.register.institution')}</Label>
-                    <Input 
-                        id="institution" 
-                        value={institution}
-                        onChange={(e) => setInstitution(e.target.value)}
-                        placeholder="School Name"
-                        required
-                        autoFocus
-                    />
+                    <Label>{t('auth.register.institution')}</Label>
+                    <Select value={selectedInstitution} onValueChange={setSelectedInstitution} disabled={!selectedMunicipality} required>
+                        <SelectTrigger>
+                            <SelectValue placeholder={t('common.select')} />
+                        </SelectTrigger>
+                        <SelectContent>
+                            {selectedMunicipality && institutions[selectedMunicipality]?.map(i => (
+                                <SelectItem key={i.id} value={i.id}>
+                                    {isRTL ? i.nameAr : i.name}
+                                </SelectItem>
+                            ))}
+                        </SelectContent>
+                    </Select>
                 </div>
 
                 {role === 'teacher' && (
                     <>
                         <div className="space-y-2">
-                            <Label htmlFor="subjects">{t('auth.register.subjects')}</Label>
-                            <Input 
-                                id="subjects" 
-                                value={subjects}
-                                onChange={(e) => setSubjects(e.target.value)}
-                                placeholder="Math, Physics"
-                                required
-                            />
+                            <Label>{t('auth.register.subjects')}</Label>
+                            <div className="border rounded-md p-3 max-h-48 overflow-y-auto space-y-2">
+                                {subjectsList.map(s => (
+                                    <div key={s.id} className="flex items-center space-x-2 space-x-reverse">
+                                        <Checkbox 
+                                            id={`subject-${s.id}`} 
+                                            checked={selectedSubjects.includes(s.id)}
+                                            onCheckedChange={() => toggleSubject(s.id)}
+                                        />
+                                        <Label 
+                                            htmlFor={`subject-${s.id}`} 
+                                            className={cn("text-sm font-normal cursor-pointer flex-1", isRTL ? "mr-2" : "ml-2")}
+                                        >
+                                            {isRTL ? s.nameAr : s.name}
+                                        </Label>
+                                    </div>
+                                ))}
+                            </div>
+                            <p className="text-xs text-muted-foreground">{selectedSubjects.length} selected</p>
                         </div>
                         <div className="space-y-2">
-                            <Label htmlFor="levels">{t('auth.register.levels')}</Label>
-                            <Input 
+                            <Label>{t('auth.register.levels')}</Label>
+                             <Input 
                                 id="levels" 
-                                value={levels}
-                                onChange={(e) => setLevels(e.target.value)}
-                                placeholder="1AM, 2AM"
+                                value={selectedLevel}
+                                onChange={(e) => setSelectedLevel(e.target.value)}
+                                placeholder="1AM, 2AM (comma separated)"
                                 required
                             />
                         </div>
@@ -216,25 +300,22 @@ function RegisterPage() {
 
                 {role === 'student' && (
                     <>
-                        <div className="space-y-2">
-                            <Label htmlFor="level">{t('auth.register.level')}</Label>
-                            <Input 
-                                id="level" 
-                                value={levels}
-                                onChange={(e) => setLevels(e.target.value)}
-                                placeholder="1AM"
-                                required
-                            />
-                        </div>
-                        <div className="space-y-2">
-                            <Label htmlFor="class">{t('auth.register.class')}</Label>
-                            <Input 
-                                id="class" 
-                                value={studentClass}
-                                onChange={(e) => setStudentClass(e.target.value)}
-                                placeholder="Class A"
-                                required
-                            />
+                        <div className="grid grid-cols-2 gap-4">
+                             <div className="space-y-2">
+                                <Label>{t('auth.register.class')}</Label>
+                                <Select value={selectedClass} onValueChange={setSelectedClass} required>
+                                    <SelectTrigger>
+                                        <SelectValue placeholder={t('common.select')} />
+                                    </SelectTrigger>
+                                    <SelectContent>
+                                        {classesList.map(c => (
+                                            <SelectItem key={c.id} value={c.id}>
+                                                {c.name}
+                                            </SelectItem>
+                                        ))}
+                                    </SelectContent>
+                                </Select>
+                            </div>
                         </div>
                     </>
                 )}
