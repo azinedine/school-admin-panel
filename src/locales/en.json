@@ -16,6 +16,25 @@
         "addNote": "Add Note",
         "typeHere": "Type here..."
     },
+    "auth": {
+        "login": {
+            "title": "Welcome back",
+            "description": "Enter your email to sign in to your account",
+            "email": "Email",
+            "password": "Password",
+            "submit": "Sign In",
+            "noAccount": "Don't have an account?",
+            "success": "Logged in successfully"
+        },
+        "register": {
+            "title": "Create an account",
+            "description": "Enter your details to create your account",
+            "name": "Full Name",
+            "submit": "Sign Up",
+            "hasAccount": "Already have an account?",
+            "success": "Account created successfully"
+        }
+    },
     "nav": {
         "mainMenu": "Main menu",
         "settingsAndNews": "Settings and news",
