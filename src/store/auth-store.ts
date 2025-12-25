@@ -1,5 +1,6 @@
 import { create } from 'zustand'
-import { devtools, persist } from 'zustand/middleware'
+import { devtools, persist, createJSONStorage } from 'zustand/middleware'
+
 import type { User } from './types'
 import { authStorage } from './storage'
 
@@ -107,7 +108,7 @@ export const useAuthStore = create<AuthStore>()(
       }),
       {
         name: 'auth-storage',
-        storage: authStorage as any, // Using IndexedDB
+        storage: createJSONStorage(() => authStorage), // Using IndexedDB
       }
     ),
     { name: 'AuthStore' }
