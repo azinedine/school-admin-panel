@@ -13,6 +13,7 @@ import { Route as RegisterRouteImport } from './routes/register'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
 import { Route as AuthenticatedIndexRouteImport } from './routes/_authenticated/index'
+import { Route as AuthenticatedUsersIndexRouteImport } from './routes/_authenticated/users/index'
 import { Route as AuthenticatedUpdatesIndexRouteImport } from './routes/_authenticated/updates/index'
 import { Route as AuthenticatedTeachersIndexRouteImport } from './routes/_authenticated/teachers/index'
 import { Route as AuthenticatedStudentsIndexRouteImport } from './routes/_authenticated/students/index'
@@ -47,6 +48,11 @@ const AuthenticatedRouteRoute = AuthenticatedRouteRouteImport.update({
 const AuthenticatedIndexRoute = AuthenticatedIndexRouteImport.update({
   id: '/',
   path: '/',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
+const AuthenticatedUsersIndexRoute = AuthenticatedUsersIndexRouteImport.update({
+  id: '/users/',
+  path: '/users/',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
 const AuthenticatedUpdatesIndexRoute =
@@ -163,6 +169,7 @@ export interface FileRoutesByFullPath {
   '/students': typeof AuthenticatedStudentsIndexRoute
   '/teachers': typeof AuthenticatedTeachersIndexRoute
   '/updates': typeof AuthenticatedUpdatesIndexRoute
+  '/users': typeof AuthenticatedUsersIndexRoute
 }
 export interface FileRoutesByTo {
   '/login': typeof LoginRoute
@@ -184,6 +191,7 @@ export interface FileRoutesByTo {
   '/students': typeof AuthenticatedStudentsIndexRoute
   '/teachers': typeof AuthenticatedTeachersIndexRoute
   '/updates': typeof AuthenticatedUpdatesIndexRoute
+  '/users': typeof AuthenticatedUsersIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -207,6 +215,7 @@ export interface FileRoutesById {
   '/_authenticated/students/': typeof AuthenticatedStudentsIndexRoute
   '/_authenticated/teachers/': typeof AuthenticatedTeachersIndexRoute
   '/_authenticated/updates/': typeof AuthenticatedUpdatesIndexRoute
+  '/_authenticated/users/': typeof AuthenticatedUsersIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -230,6 +239,7 @@ export interface FileRouteTypes {
     | '/students'
     | '/teachers'
     | '/updates'
+    | '/users'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/login'
@@ -251,6 +261,7 @@ export interface FileRouteTypes {
     | '/students'
     | '/teachers'
     | '/updates'
+    | '/users'
   id:
     | '__root__'
     | '/_authenticated'
@@ -273,6 +284,7 @@ export interface FileRouteTypes {
     | '/_authenticated/students/'
     | '/_authenticated/teachers/'
     | '/_authenticated/updates/'
+    | '/_authenticated/users/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -309,6 +321,13 @@ declare module '@tanstack/react-router' {
       path: '/'
       fullPath: '/'
       preLoaderRoute: typeof AuthenticatedIndexRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/users/': {
+      id: '/_authenticated/users/'
+      path: '/users'
+      fullPath: '/users'
+      preLoaderRoute: typeof AuthenticatedUsersIndexRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
     '/_authenticated/updates/': {
@@ -444,6 +463,7 @@ interface AuthenticatedRouteRouteChildren {
   AuthenticatedStudentsIndexRoute: typeof AuthenticatedStudentsIndexRoute
   AuthenticatedTeachersIndexRoute: typeof AuthenticatedTeachersIndexRoute
   AuthenticatedUpdatesIndexRoute: typeof AuthenticatedUpdatesIndexRoute
+  AuthenticatedUsersIndexRoute: typeof AuthenticatedUsersIndexRoute
 }
 
 const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
@@ -464,6 +484,7 @@ const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedStudentsIndexRoute: AuthenticatedStudentsIndexRoute,
   AuthenticatedTeachersIndexRoute: AuthenticatedTeachersIndexRoute,
   AuthenticatedUpdatesIndexRoute: AuthenticatedUpdatesIndexRoute,
+  AuthenticatedUsersIndexRoute: AuthenticatedUsersIndexRoute,
 }
 
 const AuthenticatedRouteRouteWithChildren =
