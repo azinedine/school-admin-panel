@@ -71,6 +71,8 @@
         "assignmentManagement": "Gestion des devoirs",
         "schedule": "Emploi du temps",
         "students": "Étudiants",
+        "teachers": "Enseignants",
+        "usersManagement": "Gestion des utilisateurs",
         "grades": {
             "title": "Classes",
             "gradeSheet": "Fiche de notes",
@@ -527,6 +529,76 @@
             "selectTemplatePlaceholder": "Choisissez un modèle pour remplir automatiquement les détails du cours",
             "clearTemplate": "Effacer le modèle",
             "noTemplatesAvailable": "Aucun modèle disponible. Créez des modèles dans la page Ajouter un cours."
+        },
+        "users": {
+            "title": "Gestion des utilisateurs",
+            "description": "Gérer tous les utilisateurs enregistrés sur la plateforme",
+            "totalUsers": "Total des utilisateurs",
+            "activeUsers": "Utilisateurs actifs",
+            "table": {
+                "name": "Nom",
+                "email": "Email",
+                "role": "Rôle",
+                "institution": "Institution",
+                "status": "Statut",
+                "createdDate": "Date de création",
+                "actions": "Actions"
+            },
+            "roles": {
+                "admin": "Administrateur",
+                "manager": "Gestionnaire",
+                "super_admin": "Super administrateur",
+                "teacher": "Enseignant",
+                "student": "Étudiant",
+                "parent": "Parent"
+            },
+            "statuses": {
+                "active": "Actif",
+                "inactive": "Inactif",
+                "suspended": "Suspendu"
+            },
+            "pagination": {
+                "previous": "Précédent",
+                "next": "Suivant",
+                "showing": "Affichage {{from}} à {{to}} sur {{total}} utilisateurs"
+            },
+            "loading": "Chargement des utilisateurs...",
+            "error": "Erreur lors du chargement des utilisateurs",
+            "noResults": "Aucun utilisateur trouvé",
+            "retry": "Réessayer",
+            "accessDenied": "Accès refusé",
+            "accessDeniedMessage": "Seuls les administrateurs, les gestionnaires et les super administrateurs peuvent accéder à cette page.",
+            "actions": {
+                "title": "Actions",
+                "view": "Voir les détails",
+                "suspend": "Suspendre le compte",
+                "delete": "Supprimer le compte",
+                "moreActions": "Plus d'actions"
+            },
+            "viewDetails": {
+                "title": "Détails de l'utilisateur",
+                "personalInfo": "Informations personnelles",
+                "accountInfo": "Informations du compte",
+                "academicInfo": "Informations académiques",
+                "close": "Fermer"
+            },
+            "suspendAccount": {
+                "title": "Suspendre le compte",
+                "description": "Cet utilisateur ne pourra pas se connecter ou accéder à la plateforme.",
+                "confirm": "Suspendre",
+                "cancel": "Annuler",
+                "success": "Compte utilisateur suspendu avec succès",
+                "error": "Échec de la suspension du compte utilisateur"
+            },
+            "deleteAccount": {
+                "title": "Supprimer le compte",
+                "description": "Êtes-vous sûr de vouloir supprimer définitivement cet utilisateur ? Cette action ne peut pas être annulée.",
+                "warning": "Toutes les données utilisateur seront supprimées de manière permanente de la plateforme.",
+                "confirm": "Supprimer",
+                "cancel": "Annuler",
+                "success": "Compte utilisateur supprimé avec succès",
+                "error": "Échec de la suppression du compte utilisateur"
+            }
         }
     }
 }
