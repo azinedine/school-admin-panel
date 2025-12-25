@@ -11,7 +11,10 @@ export interface User {
   // Profile fields
   wilaya?: string
   municipality?: string
-  institution?: string
+  institution?: {
+    id: number
+    name: string
+  }
   subjects?: string[]
   levels?: string[]
   class?: string
