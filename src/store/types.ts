@@ -9,6 +9,8 @@ export interface User {
   role: 'admin' | 'teacher' | 'student' | 'parent'
   avatar?: string
   // Profile fields
+  wilaya?: string
+  municipality?: string
   institution?: string
   subjects?: string[]
   levels?: string[]
