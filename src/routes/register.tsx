@@ -275,10 +275,10 @@ function RegisterPage() {
                         <SelectTrigger>
                             <SelectValue placeholder={
                                 !selectedMunicipality 
-                                    ? t('common.select') 
+                                    ? t('auth.register.selectInstitution') 
                                     : !institutions[selectedMunicipality]?.length 
                                         ? "No institutions available" // Should be translated but hardcoded for safety now
-                                        : t('common.select')
+                                        : t('auth.register.selectInstitution')
                             } />
                         </SelectTrigger>
                         <SelectContent>
@@ -345,7 +345,7 @@ function RegisterPage() {
                                 <Label>{t('auth.register.class')}</Label>
                                 <Select value={selectedClass} onValueChange={setSelectedClass} required>
                                     <SelectTrigger>
-                                        <SelectValue placeholder={t('common.select')} />
+                                        <SelectValue placeholder={t('auth.register.selectClass')} />
                                     </SelectTrigger>
                                     <SelectContent>
                                         {classesList.map(c => (
