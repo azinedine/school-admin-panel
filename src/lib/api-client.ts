@@ -6,7 +6,7 @@ import { useAuthStore } from '@/store/auth-store'
  * Base API URL - configure this based on your environment
  * In production, use environment variables
  */
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8000/api'
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'https://school-manager-api-main-lj9lin.laravel.cloud/api'
 
 /**
  * Axios instance configured for API requests
