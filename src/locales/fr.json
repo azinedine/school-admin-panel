@@ -46,6 +46,10 @@
             "levels": "Niveaux (séparés par virgule)",
             "level": "Niveau",
             "class": "Classe",
+            "selectWilaya": "Sélectionner la Wilaya",
+            "selectMunicipality": "Sélectionner la Commune",
+            "selectInstitution": "Sélectionner l'Établissement",
+            "selectClass": "Sélectionner la Classe",
             "linkedStudent": "ID Étudiant lié"
         },
         "roles": {
