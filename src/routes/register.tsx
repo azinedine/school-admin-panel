@@ -236,7 +236,7 @@ function RegisterPage() {
                         <Label>{t('auth.register.wilaya')}</Label>
                         <Select value={selectedWilaya} onValueChange={setSelectedWilaya} required>
                             <SelectTrigger>
-                                <SelectValue placeholder={t('common.select')} />
+                                <SelectValue placeholder={t('auth.register.selectWilaya')} />
                             </SelectTrigger>
                             <SelectContent>
                                 {wilayas.map(w => (
@@ -251,7 +251,7 @@ function RegisterPage() {
                         <Label>{t('auth.register.municipality')}</Label>
                         <Select value={selectedMunicipality} onValueChange={setSelectedMunicipality} disabled={!selectedWilaya} required>
                             <SelectTrigger>
-                                <SelectValue placeholder={t('common.select')} />
+                                <SelectValue placeholder={t('auth.register.selectMunicipality')} />
                             </SelectTrigger>
                             <SelectContent>
                                 {selectedWilaya && municipalities[selectedWilaya]?.map(m => (
