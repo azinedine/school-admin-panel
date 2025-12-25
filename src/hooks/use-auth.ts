@@ -83,11 +83,19 @@ export const useLogout = () => {
 }
 
 export const useUser = () => {
+  const updateUser = useAuthStore((state) => state.updateUser)
+  
   return useQuery({
     queryKey: ['user'],
     queryFn: async () => {
-      const response = await apiClient.get<User>('/user')
-      return response.data
+      const response = await apiClient.get('/user')
+      // Laravel API with UserResource returns: { data: { id, name, email, ... } }
+      // Axios unwraps the HTTP response, so response.data = { data: { user fields } }
+      const userData = response.data.data as User
+      
+      // Sync with auth store
+      updateUser(userData)
+      return userData
     },
     retry: false,
     staleTime: 1000 * 60 * 5, // 5 minutes
