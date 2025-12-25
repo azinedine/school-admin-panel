@@ -68,8 +68,8 @@ export const classesList = [
   { id: '2AM', name: '2AM' },
   { id: '3AM', name: '3AM' },
   { id: '4AM', name: '4AM' },
-  // High School
-  { id: '1AS', name: '1AS' },
-  { id: '2AS', name: '2AS' },
-  { id: '3AS', name: '3AS' },
+  // // High School
+  // { id: '1AS', name: '1AS' },
+  // { id: '2AS', name: '2AS' },
+  // { id: '3AS', name: '3AS' },
 ]
