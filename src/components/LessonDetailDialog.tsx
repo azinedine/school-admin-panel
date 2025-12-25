@@ -423,7 +423,7 @@ export function LessonDetailDialog({
                   <Label htmlFor="mode">{t('pages.prep.mode')}</Label>
                   <Select
                     value={formData.mode}
-                    onValueChange={(value) => setFormData({ ...formData, mode: value as any })}
+                    onValueChange={(value) => setFormData({ ...formData, mode: value as 'fullClass' | 'groups' })}
                   >
                     <SelectTrigger id="mode">
                       <SelectValue />
@@ -550,7 +550,7 @@ export function LessonDetailDialog({
                     <Label htmlFor="group">{t('pages.prep.selectGroup')}</Label>
                     <Select
                       value={formData.group}
-                      onValueChange={(value) => setFormData({ ...formData, group: value as any })}
+                      onValueChange={(value) => setFormData({ ...formData, group: value as 'first' | 'second' })}
                     >
                       <SelectTrigger id="group">
                         <SelectValue />
