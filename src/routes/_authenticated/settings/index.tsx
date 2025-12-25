@@ -350,7 +350,7 @@ function SettingsPage() {
             </CardDescription>
           </CardHeader>
           <CardContent>
-            <div className='flex items-center justify-between p-4 border border-destructive/50 rounded-lg bg-destructive/5'>
+            <div className='flex items-center justify-between p-4 rounded-lg bg-destructive/5'>
               <div>
                 <h3 className='font-semibold text-sm'>
                   {t('nav.profile.deleteAccount', 'Delete Account')}
