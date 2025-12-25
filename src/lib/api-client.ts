@@ -1,11 +1,12 @@
 import axios from 'axios'
 import type { AxiosError, AxiosInstance } from 'axios'
+import { useAuthStore } from '@/store/auth-store'
 
 /**
  * Base API URL - configure this based on your environment
  * In production, use environment variables
  */
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:3000/api'
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8000/api'
 
 /**
  * Axios instance configured for API requests
@@ -14,20 +15,20 @@ export const apiClient: AxiosInstance = axios.create({
   baseURL: API_BASE_URL,
   headers: {
     'Content-Type': 'application/json',
+    'Accept': 'application/json',
   },
-  timeout: 10000, // 10 seconds
+  timeout: 10000,
 })
 
 /**
- * Request interceptor - Add auth tokens here if needed
+ * Request interceptor - Add auth tokens here
  */
 apiClient.interceptors.request.use(
   (config) => {
-    // Example: Add auth token if available
-    // const token = localStorage.getItem('auth_token')
-    // if (token) {
-    //   config.headers.Authorization = `Bearer ${token}`
-    // }
+    const token = useAuthStore.getState().token
+    if (token) {
+      config.headers.Authorization = `Bearer ${token}`
+    }
     return config
   },
   (error) => {
@@ -43,11 +44,11 @@ apiClient.interceptors.response.use(
   (error: AxiosError) => {
     // Handle common error scenarios
     if (error.response) {
-      // Server responded with error status
       switch (error.response.status) {
         case 401:
-          // Handle unauthorized - e.g., redirect to login
-          console.error('Unauthorized access')
+          // Token expired or invalid
+          console.error('Unauthorized access - logging out')
+          useAuthStore.getState().logout()
           break
         case 403:
           console.error('Forbidden access')
@@ -61,12 +62,6 @@ apiClient.interceptors.response.use(
         default:
           console.error('API error:', error.response.status)
       }
-    } else if (error.request) {
-      // Request made but no response
-      console.error('No response from server')
-    } else {
-      // Error in request setup
-      console.error('Request error:', error.message)
     }
     
     return Promise.reject(error)
