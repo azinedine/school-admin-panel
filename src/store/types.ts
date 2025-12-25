@@ -6,7 +6,7 @@ export interface User {
   id: number
   name: string
   email: string
-  role: 'admin' | 'teacher' | 'student' | 'parent'
+  role: 'admin' | 'teacher' | 'student' | 'parent' | 'manager' | 'super_admin'
   avatar?: string
   // Profile fields
   wilaya?: string
@@ -20,6 +20,7 @@ export interface User {
   class?: string
   linkedStudentId?: string
   created_at: string
+  status?: 'active' | 'inactive' | 'suspended'
   can?: {
     viewAny: boolean
     create: boolean
