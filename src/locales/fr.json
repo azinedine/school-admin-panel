@@ -28,11 +28,26 @@
         },
         "register": {
             "title": "Créer un compte",
+            "step1Desc": "Entrez vos informations personnelles",
+            "step2Desc": "Complétez votre profil en tant que {{role}}",
             "description": "Entrez vos détails pour créer votre compte",
             "name": "Nom complet",
-            "submit": "S'inscrire",
+            "role": "Je suis un...",
+            "submit": "Créer un compte",
             "hasAccount": "Déjà un compte ?",
-            "success": "Compte créé avec succès"
+            "success": "Compte créé avec succès",
+            "institution": "Établissement",
+            "subjects": "Matières (séparées par virgule)",
+            "levels": "Niveaux (séparés par virgule)",
+            "level": "Niveau",
+            "class": "Classe",
+            "linkedStudent": "ID Étudiant lié"
+        },
+        "roles": {
+            "admin": "Administrateur",
+            "teacher": "Enseignant",
+            "student": "Étudiant",
+            "parent": "Parent"
         }
     },
     "nav": {
