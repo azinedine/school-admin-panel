@@ -37,6 +37,8 @@
             "hasAccount": "Déjà un compte ?",
             "success": "Compte créé avec succès",
             "institution": "Établissement",
+            "wilaya": "Wilaya",
+            "municipality": "Commune",
             "subjects": "Matières (séparées par virgule)",
             "levels": "Niveaux (séparés par virgule)",
             "level": "Niveau",
