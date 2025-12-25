@@ -118,7 +118,14 @@
             "notifications": "Notifications",
             "notificationsEnabled": "Enabled",
             "noAcademicInfo": "No academic information available",
-            "loadError": "Failed to load user profile."
+            "loadError": "Failed to load user profile.",
+            "dangerZone": "Danger Zone",
+            "dangerZoneDesc": "Irreversible actions",
+            "deleteAccount": "Delete Account",
+            "deleteAccountDesc": "Permanently delete your account and all associated data",
+            "deleteAccountBtn": "Delete Account",
+            "deleteAccountConfirmTitle": "Are you absolutely sure?",
+            "deleteAccountConfirmDesc": "This action cannot be undone. This will permanently delete your account and remove all your data from our servers."
         }
     },
     "user": {
