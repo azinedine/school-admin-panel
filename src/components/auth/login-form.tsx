@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { useForm } from 'react-hook-form'
+import { useForm, type Path } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import * as z from 'zod'
 import { useTranslation } from 'react-i18next'
@@ -54,15 +54,10 @@ export function LoginForm() {
                  const serverErrors = error.response.data.errors;
                  Object.keys(serverErrors).forEach((key) => {
                      // Map server errors to form fields
-                     form.setError(key as any, {
+                     form.setError(key as Path<FormValues>, {
                          type: "server",
                          message: serverErrors[key][0]
                      });
-                 });
-             } else {
-                 form.setError("root", { 
-                     type: "server", 
-                     message: "Login failed. Please try again." 
                  });
              }
         }
