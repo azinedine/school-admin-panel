@@ -11,12 +11,14 @@ interface AuthResponse {
   user: User
 }
 
+import type { AxiosError } from 'axios'
+
 export const useLogin = () => {
   const login = useAuthStore((state) => state.login)
   const navigate = useNavigate()
 
   return useMutation({
-    mutationFn: async (credentials: any) => {
+    mutationFn: async (credentials: Record<string, unknown>) => {
       const response = await apiClient.post<AuthResponse>('/login', credentials)
       return response.data
     },
@@ -27,7 +29,7 @@ export const useLogin = () => {
       toast.success('Logged in successfully')
       navigate({ to: '/' })
     },
-    onError: (error: any) => {
+    onError: (error: AxiosError<{ message: string }>) => {
       toast.error(error.response?.data?.message || 'Login failed')
     },
   })
@@ -38,7 +40,7 @@ export const useRegister = () => {
   const navigate = useNavigate()
 
   return useMutation({
-    mutationFn: async (credentials: any) => {
+    mutationFn: async (credentials: Record<string, unknown>) => {
       const response = await apiClient.post<AuthResponse>('/register', credentials)
       return response.data
     },
@@ -48,7 +50,7 @@ export const useRegister = () => {
       toast.success('Account created successfully')
       navigate({ to: '/' })
     },
-    onError: (error: any) => {
+    onError: (error: AxiosError<{ message: string }>) => {
         // Handle validation errors key by key if needed, or just show generic message
         const message = error.response?.data?.message || 'Registration failed';
         toast.error(message)
