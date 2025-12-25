@@ -1,6 +1,7 @@
 import { createFileRoute } from '@tanstack/react-router'
 import { useTranslation } from 'react-i18next'
 import { format } from 'date-fns'
+import { useState } from 'react'
 import { 
   Building2, 
   MapPin, 
@@ -12,7 +13,8 @@ import {
   Shield,
   Globe,
   Palette,
-  Bell
+  Bell,
+  Trash2
 } from 'lucide-react'
 import { ContentPage } from '@/components/layout/content-page'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
@@ -21,6 +23,17 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/com
 import { useUser } from '@/hooks/use-auth'
 import { Skeleton } from '@/components/ui/skeleton'
 import { Separator } from '@/components/ui/separator'
+import { Button } from '@/components/ui/button'
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from '@/components/ui/alert-dialog'
 
 export const Route = createFileRoute('/_authenticated/settings/')({
   component: SettingsPage,
@@ -29,6 +42,13 @@ export const Route = createFileRoute('/_authenticated/settings/')({
 function SettingsPage() {
   const { t, i18n } = useTranslation()
   const { data: user, isLoading, isError } = useUser()
+  const [showDeleteDialog, setShowDeleteDialog] = useState(false)
+
+  const handleDeleteAccount = () => {
+    // TODO: Implement account deletion API call
+    console.log('Delete account confirmed')
+    setShowDeleteDialog(false)
+  }
 
   if (isLoading) {
     return (
@@ -317,7 +337,63 @@ function SettingsPage() {
             </CardContent>
           </Card>
         </div>
+
+        {/* Danger Zone */}
+        <Card className='border-destructive'>
+          <CardHeader>
+            <CardTitle className='flex items-center gap-2 text-destructive'>
+              <Trash2 className='h-5 w-5' />
+              {t('nav.profile.dangerZone', 'Danger Zone')}
+            </CardTitle>
+            <CardDescription>
+              {t('nav.profile.dangerZoneDesc', 'Irreversible actions')}
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <div className='flex items-center justify-between p-4 border border-destructive/50 rounded-lg bg-destructive/5'>
+              <div>
+                <h3 className='font-semibold text-sm'>
+                  {t('nav.profile.deleteAccount', 'Delete Account')}
+                </h3>
+                <p className='text-sm text-muted-foreground'>
+                  {t('nav.profile.deleteAccountDesc', 'Permanently delete your account and all associated data')}
+                </p>
+              </div>
+              <Button 
+                variant='destructive' 
+                onClick={() => setShowDeleteDialog(true)}
+                className='shrink-0'
+              >
+                <Trash2 className='h-4 w-4 me-2' />
+                {t('nav.profile.deleteAccountBtn', 'Delete Account')}
+              </Button>
+            </div>
+          </CardContent>
+        </Card>
       </div>
+
+      {/* Delete Account Confirmation Dialog */}
+      <AlertDialog open={showDeleteDialog} onOpenChange={setShowDeleteDialog}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>
+              {t('nav.profile.deleteAccountConfirmTitle', 'Are you absolutely sure?')}
+            </AlertDialogTitle>
+            <AlertDialogDescription>
+              {t('nav.profile.deleteAccountConfirmDesc', 'This action cannot be undone. This will permanently delete your account and remove all your data from our servers.')}
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>{t('common.cancel', 'Cancel')}</AlertDialogCancel>
+            <AlertDialogAction 
+              onClick={handleDeleteAccount}
+              className='bg-destructive text-destructive-foreground hover:bg-destructive/90'
+            >
+              {t('nav.profile.deleteAccountBtn', 'Delete Account')}
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </ContentPage>
   )
 }
