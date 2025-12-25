@@ -14,7 +14,8 @@
         "updateSuccess": "Updated successfully",
         "actions": "Actions",
         "addNote": "Add Note",
-        "typeHere": "Type here..."
+        "typeHere": "Type here...",
+        "processing": "Processing..."
     },
     "auth": {
         "login": {
