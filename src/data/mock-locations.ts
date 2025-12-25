@@ -50,6 +50,9 @@ export const subjectsList = [
   { id: 'english', name: 'English', nameAr: 'اللغة الإنجليزية' },
   { id: 'history', name: 'History & Geography', nameAr: 'التاريخ والجغرافيا' },
   { id: 'islamic', name: 'Islamic Education', nameAr: 'التربية الإسلامية' },
+  { id: 'drawing', name: 'Drawing / Art', nameAr: 'التربية التشكيلية' },
+  { id: 'cs', name: 'Computer Science', nameAr: 'الإعلام الآلي' },
+  { id: 'civic', name: 'Civic Education', nameAr: 'التربية المدنية' },
 ]
 
 export const classesList = [
