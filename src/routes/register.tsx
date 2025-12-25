@@ -44,10 +44,10 @@ function RegisterPage() {
   const [selectedMunicipality, setSelectedMunicipality] = useState('')
   const [selectedInstitution, setSelectedInstitution] = useState('')
   
-  // Subjects (Multiple selection for Teacher)
+  // Subject & Level (Multiple selection for Teacher)
   const [selectedSubjects, setSelectedSubjects] = useState<string[]>([])
+  const [selectedLevels, setSelectedLevels] = useState<string[]>([])
   
-  const [selectedLevel, setSelectedLevel] = useState('') // For Teacher
   const [selectedClass, setSelectedClass] = useState('') // For Student
   const [linkedStudentId, setLinkedStudentId] = useState('')
 
@@ -78,6 +78,14 @@ function RegisterPage() {
     )
   }
 
+  const toggleLevel = (levelId: string) => {
+    setSelectedLevels(prev => 
+      prev.includes(levelId) 
+        ? prev.filter(id => id !== levelId)
+        : [...prev, levelId]
+    )
+  }
+
   const handleRegister = async (e: React.FormEvent) => {
     e.preventDefault()
     setLoading(true)
@@ -95,6 +103,12 @@ function RegisterPage() {
             return isRTL ? s?.nameAr || id : s?.name || id
         })
 
+        // Map level IDs to Names
+        const levelNames = selectedLevels.map(id => {
+             const l = classesList.find(c => c.id === id)
+             return l?.name || id
+        })
+
       const newUser: User = {
         id: Math.floor(Math.random() * 1000) + 1,
         name,
@@ -106,7 +120,7 @@ function RegisterPage() {
         
         // Optional fields based on role
         subjects: role === 'teacher' ? subjectNames : undefined,
-        levels: role === 'teacher' ? [selectedLevel] : undefined,
+        levels: role === 'teacher' ? levelNames : undefined,
         class: role === 'student' ? selectedClass : undefined,
         linkedStudentId: role === 'parent' ? linkedStudentId : undefined
       }
@@ -298,13 +312,24 @@ function RegisterPage() {
                         </div>
                         <div className="space-y-2">
                             <Label>{t('auth.register.levels')}</Label>
-                             <Input 
-                                id="levels" 
-                                value={selectedLevel}
-                                onChange={(e) => setSelectedLevel(e.target.value)}
-                                placeholder="1AM, 2AM (comma separated)"
-                                required
-                            />
+                            <div className="border rounded-md p-3 max-h-48 overflow-y-auto space-y-2">
+                                {classesList.map(l => (
+                                    <div key={l.id} className="flex items-center space-x-2 space-x-reverse">
+                                        <Checkbox 
+                                            id={`level-${l.id}`} 
+                                            checked={selectedLevels.includes(l.id)}
+                                            onCheckedChange={() => toggleLevel(l.id)}
+                                        />
+                                        <Label 
+                                            htmlFor={`level-${l.id}`} 
+                                            className={cn("text-sm font-normal cursor-pointer flex-1", isRTL ? "mr-2" : "ml-2")}
+                                        >
+                                            {l.name}
+                                        </Label>
+                                    </div>
+                                ))}
+                            </div>
+                             <p className="text-xs text-muted-foreground">{selectedLevels.length} selected</p>
                         </div>
                     </>
                 )}
