@@ -167,14 +167,14 @@ export function MemoLibrary() {
               <Input 
                 value={formData.title} 
                 onChange={e => setFormData({...formData, title: e.target.value})}
-                placeholder={t('pages.memos.form.titlePlaceholder')}
+                placeholder={t('pages.prep.memos.form.titlePlaceholder')}
                 required 
               />
             </div>
             
             <div className="grid grid-cols-2 gap-4">
                <div className="space-y-2">
-                <Label>{t('pages.memos.form.reference')}</Label>
+                <Label>{t('pages.prep.memos.form.reference')}</Label>
                 <Input 
                   value={formData.reference} 
                   onChange={e => setFormData({...formData, reference: e.target.value})}
@@ -182,7 +182,7 @@ export function MemoLibrary() {
                 />
               </div>
               <div className="space-y-2">
-                <Label>{t('pages.memos.form.date')}</Label>
+                <Label>{t('pages.prep.memos.form.date')}</Label>
                 <Input 
                   type="date"
                   value={formData.date} 
@@ -192,11 +192,11 @@ export function MemoLibrary() {
             </div>
 
             <div className="space-y-2">
-              <Label>{t('pages.memos.form.content')}</Label>
+              <Label>{t('pages.prep.memos.form.content')}</Label>
               <Textarea 
                 value={formData.content} 
                 onChange={e => setFormData({...formData, content: e.target.value})}
-                placeholder={t('pages.memos.form.contentPlaceholder')}
+                placeholder={t('pages.prep.memos.form.contentPlaceholder')}
                 placeholder-shown="Type your memo here..."
                 className="min-h-[150px]"
                 required 
@@ -220,7 +220,7 @@ export function MemoLibrary() {
         <AlertDialogContent>
           <AlertDialogHeader>
             <AlertDialogTitle>{t('common.confirm')}</AlertDialogTitle>
-            <AlertDialogDescription>{t('pages.memos.deleteConfirm')}</AlertDialogDescription>
+            <AlertDialogDescription>{t('pages.prep.memos.deleteConfirm')}</AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
             <AlertDialogCancel>{t('common.cancel')}</AlertDialogCancel>
