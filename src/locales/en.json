@@ -37,6 +37,8 @@
             "hasAccount": "Already have an account?",
             "success": "Account created successfully",
             "institution": "Institution",
+            "wilaya": "Wilaya",
+            "municipality": "Municipality",
             "subjects": "Subjects (comma separated)",
             "levels": "Levels (comma separated)",
             "level": "Level",
