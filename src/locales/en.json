@@ -86,7 +86,20 @@
         "schoolNews": "School News",
         "schoolActivities": "School Activities",
         "whatsNew": "What's New",
-        "settings": "Settings"
+        "settings": "Settings",
+        "profile": {
+            "title": "User Profile",
+            "personalInfo": "Personal Information",
+            "academicInfo": "Academic Information",
+            "role": "Role",
+            "email": "Email",
+            "joined": "Joined",
+            "institution": "Institution",
+            "class": "Class",
+            "subjects": "Subjects",
+            "levels": "Levels",
+            "linkedStudent": "Linked Student"
+        }
     },
     "user": {
         "upgradeToPro": "Upgrade to Pro",
