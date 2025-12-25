@@ -14,7 +14,8 @@
         "updateSuccess": "Mis à jour avec succès",
         "actions": "Actions",
         "addNote": "Ajouter une note",
-        "typeHere": "Écrivez ici..."
+        "typeHere": "Écrivez ici...",
+        "processing": "Traitement en cours..."
     },
     "auth": {
         "login": {
