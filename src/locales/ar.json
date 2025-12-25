@@ -118,7 +118,14 @@
             "notifications": "الإشعارات",
             "notificationsEnabled": "مفعلة",
             "noAcademicInfo": "لا توجد معلومات أكاديمية متاحة",
-            "loadError": "فشل تحميل الملف الشخصي."
+            "loadError": "فشل تحميل الملف الشخصي.",
+            "dangerZone": "منطقة الخطر",
+            "dangerZoneDesc": "إجراءات لا رجعة فيها",
+            "deleteAccount": "حذف الحساب",
+            "deleteAccountDesc": "حذف حسابك وجميع البيانات المرتبطة به نهائياً",
+            "deleteAccountBtn": "حذف الحساب",
+            "deleteAccountConfirmTitle": "هل أنت متأكد تماماً؟",
+            "deleteAccountConfirmDesc": "لا يمكن التراجع عن هذا الإجراء. سيؤدي هذا إلى حذف حسابك نهائياً وإزالة جميع بياناتك من خوادمنا."
         }
     },
     "user": {
