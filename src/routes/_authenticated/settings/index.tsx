@@ -20,7 +20,7 @@ import { ContentPage } from '@/components/layout/content-page'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { Badge } from '@/components/ui/badge'
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card'
-import { useUser } from '@/hooks/use-auth'
+import { useUser, useDeleteAccount } from '@/hooks/use-auth'
 import { Skeleton } from '@/components/ui/skeleton'
 import { Separator } from '@/components/ui/separator'
 import { Button } from '@/components/ui/button'
@@ -42,11 +42,11 @@ export const Route = createFileRoute('/_authenticated/settings/')({
 function SettingsPage() {
   const { t, i18n } = useTranslation()
   const { data: user, isLoading, isError } = useUser()
+  const { mutate: deleteAccount, isPending: isDeleting } = useDeleteAccount()
   const [showDeleteDialog, setShowDeleteDialog] = useState(false)
 
   const handleDeleteAccount = () => {
-    // TODO: Implement account deletion API call
-    console.log('Delete account confirmed')
+    deleteAccount()
     setShowDeleteDialog(false)
   }
 
@@ -387,9 +387,10 @@ function SettingsPage() {
             <AlertDialogCancel>{t('common.cancel', 'Cancel')}</AlertDialogCancel>
             <AlertDialogAction 
               onClick={handleDeleteAccount}
+              disabled={isDeleting}
               className='bg-destructive text-destructive-foreground hover:bg-destructive/90'
             >
-              {t('nav.profile.deleteAccountBtn', 'Delete Account')}
+              {isDeleting ? t('common.processing', 'Processing...') : t('nav.profile.deleteAccountBtn', 'Delete Account')}
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>
