@@ -248,9 +248,20 @@ function RegisterPage() {
 
                 <div className="space-y-2">
                     <Label>{t('auth.register.institution')}</Label>
-                    <Select value={selectedInstitution} onValueChange={setSelectedInstitution} disabled={!selectedMunicipality} required>
+                    <Select 
+                        value={selectedInstitution} 
+                        onValueChange={setSelectedInstitution} 
+                        disabled={!selectedMunicipality || !institutions[selectedMunicipality]?.length} 
+                        required
+                    >
                         <SelectTrigger>
-                            <SelectValue placeholder={t('common.select')} />
+                            <SelectValue placeholder={
+                                !selectedMunicipality 
+                                    ? t('common.select') 
+                                    : !institutions[selectedMunicipality]?.length 
+                                        ? "No institutions available" // Should be translated but hardcoded for safety now
+                                        : t('common.select')
+                            } />
                         </SelectTrigger>
                         <SelectContent>
                             {selectedMunicipality && institutions[selectedMunicipality]?.map(i => (
