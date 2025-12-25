@@ -82,6 +82,8 @@ export const useLogout = () => {
   })
 }
 
+import { auth } from '@/lib/api-client'
+
 export const useUser = () => {
   const updateUser = useAuthStore((state) => state.updateUser)
   
@@ -99,5 +101,27 @@ export const useUser = () => {
     },
     retry: false,
     staleTime: 1000 * 60 * 5, // 5 minutes
+  })
+}
+
+export const useDeleteAccount = () => {
+  const logout = useAuthStore((state) => state.logout)
+  const navigate = useNavigate()
+  const queryClient = useQueryClient()
+
+  return useMutation({
+    mutationFn: async () => {
+      await auth.deleteUser()
+    },
+    onSuccess: () => {
+      logout() // Clear local state
+      queryClient.clear() // Clear all queries from cache to prevents stale data
+      navigate({ to: '/login' })
+      toast.success('Account deleted successfully')
+    },
+    onError: (error: AxiosError<{ message: string }>) => {
+      const message = error.response?.data?.message || 'Failed to delete account'
+      toast.error(message)
+    },
   })
 }
