@@ -1,5 +1,6 @@
 import { create } from 'zustand'
-import { devtools, persist } from 'zustand/middleware'
+import { devtools, persist, createJSONStorage } from 'zustand/middleware'
+
 import { settingsStorage } from './storage'
 
 /**
@@ -141,7 +142,7 @@ export const useSettingsStore = create<SettingsStore>()(
       }),
       {
         name: 'app-settings',
-        storage: settingsStorage as any, // Using IndexedDB
+        storage: createJSONStorage(() => settingsStorage), // Using IndexedDB
       }
     ),
     { name: 'SettingsStore' }
