@@ -298,6 +298,23 @@
             "selectAtLeastOneGroup": "Veuillez sélectionner au moins un groupe",
             "group1": "Groupe 1",
             "group2": "Groupe 2",
+            "memos": {
+                "title": "Mémos",
+                "description": "Gérer vos mémos et notes administratifs",
+                "addMemo": "Ajouter un mémo",
+                "editMemo": "Modifier le mémo",
+                "emptyState": "Aucun mémo créé pour le moment",
+                "createFirst": "Créez votre premier mémo",
+                "deleteConfirm": "Êtes-vous sûr de vouloir supprimer ce mémo ?",
+                "form": {
+                    "title": "Titre",
+                    "titlePlaceholder": "Sujet du mémo",
+                    "reference": "Référence",
+                    "date": "Date",
+                    "content": "Contenu",
+                    "contentPlaceholder": "Écrivez le contenu de votre mémo ici..."
+                }
+            },
             "fullClass": "Classe entière",
             "mode": "Mode",
             "addLesson": "Ajouter un cours",
@@ -335,7 +352,6 @@
                 "homework": "Devoirs",
                 "yes": "Oui",
                 "no": "Non",
-                "groups": "Groupes",
                 "group1": "Groupe 1",
                 "group2": "Groupe 2",
                 "executionDetails": "Détails d'exécution",
