@@ -113,6 +113,11 @@ export const sidebarData = {
           url: '/teachers',
           icon: Users,
         },
+        {
+          title: 'nav.usersManagement',
+          url: '/users',
+          icon: Users,
+        },
       ],
     },
     {
