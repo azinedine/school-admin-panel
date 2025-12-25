@@ -71,6 +71,8 @@
         "assignmentManagement": "Assignment management",
         "schedule": "Schedule",
         "students": "Students",
+        "teachers": "Teachers",
+        "usersManagement": "Users Management",
         "grades": {
             "title": "Classes",
             "gradeSheet": "Grade Sheet",
@@ -527,6 +529,78 @@
             "selectTemplatePlaceholder": "Choose a template to auto-fill lesson details",
             "clearTemplate": "Clear Template",
             "noTemplatesAvailable": "No templates available. Create templates in the Add Lesson page."
+        },
+        "users": {
+            "title": "Users Management",
+            "description": "Manage all registered users in the platform",
+            "totalUsers": "Total Users",
+            "activeUsers": "Active Users",
+            "table": {
+                "name": "Name",
+                "email": "Email",
+                "role": "Role",
+                "institution": "Institution",
+                "status": "Status",
+                "createdDate": "Created Date",
+                "actions": "Actions"
+            },
+            "roles": {
+                "admin": "Administrator",
+                "manager": "Manager",
+                "super_admin": "Super Administrator",
+                "teacher": "Teacher",
+                "student": "Student",
+                "parent": "Parent"
+            },
+            "statuses": {
+                "active": "Active",
+                "inactive": "Inactive",
+                "suspended": "Suspended"
+            },
+            "pagination": {
+                "previous": "Previous",
+                "next": "Next",
+                "showing": "Showing {{from}} to {{to}} of {{total}} users"
+            },
+            "loading": "Loading users...",
+            "error": "Failed to load users",
+            "noResults": "No users found",
+            "retry": "Retry",
+            "accessDenied": "Access Denied",
+            "accessDeniedMessage": "Only administrators, managers, and super administrators can access this page.",
+            "actions": {
+                "title": "Actions",
+                "view": "View Details",
+                "suspend": "Suspend Account",
+                "activate": "Activate Account",
+                "delete": "Delete Account",
+                "moreActions": "More actions"
+            },
+            "viewDetails": {
+                "title": "User Details",
+                "personalInfo": "Personal Information",
+                "accountInfo": "Account Information",
+                "academicInfo": "Academic Information",
+                "close": "Close"
+            },
+            "suspendAccount": {
+                "title": "Suspend Account",
+                "description": "This user will not be able to log in or access the platform.",
+                "confirm": "Suspend",
+                "cancel": "Cancel",
+                "success": "User account suspended successfully",
+                "activated": "User account activated successfully",
+                "error": "Failed to update user status"
+            },
+            "deleteAccount": {
+                "title": "Delete Account",
+                "description": "Are you sure you want to permanently delete this user? This action cannot be undone.",
+                "warning": "All user data will be permanently removed from the platform.",
+                "confirm": "Delete",
+                "cancel": "Cancel",
+                "success": "User account deleted successfully",
+                "error": "Failed to delete user account"
+            }
         }
     }
 }
