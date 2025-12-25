@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { useForm } from 'react-hook-form'
+import { useForm, type Path } from 'react-hook-form'
 import type { AxiosError } from 'axios'
 import { zodResolver } from '@hookform/resolvers/zod'
 import * as z from 'zod'
@@ -152,7 +152,7 @@ export function RegistrationForm({ onSuccess }: RegistrationFormProps) {
                  const serverErrors = error.response.data.errors;
                  Object.keys(serverErrors).forEach((key) => {
                      // Map server errors to form fields
-                     form.setError(key as any, {
+                     form.setError(key as Path<FormValues>, {
                          type: "server",
                          message: serverErrors[key][0]
                      });
