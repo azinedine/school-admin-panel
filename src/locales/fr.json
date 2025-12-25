@@ -118,7 +118,14 @@
             "notifications": "Notifications",
             "notificationsEnabled": "Activées",
             "noAcademicInfo": "Aucune information académique disponible",
-            "loadError": "Échec du chargement du profil utilisateur."
+            "loadError": "Échec du chargement du profil utilisateur.",
+            "dangerZone": "Zone de danger",
+            "dangerZoneDesc": "Actions irréversibles",
+            "deleteAccount": "Supprimer le compte",
+            "deleteAccountDesc": "Supprimer définitivement votre compte et toutes les données associées",
+            "deleteAccountBtn": "Supprimer le compte",
+            "deleteAccountConfirmTitle": "Êtes-vous absolument sûr ?",
+            "deleteAccountConfirmDesc": "Cette action est irréversible. Cela supprimera définitivement votre compte et toutes vos données de nos serveurs."
         }
     },
     "user": {
