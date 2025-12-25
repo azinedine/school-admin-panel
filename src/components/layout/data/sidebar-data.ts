@@ -12,6 +12,7 @@ import {
   Settings,
   GraduationCap,
   FileText,
+  Users,
 } from 'lucide-react'
 
 // Translation keys for sidebar items
@@ -106,6 +107,11 @@ export const sidebarData = {
           title: 'nav.reports',
           url: '/reports',
           icon: Files,
+        },
+        {
+          title: 'nav.teachers',
+          url: '/teachers',
+          icon: Users,
         },
       ],
     },
