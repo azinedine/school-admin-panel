@@ -16,6 +16,25 @@
         "addNote": "Ajouter une note",
         "typeHere": "Écrivez ici..."
     },
+    "auth": {
+        "login": {
+            "title": "Bon retour",
+            "description": "Entrez votre email pour vous connecter",
+            "email": "Email",
+            "password": "Mot de passe",
+            "submit": "Se connecter",
+            "noAccount": "Pas encore de compte ?",
+            "success": "Connexion réussie"
+        },
+        "register": {
+            "title": "Créer un compte",
+            "description": "Entrez vos détails pour créer votre compte",
+            "name": "Nom complet",
+            "submit": "S'inscrire",
+            "hasAccount": "Déjà un compte ?",
+            "success": "Compte créé avec succès"
+        }
+    },
     "nav": {
         "mainMenu": "Menu principal",
         "settingsAndNews": "Paramètres et actualités",
