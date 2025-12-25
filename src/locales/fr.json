@@ -15,7 +15,8 @@
         "actions": "Actions",
         "addNote": "Ajouter une note",
         "typeHere": "Écrivez ici...",
-        "processing": "Traitement en cours..."
+        "processing": "Traitement en cours...",
+        "next": "Suivant"
     },
     "auth": {
         "login": {
