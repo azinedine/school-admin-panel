@@ -15,7 +15,8 @@
         "actions": "إجراءات",
         "addNote": "إضافة ملاحظة",
         "typeHere": "اكتب هنا...",
-        "processing": "جاري المعالجة..."
+        "processing": "جاري المعالجة...",
+        "next": "التالي"
     },
     "auth": {
         "login": {
