@@ -64,6 +64,7 @@ export const useUpdateUser = () => {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['users'] })
+      queryClient.invalidateQueries({ queryKey: ['users-management'] })
     },
   })
 }
@@ -76,6 +77,7 @@ export const useDeleteUser = () => {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['users'] })
+      queryClient.invalidateQueries({ queryKey: ['users-management'] })
     },
   })
 }
