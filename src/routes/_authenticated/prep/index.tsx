@@ -1,5 +1,6 @@
 import { useState } from 'react'
-import { createFileRoute } from '@tanstack/react-router'
+import { createFileRoute, redirect } from '@tanstack/react-router'
+import { useAuthStore } from '@/store/auth-store'
 import { useTranslation } from 'react-i18next'
 import { Settings, Calendar } from 'lucide-react'
 import { ContentPage } from '@/components/layout/content-page'
@@ -150,5 +151,13 @@ function PrepPage() {
 }
 
 export const Route = createFileRoute('/_authenticated/prep/')({
+  beforeLoad: () => {
+    const user = useAuthStore.getState().user
+    if (user?.role === 'parent') {
+      throw redirect({
+        to: '/unauthorized',
+      })
+    }
+  },
   component: PrepPage,
 })
