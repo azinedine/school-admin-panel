@@ -26,19 +26,46 @@ import {
 } from '@/components/ui/sidebar'
 import { useAuthStore } from '@/store/auth-store'
 import { useLogout } from '@/hooks/use-auth'
+import { Skeleton } from '@/components/ui/skeleton'
+import { FullScreenLoader } from '@/components/ui/full-screen-loader'
 
 export function NavUser() {
   const { isMobile } = useSidebar()
   const { t } = useTranslation()
   const user = useAuthStore((state) => state.user)
 
-  const { mutate: logoutUser } = useLogout()
+  const { mutate: logoutUser, isPending: isLoggingOut } = useLogout()
 
   const handleLogout = () => {
     logoutUser()
   }
 
   if (!user) return null
+
+  // Full-screen loading overlay when logging out
+  if (isLoggingOut) {
+    return (
+      <>
+        <FullScreenLoader message={t('auth.loggingOut')} />
+        {/* Keep the menu visible but inactive behind the overlay */}
+        <SidebarMenu>
+          <SidebarMenuItem>
+            <SidebarMenuButton size='lg' disabled>
+              <Avatar className='h-8 w-8 rounded-lg'>
+                <AvatarFallback className='rounded-lg'>
+                  {user.name?.substring(0, 2).toUpperCase() ?? 'U'}
+                </AvatarFallback>
+              </Avatar>
+              <div className='grid flex-1 text-left text-sm leading-tight'>
+                <Skeleton className="h-4 w-20" />
+                <Skeleton className="h-3 w-28 mt-1" />
+              </div>
+            </SidebarMenuButton>
+          </SidebarMenuItem>
+        </SidebarMenu>
+      </>
+    )
+  }
 
   return (
     <SidebarMenu>
@@ -121,3 +148,5 @@ export function NavUser() {
     </SidebarMenu>
   )
 }
+
+
