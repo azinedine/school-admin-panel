@@ -1,18 +1,24 @@
-import { ContentPage } from '@/components/layout/content-page'
-import { createFileRoute } from '@tanstack/react-router'
+import { createFileRoute, redirect } from '@tanstack/react-router'
+import { useAuthStore } from '@/store/auth-store'
 
 export const Route = createFileRoute('/_authenticated/')({
-  component: HomePage,
+  beforeLoad: () => {
+    const user = useAuthStore.getState().user
+    
+    switch (user?.role) {
+      case 'parent':
+        throw redirect({ to: '/parent/dashboard' })
+      case 'student':
+        throw redirect({ to: '/student/dashboard' })
+      case 'teacher':
+        throw redirect({ to: '/teacher/dashboard' })
+      case 'admin':
+        throw redirect({ to: '/admin/dashboard' })
+      case 'super_admin':
+        throw redirect({ to: '/super-admin/dashboard' })
+      default:
+        throw redirect({ to: '/unauthorized' })
+    }
+  },
+  component: () => <div>Redirecting...</div>,
 })
-
-function HomePage() {
-  return (
-    <ContentPage title="Home Page" description="Over View">
-      <div className="flex items-center justify-center min-h-[40vh]">
-        <div className="text-center space-y-4">
-          <p className="text-muted-foreground">This page is coming soon...</p>
-        </div>
-      </div>
-    </ContentPage>
-  )
-}
