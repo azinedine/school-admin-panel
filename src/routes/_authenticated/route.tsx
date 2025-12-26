@@ -12,6 +12,14 @@ export const Route = createFileRoute('/_authenticated')({
         },
       })
     }
+
+    // Check for suspended status
+    const user = useAuthStore.getState().user
+    if (user?.status === 'suspended') {
+      throw redirect({
+        to: '/suspended',
+      })
+    }
   },
   component: AuthenticatedLayout,
 })
