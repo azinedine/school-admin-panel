@@ -36,6 +36,11 @@
             "status": "Status",
             "contactSupport": "Contact Support"
         },
+        "unauthorized": {
+            "title": "Access Denied",
+            "description": "You do not have permission to access this page.",
+            "backToHome": "Back to Dashboard"
+        },
         "logout": "Sign out",
         "forgotPassword": "Forgot your password?",
         "register": {
