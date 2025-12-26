@@ -11,7 +11,7 @@ import { Label } from '@/components/ui/label'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from '@/components/ui/card'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { Checkbox } from '@/components/ui/checkbox'
-import { Eye, EyeOff, UserPlus, ArrowLeft, ArrowRight, School, BookOpen, Users, User as UserIcon } from 'lucide-react'
+import { Eye, EyeOff, UserPlus, ArrowLeft, ArrowRight, School, BookOpen, Users, User as UserIcon, Shield } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { wilayas, municipalities, institutions, subjectsList, classesList } from '@/data/mock-locations'
 
@@ -116,6 +116,7 @@ function RegisterPage() {
 
   const renderStepIcon = () => {
     switch (role) {
+      case 'super_admin': return <Shield className="h-6 w-6" />
       case 'admin': return <School className="h-6 w-6" />
       case 'teacher': return <BookOpen className="h-6 w-6" />
       case 'parent': return <Users className="h-6 w-6" />
@@ -201,6 +202,7 @@ function RegisterPage() {
                             <SelectValue />
                         </SelectTrigger>
                         <SelectContent>
+                            <SelectItem value="super_admin">{t('auth.roles.super_admin')}</SelectItem>
                             <SelectItem value="admin">{t('auth.roles.admin')}</SelectItem>
                             <SelectItem value="teacher">{t('auth.roles.teacher')}</SelectItem>
                             <SelectItem value="student">{t('auth.roles.student')}</SelectItem>
