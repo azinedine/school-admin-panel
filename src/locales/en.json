@@ -29,6 +29,15 @@
             "noAccount": "Don't have an account?",
             "success": "Logged in successfully"
         },
+        "suspended": {
+            "title": "Account Suspended",
+            "message": "Your account has been suspended by an administrator. Please contact support for assistance.",
+            "account": "Account",
+            "status": "Status",
+            "contactSupport": "Contact Support"
+        },
+        "logout": "Sign out",
+        "forgotPassword": "Forgot your password?",
         "register": {
             "title": "Create an account",
             "step1Desc": "Enter your personal details",
