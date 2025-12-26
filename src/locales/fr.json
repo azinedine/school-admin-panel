@@ -17,7 +17,16 @@
         "typeHere": "Écrivez ici...",
         "processing": "Traitement en cours...",
         "next": "Suivant",
-        "back": "Retour"
+        "back": "Retour",
+        "create": "Créer",
+        "createSuccess": "Créé avec succès",
+        "deleteSuccess": "Supprimé avec succès",
+        "error": "Une erreur s'est produite",
+        "filters": "Filtres",
+        "all": "Tous",
+        "clear": "Effacer",
+        "active": "Actif",
+        "inactive": "Inactif"
     },
     "auth": {
         "login": {
@@ -90,6 +99,7 @@
         "roles": "Rôles",
         "admins": "Administrateurs",
         "schools": "Écoles",
+        "institutions": "Établissements",
         "api": "API",
         "logs": "Journaux",
         "security": "Sécurité",
@@ -204,6 +214,39 @@
             "type": "Type",
             "system": "Système",
             "custom": "Personnalisé"
+        },
+        "institutions": {
+            "title": "Gestion des établissements",
+            "description": "Gérer les écoles et établissements éducatifs",
+            "add": "Ajouter un établissement",
+            "edit": "Modifier l'établissement",
+            "delete": "Supprimer l'établissement",
+            "addDesc": "Ajouter un nouvel établissement éducatif",
+            "editDesc": "Mettre à jour les détails de l'établissement",
+            "deleteDesc": "Êtes-vous sûr de vouloir supprimer \"{{name}}\" ? Cette action est irréversible.",
+            "name": "Nom",
+            "nameAr": "Nom en arabe",
+            "wilaya": "Wilaya",
+            "municipality": "Commune",
+            "selectWilaya": "Sélectionner une wilaya",
+            "selectMunicipality": "Sélectionner une commune",
+            "type": "Type",
+            "types": {
+                "primary": "École primaire",
+                "middle": "Collège",
+                "secondary": "Lycée",
+                "university": "Université",
+                "vocational": "Formation professionnelle",
+                "other": "Autre"
+            },
+            "status": "Statut",
+            "address": "Adresse",
+            "phone": "Téléphone",
+            "email": "Email",
+            "isActive": "Actif",
+            "noInstitutions": "Aucun établissement trouvé",
+            "total": "{{count}} établissements",
+            "restored": "Établissement restauré avec succès"
         },
         "grades": {
             "title": "Relevé de notes",
