@@ -3,13 +3,18 @@ import { Button } from '@/components/ui/button'
 import { LogOut, Ban } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
 
+import { LanguageSwitcher } from '@/components/language-switcher'
+
 export default function SuspendedPage() {
   const { t } = useTranslation()
   const logout = useAuthStore((state) => state.logout)
   const user = useAuthStore((state) => state.user)
 
   return (
-    <div className="min-h-screen bg-background flex flex-col items-center justify-center p-4">
+    <div className="min-h-screen bg-background flex flex-col items-center justify-center p-4 relative">
+      <div className="absolute top-4 right-4">
+        <LanguageSwitcher />
+      </div>
       <div className="max-w-md w-full space-y-8 text-center">
         <div className="flex justify-center">
           <div className="h-24 w-24 rounded-full bg-destructive/10 flex items-center justify-center">
