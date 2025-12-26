@@ -4,11 +4,18 @@ import { LogOut, Ban } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
 
 import { LanguageSwitcher } from '@/components/language-switcher'
+import { useNavigate } from '@tanstack/react-router'
 
 export default function SuspendedPage() {
   const { t } = useTranslation()
   const logout = useAuthStore((state) => state.logout)
   const user = useAuthStore((state) => state.user)
+  const navigate = useNavigate()
+
+  const handleLogout = () => {
+    logout()
+    navigate({ to: '/login' })
+  }
 
   return (
     <div className="min-h-screen bg-background flex flex-col items-center justify-center p-4 relative">
@@ -59,7 +66,7 @@ export default function SuspendedPage() {
         </div>
 
         <div className="flex justify-center">
-          <Button variant="outline" onClick={() => logout()} className="gap-2">
+          <Button variant="outline" onClick={handleLogout} className="gap-2">
             <LogOut className="h-4 w-4" />
             {t('auth.logout', 'Sign out')}
           </Button>
