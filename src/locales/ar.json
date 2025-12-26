@@ -17,7 +17,16 @@
         "typeHere": "اكتب هنا...",
         "processing": "جاري المعالجة...",
         "next": "التالي",
-        "back": "رجوع"
+        "back": "رجوع",
+        "create": "إنشاء",
+        "createSuccess": "تم الإنشاء بنجاح",
+        "deleteSuccess": "تم الحذف بنجاح",
+        "error": "حدث خطأ",
+        "filters": "الفلاتر",
+        "all": "الكل",
+        "clear": "مسح",
+        "active": "نشط",
+        "inactive": "غير نشط"
     },
     "auth": {
         "login": {
@@ -90,6 +99,7 @@
         "roles": "الأدوار",
         "admins": "المسؤولون",
         "schools": "المدارس",
+        "institutions": "المؤسسات",
         "api": "واجهة البرمجة",
         "logs": "السجلات",
         "security": "الأمان",
@@ -204,6 +214,39 @@
             "type": "النوع",
             "system": "نظام",
             "custom": "مخصص"
+        },
+        "institutions": {
+            "title": "إدارة المؤسسات",
+            "description": "إدارة المدارس والمؤسسات التعليمية",
+            "add": "إضافة مؤسسة",
+            "edit": "تعديل المؤسسة",
+            "delete": "حذف المؤسسة",
+            "addDesc": "إضافة مؤسسة تعليمية جديدة",
+            "editDesc": "تحديث تفاصيل المؤسسة",
+            "deleteDesc": "هل أنت متأكد من حذف \"{{name}}\"؟ لا يمكن التراجع عن هذا الإجراء.",
+            "name": "الاسم",
+            "nameAr": "الاسم بالعربية",
+            "wilaya": "الولاية",
+            "municipality": "البلدية",
+            "selectWilaya": "اختر الولاية",
+            "selectMunicipality": "اختر البلدية",
+            "type": "النوع",
+            "types": {
+                "primary": "مدرسة ابتدائية",
+                "middle": "متوسطة",
+                "secondary": "ثانوية",
+                "university": "جامعة",
+                "vocational": "تكوين مهني",
+                "other": "أخرى"
+            },
+            "status": "الحالة",
+            "address": "العنوان",
+            "phone": "الهاتف",
+            "email": "البريد الإلكتروني",
+            "isActive": "نشط",
+            "noInstitutions": "لا توجد مؤسسات",
+            "total": "{{count}} مؤسسة",
+            "restored": "تم استعادة المؤسسة بنجاح"
         },
         "grades": {
             "title": "كشف النقاط",
