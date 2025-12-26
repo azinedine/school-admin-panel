@@ -9,6 +9,7 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as SuspendedRouteImport } from './routes/suspended'
 import { Route as RegisterRouteImport } from './routes/register'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
@@ -31,6 +32,11 @@ import { Route as AuthenticatedAnalyticsIndexRouteImport } from './routes/_authe
 import { Route as AuthenticatedActivitiesIndexRouteImport } from './routes/_authenticated/activities/index'
 import { Route as AuthenticatedPrepAddLessonRouteImport } from './routes/_authenticated/prep/add-lesson'
 
+const SuspendedRoute = SuspendedRouteImport.update({
+  id: '/suspended',
+  path: '/suspended',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const RegisterRoute = RegisterRouteImport.update({
   id: '/register',
   path: '/register',
@@ -152,6 +158,7 @@ const AuthenticatedPrepAddLessonRoute =
 export interface FileRoutesByFullPath {
   '/login': typeof LoginRoute
   '/register': typeof RegisterRoute
+  '/suspended': typeof SuspendedRoute
   '/': typeof AuthenticatedIndexRoute
   '/prep/add-lesson': typeof AuthenticatedPrepAddLessonRoute
   '/activities': typeof AuthenticatedActivitiesIndexRoute
@@ -174,6 +181,7 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/login': typeof LoginRoute
   '/register': typeof RegisterRoute
+  '/suspended': typeof SuspendedRoute
   '/': typeof AuthenticatedIndexRoute
   '/prep/add-lesson': typeof AuthenticatedPrepAddLessonRoute
   '/activities': typeof AuthenticatedActivitiesIndexRoute
@@ -198,6 +206,7 @@ export interface FileRoutesById {
   '/_authenticated': typeof AuthenticatedRouteRouteWithChildren
   '/login': typeof LoginRoute
   '/register': typeof RegisterRoute
+  '/suspended': typeof SuspendedRoute
   '/_authenticated/': typeof AuthenticatedIndexRoute
   '/_authenticated/prep/add-lesson': typeof AuthenticatedPrepAddLessonRoute
   '/_authenticated/activities/': typeof AuthenticatedActivitiesIndexRoute
@@ -222,6 +231,7 @@ export interface FileRouteTypes {
   fullPaths:
     | '/login'
     | '/register'
+    | '/suspended'
     | '/'
     | '/prep/add-lesson'
     | '/activities'
@@ -244,6 +254,7 @@ export interface FileRouteTypes {
   to:
     | '/login'
     | '/register'
+    | '/suspended'
     | '/'
     | '/prep/add-lesson'
     | '/activities'
@@ -267,6 +278,7 @@ export interface FileRouteTypes {
     | '/_authenticated'
     | '/login'
     | '/register'
+    | '/suspended'
     | '/_authenticated/'
     | '/_authenticated/prep/add-lesson'
     | '/_authenticated/activities/'
@@ -291,10 +303,18 @@ export interface RootRouteChildren {
   AuthenticatedRouteRoute: typeof AuthenticatedRouteRouteWithChildren
   LoginRoute: typeof LoginRoute
   RegisterRoute: typeof RegisterRoute
+  SuspendedRoute: typeof SuspendedRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/suspended': {
+      id: '/suspended'
+      path: '/suspended'
+      fullPath: '/suspended'
+      preLoaderRoute: typeof SuspendedRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/register': {
       id: '/register'
       path: '/register'
@@ -494,6 +514,7 @@ const rootRouteChildren: RootRouteChildren = {
   AuthenticatedRouteRoute: AuthenticatedRouteRouteWithChildren,
   LoginRoute: LoginRoute,
   RegisterRoute: RegisterRoute,
+  SuspendedRoute: SuspendedRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
