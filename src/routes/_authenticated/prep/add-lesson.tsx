@@ -1,5 +1,6 @@
 import { useState } from 'react'
-import { createFileRoute } from '@tanstack/react-router'
+import { createFileRoute, redirect } from '@tanstack/react-router'
+import { useAuthStore } from '@/store/auth-store'
 import { useTranslation } from 'react-i18next'
 import { Plus, Trash2, CheckCircle } from 'lucide-react'
 import type { LessonTemplate } from '@/store/prep-store'
@@ -465,5 +466,13 @@ function AddLessonPage() {
 }
 
 export const Route = createFileRoute('/_authenticated/prep/add-lesson')({
+  beforeLoad: () => {
+    const user = useAuthStore.getState().user
+    if (user?.role === 'parent') {
+      throw redirect({
+        to: '/unauthorized',
+      })
+    }
+  },
   component: AddLessonPage,
 })
