@@ -80,7 +80,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
     >
       <SidebarHeader>
         <div className='flex items-center justify-between gap-2'>
-          <TeamSwitcher teams={sidebarData.teams} />
+          <TeamSwitcher />
           <div className='group-data-[collapsible=icon]:hidden'>
             <LanguageSwitcher />
           </div>
