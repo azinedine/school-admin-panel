@@ -43,6 +43,7 @@ import { Route as AuthenticatedSuperAdminSchoolsRouteImport } from './routes/_au
 import { Route as AuthenticatedSuperAdminRolesRouteImport } from './routes/_authenticated/super-admin/roles'
 import { Route as AuthenticatedSuperAdminReportsRouteImport } from './routes/_authenticated/super-admin/reports'
 import { Route as AuthenticatedSuperAdminLogsRouteImport } from './routes/_authenticated/super-admin/logs'
+import { Route as AuthenticatedSuperAdminInstitutionsRouteImport } from './routes/_authenticated/super-admin/institutions'
 import { Route as AuthenticatedSuperAdminDashboardRouteImport } from './routes/_authenticated/super-admin/dashboard'
 import { Route as AuthenticatedSuperAdminBackupsRouteImport } from './routes/_authenticated/super-admin/backups'
 import { Route as AuthenticatedSuperAdminApiRouteImport } from './routes/_authenticated/super-admin/api'
@@ -273,6 +274,12 @@ const AuthenticatedSuperAdminLogsRoute =
   AuthenticatedSuperAdminLogsRouteImport.update({
     id: '/logs',
     path: '/logs',
+    getParentRoute: () => AuthenticatedSuperAdminRouteRoute,
+  } as any)
+const AuthenticatedSuperAdminInstitutionsRoute =
+  AuthenticatedSuperAdminInstitutionsRouteImport.update({
+    id: '/institutions',
+    path: '/institutions',
     getParentRoute: () => AuthenticatedSuperAdminRouteRoute,
   } as any)
 const AuthenticatedSuperAdminDashboardRoute =
@@ -543,6 +550,7 @@ export interface FileRoutesByFullPath {
   '/super-admin/api': typeof AuthenticatedSuperAdminApiRoute
   '/super-admin/backups': typeof AuthenticatedSuperAdminBackupsRoute
   '/super-admin/dashboard': typeof AuthenticatedSuperAdminDashboardRoute
+  '/super-admin/institutions': typeof AuthenticatedSuperAdminInstitutionsRoute
   '/super-admin/logs': typeof AuthenticatedSuperAdminLogsRoute
   '/super-admin/reports': typeof AuthenticatedSuperAdminReportsRoute
   '/super-admin/roles': typeof AuthenticatedSuperAdminRolesRoute
@@ -615,6 +623,7 @@ export interface FileRoutesByTo {
   '/super-admin/api': typeof AuthenticatedSuperAdminApiRoute
   '/super-admin/backups': typeof AuthenticatedSuperAdminBackupsRoute
   '/super-admin/dashboard': typeof AuthenticatedSuperAdminDashboardRoute
+  '/super-admin/institutions': typeof AuthenticatedSuperAdminInstitutionsRoute
   '/super-admin/logs': typeof AuthenticatedSuperAdminLogsRoute
   '/super-admin/reports': typeof AuthenticatedSuperAdminReportsRoute
   '/super-admin/roles': typeof AuthenticatedSuperAdminRolesRoute
@@ -689,6 +698,7 @@ export interface FileRoutesById {
   '/_authenticated/super-admin/api': typeof AuthenticatedSuperAdminApiRoute
   '/_authenticated/super-admin/backups': typeof AuthenticatedSuperAdminBackupsRoute
   '/_authenticated/super-admin/dashboard': typeof AuthenticatedSuperAdminDashboardRoute
+  '/_authenticated/super-admin/institutions': typeof AuthenticatedSuperAdminInstitutionsRoute
   '/_authenticated/super-admin/logs': typeof AuthenticatedSuperAdminLogsRoute
   '/_authenticated/super-admin/reports': typeof AuthenticatedSuperAdminReportsRoute
   '/_authenticated/super-admin/roles': typeof AuthenticatedSuperAdminRolesRoute
@@ -763,6 +773,7 @@ export interface FileRouteTypes {
     | '/super-admin/api'
     | '/super-admin/backups'
     | '/super-admin/dashboard'
+    | '/super-admin/institutions'
     | '/super-admin/logs'
     | '/super-admin/reports'
     | '/super-admin/roles'
@@ -835,6 +846,7 @@ export interface FileRouteTypes {
     | '/super-admin/api'
     | '/super-admin/backups'
     | '/super-admin/dashboard'
+    | '/super-admin/institutions'
     | '/super-admin/logs'
     | '/super-admin/reports'
     | '/super-admin/roles'
@@ -908,6 +920,7 @@ export interface FileRouteTypes {
     | '/_authenticated/super-admin/api'
     | '/_authenticated/super-admin/backups'
     | '/_authenticated/super-admin/dashboard'
+    | '/_authenticated/super-admin/institutions'
     | '/_authenticated/super-admin/logs'
     | '/_authenticated/super-admin/reports'
     | '/_authenticated/super-admin/roles'
@@ -1181,6 +1194,13 @@ declare module '@tanstack/react-router' {
       path: '/logs'
       fullPath: '/super-admin/logs'
       preLoaderRoute: typeof AuthenticatedSuperAdminLogsRouteImport
+      parentRoute: typeof AuthenticatedSuperAdminRouteRoute
+    }
+    '/_authenticated/super-admin/institutions': {
+      id: '/_authenticated/super-admin/institutions'
+      path: '/institutions'
+      fullPath: '/super-admin/institutions'
+      preLoaderRoute: typeof AuthenticatedSuperAdminInstitutionsRouteImport
       parentRoute: typeof AuthenticatedSuperAdminRouteRoute
     }
     '/_authenticated/super-admin/dashboard': {
@@ -1548,6 +1568,7 @@ interface AuthenticatedSuperAdminRouteRouteChildren {
   AuthenticatedSuperAdminApiRoute: typeof AuthenticatedSuperAdminApiRoute
   AuthenticatedSuperAdminBackupsRoute: typeof AuthenticatedSuperAdminBackupsRoute
   AuthenticatedSuperAdminDashboardRoute: typeof AuthenticatedSuperAdminDashboardRoute
+  AuthenticatedSuperAdminInstitutionsRoute: typeof AuthenticatedSuperAdminInstitutionsRoute
   AuthenticatedSuperAdminLogsRoute: typeof AuthenticatedSuperAdminLogsRoute
   AuthenticatedSuperAdminReportsRoute: typeof AuthenticatedSuperAdminReportsRoute
   AuthenticatedSuperAdminRolesRoute: typeof AuthenticatedSuperAdminRolesRoute
@@ -1564,6 +1585,8 @@ const AuthenticatedSuperAdminRouteRouteChildren: AuthenticatedSuperAdminRouteRou
     AuthenticatedSuperAdminBackupsRoute: AuthenticatedSuperAdminBackupsRoute,
     AuthenticatedSuperAdminDashboardRoute:
       AuthenticatedSuperAdminDashboardRoute,
+    AuthenticatedSuperAdminInstitutionsRoute:
+      AuthenticatedSuperAdminInstitutionsRoute,
     AuthenticatedSuperAdminLogsRoute: AuthenticatedSuperAdminLogsRoute,
     AuthenticatedSuperAdminReportsRoute: AuthenticatedSuperAdminReportsRoute,
     AuthenticatedSuperAdminRolesRoute: AuthenticatedSuperAdminRolesRoute,
