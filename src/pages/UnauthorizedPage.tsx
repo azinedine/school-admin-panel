@@ -8,13 +8,13 @@ export default function UnauthorizedPage() {
   const { t } = useTranslation()
 
   return (
-    <div className='flex min-h-screen items-center justify-center bg-gray-100 p-4'>
+    <div className='flex min-h-screen items-center justify-center bg-background p-4'>
       <Card className='w-full max-w-md text-center shadow-lg'>
         <CardHeader className='flex flex-col items-center gap-4'>
           <div className='bg-destructive/10 text-destructive flex size-16 items-center justify-center rounded-full'>
             <ShieldAlert className='size-8' />
           </div>
-          <CardTitle className='text-2xl font-bold text-gray-900'>
+          <CardTitle className='text-2xl font-bold text-foreground'>
             {t('auth.unauthorized.title', 'Access Denied')}
           </CardTitle>
         </CardHeader>
