@@ -10,83 +10,38 @@ import {
 import { useAuthStore } from '@/store/auth-store'
 import { NavGroup } from '@/components/layout/nav-group'
 import { NavUser } from '@/components/layout/nav-user'
-import { TeamSwitcher } from '@/components/layout/team-switcher'
 import { LanguageSwitcher } from '@/components/language-switcher'
-import { sidebarData } from './data/sidebar-data'
-import type { NavGroup as NavGroupType } from './types'
 import { useDirection } from '@/hooks/use-direction'
-import { useGradesStore } from '@/store/grades-store'
+import { 
+  PARENT_SIDEBAR, 
+  STUDENT_SIDEBAR, 
+  TEACHER_SIDEBAR, 
+  ADMIN_SIDEBAR, 
+  SUPER_ADMIN_SIDEBAR 
+} from './data/sidebar-permissions'
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   const { isRTL } = useDirection()
   const { t } = useTranslation()
-  const classes = useGradesStore((state) => state.classes)
   const user = useAuthStore((state) => state.user)
 
-  // Build dynamic nav groups with live classes and permission filtering
-  const dynamicNavGroups = useMemo(() => {
-    return (sidebarData.navGroups as unknown as NavGroupType[]).map((group) => {
-      // Filter items based on permissions
-      const filteredItems = group.items.filter((item) => {
-        // Users Management requires specific roles
-        if (item.title === 'nav.usersManagement') {
-          const allowedRoles = ['admin', 'manager', 'super_admin']
-          return user?.role && allowedRoles.includes(user.role)
-        }
-
-        // Hide specific management items for parents
-        if (user?.role === 'parent') {
-          const deniedForParents = [
-            'nav.lessonManagement',
-            'nav.attendance',
-            'nav.exams',
-            'nav.assignmentManagement',
-            'nav.analytics',
-            'nav.reports',
-            'nav.teachers'
-          ]
-          if (deniedForParents.includes(item.title)) {
-            return false
-          }
-        }
-        
-        return true
-      })
-
-      const items = filteredItems.map((item) => {
-        // Check if this is the Grades item
-        if (item.title === 'nav.grades.title') {
-// ... (rest of the grades logic remains the same)
-          const classItems = classes.map((cls) => ({
-            title: cls.name, // Use class name directly (not translation key)
-            url: `/grades?class=${cls.id}`,
-          }))
-          
-          // If no classes, add empty state message
-          if (classItems.length === 0) {
-            return {
-              ...item,
-              items: [
-                {
-                  title: t('nav.grades.noClasses'),
-                  url: '/grades',
-                  disabled: true,
-                }
-              ]
-            }
-          }
-          
-          return {
-            ...item,
-            items: classItems
-          }
-        }
-        return item
-      })
-      
-      return { ...group, items }
-    })
-  }, [classes, t, user])
+  // Select sidebar items based on role
+  const sidebarItems = useMemo(() => {
+    switch (user?.role) {
+      case 'parent':
+        return PARENT_SIDEBAR
+      case 'student':
+        return STUDENT_SIDEBAR
+      case 'teacher':
+        return TEACHER_SIDEBAR
+      case 'admin':
+        return ADMIN_SIDEBAR
+      case 'super_admin':
+        return SUPER_ADMIN_SIDEBAR
+      default:
+        return []
+    }
+  }, [user?.role])
 
   return (
     <Sidebar 
@@ -96,19 +51,26 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
       {...props}
     >
       <SidebarHeader>
-        <div className='flex items-center justify-between gap-2'>
-          <TeamSwitcher />
+        <div className='flex items-center justify-between gap-2 p-2'>
+           <div className='flex flex-col px-2 truncate'>
+             <span className='font-bold text-sm text-primary truncate'>
+               {user?.name || 'School Manager'}
+             </span>
+             <span className='text-xs text-muted-foreground truncate capitalize'>
+               {user?.role ? t(`auth.roles.${user.role}`, user.role) : ''}
+             </span>
+           </div>
           <div className='group-data-[collapsible=icon]:hidden'>
             <LanguageSwitcher />
           </div>
         </div>
       </SidebarHeader>
       <SidebarContent>
-        {dynamicNavGroups.map((group) => (
+        {sidebarItems.map((group) => (
           <NavGroup 
             key={group.title} 
             title={group.title} 
-            items={group.items as NavGroupType['items']} 
+            items={group.items} 
           />
         ))}
       </SidebarContent>
