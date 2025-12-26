@@ -36,6 +36,11 @@
             "status": "الحالة",
             "contactSupport": "الاتصال بالدعم"
         },
+        "unauthorized": {
+            "title": "تم رفض الوصول",
+            "description": "ليس لديك إذن للوصول إلى هذه الصفحة.",
+            "backToHome": "العودة إلى لوحة القيادة"
+        },
         "logout": "تسجيل الخروج",
         "forgotPassword": "هل نسيت كلمة المرور؟",
         "register": {
