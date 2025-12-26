@@ -296,8 +296,8 @@ export const SUPER_ADMIN_SIDEBAR: NavGroup[] = [
         icon: Users,
       },
       {
-        title: 'nav.schools',
-        url: '/super-admin/schools',
+        title: 'nav.institutions',
+        url: '/super-admin/institutions',
         icon: BookOpen,
       },
       {
