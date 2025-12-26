@@ -1,5 +1,5 @@
 import { useRef, useState, useCallback, useEffect } from "react"
-import { Upload, Plus, Trash2, MoreVertical, Calendar, ChevronDown, CheckCircle } from "lucide-react"
+import { Upload, Plus, Trash2, MoreVertical, Calendar, ChevronDown, CheckCircle, BookOpen } from "lucide-react"
 import { useTranslation } from "react-i18next"
 import { useLocation } from "@tanstack/react-router"
 import { GradeSheetTable } from "@/components/GradeSheetTable"
@@ -269,7 +269,37 @@ export default function GradesPage() {
   const headerActions = (
     <div className="flex items-center gap-2">
       <div className="flex items-center gap-2 ltr:mr-2 rtl:ml-2">
-         {/* Year Selector */}
+          {/* Class Selector */}
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="outline" size="sm" className="gap-2 h-9">
+                 <BookOpen className="h-4 w-4" />
+                 <span className="ltr:mr-1 rtl:ml-1 max-w-[100px] truncate">
+                    {classes.find(c => c.id === selectedClassId)?.name || t('common.selectClass')}
+                 </span>
+                 <ChevronDown className="h-3 w-3 opacity-50" />
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end">
+                {classes.length > 0 ? (
+                    classes.map((cls) => (
+                        <DropdownMenuItem 
+                            key={cls.id} 
+                            onClick={() => setSelectedClass(cls.id)}
+                            className={selectedClassId === cls.id ? "bg-accent" : ""}
+                        >
+                            {cls.name}
+                        </DropdownMenuItem>
+                    ))
+                ) : (
+                    <DropdownMenuItem disabled>
+                        {t('common.noClasses')}
+                    </DropdownMenuItem>
+                )}
+            </DropdownMenuContent>
+          </DropdownMenu>
+
+          {/* Year Selector */}
          <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button variant="outline" size="sm" className="gap-2 h-9">
