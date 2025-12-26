@@ -119,19 +119,19 @@ export function NavUser() {
             <DropdownMenuSeparator />
             <DropdownMenuGroup>
               <DropdownMenuItem asChild>
-                <Link to='/settings'>
+                <Link to='/'>
                   <BadgeCheck />
                   {t('user.account')}
                 </Link>
               </DropdownMenuItem>
               <DropdownMenuItem asChild>
-                <Link to='/settings'>
+                <Link to='/'>
                   <CreditCard />
                   {t('user.billing')}
                 </Link>
               </DropdownMenuItem>
               <DropdownMenuItem asChild>
-                <Link to='/settings'>
+                <Link to='/'>
                   <Bell />
                   {t('user.notifications')}
                 </Link>
