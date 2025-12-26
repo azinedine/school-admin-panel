@@ -15,23 +15,66 @@ import { Route as RegisterRouteImport } from './routes/register'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
 import { Route as AuthenticatedIndexRouteImport } from './routes/_authenticated/index'
-import { Route as AuthenticatedUsersIndexRouteImport } from './routes/_authenticated/users/index'
-import { Route as AuthenticatedUpdatesIndexRouteImport } from './routes/_authenticated/updates/index'
-import { Route as AuthenticatedTeachersIndexRouteImport } from './routes/_authenticated/teachers/index'
-import { Route as AuthenticatedStudentsIndexRouteImport } from './routes/_authenticated/students/index'
-import { Route as AuthenticatedSettingsIndexRouteImport } from './routes/_authenticated/settings/index'
-import { Route as AuthenticatedScheduleIndexRouteImport } from './routes/_authenticated/schedule/index'
-import { Route as AuthenticatedReportsIndexRouteImport } from './routes/_authenticated/reports/index'
-import { Route as AuthenticatedPrepIndexRouteImport } from './routes/_authenticated/prep/index'
-import { Route as AuthenticatedNewsIndexRouteImport } from './routes/_authenticated/news/index'
-import { Route as AuthenticatedMessagesIndexRouteImport } from './routes/_authenticated/messages/index'
-import { Route as AuthenticatedGradesIndexRouteImport } from './routes/_authenticated/grades/index'
-import { Route as AuthenticatedExamsIndexRouteImport } from './routes/_authenticated/exams/index'
-import { Route as AuthenticatedAttendanceIndexRouteImport } from './routes/_authenticated/attendance/index'
-import { Route as AuthenticatedAssignmentsIndexRouteImport } from './routes/_authenticated/assignments/index'
-import { Route as AuthenticatedAnalyticsIndexRouteImport } from './routes/_authenticated/analytics/index'
-import { Route as AuthenticatedActivitiesIndexRouteImport } from './routes/_authenticated/activities/index'
-import { Route as AuthenticatedPrepAddLessonRouteImport } from './routes/_authenticated/prep/add-lesson'
+import { Route as AuthenticatedTeacherRouteRouteImport } from './routes/_authenticated/teacher/route'
+import { Route as AuthenticatedSuperAdminRouteRouteImport } from './routes/_authenticated/super-admin/route'
+import { Route as AuthenticatedStudentRouteRouteImport } from './routes/_authenticated/student/route'
+import { Route as AuthenticatedParentRouteRouteImport } from './routes/_authenticated/parent/route'
+import { Route as AuthenticatedAdminRouteRouteImport } from './routes/_authenticated/admin/route'
+import { Route as AuthenticatedTeacherStudentsRouteImport } from './routes/_authenticated/teacher/students'
+import { Route as AuthenticatedTeacherSettingsRouteImport } from './routes/_authenticated/teacher/settings'
+import { Route as AuthenticatedTeacherReportsRouteImport } from './routes/_authenticated/teacher/reports'
+import { Route as AuthenticatedTeacherProfileRouteImport } from './routes/_authenticated/teacher/profile'
+import { Route as AuthenticatedTeacherMessagesRouteImport } from './routes/_authenticated/teacher/messages'
+import { Route as AuthenticatedTeacherHomeworkRouteImport } from './routes/_authenticated/teacher/homework'
+import { Route as AuthenticatedTeacherGradesRouteImport } from './routes/_authenticated/teacher/grades'
+import { Route as AuthenticatedTeacherExamsRouteImport } from './routes/_authenticated/teacher/exams'
+import { Route as AuthenticatedTeacherDashboardRouteImport } from './routes/_authenticated/teacher/dashboard'
+import { Route as AuthenticatedTeacherClassesRouteImport } from './routes/_authenticated/teacher/classes'
+import { Route as AuthenticatedTeacherAttendanceRouteImport } from './routes/_authenticated/teacher/attendance'
+import { Route as AuthenticatedTeacherAnnouncementsRouteImport } from './routes/_authenticated/teacher/announcements'
+import { Route as AuthenticatedSuperAdminUsersRouteImport } from './routes/_authenticated/super-admin/users'
+import { Route as AuthenticatedSuperAdminSettingsRouteImport } from './routes/_authenticated/super-admin/settings'
+import { Route as AuthenticatedSuperAdminSecurityRouteImport } from './routes/_authenticated/super-admin/security'
+import { Route as AuthenticatedSuperAdminSchoolsRouteImport } from './routes/_authenticated/super-admin/schools'
+import { Route as AuthenticatedSuperAdminRolesRouteImport } from './routes/_authenticated/super-admin/roles'
+import { Route as AuthenticatedSuperAdminReportsRouteImport } from './routes/_authenticated/super-admin/reports'
+import { Route as AuthenticatedSuperAdminLogsRouteImport } from './routes/_authenticated/super-admin/logs'
+import { Route as AuthenticatedSuperAdminDashboardRouteImport } from './routes/_authenticated/super-admin/dashboard'
+import { Route as AuthenticatedSuperAdminBackupsRouteImport } from './routes/_authenticated/super-admin/backups'
+import { Route as AuthenticatedSuperAdminApiRouteImport } from './routes/_authenticated/super-admin/api'
+import { Route as AuthenticatedSuperAdminAdminsRouteImport } from './routes/_authenticated/super-admin/admins'
+import { Route as AuthenticatedStudentTimetableRouteImport } from './routes/_authenticated/student/timetable'
+import { Route as AuthenticatedStudentSettingsRouteImport } from './routes/_authenticated/student/settings'
+import { Route as AuthenticatedStudentProfileRouteImport } from './routes/_authenticated/student/profile'
+import { Route as AuthenticatedStudentMessagesRouteImport } from './routes/_authenticated/student/messages'
+import { Route as AuthenticatedStudentHomeworkRouteImport } from './routes/_authenticated/student/homework'
+import { Route as AuthenticatedStudentGradesRouteImport } from './routes/_authenticated/student/grades'
+import { Route as AuthenticatedStudentExamsRouteImport } from './routes/_authenticated/student/exams'
+import { Route as AuthenticatedStudentDashboardRouteImport } from './routes/_authenticated/student/dashboard'
+import { Route as AuthenticatedStudentAttendanceRouteImport } from './routes/_authenticated/student/attendance'
+import { Route as AuthenticatedStudentAnnouncementsRouteImport } from './routes/_authenticated/student/announcements'
+import { Route as AuthenticatedParentTimetableRouteImport } from './routes/_authenticated/parent/timetable'
+import { Route as AuthenticatedParentSettingsRouteImport } from './routes/_authenticated/parent/settings'
+import { Route as AuthenticatedParentPaymentsRouteImport } from './routes/_authenticated/parent/payments'
+import { Route as AuthenticatedParentMessagesRouteImport } from './routes/_authenticated/parent/messages'
+import { Route as AuthenticatedParentGradesRouteImport } from './routes/_authenticated/parent/grades'
+import { Route as AuthenticatedParentDashboardRouteImport } from './routes/_authenticated/parent/dashboard'
+import { Route as AuthenticatedParentChildrenRouteImport } from './routes/_authenticated/parent/children'
+import { Route as AuthenticatedParentAttendanceRouteImport } from './routes/_authenticated/parent/attendance'
+import { Route as AuthenticatedParentAnnouncementsRouteImport } from './routes/_authenticated/parent/announcements'
+import { Route as AuthenticatedAdminUsersRouteImport } from './routes/_authenticated/admin/users'
+import { Route as AuthenticatedAdminTimetablesRouteImport } from './routes/_authenticated/admin/timetables'
+import { Route as AuthenticatedAdminSettingsRouteImport } from './routes/_authenticated/admin/settings'
+import { Route as AuthenticatedAdminReportsRouteImport } from './routes/_authenticated/admin/reports'
+import { Route as AuthenticatedAdminPaymentsRouteImport } from './routes/_authenticated/admin/payments'
+import { Route as AuthenticatedAdminMessagesRouteImport } from './routes/_authenticated/admin/messages'
+import { Route as AuthenticatedAdminGradesRouteImport } from './routes/_authenticated/admin/grades'
+import { Route as AuthenticatedAdminDashboardRouteImport } from './routes/_authenticated/admin/dashboard'
+import { Route as AuthenticatedAdminClassesRouteImport } from './routes/_authenticated/admin/classes'
+import { Route as AuthenticatedAdminAttendanceRouteImport } from './routes/_authenticated/admin/attendance'
+import { Route as AuthenticatedAdminAnnouncementsRouteImport } from './routes/_authenticated/admin/announcements'
+import { Route as AuthenticatedTeacherLessonsPreparationRouteImport } from './routes/_authenticated/teacher/lessons/preparation'
+import { Route as AuthenticatedTeacherLessonsAddRouteImport } from './routes/_authenticated/teacher/lessons/add'
 
 const UnauthorizedRoute = UnauthorizedRouteImport.update({
   id: '/unauthorized',
@@ -62,103 +105,363 @@ const AuthenticatedIndexRoute = AuthenticatedIndexRouteImport.update({
   path: '/',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
-const AuthenticatedUsersIndexRoute = AuthenticatedUsersIndexRouteImport.update({
-  id: '/users/',
-  path: '/users/',
+const AuthenticatedTeacherRouteRoute =
+  AuthenticatedTeacherRouteRouteImport.update({
+    id: '/teacher',
+    path: '/teacher',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
+const AuthenticatedSuperAdminRouteRoute =
+  AuthenticatedSuperAdminRouteRouteImport.update({
+    id: '/super-admin',
+    path: '/super-admin',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
+const AuthenticatedStudentRouteRoute =
+  AuthenticatedStudentRouteRouteImport.update({
+    id: '/student',
+    path: '/student',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
+const AuthenticatedParentRouteRoute =
+  AuthenticatedParentRouteRouteImport.update({
+    id: '/parent',
+    path: '/parent',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
+const AuthenticatedAdminRouteRoute = AuthenticatedAdminRouteRouteImport.update({
+  id: '/admin',
+  path: '/admin',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
-const AuthenticatedUpdatesIndexRoute =
-  AuthenticatedUpdatesIndexRouteImport.update({
-    id: '/updates/',
-    path: '/updates/',
-    getParentRoute: () => AuthenticatedRouteRoute,
+const AuthenticatedTeacherStudentsRoute =
+  AuthenticatedTeacherStudentsRouteImport.update({
+    id: '/students',
+    path: '/students',
+    getParentRoute: () => AuthenticatedTeacherRouteRoute,
   } as any)
-const AuthenticatedTeachersIndexRoute =
-  AuthenticatedTeachersIndexRouteImport.update({
-    id: '/teachers/',
-    path: '/teachers/',
-    getParentRoute: () => AuthenticatedRouteRoute,
+const AuthenticatedTeacherSettingsRoute =
+  AuthenticatedTeacherSettingsRouteImport.update({
+    id: '/settings',
+    path: '/settings',
+    getParentRoute: () => AuthenticatedTeacherRouteRoute,
   } as any)
-const AuthenticatedStudentsIndexRoute =
-  AuthenticatedStudentsIndexRouteImport.update({
-    id: '/students/',
-    path: '/students/',
-    getParentRoute: () => AuthenticatedRouteRoute,
+const AuthenticatedTeacherReportsRoute =
+  AuthenticatedTeacherReportsRouteImport.update({
+    id: '/reports',
+    path: '/reports',
+    getParentRoute: () => AuthenticatedTeacherRouteRoute,
   } as any)
-const AuthenticatedSettingsIndexRoute =
-  AuthenticatedSettingsIndexRouteImport.update({
-    id: '/settings/',
-    path: '/settings/',
-    getParentRoute: () => AuthenticatedRouteRoute,
+const AuthenticatedTeacherProfileRoute =
+  AuthenticatedTeacherProfileRouteImport.update({
+    id: '/profile',
+    path: '/profile',
+    getParentRoute: () => AuthenticatedTeacherRouteRoute,
   } as any)
-const AuthenticatedScheduleIndexRoute =
-  AuthenticatedScheduleIndexRouteImport.update({
-    id: '/schedule/',
-    path: '/schedule/',
-    getParentRoute: () => AuthenticatedRouteRoute,
+const AuthenticatedTeacherMessagesRoute =
+  AuthenticatedTeacherMessagesRouteImport.update({
+    id: '/messages',
+    path: '/messages',
+    getParentRoute: () => AuthenticatedTeacherRouteRoute,
   } as any)
-const AuthenticatedReportsIndexRoute =
-  AuthenticatedReportsIndexRouteImport.update({
-    id: '/reports/',
-    path: '/reports/',
-    getParentRoute: () => AuthenticatedRouteRoute,
+const AuthenticatedTeacherHomeworkRoute =
+  AuthenticatedTeacherHomeworkRouteImport.update({
+    id: '/homework',
+    path: '/homework',
+    getParentRoute: () => AuthenticatedTeacherRouteRoute,
   } as any)
-const AuthenticatedPrepIndexRoute = AuthenticatedPrepIndexRouteImport.update({
-  id: '/prep/',
-  path: '/prep/',
-  getParentRoute: () => AuthenticatedRouteRoute,
+const AuthenticatedTeacherGradesRoute =
+  AuthenticatedTeacherGradesRouteImport.update({
+    id: '/grades',
+    path: '/grades',
+    getParentRoute: () => AuthenticatedTeacherRouteRoute,
+  } as any)
+const AuthenticatedTeacherExamsRoute =
+  AuthenticatedTeacherExamsRouteImport.update({
+    id: '/exams',
+    path: '/exams',
+    getParentRoute: () => AuthenticatedTeacherRouteRoute,
+  } as any)
+const AuthenticatedTeacherDashboardRoute =
+  AuthenticatedTeacherDashboardRouteImport.update({
+    id: '/dashboard',
+    path: '/dashboard',
+    getParentRoute: () => AuthenticatedTeacherRouteRoute,
+  } as any)
+const AuthenticatedTeacherClassesRoute =
+  AuthenticatedTeacherClassesRouteImport.update({
+    id: '/classes',
+    path: '/classes',
+    getParentRoute: () => AuthenticatedTeacherRouteRoute,
+  } as any)
+const AuthenticatedTeacherAttendanceRoute =
+  AuthenticatedTeacherAttendanceRouteImport.update({
+    id: '/attendance',
+    path: '/attendance',
+    getParentRoute: () => AuthenticatedTeacherRouteRoute,
+  } as any)
+const AuthenticatedTeacherAnnouncementsRoute =
+  AuthenticatedTeacherAnnouncementsRouteImport.update({
+    id: '/announcements',
+    path: '/announcements',
+    getParentRoute: () => AuthenticatedTeacherRouteRoute,
+  } as any)
+const AuthenticatedSuperAdminUsersRoute =
+  AuthenticatedSuperAdminUsersRouteImport.update({
+    id: '/users',
+    path: '/users',
+    getParentRoute: () => AuthenticatedSuperAdminRouteRoute,
+  } as any)
+const AuthenticatedSuperAdminSettingsRoute =
+  AuthenticatedSuperAdminSettingsRouteImport.update({
+    id: '/settings',
+    path: '/settings',
+    getParentRoute: () => AuthenticatedSuperAdminRouteRoute,
+  } as any)
+const AuthenticatedSuperAdminSecurityRoute =
+  AuthenticatedSuperAdminSecurityRouteImport.update({
+    id: '/security',
+    path: '/security',
+    getParentRoute: () => AuthenticatedSuperAdminRouteRoute,
+  } as any)
+const AuthenticatedSuperAdminSchoolsRoute =
+  AuthenticatedSuperAdminSchoolsRouteImport.update({
+    id: '/schools',
+    path: '/schools',
+    getParentRoute: () => AuthenticatedSuperAdminRouteRoute,
+  } as any)
+const AuthenticatedSuperAdminRolesRoute =
+  AuthenticatedSuperAdminRolesRouteImport.update({
+    id: '/roles',
+    path: '/roles',
+    getParentRoute: () => AuthenticatedSuperAdminRouteRoute,
+  } as any)
+const AuthenticatedSuperAdminReportsRoute =
+  AuthenticatedSuperAdminReportsRouteImport.update({
+    id: '/reports',
+    path: '/reports',
+    getParentRoute: () => AuthenticatedSuperAdminRouteRoute,
+  } as any)
+const AuthenticatedSuperAdminLogsRoute =
+  AuthenticatedSuperAdminLogsRouteImport.update({
+    id: '/logs',
+    path: '/logs',
+    getParentRoute: () => AuthenticatedSuperAdminRouteRoute,
+  } as any)
+const AuthenticatedSuperAdminDashboardRoute =
+  AuthenticatedSuperAdminDashboardRouteImport.update({
+    id: '/dashboard',
+    path: '/dashboard',
+    getParentRoute: () => AuthenticatedSuperAdminRouteRoute,
+  } as any)
+const AuthenticatedSuperAdminBackupsRoute =
+  AuthenticatedSuperAdminBackupsRouteImport.update({
+    id: '/backups',
+    path: '/backups',
+    getParentRoute: () => AuthenticatedSuperAdminRouteRoute,
+  } as any)
+const AuthenticatedSuperAdminApiRoute =
+  AuthenticatedSuperAdminApiRouteImport.update({
+    id: '/api',
+    path: '/api',
+    getParentRoute: () => AuthenticatedSuperAdminRouteRoute,
+  } as any)
+const AuthenticatedSuperAdminAdminsRoute =
+  AuthenticatedSuperAdminAdminsRouteImport.update({
+    id: '/admins',
+    path: '/admins',
+    getParentRoute: () => AuthenticatedSuperAdminRouteRoute,
+  } as any)
+const AuthenticatedStudentTimetableRoute =
+  AuthenticatedStudentTimetableRouteImport.update({
+    id: '/timetable',
+    path: '/timetable',
+    getParentRoute: () => AuthenticatedStudentRouteRoute,
+  } as any)
+const AuthenticatedStudentSettingsRoute =
+  AuthenticatedStudentSettingsRouteImport.update({
+    id: '/settings',
+    path: '/settings',
+    getParentRoute: () => AuthenticatedStudentRouteRoute,
+  } as any)
+const AuthenticatedStudentProfileRoute =
+  AuthenticatedStudentProfileRouteImport.update({
+    id: '/profile',
+    path: '/profile',
+    getParentRoute: () => AuthenticatedStudentRouteRoute,
+  } as any)
+const AuthenticatedStudentMessagesRoute =
+  AuthenticatedStudentMessagesRouteImport.update({
+    id: '/messages',
+    path: '/messages',
+    getParentRoute: () => AuthenticatedStudentRouteRoute,
+  } as any)
+const AuthenticatedStudentHomeworkRoute =
+  AuthenticatedStudentHomeworkRouteImport.update({
+    id: '/homework',
+    path: '/homework',
+    getParentRoute: () => AuthenticatedStudentRouteRoute,
+  } as any)
+const AuthenticatedStudentGradesRoute =
+  AuthenticatedStudentGradesRouteImport.update({
+    id: '/grades',
+    path: '/grades',
+    getParentRoute: () => AuthenticatedStudentRouteRoute,
+  } as any)
+const AuthenticatedStudentExamsRoute =
+  AuthenticatedStudentExamsRouteImport.update({
+    id: '/exams',
+    path: '/exams',
+    getParentRoute: () => AuthenticatedStudentRouteRoute,
+  } as any)
+const AuthenticatedStudentDashboardRoute =
+  AuthenticatedStudentDashboardRouteImport.update({
+    id: '/dashboard',
+    path: '/dashboard',
+    getParentRoute: () => AuthenticatedStudentRouteRoute,
+  } as any)
+const AuthenticatedStudentAttendanceRoute =
+  AuthenticatedStudentAttendanceRouteImport.update({
+    id: '/attendance',
+    path: '/attendance',
+    getParentRoute: () => AuthenticatedStudentRouteRoute,
+  } as any)
+const AuthenticatedStudentAnnouncementsRoute =
+  AuthenticatedStudentAnnouncementsRouteImport.update({
+    id: '/announcements',
+    path: '/announcements',
+    getParentRoute: () => AuthenticatedStudentRouteRoute,
+  } as any)
+const AuthenticatedParentTimetableRoute =
+  AuthenticatedParentTimetableRouteImport.update({
+    id: '/timetable',
+    path: '/timetable',
+    getParentRoute: () => AuthenticatedParentRouteRoute,
+  } as any)
+const AuthenticatedParentSettingsRoute =
+  AuthenticatedParentSettingsRouteImport.update({
+    id: '/settings',
+    path: '/settings',
+    getParentRoute: () => AuthenticatedParentRouteRoute,
+  } as any)
+const AuthenticatedParentPaymentsRoute =
+  AuthenticatedParentPaymentsRouteImport.update({
+    id: '/payments',
+    path: '/payments',
+    getParentRoute: () => AuthenticatedParentRouteRoute,
+  } as any)
+const AuthenticatedParentMessagesRoute =
+  AuthenticatedParentMessagesRouteImport.update({
+    id: '/messages',
+    path: '/messages',
+    getParentRoute: () => AuthenticatedParentRouteRoute,
+  } as any)
+const AuthenticatedParentGradesRoute =
+  AuthenticatedParentGradesRouteImport.update({
+    id: '/grades',
+    path: '/grades',
+    getParentRoute: () => AuthenticatedParentRouteRoute,
+  } as any)
+const AuthenticatedParentDashboardRoute =
+  AuthenticatedParentDashboardRouteImport.update({
+    id: '/dashboard',
+    path: '/dashboard',
+    getParentRoute: () => AuthenticatedParentRouteRoute,
+  } as any)
+const AuthenticatedParentChildrenRoute =
+  AuthenticatedParentChildrenRouteImport.update({
+    id: '/children',
+    path: '/children',
+    getParentRoute: () => AuthenticatedParentRouteRoute,
+  } as any)
+const AuthenticatedParentAttendanceRoute =
+  AuthenticatedParentAttendanceRouteImport.update({
+    id: '/attendance',
+    path: '/attendance',
+    getParentRoute: () => AuthenticatedParentRouteRoute,
+  } as any)
+const AuthenticatedParentAnnouncementsRoute =
+  AuthenticatedParentAnnouncementsRouteImport.update({
+    id: '/announcements',
+    path: '/announcements',
+    getParentRoute: () => AuthenticatedParentRouteRoute,
+  } as any)
+const AuthenticatedAdminUsersRoute = AuthenticatedAdminUsersRouteImport.update({
+  id: '/users',
+  path: '/users',
+  getParentRoute: () => AuthenticatedAdminRouteRoute,
 } as any)
-const AuthenticatedNewsIndexRoute = AuthenticatedNewsIndexRouteImport.update({
-  id: '/news/',
-  path: '/news/',
-  getParentRoute: () => AuthenticatedRouteRoute,
-} as any)
-const AuthenticatedMessagesIndexRoute =
-  AuthenticatedMessagesIndexRouteImport.update({
-    id: '/messages/',
-    path: '/messages/',
-    getParentRoute: () => AuthenticatedRouteRoute,
+const AuthenticatedAdminTimetablesRoute =
+  AuthenticatedAdminTimetablesRouteImport.update({
+    id: '/timetables',
+    path: '/timetables',
+    getParentRoute: () => AuthenticatedAdminRouteRoute,
   } as any)
-const AuthenticatedGradesIndexRoute =
-  AuthenticatedGradesIndexRouteImport.update({
-    id: '/grades/',
-    path: '/grades/',
-    getParentRoute: () => AuthenticatedRouteRoute,
+const AuthenticatedAdminSettingsRoute =
+  AuthenticatedAdminSettingsRouteImport.update({
+    id: '/settings',
+    path: '/settings',
+    getParentRoute: () => AuthenticatedAdminRouteRoute,
   } as any)
-const AuthenticatedExamsIndexRoute = AuthenticatedExamsIndexRouteImport.update({
-  id: '/exams/',
-  path: '/exams/',
-  getParentRoute: () => AuthenticatedRouteRoute,
-} as any)
-const AuthenticatedAttendanceIndexRoute =
-  AuthenticatedAttendanceIndexRouteImport.update({
-    id: '/attendance/',
-    path: '/attendance/',
-    getParentRoute: () => AuthenticatedRouteRoute,
+const AuthenticatedAdminReportsRoute =
+  AuthenticatedAdminReportsRouteImport.update({
+    id: '/reports',
+    path: '/reports',
+    getParentRoute: () => AuthenticatedAdminRouteRoute,
   } as any)
-const AuthenticatedAssignmentsIndexRoute =
-  AuthenticatedAssignmentsIndexRouteImport.update({
-    id: '/assignments/',
-    path: '/assignments/',
-    getParentRoute: () => AuthenticatedRouteRoute,
+const AuthenticatedAdminPaymentsRoute =
+  AuthenticatedAdminPaymentsRouteImport.update({
+    id: '/payments',
+    path: '/payments',
+    getParentRoute: () => AuthenticatedAdminRouteRoute,
   } as any)
-const AuthenticatedAnalyticsIndexRoute =
-  AuthenticatedAnalyticsIndexRouteImport.update({
-    id: '/analytics/',
-    path: '/analytics/',
-    getParentRoute: () => AuthenticatedRouteRoute,
+const AuthenticatedAdminMessagesRoute =
+  AuthenticatedAdminMessagesRouteImport.update({
+    id: '/messages',
+    path: '/messages',
+    getParentRoute: () => AuthenticatedAdminRouteRoute,
   } as any)
-const AuthenticatedActivitiesIndexRoute =
-  AuthenticatedActivitiesIndexRouteImport.update({
-    id: '/activities/',
-    path: '/activities/',
-    getParentRoute: () => AuthenticatedRouteRoute,
+const AuthenticatedAdminGradesRoute =
+  AuthenticatedAdminGradesRouteImport.update({
+    id: '/grades',
+    path: '/grades',
+    getParentRoute: () => AuthenticatedAdminRouteRoute,
   } as any)
-const AuthenticatedPrepAddLessonRoute =
-  AuthenticatedPrepAddLessonRouteImport.update({
-    id: '/prep/add-lesson',
-    path: '/prep/add-lesson',
-    getParentRoute: () => AuthenticatedRouteRoute,
+const AuthenticatedAdminDashboardRoute =
+  AuthenticatedAdminDashboardRouteImport.update({
+    id: '/dashboard',
+    path: '/dashboard',
+    getParentRoute: () => AuthenticatedAdminRouteRoute,
+  } as any)
+const AuthenticatedAdminClassesRoute =
+  AuthenticatedAdminClassesRouteImport.update({
+    id: '/classes',
+    path: '/classes',
+    getParentRoute: () => AuthenticatedAdminRouteRoute,
+  } as any)
+const AuthenticatedAdminAttendanceRoute =
+  AuthenticatedAdminAttendanceRouteImport.update({
+    id: '/attendance',
+    path: '/attendance',
+    getParentRoute: () => AuthenticatedAdminRouteRoute,
+  } as any)
+const AuthenticatedAdminAnnouncementsRoute =
+  AuthenticatedAdminAnnouncementsRouteImport.update({
+    id: '/announcements',
+    path: '/announcements',
+    getParentRoute: () => AuthenticatedAdminRouteRoute,
+  } as any)
+const AuthenticatedTeacherLessonsPreparationRoute =
+  AuthenticatedTeacherLessonsPreparationRouteImport.update({
+    id: '/lessons/preparation',
+    path: '/lessons/preparation',
+    getParentRoute: () => AuthenticatedTeacherRouteRoute,
+  } as any)
+const AuthenticatedTeacherLessonsAddRoute =
+  AuthenticatedTeacherLessonsAddRouteImport.update({
+    id: '/lessons/add',
+    path: '/lessons/add',
+    getParentRoute: () => AuthenticatedTeacherRouteRoute,
   } as any)
 
 export interface FileRoutesByFullPath {
@@ -166,48 +469,134 @@ export interface FileRoutesByFullPath {
   '/register': typeof RegisterRoute
   '/suspended': typeof SuspendedRoute
   '/unauthorized': typeof UnauthorizedRoute
+  '/admin': typeof AuthenticatedAdminRouteRouteWithChildren
+  '/parent': typeof AuthenticatedParentRouteRouteWithChildren
+  '/student': typeof AuthenticatedStudentRouteRouteWithChildren
+  '/super-admin': typeof AuthenticatedSuperAdminRouteRouteWithChildren
+  '/teacher': typeof AuthenticatedTeacherRouteRouteWithChildren
   '/': typeof AuthenticatedIndexRoute
-  '/prep/add-lesson': typeof AuthenticatedPrepAddLessonRoute
-  '/activities': typeof AuthenticatedActivitiesIndexRoute
-  '/analytics': typeof AuthenticatedAnalyticsIndexRoute
-  '/assignments': typeof AuthenticatedAssignmentsIndexRoute
-  '/attendance': typeof AuthenticatedAttendanceIndexRoute
-  '/exams': typeof AuthenticatedExamsIndexRoute
-  '/grades': typeof AuthenticatedGradesIndexRoute
-  '/messages': typeof AuthenticatedMessagesIndexRoute
-  '/news': typeof AuthenticatedNewsIndexRoute
-  '/prep': typeof AuthenticatedPrepIndexRoute
-  '/reports': typeof AuthenticatedReportsIndexRoute
-  '/schedule': typeof AuthenticatedScheduleIndexRoute
-  '/settings': typeof AuthenticatedSettingsIndexRoute
-  '/students': typeof AuthenticatedStudentsIndexRoute
-  '/teachers': typeof AuthenticatedTeachersIndexRoute
-  '/updates': typeof AuthenticatedUpdatesIndexRoute
-  '/users': typeof AuthenticatedUsersIndexRoute
+  '/admin/announcements': typeof AuthenticatedAdminAnnouncementsRoute
+  '/admin/attendance': typeof AuthenticatedAdminAttendanceRoute
+  '/admin/classes': typeof AuthenticatedAdminClassesRoute
+  '/admin/dashboard': typeof AuthenticatedAdminDashboardRoute
+  '/admin/grades': typeof AuthenticatedAdminGradesRoute
+  '/admin/messages': typeof AuthenticatedAdminMessagesRoute
+  '/admin/payments': typeof AuthenticatedAdminPaymentsRoute
+  '/admin/reports': typeof AuthenticatedAdminReportsRoute
+  '/admin/settings': typeof AuthenticatedAdminSettingsRoute
+  '/admin/timetables': typeof AuthenticatedAdminTimetablesRoute
+  '/admin/users': typeof AuthenticatedAdminUsersRoute
+  '/parent/announcements': typeof AuthenticatedParentAnnouncementsRoute
+  '/parent/attendance': typeof AuthenticatedParentAttendanceRoute
+  '/parent/children': typeof AuthenticatedParentChildrenRoute
+  '/parent/dashboard': typeof AuthenticatedParentDashboardRoute
+  '/parent/grades': typeof AuthenticatedParentGradesRoute
+  '/parent/messages': typeof AuthenticatedParentMessagesRoute
+  '/parent/payments': typeof AuthenticatedParentPaymentsRoute
+  '/parent/settings': typeof AuthenticatedParentSettingsRoute
+  '/parent/timetable': typeof AuthenticatedParentTimetableRoute
+  '/student/announcements': typeof AuthenticatedStudentAnnouncementsRoute
+  '/student/attendance': typeof AuthenticatedStudentAttendanceRoute
+  '/student/dashboard': typeof AuthenticatedStudentDashboardRoute
+  '/student/exams': typeof AuthenticatedStudentExamsRoute
+  '/student/grades': typeof AuthenticatedStudentGradesRoute
+  '/student/homework': typeof AuthenticatedStudentHomeworkRoute
+  '/student/messages': typeof AuthenticatedStudentMessagesRoute
+  '/student/profile': typeof AuthenticatedStudentProfileRoute
+  '/student/settings': typeof AuthenticatedStudentSettingsRoute
+  '/student/timetable': typeof AuthenticatedStudentTimetableRoute
+  '/super-admin/admins': typeof AuthenticatedSuperAdminAdminsRoute
+  '/super-admin/api': typeof AuthenticatedSuperAdminApiRoute
+  '/super-admin/backups': typeof AuthenticatedSuperAdminBackupsRoute
+  '/super-admin/dashboard': typeof AuthenticatedSuperAdminDashboardRoute
+  '/super-admin/logs': typeof AuthenticatedSuperAdminLogsRoute
+  '/super-admin/reports': typeof AuthenticatedSuperAdminReportsRoute
+  '/super-admin/roles': typeof AuthenticatedSuperAdminRolesRoute
+  '/super-admin/schools': typeof AuthenticatedSuperAdminSchoolsRoute
+  '/super-admin/security': typeof AuthenticatedSuperAdminSecurityRoute
+  '/super-admin/settings': typeof AuthenticatedSuperAdminSettingsRoute
+  '/super-admin/users': typeof AuthenticatedSuperAdminUsersRoute
+  '/teacher/announcements': typeof AuthenticatedTeacherAnnouncementsRoute
+  '/teacher/attendance': typeof AuthenticatedTeacherAttendanceRoute
+  '/teacher/classes': typeof AuthenticatedTeacherClassesRoute
+  '/teacher/dashboard': typeof AuthenticatedTeacherDashboardRoute
+  '/teacher/exams': typeof AuthenticatedTeacherExamsRoute
+  '/teacher/grades': typeof AuthenticatedTeacherGradesRoute
+  '/teacher/homework': typeof AuthenticatedTeacherHomeworkRoute
+  '/teacher/messages': typeof AuthenticatedTeacherMessagesRoute
+  '/teacher/profile': typeof AuthenticatedTeacherProfileRoute
+  '/teacher/reports': typeof AuthenticatedTeacherReportsRoute
+  '/teacher/settings': typeof AuthenticatedTeacherSettingsRoute
+  '/teacher/students': typeof AuthenticatedTeacherStudentsRoute
+  '/teacher/lessons/add': typeof AuthenticatedTeacherLessonsAddRoute
+  '/teacher/lessons/preparation': typeof AuthenticatedTeacherLessonsPreparationRoute
 }
 export interface FileRoutesByTo {
   '/login': typeof LoginRoute
   '/register': typeof RegisterRoute
   '/suspended': typeof SuspendedRoute
   '/unauthorized': typeof UnauthorizedRoute
+  '/admin': typeof AuthenticatedAdminRouteRouteWithChildren
+  '/parent': typeof AuthenticatedParentRouteRouteWithChildren
+  '/student': typeof AuthenticatedStudentRouteRouteWithChildren
+  '/super-admin': typeof AuthenticatedSuperAdminRouteRouteWithChildren
+  '/teacher': typeof AuthenticatedTeacherRouteRouteWithChildren
   '/': typeof AuthenticatedIndexRoute
-  '/prep/add-lesson': typeof AuthenticatedPrepAddLessonRoute
-  '/activities': typeof AuthenticatedActivitiesIndexRoute
-  '/analytics': typeof AuthenticatedAnalyticsIndexRoute
-  '/assignments': typeof AuthenticatedAssignmentsIndexRoute
-  '/attendance': typeof AuthenticatedAttendanceIndexRoute
-  '/exams': typeof AuthenticatedExamsIndexRoute
-  '/grades': typeof AuthenticatedGradesIndexRoute
-  '/messages': typeof AuthenticatedMessagesIndexRoute
-  '/news': typeof AuthenticatedNewsIndexRoute
-  '/prep': typeof AuthenticatedPrepIndexRoute
-  '/reports': typeof AuthenticatedReportsIndexRoute
-  '/schedule': typeof AuthenticatedScheduleIndexRoute
-  '/settings': typeof AuthenticatedSettingsIndexRoute
-  '/students': typeof AuthenticatedStudentsIndexRoute
-  '/teachers': typeof AuthenticatedTeachersIndexRoute
-  '/updates': typeof AuthenticatedUpdatesIndexRoute
-  '/users': typeof AuthenticatedUsersIndexRoute
+  '/admin/announcements': typeof AuthenticatedAdminAnnouncementsRoute
+  '/admin/attendance': typeof AuthenticatedAdminAttendanceRoute
+  '/admin/classes': typeof AuthenticatedAdminClassesRoute
+  '/admin/dashboard': typeof AuthenticatedAdminDashboardRoute
+  '/admin/grades': typeof AuthenticatedAdminGradesRoute
+  '/admin/messages': typeof AuthenticatedAdminMessagesRoute
+  '/admin/payments': typeof AuthenticatedAdminPaymentsRoute
+  '/admin/reports': typeof AuthenticatedAdminReportsRoute
+  '/admin/settings': typeof AuthenticatedAdminSettingsRoute
+  '/admin/timetables': typeof AuthenticatedAdminTimetablesRoute
+  '/admin/users': typeof AuthenticatedAdminUsersRoute
+  '/parent/announcements': typeof AuthenticatedParentAnnouncementsRoute
+  '/parent/attendance': typeof AuthenticatedParentAttendanceRoute
+  '/parent/children': typeof AuthenticatedParentChildrenRoute
+  '/parent/dashboard': typeof AuthenticatedParentDashboardRoute
+  '/parent/grades': typeof AuthenticatedParentGradesRoute
+  '/parent/messages': typeof AuthenticatedParentMessagesRoute
+  '/parent/payments': typeof AuthenticatedParentPaymentsRoute
+  '/parent/settings': typeof AuthenticatedParentSettingsRoute
+  '/parent/timetable': typeof AuthenticatedParentTimetableRoute
+  '/student/announcements': typeof AuthenticatedStudentAnnouncementsRoute
+  '/student/attendance': typeof AuthenticatedStudentAttendanceRoute
+  '/student/dashboard': typeof AuthenticatedStudentDashboardRoute
+  '/student/exams': typeof AuthenticatedStudentExamsRoute
+  '/student/grades': typeof AuthenticatedStudentGradesRoute
+  '/student/homework': typeof AuthenticatedStudentHomeworkRoute
+  '/student/messages': typeof AuthenticatedStudentMessagesRoute
+  '/student/profile': typeof AuthenticatedStudentProfileRoute
+  '/student/settings': typeof AuthenticatedStudentSettingsRoute
+  '/student/timetable': typeof AuthenticatedStudentTimetableRoute
+  '/super-admin/admins': typeof AuthenticatedSuperAdminAdminsRoute
+  '/super-admin/api': typeof AuthenticatedSuperAdminApiRoute
+  '/super-admin/backups': typeof AuthenticatedSuperAdminBackupsRoute
+  '/super-admin/dashboard': typeof AuthenticatedSuperAdminDashboardRoute
+  '/super-admin/logs': typeof AuthenticatedSuperAdminLogsRoute
+  '/super-admin/reports': typeof AuthenticatedSuperAdminReportsRoute
+  '/super-admin/roles': typeof AuthenticatedSuperAdminRolesRoute
+  '/super-admin/schools': typeof AuthenticatedSuperAdminSchoolsRoute
+  '/super-admin/security': typeof AuthenticatedSuperAdminSecurityRoute
+  '/super-admin/settings': typeof AuthenticatedSuperAdminSettingsRoute
+  '/super-admin/users': typeof AuthenticatedSuperAdminUsersRoute
+  '/teacher/announcements': typeof AuthenticatedTeacherAnnouncementsRoute
+  '/teacher/attendance': typeof AuthenticatedTeacherAttendanceRoute
+  '/teacher/classes': typeof AuthenticatedTeacherClassesRoute
+  '/teacher/dashboard': typeof AuthenticatedTeacherDashboardRoute
+  '/teacher/exams': typeof AuthenticatedTeacherExamsRoute
+  '/teacher/grades': typeof AuthenticatedTeacherGradesRoute
+  '/teacher/homework': typeof AuthenticatedTeacherHomeworkRoute
+  '/teacher/messages': typeof AuthenticatedTeacherMessagesRoute
+  '/teacher/profile': typeof AuthenticatedTeacherProfileRoute
+  '/teacher/reports': typeof AuthenticatedTeacherReportsRoute
+  '/teacher/settings': typeof AuthenticatedTeacherSettingsRoute
+  '/teacher/students': typeof AuthenticatedTeacherStudentsRoute
+  '/teacher/lessons/add': typeof AuthenticatedTeacherLessonsAddRoute
+  '/teacher/lessons/preparation': typeof AuthenticatedTeacherLessonsPreparationRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -216,24 +605,67 @@ export interface FileRoutesById {
   '/register': typeof RegisterRoute
   '/suspended': typeof SuspendedRoute
   '/unauthorized': typeof UnauthorizedRoute
+  '/_authenticated/admin': typeof AuthenticatedAdminRouteRouteWithChildren
+  '/_authenticated/parent': typeof AuthenticatedParentRouteRouteWithChildren
+  '/_authenticated/student': typeof AuthenticatedStudentRouteRouteWithChildren
+  '/_authenticated/super-admin': typeof AuthenticatedSuperAdminRouteRouteWithChildren
+  '/_authenticated/teacher': typeof AuthenticatedTeacherRouteRouteWithChildren
   '/_authenticated/': typeof AuthenticatedIndexRoute
-  '/_authenticated/prep/add-lesson': typeof AuthenticatedPrepAddLessonRoute
-  '/_authenticated/activities/': typeof AuthenticatedActivitiesIndexRoute
-  '/_authenticated/analytics/': typeof AuthenticatedAnalyticsIndexRoute
-  '/_authenticated/assignments/': typeof AuthenticatedAssignmentsIndexRoute
-  '/_authenticated/attendance/': typeof AuthenticatedAttendanceIndexRoute
-  '/_authenticated/exams/': typeof AuthenticatedExamsIndexRoute
-  '/_authenticated/grades/': typeof AuthenticatedGradesIndexRoute
-  '/_authenticated/messages/': typeof AuthenticatedMessagesIndexRoute
-  '/_authenticated/news/': typeof AuthenticatedNewsIndexRoute
-  '/_authenticated/prep/': typeof AuthenticatedPrepIndexRoute
-  '/_authenticated/reports/': typeof AuthenticatedReportsIndexRoute
-  '/_authenticated/schedule/': typeof AuthenticatedScheduleIndexRoute
-  '/_authenticated/settings/': typeof AuthenticatedSettingsIndexRoute
-  '/_authenticated/students/': typeof AuthenticatedStudentsIndexRoute
-  '/_authenticated/teachers/': typeof AuthenticatedTeachersIndexRoute
-  '/_authenticated/updates/': typeof AuthenticatedUpdatesIndexRoute
-  '/_authenticated/users/': typeof AuthenticatedUsersIndexRoute
+  '/_authenticated/admin/announcements': typeof AuthenticatedAdminAnnouncementsRoute
+  '/_authenticated/admin/attendance': typeof AuthenticatedAdminAttendanceRoute
+  '/_authenticated/admin/classes': typeof AuthenticatedAdminClassesRoute
+  '/_authenticated/admin/dashboard': typeof AuthenticatedAdminDashboardRoute
+  '/_authenticated/admin/grades': typeof AuthenticatedAdminGradesRoute
+  '/_authenticated/admin/messages': typeof AuthenticatedAdminMessagesRoute
+  '/_authenticated/admin/payments': typeof AuthenticatedAdminPaymentsRoute
+  '/_authenticated/admin/reports': typeof AuthenticatedAdminReportsRoute
+  '/_authenticated/admin/settings': typeof AuthenticatedAdminSettingsRoute
+  '/_authenticated/admin/timetables': typeof AuthenticatedAdminTimetablesRoute
+  '/_authenticated/admin/users': typeof AuthenticatedAdminUsersRoute
+  '/_authenticated/parent/announcements': typeof AuthenticatedParentAnnouncementsRoute
+  '/_authenticated/parent/attendance': typeof AuthenticatedParentAttendanceRoute
+  '/_authenticated/parent/children': typeof AuthenticatedParentChildrenRoute
+  '/_authenticated/parent/dashboard': typeof AuthenticatedParentDashboardRoute
+  '/_authenticated/parent/grades': typeof AuthenticatedParentGradesRoute
+  '/_authenticated/parent/messages': typeof AuthenticatedParentMessagesRoute
+  '/_authenticated/parent/payments': typeof AuthenticatedParentPaymentsRoute
+  '/_authenticated/parent/settings': typeof AuthenticatedParentSettingsRoute
+  '/_authenticated/parent/timetable': typeof AuthenticatedParentTimetableRoute
+  '/_authenticated/student/announcements': typeof AuthenticatedStudentAnnouncementsRoute
+  '/_authenticated/student/attendance': typeof AuthenticatedStudentAttendanceRoute
+  '/_authenticated/student/dashboard': typeof AuthenticatedStudentDashboardRoute
+  '/_authenticated/student/exams': typeof AuthenticatedStudentExamsRoute
+  '/_authenticated/student/grades': typeof AuthenticatedStudentGradesRoute
+  '/_authenticated/student/homework': typeof AuthenticatedStudentHomeworkRoute
+  '/_authenticated/student/messages': typeof AuthenticatedStudentMessagesRoute
+  '/_authenticated/student/profile': typeof AuthenticatedStudentProfileRoute
+  '/_authenticated/student/settings': typeof AuthenticatedStudentSettingsRoute
+  '/_authenticated/student/timetable': typeof AuthenticatedStudentTimetableRoute
+  '/_authenticated/super-admin/admins': typeof AuthenticatedSuperAdminAdminsRoute
+  '/_authenticated/super-admin/api': typeof AuthenticatedSuperAdminApiRoute
+  '/_authenticated/super-admin/backups': typeof AuthenticatedSuperAdminBackupsRoute
+  '/_authenticated/super-admin/dashboard': typeof AuthenticatedSuperAdminDashboardRoute
+  '/_authenticated/super-admin/logs': typeof AuthenticatedSuperAdminLogsRoute
+  '/_authenticated/super-admin/reports': typeof AuthenticatedSuperAdminReportsRoute
+  '/_authenticated/super-admin/roles': typeof AuthenticatedSuperAdminRolesRoute
+  '/_authenticated/super-admin/schools': typeof AuthenticatedSuperAdminSchoolsRoute
+  '/_authenticated/super-admin/security': typeof AuthenticatedSuperAdminSecurityRoute
+  '/_authenticated/super-admin/settings': typeof AuthenticatedSuperAdminSettingsRoute
+  '/_authenticated/super-admin/users': typeof AuthenticatedSuperAdminUsersRoute
+  '/_authenticated/teacher/announcements': typeof AuthenticatedTeacherAnnouncementsRoute
+  '/_authenticated/teacher/attendance': typeof AuthenticatedTeacherAttendanceRoute
+  '/_authenticated/teacher/classes': typeof AuthenticatedTeacherClassesRoute
+  '/_authenticated/teacher/dashboard': typeof AuthenticatedTeacherDashboardRoute
+  '/_authenticated/teacher/exams': typeof AuthenticatedTeacherExamsRoute
+  '/_authenticated/teacher/grades': typeof AuthenticatedTeacherGradesRoute
+  '/_authenticated/teacher/homework': typeof AuthenticatedTeacherHomeworkRoute
+  '/_authenticated/teacher/messages': typeof AuthenticatedTeacherMessagesRoute
+  '/_authenticated/teacher/profile': typeof AuthenticatedTeacherProfileRoute
+  '/_authenticated/teacher/reports': typeof AuthenticatedTeacherReportsRoute
+  '/_authenticated/teacher/settings': typeof AuthenticatedTeacherSettingsRoute
+  '/_authenticated/teacher/students': typeof AuthenticatedTeacherStudentsRoute
+  '/_authenticated/teacher/lessons/add': typeof AuthenticatedTeacherLessonsAddRoute
+  '/_authenticated/teacher/lessons/preparation': typeof AuthenticatedTeacherLessonsPreparationRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -242,48 +674,134 @@ export interface FileRouteTypes {
     | '/register'
     | '/suspended'
     | '/unauthorized'
+    | '/admin'
+    | '/parent'
+    | '/student'
+    | '/super-admin'
+    | '/teacher'
     | '/'
-    | '/prep/add-lesson'
-    | '/activities'
-    | '/analytics'
-    | '/assignments'
-    | '/attendance'
-    | '/exams'
-    | '/grades'
-    | '/messages'
-    | '/news'
-    | '/prep'
-    | '/reports'
-    | '/schedule'
-    | '/settings'
-    | '/students'
-    | '/teachers'
-    | '/updates'
-    | '/users'
+    | '/admin/announcements'
+    | '/admin/attendance'
+    | '/admin/classes'
+    | '/admin/dashboard'
+    | '/admin/grades'
+    | '/admin/messages'
+    | '/admin/payments'
+    | '/admin/reports'
+    | '/admin/settings'
+    | '/admin/timetables'
+    | '/admin/users'
+    | '/parent/announcements'
+    | '/parent/attendance'
+    | '/parent/children'
+    | '/parent/dashboard'
+    | '/parent/grades'
+    | '/parent/messages'
+    | '/parent/payments'
+    | '/parent/settings'
+    | '/parent/timetable'
+    | '/student/announcements'
+    | '/student/attendance'
+    | '/student/dashboard'
+    | '/student/exams'
+    | '/student/grades'
+    | '/student/homework'
+    | '/student/messages'
+    | '/student/profile'
+    | '/student/settings'
+    | '/student/timetable'
+    | '/super-admin/admins'
+    | '/super-admin/api'
+    | '/super-admin/backups'
+    | '/super-admin/dashboard'
+    | '/super-admin/logs'
+    | '/super-admin/reports'
+    | '/super-admin/roles'
+    | '/super-admin/schools'
+    | '/super-admin/security'
+    | '/super-admin/settings'
+    | '/super-admin/users'
+    | '/teacher/announcements'
+    | '/teacher/attendance'
+    | '/teacher/classes'
+    | '/teacher/dashboard'
+    | '/teacher/exams'
+    | '/teacher/grades'
+    | '/teacher/homework'
+    | '/teacher/messages'
+    | '/teacher/profile'
+    | '/teacher/reports'
+    | '/teacher/settings'
+    | '/teacher/students'
+    | '/teacher/lessons/add'
+    | '/teacher/lessons/preparation'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/login'
     | '/register'
     | '/suspended'
     | '/unauthorized'
+    | '/admin'
+    | '/parent'
+    | '/student'
+    | '/super-admin'
+    | '/teacher'
     | '/'
-    | '/prep/add-lesson'
-    | '/activities'
-    | '/analytics'
-    | '/assignments'
-    | '/attendance'
-    | '/exams'
-    | '/grades'
-    | '/messages'
-    | '/news'
-    | '/prep'
-    | '/reports'
-    | '/schedule'
-    | '/settings'
-    | '/students'
-    | '/teachers'
-    | '/updates'
-    | '/users'
+    | '/admin/announcements'
+    | '/admin/attendance'
+    | '/admin/classes'
+    | '/admin/dashboard'
+    | '/admin/grades'
+    | '/admin/messages'
+    | '/admin/payments'
+    | '/admin/reports'
+    | '/admin/settings'
+    | '/admin/timetables'
+    | '/admin/users'
+    | '/parent/announcements'
+    | '/parent/attendance'
+    | '/parent/children'
+    | '/parent/dashboard'
+    | '/parent/grades'
+    | '/parent/messages'
+    | '/parent/payments'
+    | '/parent/settings'
+    | '/parent/timetable'
+    | '/student/announcements'
+    | '/student/attendance'
+    | '/student/dashboard'
+    | '/student/exams'
+    | '/student/grades'
+    | '/student/homework'
+    | '/student/messages'
+    | '/student/profile'
+    | '/student/settings'
+    | '/student/timetable'
+    | '/super-admin/admins'
+    | '/super-admin/api'
+    | '/super-admin/backups'
+    | '/super-admin/dashboard'
+    | '/super-admin/logs'
+    | '/super-admin/reports'
+    | '/super-admin/roles'
+    | '/super-admin/schools'
+    | '/super-admin/security'
+    | '/super-admin/settings'
+    | '/super-admin/users'
+    | '/teacher/announcements'
+    | '/teacher/attendance'
+    | '/teacher/classes'
+    | '/teacher/dashboard'
+    | '/teacher/exams'
+    | '/teacher/grades'
+    | '/teacher/homework'
+    | '/teacher/messages'
+    | '/teacher/profile'
+    | '/teacher/reports'
+    | '/teacher/settings'
+    | '/teacher/students'
+    | '/teacher/lessons/add'
+    | '/teacher/lessons/preparation'
   id:
     | '__root__'
     | '/_authenticated'
@@ -291,24 +809,67 @@ export interface FileRouteTypes {
     | '/register'
     | '/suspended'
     | '/unauthorized'
+    | '/_authenticated/admin'
+    | '/_authenticated/parent'
+    | '/_authenticated/student'
+    | '/_authenticated/super-admin'
+    | '/_authenticated/teacher'
     | '/_authenticated/'
-    | '/_authenticated/prep/add-lesson'
-    | '/_authenticated/activities/'
-    | '/_authenticated/analytics/'
-    | '/_authenticated/assignments/'
-    | '/_authenticated/attendance/'
-    | '/_authenticated/exams/'
-    | '/_authenticated/grades/'
-    | '/_authenticated/messages/'
-    | '/_authenticated/news/'
-    | '/_authenticated/prep/'
-    | '/_authenticated/reports/'
-    | '/_authenticated/schedule/'
-    | '/_authenticated/settings/'
-    | '/_authenticated/students/'
-    | '/_authenticated/teachers/'
-    | '/_authenticated/updates/'
-    | '/_authenticated/users/'
+    | '/_authenticated/admin/announcements'
+    | '/_authenticated/admin/attendance'
+    | '/_authenticated/admin/classes'
+    | '/_authenticated/admin/dashboard'
+    | '/_authenticated/admin/grades'
+    | '/_authenticated/admin/messages'
+    | '/_authenticated/admin/payments'
+    | '/_authenticated/admin/reports'
+    | '/_authenticated/admin/settings'
+    | '/_authenticated/admin/timetables'
+    | '/_authenticated/admin/users'
+    | '/_authenticated/parent/announcements'
+    | '/_authenticated/parent/attendance'
+    | '/_authenticated/parent/children'
+    | '/_authenticated/parent/dashboard'
+    | '/_authenticated/parent/grades'
+    | '/_authenticated/parent/messages'
+    | '/_authenticated/parent/payments'
+    | '/_authenticated/parent/settings'
+    | '/_authenticated/parent/timetable'
+    | '/_authenticated/student/announcements'
+    | '/_authenticated/student/attendance'
+    | '/_authenticated/student/dashboard'
+    | '/_authenticated/student/exams'
+    | '/_authenticated/student/grades'
+    | '/_authenticated/student/homework'
+    | '/_authenticated/student/messages'
+    | '/_authenticated/student/profile'
+    | '/_authenticated/student/settings'
+    | '/_authenticated/student/timetable'
+    | '/_authenticated/super-admin/admins'
+    | '/_authenticated/super-admin/api'
+    | '/_authenticated/super-admin/backups'
+    | '/_authenticated/super-admin/dashboard'
+    | '/_authenticated/super-admin/logs'
+    | '/_authenticated/super-admin/reports'
+    | '/_authenticated/super-admin/roles'
+    | '/_authenticated/super-admin/schools'
+    | '/_authenticated/super-admin/security'
+    | '/_authenticated/super-admin/settings'
+    | '/_authenticated/super-admin/users'
+    | '/_authenticated/teacher/announcements'
+    | '/_authenticated/teacher/attendance'
+    | '/_authenticated/teacher/classes'
+    | '/_authenticated/teacher/dashboard'
+    | '/_authenticated/teacher/exams'
+    | '/_authenticated/teacher/grades'
+    | '/_authenticated/teacher/homework'
+    | '/_authenticated/teacher/messages'
+    | '/_authenticated/teacher/profile'
+    | '/_authenticated/teacher/reports'
+    | '/_authenticated/teacher/settings'
+    | '/_authenticated/teacher/students'
+    | '/_authenticated/teacher/lessons/add'
+    | '/_authenticated/teacher/lessons/preparation'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -363,168 +924,621 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedIndexRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
-    '/_authenticated/users/': {
-      id: '/_authenticated/users/'
-      path: '/users'
-      fullPath: '/users'
-      preLoaderRoute: typeof AuthenticatedUsersIndexRouteImport
+    '/_authenticated/teacher': {
+      id: '/_authenticated/teacher'
+      path: '/teacher'
+      fullPath: '/teacher'
+      preLoaderRoute: typeof AuthenticatedTeacherRouteRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
-    '/_authenticated/updates/': {
-      id: '/_authenticated/updates/'
-      path: '/updates'
-      fullPath: '/updates'
-      preLoaderRoute: typeof AuthenticatedUpdatesIndexRouteImport
+    '/_authenticated/super-admin': {
+      id: '/_authenticated/super-admin'
+      path: '/super-admin'
+      fullPath: '/super-admin'
+      preLoaderRoute: typeof AuthenticatedSuperAdminRouteRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
-    '/_authenticated/teachers/': {
-      id: '/_authenticated/teachers/'
-      path: '/teachers'
-      fullPath: '/teachers'
-      preLoaderRoute: typeof AuthenticatedTeachersIndexRouteImport
+    '/_authenticated/student': {
+      id: '/_authenticated/student'
+      path: '/student'
+      fullPath: '/student'
+      preLoaderRoute: typeof AuthenticatedStudentRouteRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
-    '/_authenticated/students/': {
-      id: '/_authenticated/students/'
+    '/_authenticated/parent': {
+      id: '/_authenticated/parent'
+      path: '/parent'
+      fullPath: '/parent'
+      preLoaderRoute: typeof AuthenticatedParentRouteRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/admin': {
+      id: '/_authenticated/admin'
+      path: '/admin'
+      fullPath: '/admin'
+      preLoaderRoute: typeof AuthenticatedAdminRouteRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/teacher/students': {
+      id: '/_authenticated/teacher/students'
       path: '/students'
-      fullPath: '/students'
-      preLoaderRoute: typeof AuthenticatedStudentsIndexRouteImport
-      parentRoute: typeof AuthenticatedRouteRoute
+      fullPath: '/teacher/students'
+      preLoaderRoute: typeof AuthenticatedTeacherStudentsRouteImport
+      parentRoute: typeof AuthenticatedTeacherRouteRoute
     }
-    '/_authenticated/settings/': {
-      id: '/_authenticated/settings/'
+    '/_authenticated/teacher/settings': {
+      id: '/_authenticated/teacher/settings'
       path: '/settings'
-      fullPath: '/settings'
-      preLoaderRoute: typeof AuthenticatedSettingsIndexRouteImport
-      parentRoute: typeof AuthenticatedRouteRoute
+      fullPath: '/teacher/settings'
+      preLoaderRoute: typeof AuthenticatedTeacherSettingsRouteImport
+      parentRoute: typeof AuthenticatedTeacherRouteRoute
     }
-    '/_authenticated/schedule/': {
-      id: '/_authenticated/schedule/'
-      path: '/schedule'
-      fullPath: '/schedule'
-      preLoaderRoute: typeof AuthenticatedScheduleIndexRouteImport
-      parentRoute: typeof AuthenticatedRouteRoute
-    }
-    '/_authenticated/reports/': {
-      id: '/_authenticated/reports/'
+    '/_authenticated/teacher/reports': {
+      id: '/_authenticated/teacher/reports'
       path: '/reports'
-      fullPath: '/reports'
-      preLoaderRoute: typeof AuthenticatedReportsIndexRouteImport
-      parentRoute: typeof AuthenticatedRouteRoute
+      fullPath: '/teacher/reports'
+      preLoaderRoute: typeof AuthenticatedTeacherReportsRouteImport
+      parentRoute: typeof AuthenticatedTeacherRouteRoute
     }
-    '/_authenticated/prep/': {
-      id: '/_authenticated/prep/'
-      path: '/prep'
-      fullPath: '/prep'
-      preLoaderRoute: typeof AuthenticatedPrepIndexRouteImport
-      parentRoute: typeof AuthenticatedRouteRoute
+    '/_authenticated/teacher/profile': {
+      id: '/_authenticated/teacher/profile'
+      path: '/profile'
+      fullPath: '/teacher/profile'
+      preLoaderRoute: typeof AuthenticatedTeacherProfileRouteImport
+      parentRoute: typeof AuthenticatedTeacherRouteRoute
     }
-    '/_authenticated/news/': {
-      id: '/_authenticated/news/'
-      path: '/news'
-      fullPath: '/news'
-      preLoaderRoute: typeof AuthenticatedNewsIndexRouteImport
-      parentRoute: typeof AuthenticatedRouteRoute
-    }
-    '/_authenticated/messages/': {
-      id: '/_authenticated/messages/'
+    '/_authenticated/teacher/messages': {
+      id: '/_authenticated/teacher/messages'
       path: '/messages'
-      fullPath: '/messages'
-      preLoaderRoute: typeof AuthenticatedMessagesIndexRouteImport
-      parentRoute: typeof AuthenticatedRouteRoute
+      fullPath: '/teacher/messages'
+      preLoaderRoute: typeof AuthenticatedTeacherMessagesRouteImport
+      parentRoute: typeof AuthenticatedTeacherRouteRoute
     }
-    '/_authenticated/grades/': {
-      id: '/_authenticated/grades/'
+    '/_authenticated/teacher/homework': {
+      id: '/_authenticated/teacher/homework'
+      path: '/homework'
+      fullPath: '/teacher/homework'
+      preLoaderRoute: typeof AuthenticatedTeacherHomeworkRouteImport
+      parentRoute: typeof AuthenticatedTeacherRouteRoute
+    }
+    '/_authenticated/teacher/grades': {
+      id: '/_authenticated/teacher/grades'
       path: '/grades'
-      fullPath: '/grades'
-      preLoaderRoute: typeof AuthenticatedGradesIndexRouteImport
-      parentRoute: typeof AuthenticatedRouteRoute
+      fullPath: '/teacher/grades'
+      preLoaderRoute: typeof AuthenticatedTeacherGradesRouteImport
+      parentRoute: typeof AuthenticatedTeacherRouteRoute
     }
-    '/_authenticated/exams/': {
-      id: '/_authenticated/exams/'
+    '/_authenticated/teacher/exams': {
+      id: '/_authenticated/teacher/exams'
       path: '/exams'
-      fullPath: '/exams'
-      preLoaderRoute: typeof AuthenticatedExamsIndexRouteImport
-      parentRoute: typeof AuthenticatedRouteRoute
+      fullPath: '/teacher/exams'
+      preLoaderRoute: typeof AuthenticatedTeacherExamsRouteImport
+      parentRoute: typeof AuthenticatedTeacherRouteRoute
     }
-    '/_authenticated/attendance/': {
-      id: '/_authenticated/attendance/'
+    '/_authenticated/teacher/dashboard': {
+      id: '/_authenticated/teacher/dashboard'
+      path: '/dashboard'
+      fullPath: '/teacher/dashboard'
+      preLoaderRoute: typeof AuthenticatedTeacherDashboardRouteImport
+      parentRoute: typeof AuthenticatedTeacherRouteRoute
+    }
+    '/_authenticated/teacher/classes': {
+      id: '/_authenticated/teacher/classes'
+      path: '/classes'
+      fullPath: '/teacher/classes'
+      preLoaderRoute: typeof AuthenticatedTeacherClassesRouteImport
+      parentRoute: typeof AuthenticatedTeacherRouteRoute
+    }
+    '/_authenticated/teacher/attendance': {
+      id: '/_authenticated/teacher/attendance'
       path: '/attendance'
-      fullPath: '/attendance'
-      preLoaderRoute: typeof AuthenticatedAttendanceIndexRouteImport
-      parentRoute: typeof AuthenticatedRouteRoute
+      fullPath: '/teacher/attendance'
+      preLoaderRoute: typeof AuthenticatedTeacherAttendanceRouteImport
+      parentRoute: typeof AuthenticatedTeacherRouteRoute
     }
-    '/_authenticated/assignments/': {
-      id: '/_authenticated/assignments/'
-      path: '/assignments'
-      fullPath: '/assignments'
-      preLoaderRoute: typeof AuthenticatedAssignmentsIndexRouteImport
-      parentRoute: typeof AuthenticatedRouteRoute
+    '/_authenticated/teacher/announcements': {
+      id: '/_authenticated/teacher/announcements'
+      path: '/announcements'
+      fullPath: '/teacher/announcements'
+      preLoaderRoute: typeof AuthenticatedTeacherAnnouncementsRouteImport
+      parentRoute: typeof AuthenticatedTeacherRouteRoute
     }
-    '/_authenticated/analytics/': {
-      id: '/_authenticated/analytics/'
-      path: '/analytics'
-      fullPath: '/analytics'
-      preLoaderRoute: typeof AuthenticatedAnalyticsIndexRouteImport
-      parentRoute: typeof AuthenticatedRouteRoute
+    '/_authenticated/super-admin/users': {
+      id: '/_authenticated/super-admin/users'
+      path: '/users'
+      fullPath: '/super-admin/users'
+      preLoaderRoute: typeof AuthenticatedSuperAdminUsersRouteImport
+      parentRoute: typeof AuthenticatedSuperAdminRouteRoute
     }
-    '/_authenticated/activities/': {
-      id: '/_authenticated/activities/'
-      path: '/activities'
-      fullPath: '/activities'
-      preLoaderRoute: typeof AuthenticatedActivitiesIndexRouteImport
-      parentRoute: typeof AuthenticatedRouteRoute
+    '/_authenticated/super-admin/settings': {
+      id: '/_authenticated/super-admin/settings'
+      path: '/settings'
+      fullPath: '/super-admin/settings'
+      preLoaderRoute: typeof AuthenticatedSuperAdminSettingsRouteImport
+      parentRoute: typeof AuthenticatedSuperAdminRouteRoute
     }
-    '/_authenticated/prep/add-lesson': {
-      id: '/_authenticated/prep/add-lesson'
-      path: '/prep/add-lesson'
-      fullPath: '/prep/add-lesson'
-      preLoaderRoute: typeof AuthenticatedPrepAddLessonRouteImport
-      parentRoute: typeof AuthenticatedRouteRoute
+    '/_authenticated/super-admin/security': {
+      id: '/_authenticated/super-admin/security'
+      path: '/security'
+      fullPath: '/super-admin/security'
+      preLoaderRoute: typeof AuthenticatedSuperAdminSecurityRouteImport
+      parentRoute: typeof AuthenticatedSuperAdminRouteRoute
+    }
+    '/_authenticated/super-admin/schools': {
+      id: '/_authenticated/super-admin/schools'
+      path: '/schools'
+      fullPath: '/super-admin/schools'
+      preLoaderRoute: typeof AuthenticatedSuperAdminSchoolsRouteImport
+      parentRoute: typeof AuthenticatedSuperAdminRouteRoute
+    }
+    '/_authenticated/super-admin/roles': {
+      id: '/_authenticated/super-admin/roles'
+      path: '/roles'
+      fullPath: '/super-admin/roles'
+      preLoaderRoute: typeof AuthenticatedSuperAdminRolesRouteImport
+      parentRoute: typeof AuthenticatedSuperAdminRouteRoute
+    }
+    '/_authenticated/super-admin/reports': {
+      id: '/_authenticated/super-admin/reports'
+      path: '/reports'
+      fullPath: '/super-admin/reports'
+      preLoaderRoute: typeof AuthenticatedSuperAdminReportsRouteImport
+      parentRoute: typeof AuthenticatedSuperAdminRouteRoute
+    }
+    '/_authenticated/super-admin/logs': {
+      id: '/_authenticated/super-admin/logs'
+      path: '/logs'
+      fullPath: '/super-admin/logs'
+      preLoaderRoute: typeof AuthenticatedSuperAdminLogsRouteImport
+      parentRoute: typeof AuthenticatedSuperAdminRouteRoute
+    }
+    '/_authenticated/super-admin/dashboard': {
+      id: '/_authenticated/super-admin/dashboard'
+      path: '/dashboard'
+      fullPath: '/super-admin/dashboard'
+      preLoaderRoute: typeof AuthenticatedSuperAdminDashboardRouteImport
+      parentRoute: typeof AuthenticatedSuperAdminRouteRoute
+    }
+    '/_authenticated/super-admin/backups': {
+      id: '/_authenticated/super-admin/backups'
+      path: '/backups'
+      fullPath: '/super-admin/backups'
+      preLoaderRoute: typeof AuthenticatedSuperAdminBackupsRouteImport
+      parentRoute: typeof AuthenticatedSuperAdminRouteRoute
+    }
+    '/_authenticated/super-admin/api': {
+      id: '/_authenticated/super-admin/api'
+      path: '/api'
+      fullPath: '/super-admin/api'
+      preLoaderRoute: typeof AuthenticatedSuperAdminApiRouteImport
+      parentRoute: typeof AuthenticatedSuperAdminRouteRoute
+    }
+    '/_authenticated/super-admin/admins': {
+      id: '/_authenticated/super-admin/admins'
+      path: '/admins'
+      fullPath: '/super-admin/admins'
+      preLoaderRoute: typeof AuthenticatedSuperAdminAdminsRouteImport
+      parentRoute: typeof AuthenticatedSuperAdminRouteRoute
+    }
+    '/_authenticated/student/timetable': {
+      id: '/_authenticated/student/timetable'
+      path: '/timetable'
+      fullPath: '/student/timetable'
+      preLoaderRoute: typeof AuthenticatedStudentTimetableRouteImport
+      parentRoute: typeof AuthenticatedStudentRouteRoute
+    }
+    '/_authenticated/student/settings': {
+      id: '/_authenticated/student/settings'
+      path: '/settings'
+      fullPath: '/student/settings'
+      preLoaderRoute: typeof AuthenticatedStudentSettingsRouteImport
+      parentRoute: typeof AuthenticatedStudentRouteRoute
+    }
+    '/_authenticated/student/profile': {
+      id: '/_authenticated/student/profile'
+      path: '/profile'
+      fullPath: '/student/profile'
+      preLoaderRoute: typeof AuthenticatedStudentProfileRouteImport
+      parentRoute: typeof AuthenticatedStudentRouteRoute
+    }
+    '/_authenticated/student/messages': {
+      id: '/_authenticated/student/messages'
+      path: '/messages'
+      fullPath: '/student/messages'
+      preLoaderRoute: typeof AuthenticatedStudentMessagesRouteImport
+      parentRoute: typeof AuthenticatedStudentRouteRoute
+    }
+    '/_authenticated/student/homework': {
+      id: '/_authenticated/student/homework'
+      path: '/homework'
+      fullPath: '/student/homework'
+      preLoaderRoute: typeof AuthenticatedStudentHomeworkRouteImport
+      parentRoute: typeof AuthenticatedStudentRouteRoute
+    }
+    '/_authenticated/student/grades': {
+      id: '/_authenticated/student/grades'
+      path: '/grades'
+      fullPath: '/student/grades'
+      preLoaderRoute: typeof AuthenticatedStudentGradesRouteImport
+      parentRoute: typeof AuthenticatedStudentRouteRoute
+    }
+    '/_authenticated/student/exams': {
+      id: '/_authenticated/student/exams'
+      path: '/exams'
+      fullPath: '/student/exams'
+      preLoaderRoute: typeof AuthenticatedStudentExamsRouteImport
+      parentRoute: typeof AuthenticatedStudentRouteRoute
+    }
+    '/_authenticated/student/dashboard': {
+      id: '/_authenticated/student/dashboard'
+      path: '/dashboard'
+      fullPath: '/student/dashboard'
+      preLoaderRoute: typeof AuthenticatedStudentDashboardRouteImport
+      parentRoute: typeof AuthenticatedStudentRouteRoute
+    }
+    '/_authenticated/student/attendance': {
+      id: '/_authenticated/student/attendance'
+      path: '/attendance'
+      fullPath: '/student/attendance'
+      preLoaderRoute: typeof AuthenticatedStudentAttendanceRouteImport
+      parentRoute: typeof AuthenticatedStudentRouteRoute
+    }
+    '/_authenticated/student/announcements': {
+      id: '/_authenticated/student/announcements'
+      path: '/announcements'
+      fullPath: '/student/announcements'
+      preLoaderRoute: typeof AuthenticatedStudentAnnouncementsRouteImport
+      parentRoute: typeof AuthenticatedStudentRouteRoute
+    }
+    '/_authenticated/parent/timetable': {
+      id: '/_authenticated/parent/timetable'
+      path: '/timetable'
+      fullPath: '/parent/timetable'
+      preLoaderRoute: typeof AuthenticatedParentTimetableRouteImport
+      parentRoute: typeof AuthenticatedParentRouteRoute
+    }
+    '/_authenticated/parent/settings': {
+      id: '/_authenticated/parent/settings'
+      path: '/settings'
+      fullPath: '/parent/settings'
+      preLoaderRoute: typeof AuthenticatedParentSettingsRouteImport
+      parentRoute: typeof AuthenticatedParentRouteRoute
+    }
+    '/_authenticated/parent/payments': {
+      id: '/_authenticated/parent/payments'
+      path: '/payments'
+      fullPath: '/parent/payments'
+      preLoaderRoute: typeof AuthenticatedParentPaymentsRouteImport
+      parentRoute: typeof AuthenticatedParentRouteRoute
+    }
+    '/_authenticated/parent/messages': {
+      id: '/_authenticated/parent/messages'
+      path: '/messages'
+      fullPath: '/parent/messages'
+      preLoaderRoute: typeof AuthenticatedParentMessagesRouteImport
+      parentRoute: typeof AuthenticatedParentRouteRoute
+    }
+    '/_authenticated/parent/grades': {
+      id: '/_authenticated/parent/grades'
+      path: '/grades'
+      fullPath: '/parent/grades'
+      preLoaderRoute: typeof AuthenticatedParentGradesRouteImport
+      parentRoute: typeof AuthenticatedParentRouteRoute
+    }
+    '/_authenticated/parent/dashboard': {
+      id: '/_authenticated/parent/dashboard'
+      path: '/dashboard'
+      fullPath: '/parent/dashboard'
+      preLoaderRoute: typeof AuthenticatedParentDashboardRouteImport
+      parentRoute: typeof AuthenticatedParentRouteRoute
+    }
+    '/_authenticated/parent/children': {
+      id: '/_authenticated/parent/children'
+      path: '/children'
+      fullPath: '/parent/children'
+      preLoaderRoute: typeof AuthenticatedParentChildrenRouteImport
+      parentRoute: typeof AuthenticatedParentRouteRoute
+    }
+    '/_authenticated/parent/attendance': {
+      id: '/_authenticated/parent/attendance'
+      path: '/attendance'
+      fullPath: '/parent/attendance'
+      preLoaderRoute: typeof AuthenticatedParentAttendanceRouteImport
+      parentRoute: typeof AuthenticatedParentRouteRoute
+    }
+    '/_authenticated/parent/announcements': {
+      id: '/_authenticated/parent/announcements'
+      path: '/announcements'
+      fullPath: '/parent/announcements'
+      preLoaderRoute: typeof AuthenticatedParentAnnouncementsRouteImport
+      parentRoute: typeof AuthenticatedParentRouteRoute
+    }
+    '/_authenticated/admin/users': {
+      id: '/_authenticated/admin/users'
+      path: '/users'
+      fullPath: '/admin/users'
+      preLoaderRoute: typeof AuthenticatedAdminUsersRouteImport
+      parentRoute: typeof AuthenticatedAdminRouteRoute
+    }
+    '/_authenticated/admin/timetables': {
+      id: '/_authenticated/admin/timetables'
+      path: '/timetables'
+      fullPath: '/admin/timetables'
+      preLoaderRoute: typeof AuthenticatedAdminTimetablesRouteImport
+      parentRoute: typeof AuthenticatedAdminRouteRoute
+    }
+    '/_authenticated/admin/settings': {
+      id: '/_authenticated/admin/settings'
+      path: '/settings'
+      fullPath: '/admin/settings'
+      preLoaderRoute: typeof AuthenticatedAdminSettingsRouteImport
+      parentRoute: typeof AuthenticatedAdminRouteRoute
+    }
+    '/_authenticated/admin/reports': {
+      id: '/_authenticated/admin/reports'
+      path: '/reports'
+      fullPath: '/admin/reports'
+      preLoaderRoute: typeof AuthenticatedAdminReportsRouteImport
+      parentRoute: typeof AuthenticatedAdminRouteRoute
+    }
+    '/_authenticated/admin/payments': {
+      id: '/_authenticated/admin/payments'
+      path: '/payments'
+      fullPath: '/admin/payments'
+      preLoaderRoute: typeof AuthenticatedAdminPaymentsRouteImport
+      parentRoute: typeof AuthenticatedAdminRouteRoute
+    }
+    '/_authenticated/admin/messages': {
+      id: '/_authenticated/admin/messages'
+      path: '/messages'
+      fullPath: '/admin/messages'
+      preLoaderRoute: typeof AuthenticatedAdminMessagesRouteImport
+      parentRoute: typeof AuthenticatedAdminRouteRoute
+    }
+    '/_authenticated/admin/grades': {
+      id: '/_authenticated/admin/grades'
+      path: '/grades'
+      fullPath: '/admin/grades'
+      preLoaderRoute: typeof AuthenticatedAdminGradesRouteImport
+      parentRoute: typeof AuthenticatedAdminRouteRoute
+    }
+    '/_authenticated/admin/dashboard': {
+      id: '/_authenticated/admin/dashboard'
+      path: '/dashboard'
+      fullPath: '/admin/dashboard'
+      preLoaderRoute: typeof AuthenticatedAdminDashboardRouteImport
+      parentRoute: typeof AuthenticatedAdminRouteRoute
+    }
+    '/_authenticated/admin/classes': {
+      id: '/_authenticated/admin/classes'
+      path: '/classes'
+      fullPath: '/admin/classes'
+      preLoaderRoute: typeof AuthenticatedAdminClassesRouteImport
+      parentRoute: typeof AuthenticatedAdminRouteRoute
+    }
+    '/_authenticated/admin/attendance': {
+      id: '/_authenticated/admin/attendance'
+      path: '/attendance'
+      fullPath: '/admin/attendance'
+      preLoaderRoute: typeof AuthenticatedAdminAttendanceRouteImport
+      parentRoute: typeof AuthenticatedAdminRouteRoute
+    }
+    '/_authenticated/admin/announcements': {
+      id: '/_authenticated/admin/announcements'
+      path: '/announcements'
+      fullPath: '/admin/announcements'
+      preLoaderRoute: typeof AuthenticatedAdminAnnouncementsRouteImport
+      parentRoute: typeof AuthenticatedAdminRouteRoute
+    }
+    '/_authenticated/teacher/lessons/preparation': {
+      id: '/_authenticated/teacher/lessons/preparation'
+      path: '/lessons/preparation'
+      fullPath: '/teacher/lessons/preparation'
+      preLoaderRoute: typeof AuthenticatedTeacherLessonsPreparationRouteImport
+      parentRoute: typeof AuthenticatedTeacherRouteRoute
+    }
+    '/_authenticated/teacher/lessons/add': {
+      id: '/_authenticated/teacher/lessons/add'
+      path: '/lessons/add'
+      fullPath: '/teacher/lessons/add'
+      preLoaderRoute: typeof AuthenticatedTeacherLessonsAddRouteImport
+      parentRoute: typeof AuthenticatedTeacherRouteRoute
     }
   }
 }
 
+interface AuthenticatedAdminRouteRouteChildren {
+  AuthenticatedAdminAnnouncementsRoute: typeof AuthenticatedAdminAnnouncementsRoute
+  AuthenticatedAdminAttendanceRoute: typeof AuthenticatedAdminAttendanceRoute
+  AuthenticatedAdminClassesRoute: typeof AuthenticatedAdminClassesRoute
+  AuthenticatedAdminDashboardRoute: typeof AuthenticatedAdminDashboardRoute
+  AuthenticatedAdminGradesRoute: typeof AuthenticatedAdminGradesRoute
+  AuthenticatedAdminMessagesRoute: typeof AuthenticatedAdminMessagesRoute
+  AuthenticatedAdminPaymentsRoute: typeof AuthenticatedAdminPaymentsRoute
+  AuthenticatedAdminReportsRoute: typeof AuthenticatedAdminReportsRoute
+  AuthenticatedAdminSettingsRoute: typeof AuthenticatedAdminSettingsRoute
+  AuthenticatedAdminTimetablesRoute: typeof AuthenticatedAdminTimetablesRoute
+  AuthenticatedAdminUsersRoute: typeof AuthenticatedAdminUsersRoute
+}
+
+const AuthenticatedAdminRouteRouteChildren: AuthenticatedAdminRouteRouteChildren =
+  {
+    AuthenticatedAdminAnnouncementsRoute: AuthenticatedAdminAnnouncementsRoute,
+    AuthenticatedAdminAttendanceRoute: AuthenticatedAdminAttendanceRoute,
+    AuthenticatedAdminClassesRoute: AuthenticatedAdminClassesRoute,
+    AuthenticatedAdminDashboardRoute: AuthenticatedAdminDashboardRoute,
+    AuthenticatedAdminGradesRoute: AuthenticatedAdminGradesRoute,
+    AuthenticatedAdminMessagesRoute: AuthenticatedAdminMessagesRoute,
+    AuthenticatedAdminPaymentsRoute: AuthenticatedAdminPaymentsRoute,
+    AuthenticatedAdminReportsRoute: AuthenticatedAdminReportsRoute,
+    AuthenticatedAdminSettingsRoute: AuthenticatedAdminSettingsRoute,
+    AuthenticatedAdminTimetablesRoute: AuthenticatedAdminTimetablesRoute,
+    AuthenticatedAdminUsersRoute: AuthenticatedAdminUsersRoute,
+  }
+
+const AuthenticatedAdminRouteRouteWithChildren =
+  AuthenticatedAdminRouteRoute._addFileChildren(
+    AuthenticatedAdminRouteRouteChildren,
+  )
+
+interface AuthenticatedParentRouteRouteChildren {
+  AuthenticatedParentAnnouncementsRoute: typeof AuthenticatedParentAnnouncementsRoute
+  AuthenticatedParentAttendanceRoute: typeof AuthenticatedParentAttendanceRoute
+  AuthenticatedParentChildrenRoute: typeof AuthenticatedParentChildrenRoute
+  AuthenticatedParentDashboardRoute: typeof AuthenticatedParentDashboardRoute
+  AuthenticatedParentGradesRoute: typeof AuthenticatedParentGradesRoute
+  AuthenticatedParentMessagesRoute: typeof AuthenticatedParentMessagesRoute
+  AuthenticatedParentPaymentsRoute: typeof AuthenticatedParentPaymentsRoute
+  AuthenticatedParentSettingsRoute: typeof AuthenticatedParentSettingsRoute
+  AuthenticatedParentTimetableRoute: typeof AuthenticatedParentTimetableRoute
+}
+
+const AuthenticatedParentRouteRouteChildren: AuthenticatedParentRouteRouteChildren =
+  {
+    AuthenticatedParentAnnouncementsRoute:
+      AuthenticatedParentAnnouncementsRoute,
+    AuthenticatedParentAttendanceRoute: AuthenticatedParentAttendanceRoute,
+    AuthenticatedParentChildrenRoute: AuthenticatedParentChildrenRoute,
+    AuthenticatedParentDashboardRoute: AuthenticatedParentDashboardRoute,
+    AuthenticatedParentGradesRoute: AuthenticatedParentGradesRoute,
+    AuthenticatedParentMessagesRoute: AuthenticatedParentMessagesRoute,
+    AuthenticatedParentPaymentsRoute: AuthenticatedParentPaymentsRoute,
+    AuthenticatedParentSettingsRoute: AuthenticatedParentSettingsRoute,
+    AuthenticatedParentTimetableRoute: AuthenticatedParentTimetableRoute,
+  }
+
+const AuthenticatedParentRouteRouteWithChildren =
+  AuthenticatedParentRouteRoute._addFileChildren(
+    AuthenticatedParentRouteRouteChildren,
+  )
+
+interface AuthenticatedStudentRouteRouteChildren {
+  AuthenticatedStudentAnnouncementsRoute: typeof AuthenticatedStudentAnnouncementsRoute
+  AuthenticatedStudentAttendanceRoute: typeof AuthenticatedStudentAttendanceRoute
+  AuthenticatedStudentDashboardRoute: typeof AuthenticatedStudentDashboardRoute
+  AuthenticatedStudentExamsRoute: typeof AuthenticatedStudentExamsRoute
+  AuthenticatedStudentGradesRoute: typeof AuthenticatedStudentGradesRoute
+  AuthenticatedStudentHomeworkRoute: typeof AuthenticatedStudentHomeworkRoute
+  AuthenticatedStudentMessagesRoute: typeof AuthenticatedStudentMessagesRoute
+  AuthenticatedStudentProfileRoute: typeof AuthenticatedStudentProfileRoute
+  AuthenticatedStudentSettingsRoute: typeof AuthenticatedStudentSettingsRoute
+  AuthenticatedStudentTimetableRoute: typeof AuthenticatedStudentTimetableRoute
+}
+
+const AuthenticatedStudentRouteRouteChildren: AuthenticatedStudentRouteRouteChildren =
+  {
+    AuthenticatedStudentAnnouncementsRoute:
+      AuthenticatedStudentAnnouncementsRoute,
+    AuthenticatedStudentAttendanceRoute: AuthenticatedStudentAttendanceRoute,
+    AuthenticatedStudentDashboardRoute: AuthenticatedStudentDashboardRoute,
+    AuthenticatedStudentExamsRoute: AuthenticatedStudentExamsRoute,
+    AuthenticatedStudentGradesRoute: AuthenticatedStudentGradesRoute,
+    AuthenticatedStudentHomeworkRoute: AuthenticatedStudentHomeworkRoute,
+    AuthenticatedStudentMessagesRoute: AuthenticatedStudentMessagesRoute,
+    AuthenticatedStudentProfileRoute: AuthenticatedStudentProfileRoute,
+    AuthenticatedStudentSettingsRoute: AuthenticatedStudentSettingsRoute,
+    AuthenticatedStudentTimetableRoute: AuthenticatedStudentTimetableRoute,
+  }
+
+const AuthenticatedStudentRouteRouteWithChildren =
+  AuthenticatedStudentRouteRoute._addFileChildren(
+    AuthenticatedStudentRouteRouteChildren,
+  )
+
+interface AuthenticatedSuperAdminRouteRouteChildren {
+  AuthenticatedSuperAdminAdminsRoute: typeof AuthenticatedSuperAdminAdminsRoute
+  AuthenticatedSuperAdminApiRoute: typeof AuthenticatedSuperAdminApiRoute
+  AuthenticatedSuperAdminBackupsRoute: typeof AuthenticatedSuperAdminBackupsRoute
+  AuthenticatedSuperAdminDashboardRoute: typeof AuthenticatedSuperAdminDashboardRoute
+  AuthenticatedSuperAdminLogsRoute: typeof AuthenticatedSuperAdminLogsRoute
+  AuthenticatedSuperAdminReportsRoute: typeof AuthenticatedSuperAdminReportsRoute
+  AuthenticatedSuperAdminRolesRoute: typeof AuthenticatedSuperAdminRolesRoute
+  AuthenticatedSuperAdminSchoolsRoute: typeof AuthenticatedSuperAdminSchoolsRoute
+  AuthenticatedSuperAdminSecurityRoute: typeof AuthenticatedSuperAdminSecurityRoute
+  AuthenticatedSuperAdminSettingsRoute: typeof AuthenticatedSuperAdminSettingsRoute
+  AuthenticatedSuperAdminUsersRoute: typeof AuthenticatedSuperAdminUsersRoute
+}
+
+const AuthenticatedSuperAdminRouteRouteChildren: AuthenticatedSuperAdminRouteRouteChildren =
+  {
+    AuthenticatedSuperAdminAdminsRoute: AuthenticatedSuperAdminAdminsRoute,
+    AuthenticatedSuperAdminApiRoute: AuthenticatedSuperAdminApiRoute,
+    AuthenticatedSuperAdminBackupsRoute: AuthenticatedSuperAdminBackupsRoute,
+    AuthenticatedSuperAdminDashboardRoute:
+      AuthenticatedSuperAdminDashboardRoute,
+    AuthenticatedSuperAdminLogsRoute: AuthenticatedSuperAdminLogsRoute,
+    AuthenticatedSuperAdminReportsRoute: AuthenticatedSuperAdminReportsRoute,
+    AuthenticatedSuperAdminRolesRoute: AuthenticatedSuperAdminRolesRoute,
+    AuthenticatedSuperAdminSchoolsRoute: AuthenticatedSuperAdminSchoolsRoute,
+    AuthenticatedSuperAdminSecurityRoute: AuthenticatedSuperAdminSecurityRoute,
+    AuthenticatedSuperAdminSettingsRoute: AuthenticatedSuperAdminSettingsRoute,
+    AuthenticatedSuperAdminUsersRoute: AuthenticatedSuperAdminUsersRoute,
+  }
+
+const AuthenticatedSuperAdminRouteRouteWithChildren =
+  AuthenticatedSuperAdminRouteRoute._addFileChildren(
+    AuthenticatedSuperAdminRouteRouteChildren,
+  )
+
+interface AuthenticatedTeacherRouteRouteChildren {
+  AuthenticatedTeacherAnnouncementsRoute: typeof AuthenticatedTeacherAnnouncementsRoute
+  AuthenticatedTeacherAttendanceRoute: typeof AuthenticatedTeacherAttendanceRoute
+  AuthenticatedTeacherClassesRoute: typeof AuthenticatedTeacherClassesRoute
+  AuthenticatedTeacherDashboardRoute: typeof AuthenticatedTeacherDashboardRoute
+  AuthenticatedTeacherExamsRoute: typeof AuthenticatedTeacherExamsRoute
+  AuthenticatedTeacherGradesRoute: typeof AuthenticatedTeacherGradesRoute
+  AuthenticatedTeacherHomeworkRoute: typeof AuthenticatedTeacherHomeworkRoute
+  AuthenticatedTeacherMessagesRoute: typeof AuthenticatedTeacherMessagesRoute
+  AuthenticatedTeacherProfileRoute: typeof AuthenticatedTeacherProfileRoute
+  AuthenticatedTeacherReportsRoute: typeof AuthenticatedTeacherReportsRoute
+  AuthenticatedTeacherSettingsRoute: typeof AuthenticatedTeacherSettingsRoute
+  AuthenticatedTeacherStudentsRoute: typeof AuthenticatedTeacherStudentsRoute
+  AuthenticatedTeacherLessonsAddRoute: typeof AuthenticatedTeacherLessonsAddRoute
+  AuthenticatedTeacherLessonsPreparationRoute: typeof AuthenticatedTeacherLessonsPreparationRoute
+}
+
+const AuthenticatedTeacherRouteRouteChildren: AuthenticatedTeacherRouteRouteChildren =
+  {
+    AuthenticatedTeacherAnnouncementsRoute:
+      AuthenticatedTeacherAnnouncementsRoute,
+    AuthenticatedTeacherAttendanceRoute: AuthenticatedTeacherAttendanceRoute,
+    AuthenticatedTeacherClassesRoute: AuthenticatedTeacherClassesRoute,
+    AuthenticatedTeacherDashboardRoute: AuthenticatedTeacherDashboardRoute,
+    AuthenticatedTeacherExamsRoute: AuthenticatedTeacherExamsRoute,
+    AuthenticatedTeacherGradesRoute: AuthenticatedTeacherGradesRoute,
+    AuthenticatedTeacherHomeworkRoute: AuthenticatedTeacherHomeworkRoute,
+    AuthenticatedTeacherMessagesRoute: AuthenticatedTeacherMessagesRoute,
+    AuthenticatedTeacherProfileRoute: AuthenticatedTeacherProfileRoute,
+    AuthenticatedTeacherReportsRoute: AuthenticatedTeacherReportsRoute,
+    AuthenticatedTeacherSettingsRoute: AuthenticatedTeacherSettingsRoute,
+    AuthenticatedTeacherStudentsRoute: AuthenticatedTeacherStudentsRoute,
+    AuthenticatedTeacherLessonsAddRoute: AuthenticatedTeacherLessonsAddRoute,
+    AuthenticatedTeacherLessonsPreparationRoute:
+      AuthenticatedTeacherLessonsPreparationRoute,
+  }
+
+const AuthenticatedTeacherRouteRouteWithChildren =
+  AuthenticatedTeacherRouteRoute._addFileChildren(
+    AuthenticatedTeacherRouteRouteChildren,
+  )
+
 interface AuthenticatedRouteRouteChildren {
+  AuthenticatedAdminRouteRoute: typeof AuthenticatedAdminRouteRouteWithChildren
+  AuthenticatedParentRouteRoute: typeof AuthenticatedParentRouteRouteWithChildren
+  AuthenticatedStudentRouteRoute: typeof AuthenticatedStudentRouteRouteWithChildren
+  AuthenticatedSuperAdminRouteRoute: typeof AuthenticatedSuperAdminRouteRouteWithChildren
+  AuthenticatedTeacherRouteRoute: typeof AuthenticatedTeacherRouteRouteWithChildren
   AuthenticatedIndexRoute: typeof AuthenticatedIndexRoute
-  AuthenticatedPrepAddLessonRoute: typeof AuthenticatedPrepAddLessonRoute
-  AuthenticatedActivitiesIndexRoute: typeof AuthenticatedActivitiesIndexRoute
-  AuthenticatedAnalyticsIndexRoute: typeof AuthenticatedAnalyticsIndexRoute
-  AuthenticatedAssignmentsIndexRoute: typeof AuthenticatedAssignmentsIndexRoute
-  AuthenticatedAttendanceIndexRoute: typeof AuthenticatedAttendanceIndexRoute
-  AuthenticatedExamsIndexRoute: typeof AuthenticatedExamsIndexRoute
-  AuthenticatedGradesIndexRoute: typeof AuthenticatedGradesIndexRoute
-  AuthenticatedMessagesIndexRoute: typeof AuthenticatedMessagesIndexRoute
-  AuthenticatedNewsIndexRoute: typeof AuthenticatedNewsIndexRoute
-  AuthenticatedPrepIndexRoute: typeof AuthenticatedPrepIndexRoute
-  AuthenticatedReportsIndexRoute: typeof AuthenticatedReportsIndexRoute
-  AuthenticatedScheduleIndexRoute: typeof AuthenticatedScheduleIndexRoute
-  AuthenticatedSettingsIndexRoute: typeof AuthenticatedSettingsIndexRoute
-  AuthenticatedStudentsIndexRoute: typeof AuthenticatedStudentsIndexRoute
-  AuthenticatedTeachersIndexRoute: typeof AuthenticatedTeachersIndexRoute
-  AuthenticatedUpdatesIndexRoute: typeof AuthenticatedUpdatesIndexRoute
-  AuthenticatedUsersIndexRoute: typeof AuthenticatedUsersIndexRoute
 }
 
 const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
+  AuthenticatedAdminRouteRoute: AuthenticatedAdminRouteRouteWithChildren,
+  AuthenticatedParentRouteRoute: AuthenticatedParentRouteRouteWithChildren,
+  AuthenticatedStudentRouteRoute: AuthenticatedStudentRouteRouteWithChildren,
+  AuthenticatedSuperAdminRouteRoute:
+    AuthenticatedSuperAdminRouteRouteWithChildren,
+  AuthenticatedTeacherRouteRoute: AuthenticatedTeacherRouteRouteWithChildren,
   AuthenticatedIndexRoute: AuthenticatedIndexRoute,
-  AuthenticatedPrepAddLessonRoute: AuthenticatedPrepAddLessonRoute,
-  AuthenticatedActivitiesIndexRoute: AuthenticatedActivitiesIndexRoute,
-  AuthenticatedAnalyticsIndexRoute: AuthenticatedAnalyticsIndexRoute,
-  AuthenticatedAssignmentsIndexRoute: AuthenticatedAssignmentsIndexRoute,
-  AuthenticatedAttendanceIndexRoute: AuthenticatedAttendanceIndexRoute,
-  AuthenticatedExamsIndexRoute: AuthenticatedExamsIndexRoute,
-  AuthenticatedGradesIndexRoute: AuthenticatedGradesIndexRoute,
-  AuthenticatedMessagesIndexRoute: AuthenticatedMessagesIndexRoute,
-  AuthenticatedNewsIndexRoute: AuthenticatedNewsIndexRoute,
-  AuthenticatedPrepIndexRoute: AuthenticatedPrepIndexRoute,
-  AuthenticatedReportsIndexRoute: AuthenticatedReportsIndexRoute,
-  AuthenticatedScheduleIndexRoute: AuthenticatedScheduleIndexRoute,
-  AuthenticatedSettingsIndexRoute: AuthenticatedSettingsIndexRoute,
-  AuthenticatedStudentsIndexRoute: AuthenticatedStudentsIndexRoute,
-  AuthenticatedTeachersIndexRoute: AuthenticatedTeachersIndexRoute,
-  AuthenticatedUpdatesIndexRoute: AuthenticatedUpdatesIndexRoute,
-  AuthenticatedUsersIndexRoute: AuthenticatedUsersIndexRoute,
 }
 
 const AuthenticatedRouteRouteWithChildren =
