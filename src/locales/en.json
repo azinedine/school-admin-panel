@@ -157,7 +157,12 @@
         "viewTeachers": "View Teachers",
         "classes": "Classes",
         "classesDescription": "Organize classes and schedules",
-        "viewClasses": "View Classes"
+        "viewClasses": "View Classes",
+        "team": {
+            "name": "School Manager",
+            "plan": "Education Platform",
+            "switch": "Teams"
+        }
     },
     "pages": {
         "grades": {
