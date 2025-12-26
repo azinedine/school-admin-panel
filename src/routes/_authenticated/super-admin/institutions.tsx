@@ -268,7 +268,7 @@ function InstitutionsPage() {
                 <SelectItem value="all">{t('common.all')}</SelectItem>
                 {INSTITUTION_TYPES.map(type => (
                   <SelectItem key={type} value={type}>
-                    {t(`pages.institutions.types.${type}`)}
+                    {t(`pages.institutions.types.${type}`, type)}
                   </SelectItem>
                 ))}
               </SelectContent>
@@ -338,7 +338,7 @@ function InstitutionsPage() {
                     <TableCell>{institution.municipality?.name || '-'}</TableCell>
                     <TableCell>
                       <Badge variant="outline">
-                        {t(`pages.institutions.types.${institution.type}`)}
+                        {t(`pages.institutions.types.${institution.type}`, institution.type || 'other')}
                       </Badge>
                     </TableCell>
                     <TableCell>
@@ -457,7 +457,7 @@ function InstitutionsPage() {
                   <SelectContent>
                     {INSTITUTION_TYPES.map(type => (
                       <SelectItem key={type} value={type}>
-                        {t(`pages.institutions.types.${type}`)}
+                        {t(`pages.institutions.types.${type}`, type)}
                       </SelectItem>
                     ))}
                   </SelectContent>
