@@ -188,6 +188,23 @@
         "viewClasses": "عرض الفصول"
     },
     "pages": {
+        "roles": {
+            "title": "إدارة الأدوار",
+            "description": "إدارة أدوار وصلاحيات المستخدمين",
+            "addRole": "إضافة دور",
+            "editRole": "تعديل الدور",
+            "deleteRole": "حذف الدور",
+            "addRoleDesc": "إنشاء دور جديد لمؤسستك",
+            "editRoleDesc": "تحديث تفاصيل الدور",
+            "deleteRoleDesc": "هل أنت متأكد من حذف الدور \"{{name}}\"؟ لا يمكن التراجع عن هذا الإجراء.",
+            "name": "الاسم",
+            "displayName": "اسم العرض",
+            "description": "الوصف",
+            "descriptionPlaceholder": "وصف مختصر للدور...",
+            "type": "النوع",
+            "system": "نظام",
+            "custom": "مخصص"
+        },
         "grades": {
             "title": "كشف النقاط",
             "description": "إدارة ومتابعة علامات الطلاب",
