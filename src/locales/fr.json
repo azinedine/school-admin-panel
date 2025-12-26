@@ -188,6 +188,23 @@
         "viewClasses": "Voir les classes"
     },
     "pages": {
+        "roles": {
+            "title": "Gestion des rôles",
+            "description": "Gérer les rôles et permissions des utilisateurs",
+            "addRole": "Ajouter un rôle",
+            "editRole": "Modifier le rôle",
+            "deleteRole": "Supprimer le rôle",
+            "addRoleDesc": "Créer un nouveau rôle pour votre organisation",
+            "editRoleDesc": "Mettre à jour les détails du rôle",
+            "deleteRoleDesc": "Êtes-vous sûr de vouloir supprimer le rôle \"{{name}}\" ? Cette action est irréversible.",
+            "name": "Nom",
+            "displayName": "Nom d'affichage",
+            "description": "Description",
+            "descriptionPlaceholder": "Brève description du rôle...",
+            "type": "Type",
+            "system": "Système",
+            "custom": "Personnalisé"
+        },
         "grades": {
             "title": "Relevé de notes",
             "description": "Gérer et suivre les notes des étudiants",
