@@ -149,6 +149,11 @@
     "app": {
         "title": "Panneau d'administration scolaire",
         "subtitle": "Construit avec le dernier Tailwind CSS et shadcn/ui",
+        "team": {
+            "name": "School Manager",
+            "plan": "Plateforme Éducative",
+            "switch": "Équipes"
+        },
         "students": "Étudiants",
         "studentsDescription": "Gérer les informations et les dossiers des étudiants",
         "viewStudents": "Voir les étudiants",
