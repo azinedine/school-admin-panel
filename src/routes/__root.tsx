@@ -1,4 +1,4 @@
-import { createRootRoute, Outlet } from '@tanstack/react-router'
+import { createRootRoute, Outlet, Navigate } from '@tanstack/react-router'
 import { Toaster } from '@/components/ui/sonner'
 
 export const Route = createRootRoute({
@@ -10,4 +10,5 @@ export const Route = createRootRoute({
       </>
     )
   },
+  notFoundComponent: () => <Navigate to="/unauthorized" />,
 })
