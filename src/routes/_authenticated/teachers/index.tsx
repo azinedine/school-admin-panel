@@ -12,7 +12,7 @@ import {
 import { useDeleteTeacher, useTeachers } from '@/hooks/use-teachers'
 import { createFileRoute, redirect } from '@tanstack/react-router'
 import { useAuthStore } from '@/store/auth-store'
-import { Loader2, Trash2, UserX } from 'lucide-react'
+import { Trash2, UserX } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
 import {
   AlertDialog,
@@ -37,6 +37,7 @@ export const Route = createFileRoute('/_authenticated/teachers/')({
   },
   component: TeachersPage,
 })
+import { FullScreenLoader } from '@/components/ui/full-screen-loader'
 
 function TeachersPage() {
   const { t } = useTranslation()
@@ -44,11 +45,7 @@ function TeachersPage() {
   const { mutate: deleteTeacher, isPending: isDeleting } = useDeleteTeacher()
 
   if (isLoading) {
-    return (
-      <div className="flex items-center justify-center p-8">
-        <Loader2 className="h-8 w-8 animate-spin text-primary" />
-      </div>
-    )
+    return <FullScreenLoader message={t('common.loading')} />
   }
 
   return (
