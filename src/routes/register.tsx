@@ -202,7 +202,6 @@ function RegisterPage() {
                             <SelectValue />
                         </SelectTrigger>
                         <SelectContent>
-                            <SelectItem value="super_admin">{t('auth.roles.super_admin')}</SelectItem>
                             <SelectItem value="admin">{t('auth.roles.admin')}</SelectItem>
                             <SelectItem value="teacher">{t('auth.roles.teacher')}</SelectItem>
                             <SelectItem value="student">{t('auth.roles.student')}</SelectItem>
