@@ -10,7 +10,8 @@ import {
   TableRow,
 } from '@/components/ui/table'
 import { useDeleteTeacher, useTeachers } from '@/hooks/use-teachers'
-import { createFileRoute } from '@tanstack/react-router'
+import { createFileRoute, redirect } from '@tanstack/react-router'
+import { useAuthStore } from '@/store/auth-store'
 import { Loader2, Trash2, UserX } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
 import {
@@ -26,6 +27,14 @@ import {
 } from "@/components/ui/alert-dialog"
 
 export const Route = createFileRoute('/_authenticated/teachers/')({
+  beforeLoad: () => {
+    const user = useAuthStore.getState().user
+    if (user?.role === 'parent') {
+      throw redirect({
+        to: '/unauthorized',
+      })
+    }
+  },
   component: TeachersPage,
 })
 
