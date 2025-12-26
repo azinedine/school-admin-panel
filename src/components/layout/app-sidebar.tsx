@@ -33,6 +33,23 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
           const allowedRoles = ['admin', 'manager', 'super_admin']
           return user?.role && allowedRoles.includes(user.role)
         }
+
+        // Hide specific management items for parents
+        if (user?.role === 'parent') {
+          const deniedForParents = [
+            'nav.lessonManagement',
+            'nav.attendance',
+            'nav.exams',
+            'nav.assignmentManagement',
+            'nav.analytics',
+            'nav.reports',
+            'nav.teachers'
+          ]
+          if (deniedForParents.includes(item.title)) {
+            return false
+          }
+        }
+        
         return true
       })
 
