@@ -17,7 +17,16 @@
         "typeHere": "Type here...",
         "processing": "Processing...",
         "next": "Next",
-        "back": "Back"
+        "back": "Back",
+        "create": "Create",
+        "createSuccess": "Created successfully",
+        "deleteSuccess": "Deleted successfully",
+        "error": "An error occurred",
+        "filters": "Filters",
+        "all": "All",
+        "clear": "Clear",
+        "active": "Active",
+        "inactive": "Inactive"
     },
     "auth": {
         "login": {
@@ -91,6 +100,7 @@
         "roles": "Roles",
         "admins": "Admins",
         "schools": "Schools",
+        "institutions": "Institutions",
         "api": "API",
         "logs": "Logs",
         "security": "Security",
@@ -205,6 +215,39 @@
             "type": "Type",
             "system": "System",
             "custom": "Custom"
+        },
+        "institutions": {
+            "title": "Institutions Management",
+            "description": "Manage schools and educational institutions",
+            "add": "Add Institution",
+            "edit": "Edit Institution",
+            "delete": "Delete Institution",
+            "addDesc": "Add a new educational institution",
+            "editDesc": "Update the institution details",
+            "deleteDesc": "Are you sure you want to delete \"{{name}}\"? This action cannot be undone.",
+            "name": "Name",
+            "nameAr": "Arabic Name",
+            "wilaya": "Wilaya",
+            "municipality": "Municipality",
+            "selectWilaya": "Select Wilaya",
+            "selectMunicipality": "Select Municipality",
+            "type": "Type",
+            "types": {
+                "primary": "Primary School",
+                "middle": "Middle School",
+                "secondary": "Secondary School",
+                "university": "University",
+                "vocational": "Vocational",
+                "other": "Other"
+            },
+            "status": "Status",
+            "address": "Address",
+            "phone": "Phone",
+            "email": "Email",
+            "isActive": "Active",
+            "noInstitutions": "No institutions found",
+            "total": "{{count}} institutions",
+            "restored": "Institution restored successfully"
         },
         "grades": {
             "title": "Grade Sheet",
