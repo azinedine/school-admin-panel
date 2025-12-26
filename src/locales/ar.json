@@ -149,6 +149,11 @@
     "app": {
         "title": "لوحة إدارة المدرسة",
         "subtitle": "مبني بأحدث Tailwind CSS و shadcn/ui",
+        "team": {
+            "name": "School Manager",
+            "plan": "منصة تعليمية",
+            "switch": "فرق"
+        },
         "students": "الطلاب",
         "studentsDescription": "إدارة معلومات الطلاب وسجلاتهم",
         "viewStudents": "عرض الطلاب",
