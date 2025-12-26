@@ -108,7 +108,7 @@ export const useAuthStore = create<AuthStore>()(
       }),
       {
         name: 'auth-storage',
-        storage: createJSONStorage(() => authStorage), // Using IndexedDB
+        storage: createJSONStorage(() => authStorage), // Using localStorage
       }
     ),
     { name: 'AuthStore' }
