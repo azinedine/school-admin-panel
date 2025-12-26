@@ -8,6 +8,7 @@ import { UsersTable } from '@/components/users/users-table'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Alert, AlertDescription } from '@/components/ui/alert'
+import { FullScreenLoader } from '@/components/ui/full-screen-loader'
 
 /**
  * UsersManagementPage Component
@@ -60,21 +61,7 @@ export function UsersManagementPage() {
 
   // Loading state
   if (isLoading) {
-    return (
-      <ContentPage
-        title={t('pages.users.title')}
-        description={t('pages.users.description')}
-      >
-        <Card>
-          <CardContent className="flex items-center justify-center py-12">
-            <div className="flex flex-col items-center gap-4">
-              <div className="h-8 w-8 animate-spin rounded-full border-4 border-muted border-t-primary"></div>
-              <p className="text-muted-foreground">{t('pages.users.loading')}</p>
-            </div>
-          </CardContent>
-        </Card>
-      </ContentPage>
-    )
+    return <FullScreenLoader message={t('pages.users.loading')} />
   }
 
   // Error state
