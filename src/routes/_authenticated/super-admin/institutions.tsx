@@ -227,7 +227,7 @@ function InstitutionsPage() {
               <SelectTrigger>
                 <SelectValue placeholder={t('pages.institutions.selectWilaya')} />
               </SelectTrigger>
-              <SelectContent>
+              <SelectContent className="max-h-[300px] overflow-y-auto">
                 <SelectItem value="all">{t('common.all')}</SelectItem>
                 {wilayas?.map(w => (
                   <SelectItem key={w.id} value={w.id.toString()}>
@@ -391,7 +391,7 @@ function InstitutionsPage() {
                     <SelectTrigger>
                       <SelectValue placeholder={t('pages.institutions.selectWilaya')} />
                     </SelectTrigger>
-                    <SelectContent>
+                    <SelectContent className="max-h-[300px] overflow-y-auto">
                       {wilayas?.map(w => (
                         <SelectItem key={w.id} value={w.id.toString()}>
                           {w.code} - {w.name}
