@@ -189,6 +189,23 @@
         }
     },
     "pages": {
+        "roles": {
+            "title": "Roles Management",
+            "description": "Manage user roles and permissions",
+            "addRole": "Add Role",
+            "editRole": "Edit Role",
+            "deleteRole": "Delete Role",
+            "addRoleDesc": "Create a new role for your organization",
+            "editRoleDesc": "Update the role details",
+            "deleteRoleDesc": "Are you sure you want to delete the role \"{{name}}\"? This action cannot be undone.",
+            "name": "Name",
+            "displayName": "Display Name",
+            "description": "Description",
+            "descriptionPlaceholder": "Brief description of the role...",
+            "type": "Type",
+            "system": "System",
+            "custom": "Custom"
+        },
         "grades": {
             "title": "Grade Sheet",
             "description": "Manage and track student grades",
