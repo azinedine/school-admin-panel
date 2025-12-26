@@ -34,6 +34,14 @@ export default function SuspendedPage() {
         <div className="bg-card border rounded-lg p-6 shadow-sm">
             <div className="flex flex-col gap-2 text-sm text-left">
                 <div className="flex justify-between">
+                    <span className="text-muted-foreground">{t('users.table.name', 'Name')}:</span>
+                    <span className="font-medium">{user?.name}</span>
+                </div>
+                <div className="flex justify-between">
+                    <span className="text-muted-foreground">{t('nav.profile.role', 'Role')}:</span>
+                    <span className="font-medium">{t(`auth.roles.${user?.role}`, user?.role || '')}</span>
+                </div>
+                <div className="flex justify-between">
                     <span className="text-muted-foreground">{t('auth.suspended.account', 'Account')}:</span>
                     <span className="font-medium">{user?.email}</span>
                 </div>
