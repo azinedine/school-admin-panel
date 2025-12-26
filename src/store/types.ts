@@ -20,7 +20,7 @@ export interface User {
   class?: string
   linkedStudentId?: string
   created_at: string
-  status?: 'active' | 'inactive' | 'suspended'
+  status: 'active' | 'inactive' | 'suspended'
   can?: {
     viewAny: boolean
     create: boolean
