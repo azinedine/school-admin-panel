@@ -24,9 +24,9 @@ export const sidebarData = {
   },
   teams: [
     {
-      name: 'Mirsad School',
+      name: 'app.team.name',
       logo: LayoutDashboard,
-      plan: 'Education Management',
+      plan: 'app.team.plan',
     },
   ],
   navGroups: [
