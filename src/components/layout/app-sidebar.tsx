@@ -7,6 +7,7 @@ import {
   SidebarHeader,
   SidebarRail,
 } from '@/components/ui/sidebar'
+import { useAuthStore } from '@/store/auth-store'
 import { NavGroup } from '@/components/layout/nav-group'
 import { NavUser } from '@/components/layout/nav-user'
 import { TeamSwitcher } from '@/components/layout/team-switcher'
@@ -16,21 +17,29 @@ import type { NavGroup as NavGroupType } from './types'
 import { useDirection } from '@/hooks/use-direction'
 import { useGradesStore } from '@/store/grades-store'
 
-
-
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   const { isRTL } = useDirection()
   const { t } = useTranslation()
   const classes = useGradesStore((state) => state.classes)
+  const user = useAuthStore((state) => state.user)
 
-
-  // Build dynamic nav groups with live classes
+  // Build dynamic nav groups with live classes and permission filtering
   const dynamicNavGroups = useMemo(() => {
-    return sidebarData.navGroups.map((group) => {
-      const items = group.items.map((item) => {
+    return (sidebarData.navGroups as unknown as NavGroupType[]).map((group) => {
+      // Filter items based on permissions
+      const filteredItems = group.items.filter((item) => {
+        // Users Management requires specific roles
+        if (item.title === 'nav.usersManagement') {
+          const allowedRoles = ['admin', 'manager', 'super_admin']
+          return user?.role && allowedRoles.includes(user.role)
+        }
+        return true
+      })
+
+      const items = filteredItems.map((item) => {
         // Check if this is the Grades item
         if (item.title === 'nav.grades.title') {
-          // Generate dynamic sub-items from store classes
+// ... (rest of the grades logic remains the same)
           const classItems = classes.map((cls) => ({
             title: cls.name, // Use class name directly (not translation key)
             url: `/grades?class=${cls.id}`,
@@ -60,7 +69,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
       
       return { ...group, items }
     })
-  }, [classes, t])
+  }, [classes, t, user])
 
   return (
     <Sidebar 
