@@ -67,6 +67,7 @@
             "linkedStudent": "معرف الطالب المرتبط"
         },
         "roles": {
+            "super_admin": "المسؤول الأعلى",
             "admin": "مسؤول",
             "teacher": "أستاذ",
             "student": "تلميذ",
