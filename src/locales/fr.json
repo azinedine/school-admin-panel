@@ -36,6 +36,11 @@
             "status": "Statut",
             "contactSupport": "Contacter le support"
         },
+        "unauthorized": {
+            "title": "Accès refusé",
+            "description": "Vous n'avez pas la permission d'accéder à cette page.",
+            "backToHome": "Retour au tableau de bord"
+        },
         "logout": "Se déconnecter",
         "forgotPassword": "Mot de passe oublié ?",
         "register": {
