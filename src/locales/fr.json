@@ -29,6 +29,15 @@
             "noAccount": "Pas encore de compte ?",
             "success": "Connexion réussie"
         },
+        "suspended": {
+            "title": "Compte Suspendu",
+            "message": "Votre compte a été suspendu par un administrateur. Veuillez contacter le support pour obtenir de l'aide.",
+            "account": "Compte",
+            "status": "Statut",
+            "contactSupport": "Contacter le support"
+        },
+        "logout": "Se déconnecter",
+        "forgotPassword": "Mot de passe oublié ?",
         "register": {
             "title": "Créer un compte",
             "step1Desc": "Entrez vos informations personnelles",
