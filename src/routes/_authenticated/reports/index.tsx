@@ -1,7 +1,16 @@
-import { createFileRoute } from '@tanstack/react-router'
+import { createFileRoute, redirect } from '@tanstack/react-router'
+import { useAuthStore } from '@/store/auth-store'
 import { ContentPage } from '@/components/layout/content-page'
 
 export const Route = createFileRoute('/_authenticated/reports/')({
+  beforeLoad: () => {
+    const user = useAuthStore.getState().user
+    if (user?.role === 'parent') {
+      throw redirect({
+        to: '/unauthorized',
+      })
+    }
+  },
   component: () => (
     <ContentPage title="Reports" description="Generate and view reports">
       <div className="flex items-center justify-center min-h-[40vh]">
