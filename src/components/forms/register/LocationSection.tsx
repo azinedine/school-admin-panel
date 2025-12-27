@@ -2,7 +2,7 @@ import { useFormContext } from "react-hook-form"
 import { useTranslation } from "react-i18next"
 import { SelectField } from "@/components/forms/SelectField" 
 // Hooks
-import { useWilayas, useMunicipalities, useInstitutions } from "@/hooks/use-institutions"
+import { useWilayas, useMunicipalities, useInstitutionsByLocation } from "@/hooks/use-institutions"
 
 export function LocationSection() {
   const { t, i18n } = useTranslation()
@@ -17,9 +17,10 @@ export function LocationSection() {
   const { data: municipalities, isLoading: loadingMunicipalities } = useMunicipalities(
     selectedWilaya ? parseInt(selectedWilaya) : undefined
   )
-  const { data: institutionsData, isLoading: loadingInstitutions } = useInstitutions(
-    selectedMunicipality ? { municipality_id: parseInt(selectedMunicipality), is_active: true } : {},
-    { enabled: !!selectedMunicipality }
+  const { data: institutionsData, isLoading: loadingInstitutions } = useInstitutionsByLocation(
+    selectedWilaya ? parseInt(selectedWilaya) : undefined,
+    selectedMunicipality ? parseInt(selectedMunicipality) : undefined,
+    { enabled: !!selectedWilaya && !!selectedMunicipality }
   )
   // Transform data for SelectField
   const institutions = institutionsData?.data || []
