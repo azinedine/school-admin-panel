@@ -32,6 +32,7 @@ export function AcademicSection({ role }: AcademicSectionProps) {
     const hasArabic = selectedSubjects.includes('arabic')
     const hasHistory = selectedSubjects.includes('history')
     const hasCivic = selectedSubjects.includes('civic')
+    const hasIslamic = selectedSubjects.includes('islamic')
     const count = selectedSubjects.length
 
     return subjectsList.map(s => {
@@ -42,15 +43,14 @@ export function AcademicSection({ role }: AcademicSectionProps) {
         if (count >= 2) {
           disabled = true // Max 2 reached
         } else if (count === 1) {
-          // If 1 is already selected, check compatibility
+          // Strict Pairs Logic
           if (hasArabic) {
-            // Arabic allows any one other subject (which makes 2) -> Allowed
-             disabled = false
+             disabled = s.id !== 'islamic'
+          } else if (hasIslamic) {
+             disabled = s.id !== 'arabic'
           } else if (hasHistory) {
-             // History only allows Civic
              disabled = s.id !== 'civic'
           } else if (hasCivic) {
-             // Civic only allows History
              disabled = s.id !== 'history'
           } else {
              // Any other subject (Math, Science etc) allows NO other subject
