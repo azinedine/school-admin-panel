@@ -58,6 +58,8 @@
             "step1Desc": "Enter your personal details",
             "step2Desc": "Complete your profile as {{role}}",
             "description": "Enter your details to create your account",
+            "accountInfo": "Account Information",
+            "additionalInfo": "Additional Information",
             "name": "Full Name",
             "role": "I am a...",
             "submit": "Create Account",
@@ -74,7 +76,23 @@
             "selectMunicipality": "Select Municipality",
             "selectInstitution": "Select Institution",
             "selectClass": "Select Class",
-            "linkedStudent": "Linked Student ID"
+            "linkedStudent": "Linked Student ID",
+            "emailPlaceholder": "example@school.com",
+            "passwordPlaceholder": "••••••••",
+            "phonePlaceholder": "+213 XXX XXX XXX",
+            "teacherIdPlaceholder": "T-12345",
+            "experiencePlaceholder": "0",
+            "nameArPlaceholder": "Enter Arabic Name",
+            "studentIdPlaceholder": "Student ID",
+            "selectGender": "Select Gender"
+        },
+        "validation": {
+            "nameLength": "Name must be at least 2 characters",
+            "emailInvalid": "Please enter a valid email",
+            "passwordLength": "Password must be at least 8 characters",
+            "wilayaRequired": "Please select a wilaya",
+            "municipalityRequired": "Please select a municipality",
+            "institutionRequired": "Please select an institution"
         },
         "roles": {
             "super_admin": "Super Administrator",
@@ -237,7 +255,7 @@
             "deleteRoleDesc": "Are you sure you want to delete the role \"{{name}}\"? This action cannot be undone.",
             "name": "Name",
             "displayName": "Display Name",
-            "description": "Description",
+            "fieldDescription": "Description",
             "descriptionPlaceholder": "Brief description of the role...",
             "type": "Type",
             "system": "System",
