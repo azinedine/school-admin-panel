@@ -7,6 +7,7 @@ import {
   SidebarHeader,
   SidebarRail,
 } from '@/components/ui/sidebar'
+import { Building2 } from 'lucide-react'
 import { useAuthStore } from '@/store/auth-store'
 import { NavGroup } from '@/components/layout/nav-group'
 import { NavUser } from '@/components/layout/nav-user'
@@ -59,6 +60,12 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
              <span className='text-xs text-muted-foreground truncate capitalize'>
                {user?.role ? t(`auth.roles.${user.role}`, user.role) : ''}
              </span>
+             {user?.institution?.name && (
+                <div className='flex items-center gap-1.5 mt-1 text-xs text-muted-foreground/80 truncate'>
+                  <Building2 className='h-3 w-3 shrink-0' />
+                  <span className='truncate' title={user.institution.name}>{user.institution.name}</span>
+                </div>
+             )}
            </div>
           <div className='group-data-[collapsible=icon]:hidden'>
             <LanguageSwitcher />
