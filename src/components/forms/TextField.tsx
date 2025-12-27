@@ -1,49 +1,45 @@
-import type { FieldError, UseFormRegisterReturn } from 'react-hook-form'
+import { useFormContext, type FieldError, type UseFormRegisterReturn } from 'react-hook-form'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { cn } from '@/lib/utils'
 
-interface TextFieldProps {
-  label: string
-  placeholder?: string
-  type?: 'text' | 'email' | 'password' | 'number' | 'tel'
-  registration: UseFormRegisterReturn
-  error?: FieldError
+interface TextFieldProps extends React.InputHTMLAttributes<HTMLInputElement> {
+  label?: string
+  name: string
   className?: string
-  required?: boolean
-  disabled?: boolean
 }
 
 /**
  * Reusable text input field with label and error display
- * Integrates with React Hook Form
+ * Integrates with React Hook Form via useFormContext
  */
 export function TextField({
   label,
-  placeholder,
-  type = 'text',
-  registration,
-  error,
+  name,
   className,
-  required = false,
-  disabled = false,
+  type = 'text',
+  ...props
 }: TextFieldProps) {
+  const { register, formState: { errors } } = useFormContext()
+  const error = errors[name]
+
   return (
     <div className={cn('space-y-1.5', className)}>
-      <Label htmlFor={registration.name} className="text-sm">
-        {label}
-        {required && <span className="text-destructive ml-1">*</span>}
-      </Label>
+      {label && (
+        <Label htmlFor={name} className={cn(error && "text-destructive")}>
+          {label}
+          {props.required && <span className="text-destructive ml-1">*</span>}
+        </Label>
+      )}
       <Input
-        id={registration.name}
+        id={name}
         type={type}
-        placeholder={placeholder}
-        disabled={disabled}
         className={cn(error && 'border-destructive')}
-        {...registration}
+        {...register(name)}
+        {...props}
       />
       {error && (
-        <p className="text-xs text-destructive">{error.message}</p>
+        <p className="text-xs text-destructive">{error.message as string}</p>
       )}
     </div>
   )
