@@ -241,6 +241,7 @@ function InstitutionsPage() {
 
             {/* Municipality */}
             <Select
+              key={`filter-municipality-${filters.wilaya_id}`}
               value={filters.municipality_id?.toString() || 'all'}
               onValueChange={(v) => setFilters(f => ({ ...f, municipality_id: v === 'all' ? undefined : Number(v) }))}
               disabled={!filters.wilaya_id || isLoadingFilterMunicipalities}
@@ -411,6 +412,7 @@ function InstitutionsPage() {
                 <div className="space-y-2">
                   <Label>{t('pages.institutions.municipality')} *</Label>
                   <Select
+                    key={`municipality-select-${formData.wilaya_id}`}
                     value={formData.municipality_id ? formData.municipality_id.toString() : undefined}
                     onValueChange={(v) => setFormData(f => ({ ...f, municipality_id: Number(v) }))}
                     disabled={!formData.wilaya_id || isLoadingFormMunicipalities}
