@@ -127,10 +127,41 @@ export interface RegistrationPayload {
   notes?: string
 }
 
+// Comprehensive type for the form state (superset of all union members)
+export interface RegistrationFormState {
+  name: string
+  email: string
+  password: string
+  password_confirmation?: string // Not in payload interface but used in form? Schema doesn't show it but onSubmit uses it.
+  role: 'admin' | 'teacher' | 'student' | 'parent' | string // string allowed for initial state
+  wilaya: string
+  municipality: string
+  institution: string
+  
+  // Optional fields
+  name_ar: string
+  gender?: 'male' | 'female'
+  date_of_birth: string
+  phone: string
+  years_of_experience?: number
+  subjects: string[]
+  levels: string[]
+  class: string
+  linkedStudentId: string
+  
+  // Admin fields (CamelCase as per Schema)
+  department: string
+  position: string
+  dateOfHiring: string
+  officeLocation: string
+  workPhone: string
+  notes: string
+}
+
 /**
  * Default values for the registration form
  */
-export const registrationDefaults: any = {
+export const registrationDefaults: RegistrationFormState = {
   // Account
   name: '',
   email: '',
