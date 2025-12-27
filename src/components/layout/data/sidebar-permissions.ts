@@ -29,6 +29,11 @@ export const PARENT_SIDEBAR: NavGroup[] = [
         icon: LayoutDashboard,
       },
       {
+        title: 'nav.profile',
+        url: '/parent/profile',
+        icon: Users,
+      },
+      {
         title: 'nav.children',
         url: '/parent/children',
         icon: Users,
@@ -227,6 +232,11 @@ export const ADMIN_SIDEBAR: NavGroup[] = [
         icon: Users,
       },
       {
+        title: 'nav.profile',
+        url: '/admin/profile',
+        icon: Users,
+      },
+      {
         title: 'nav.classes',
         url: '/admin/classes',
         icon: BookOpen,
@@ -283,6 +293,11 @@ export const SUPER_ADMIN_SIDEBAR: NavGroup[] = [
       {
         title: 'nav.users',
         url: '/super-admin/users',
+        icon: Users,
+      },
+      {
+        title: 'nav.profile',
+        url: '/super-admin/profile',
         icon: Users,
       },
       {
