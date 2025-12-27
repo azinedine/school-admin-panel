@@ -74,6 +74,7 @@
             "selectWilaya": "Sélectionner la Wilaya",
             "selectMunicipality": "Sélectionner la Commune",
             "selectInstitution": "Sélectionner l'Établissement",
+            "noInstitutions": "Aucun établissement trouvé",
             "selectClass": "Sélectionner la Classe",
             "linkedStudent": "ID Étudiant lié",
             "emailPlaceholder": "exemple@ecole.com",
