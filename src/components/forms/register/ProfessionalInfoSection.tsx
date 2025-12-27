@@ -10,13 +10,13 @@ export function ProfessionalInfoSection() {
         name="phone"
         label={t('profilePage.phone')}
         type="tel"
-        placeholder="+213 XXX XXX XXX"
+        placeholder={t('auth.register.phonePlaceholder')}
       />
       
       <TextField
         name="teacher_id"
         label={t('profilePage.teacherId')}
-        placeholder="T-12345"
+        placeholder={t('auth.register.teacherIdPlaceholder')}
       />
 
       <TextField
@@ -24,7 +24,7 @@ export function ProfessionalInfoSection() {
         label={t('profilePage.experience')}
         type="number"
         min={0}
-        placeholder="0"
+        placeholder={t('auth.register.experiencePlaceholder')}
       />
     </div>
   )
