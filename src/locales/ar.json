@@ -57,6 +57,8 @@
             "step1Desc": "أدخل معلوماتك الشخصية",
             "step2Desc": "أكمل ملفك الشخصي بصفتك {{role}}",
             "description": "أدخل تفاصيلك لإنشاء حساب",
+            "accountInfo": "معلومات الحساب",
+            "additionalInfo": "معلومات إضافية",
             "name": "الاسم الكامل",
             "role": "أنا...",
             "submit": "إنشاء حساب",
@@ -73,7 +75,23 @@
             "selectMunicipality": "اختر البلدية",
             "selectInstitution": "اختر المؤسسة",
             "selectClass": "اختر القسم",
-            "linkedStudent": "معرف الطالب المرتبط"
+            "linkedStudent": "معرف الطالب المرتبط",
+            "emailPlaceholder": "example@school.com",
+            "passwordPlaceholder": "••••••••",
+            "phonePlaceholder": "+213 XXX XXX XXX",
+            "teacherIdPlaceholder": "T-12345",
+            "experiencePlaceholder": "0",
+            "nameArPlaceholder": "أدخل الاسم بالعربية",
+            "studentIdPlaceholder": "رقم الطالب",
+            "selectGender": "اختر الجنس"
+        },
+        "validation": {
+            "nameLength": "يجب أن يحتوي الاسم على 2 أحرف على الأقل",
+            "emailInvalid": "يرجى إدخال بريد إلكتروني صالح",
+            "passwordLength": "يجب أن تحتوي كلمة المرور على 8 أحرف على الأقل",
+            "wilayaRequired": "يرجى اختيار الولاية",
+            "municipalityRequired": "يرجى اختيار البلدية",
+            "institutionRequired": "يرجى اختيار المؤسسة"
         },
         "roles": {
             "super_admin": "المسؤول الأعلى",
@@ -236,7 +254,7 @@
             "deleteRoleDesc": "هل أنت متأكد من حذف الدور \"{{name}}\"؟ لا يمكن التراجع عن هذا الإجراء.",
             "name": "الاسم",
             "displayName": "اسم العرض",
-            "description": "الوصف",
+            "fieldDescription": "الوصف",
             "descriptionPlaceholder": "وصف مختصر للدور...",
             "type": "النوع",
             "system": "نظام",
