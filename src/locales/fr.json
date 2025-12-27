@@ -114,6 +114,7 @@
         "schedule": "Emploi du temps",
         "students": "Étudiants",
         "teachers": "Enseignants",
+        "createTeacher": "Créer un enseignant",
         "usersManagement": "Gestion des utilisateurs",
         "grades": "Notes",
         "gradeSheet": "Fiche de notes",
