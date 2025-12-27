@@ -1,4 +1,4 @@
-// React imports removed as they are unused
+import { useMemo } from 'react'
 import { createFileRoute, redirect, Link } from '@tanstack/react-router'
 import { useForm, FormProvider, type Resolver } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
@@ -9,7 +9,7 @@ import { useRegister } from '@/hooks/use-auth'
 import { LanguageSwitcher } from '@/components/language-switcher'
 import { UserPlus, ArrowRight } from 'lucide-react'
 import { cn } from '@/lib/utils'
-import { registrationSchema, registrationDefaults, type RegistrationFormData } from '@/schemas/registration'
+import { createRegistrationSchema, registrationDefaults, type RegistrationFormData } from '@/schemas/registration'
 import { ActionButton } from '@/components/forms/ActionButton'
 
 // Modular Sections
@@ -34,6 +34,8 @@ function RegisterPage() {
   const isRTL = i18n.dir() === 'rtl'
 
   const { mutate: registerUser, isPending: loading } = useRegister()
+  
+  const registrationSchema = useMemo(() => createRegistrationSchema(t), [t])
 
   // Initialize Form
   const methods = useForm<RegistrationFormData>({
@@ -73,12 +75,12 @@ function RegisterPage() {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-muted/20 p-4 lg:p-8 relative">
+    <div className="min-h-screen bg-muted/20 p-4 lg:p-8 relative pt-10 lg:pt-16">
       <div className="absolute top-4 right-4 z-10">
         <LanguageSwitcher />
       </div>
 
-      <div className="w-full max-w-5xl mx-auto space-y-6">
+      <div className="w-full max-w-7xl mx-auto space-y-6">
         <div className="text-center space-y-2 mb-8">
            <div className="flex justify-center mb-4">
             <div className="h-14 w-14 rounded-full bg-primary/10 flex items-center justify-center text-primary">
