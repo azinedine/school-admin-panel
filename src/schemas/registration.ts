@@ -29,7 +29,43 @@ export const createRegistrationSchema = (t: (key: string) => string) => {
     phone: z.string().optional(),
     teacher_id: z.string().optional(),
     years_of_experience: z.coerce.number().min(0).optional(),
-    subjects: z.array(z.string()).default([]),
+    subjects: z.array(z.string())
+      .default([])
+      .superRefine((val, ctx) => {
+        if (val.length === 0) return z.NEVER; // Optional validation handled by min(1) if required, but prompt implies required for teacher? Let's check. 
+        // Prompt doesn't explicitly say required, but usually teachers have subjects. I'll stick to rules.
+        
+        const hasArabic = val.includes('arabic');
+        const hasHistory = val.includes('history'); // History & Geography
+        const hasCivic = val.includes('civic');
+
+        // Rule 1: Max 2 subjects allowed in any case?
+        // "Most subjects: single selection only" -> 1
+        // "Arabic language: can be combined with another subject" -> 1 + 1 = 2
+        // "History or Geography: can be combined with Civic Education" -> 1 + 1 = 2
+        
+        if (val.length > 2) {
+          ctx.addIssue({
+            code: z.ZodIssueCode.custom,
+            message: t('auth.validation.maxSubjects'),
+          });
+          return;
+        }
+
+        if (val.length === 2) {
+            // Check allowed combinations
+            const isValidCombination =
+                (hasArabic) || // Arabic + Any
+                (hasHistory && hasCivic); // History/Geo + Civic
+
+            if (!isValidCombination) {
+                ctx.addIssue({
+                    code: z.ZodIssueCode.custom,
+                    message: t('auth.validation.invalidSubjectCombination'),
+                });
+            }
+        }
+    }),
     levels: z.array(z.string()).default([]),
   })
 
