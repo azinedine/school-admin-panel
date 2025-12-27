@@ -27,7 +27,6 @@ export const createRegistrationSchema = (t: (key: string) => string) => {
     gender: z.enum(['male', 'female']).optional(),
     date_of_birth: z.string().optional(),
     phone: z.string().optional(),
-    teacher_id: z.string().optional(),
     years_of_experience: z.coerce.number().min(0).optional(),
     subjects: z.array(z.string())
       .default([])
@@ -78,13 +77,11 @@ export const createRegistrationSchema = (t: (key: string) => string) => {
 
   // Admin-specific fields
   const adminFields = z.object({
-    employeeId: z.string().min(1, t('auth.validation.employeeIdRequired')),
     department: z.string().min(1, t('auth.validation.departmentRequired')),
     position: z.string().min(1, t('auth.validation.positionRequired')),
     dateOfHiring: z.string().min(1, t('auth.validation.hiringDateRequired')),
     officeLocation: z.string().min(1, t('auth.validation.officeLocationRequired')),
     workPhone: z.string().min(1, t('auth.validation.workPhoneRequired')),
-    supervisorId: z.string().optional(),
     notes: z.string().optional(),
   })
 
@@ -116,7 +113,6 @@ export const registrationDefaults: RegistrationFormData = {
   gender: undefined,
   date_of_birth: '',
   phone: '',
-  teacher_id: '',
   years_of_experience: undefined,
   subjects: [],
   levels: [],
@@ -128,12 +124,10 @@ export const registrationDefaults: RegistrationFormData = {
   linkedStudentId: '',
 
   // Admin fields
-  employeeId: '',
   department: '',
   position: '',
   dateOfHiring: '',
   officeLocation: '',
   workPhone: '',
-  supervisorId: '',
   notes: '',
 }
