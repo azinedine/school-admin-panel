@@ -76,8 +76,20 @@ export const createRegistrationSchema = (t: (key: string) => string) => {
     linkedStudentId: z.string().optional(),
   })
 
+  // Admin-specific fields
+  const adminFields = z.object({
+    employeeId: z.string().min(1, t('auth.validation.employeeIdRequired')),
+    department: z.string().min(1, t('auth.validation.departmentRequired')),
+    position: z.string().min(1, t('auth.validation.positionRequired')),
+    dateOfHiring: z.string().min(1, t('auth.validation.hiringDateRequired')),
+    officeLocation: z.string().min(1, t('auth.validation.officeLocationRequired')),
+    workPhone: z.string().min(1, t('auth.validation.workPhoneRequired')),
+    supervisorId: z.string().optional(),
+    notes: z.string().optional(),
+  })
+
   // Combined schema
-  return baseSchema.merge(teacherFields).merge(studentFields).merge(parentFields)
+  return baseSchema.merge(teacherFields).merge(studentFields).merge(parentFields).merge(adminFields)
 }
 
 // Export type based on a dummy schema (structure remains constant)
@@ -114,4 +126,14 @@ export const registrationDefaults: RegistrationFormData = {
   
   // Parent fields
   linkedStudentId: '',
+
+  // Admin fields
+  employeeId: '',
+  department: '',
+  position: '',
+  dateOfHiring: '',
+  officeLocation: '',
+  workPhone: '',
+  supervisorId: '',
+  notes: '',
 }
