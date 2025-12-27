@@ -18,13 +18,14 @@ export function LocationSection() {
     selectedWilaya ? parseInt(selectedWilaya) : undefined
   )
   const { data: institutionsData, isLoading: loadingInstitutions } = useInstitutions(
-    selectedMunicipality ? { municipality_id: parseInt(selectedMunicipality), is_active: true } : {}
+    selectedMunicipality ? { municipality_id: parseInt(selectedMunicipality), is_active: true } : {},
+    { enabled: !!selectedMunicipality }
   )
   const institutions = institutionsData?.data || []
 
   // Transform data for SelectField
   const wilayaOptions = wilayas?.map(w => ({
-    value: w.code,
+    value: w.id.toString(),
     label: isRTL ? (w.name_ar || w.name) : w.name
   })) || []
 
