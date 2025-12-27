@@ -5,6 +5,8 @@ import type { User } from '@/store/types'
 import { useNavigate } from '@tanstack/react-router'
 import { toast } from 'sonner'
 
+import { type RegistrationPayload } from '@/schemas/registration'
+
 interface AuthResponse {
   access_token: string
   token_type: string
@@ -40,7 +42,7 @@ export const useRegister = () => {
   const navigate = useNavigate()
 
   return useMutation({
-    mutationFn: async (credentials: Record<string, unknown>) => {
+    mutationFn: async (credentials: RegistrationPayload) => {
       const response = await apiClient.post<AuthResponse>('/register', credentials)
       return response.data
     },
