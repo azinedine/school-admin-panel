@@ -246,7 +246,15 @@
             "isActive": "نشط",
             "noInstitutions": "لا توجد مؤسسات",
             "total": "{{count}} مؤسسة",
-            "restored": "تم استعادة المؤسسة بنجاح"
+            "restored": "تم استعادة المؤسسة بنجاح",
+            "selectType": "اختر النوع",
+            "placeholders": {
+                "name": "أدخل اسم المؤسسة",
+                "nameAr": "أدخل اسم المؤسسة بالعربية",
+                "phone": "+213 XX XXX XXXX",
+                "email": "institution@example.com",
+                "address": "أدخل العنوان الكامل"
+            }
         },
         "grades": {
             "title": "كشف النقاط",
