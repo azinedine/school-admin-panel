@@ -246,7 +246,15 @@
             "isActive": "Actif",
             "noInstitutions": "Aucun établissement trouvé",
             "total": "{{count}} établissements",
-            "restored": "Établissement restauré avec succès"
+            "restored": "Établissement restauré avec succès",
+            "selectType": "Sélectionner un type",
+            "placeholders": {
+                "name": "Entrez le nom de l'établissement",
+                "nameAr": "أدخل اسم المؤسسة",
+                "phone": "+213 XX XXX XXXX",
+                "email": "etablissement@exemple.com",
+                "address": "Entrez l'adresse complète"
+            }
         },
         "grades": {
             "title": "Relevé de notes",
