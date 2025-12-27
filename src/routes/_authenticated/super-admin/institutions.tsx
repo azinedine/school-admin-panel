@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { createFileRoute } from '@tanstack/react-router'
 import { useTranslation } from 'react-i18next'
 import { Plus, Pencil, Trash2, Search, Building2, MapPin, Filter, RotateCcw, Loader2, School, AlertCircle } from 'lucide-react'
@@ -102,17 +102,19 @@ function InstitutionsPage() {
   const updateInstitution = useUpdateInstitution()
   const deleteInstitution = useDeleteInstitution()
 
-  // Reset municipality when wilaya changes
+  // Reset municipality when wilaya changes in filters
   useEffect(() => {
-    if (filters.wilaya_id) {
-      setFilters(f => ({ ...f, municipality_id: undefined }))
-    }
+    setFilters(f => ({ ...f, municipality_id: undefined }))
   }, [filters.wilaya_id])
 
+  // Reset municipality when wilaya changes in form - use a ref to track initial render
+  const prevWilayaRef = useRef(formData.wilaya_id)
   useEffect(() => {
-    if (formData.wilaya_id) {
+    // Only reset if wilaya actually changed (not on initial render)
+    if (prevWilayaRef.current !== formData.wilaya_id) {
       setFormData(f => ({ ...f, municipality_id: 0 }))
     }
+    prevWilayaRef.current = formData.wilaya_id
   }, [formData.wilaya_id])
 
   const openCreateDialog = () => {
@@ -244,14 +246,13 @@ function InstitutionsPage() {
               disabled={!filters.wilaya_id || isLoadingFilterMunicipalities}
             >
               <SelectTrigger>
-                {isLoadingFilterMunicipalities ? (
-                  <div className="flex items-center gap-2">
-                    <Loader2 className="h-4 w-4 animate-spin" />
-                    <span className="text-muted-foreground">{t('common.loading')}</span>
-                  </div>
-                ) : (
-                  <SelectValue placeholder={t('pages.institutions.selectMunicipality')} />
-                )}
+                <SelectValue 
+                  placeholder={
+                    isLoadingFilterMunicipalities 
+                      ? t('common.loading') 
+                      : t('pages.institutions.selectMunicipality')
+                  } 
+                />
               </SelectTrigger>
               <SelectContent className="max-h-[300px] overflow-y-auto">
                 <SelectItem value="all">{t('common.all')}</SelectItem>
@@ -416,14 +417,13 @@ function InstitutionsPage() {
                     required
                   >
                     <SelectTrigger>
-                      {isLoadingFormMunicipalities ? (
-                        <div className="flex items-center gap-2">
-                          <Loader2 className="h-4 w-4 animate-spin" />
-                          <span className="text-muted-foreground">{t('common.loading')}</span>
-                        </div>
-                      ) : (
-                        <SelectValue placeholder={t('pages.institutions.selectMunicipality')} />
-                      )}
+                      <SelectValue 
+                        placeholder={
+                          isLoadingFormMunicipalities 
+                            ? t('common.loading') 
+                            : t('pages.institutions.selectMunicipality')
+                        } 
+                      />
                     </SelectTrigger>
                     <SelectContent className="max-h-[300px] overflow-y-auto">
                       {formMunicipalities?.map(m => (
