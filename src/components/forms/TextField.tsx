@@ -1,4 +1,4 @@
-import { useFormContext, type FieldError, type UseFormRegisterReturn } from 'react-hook-form'
+import { useFormContext } from 'react-hook-form'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { cn } from '@/lib/utils'
@@ -45,14 +45,10 @@ export function TextField({
   )
 }
 
-interface TextAreaFieldProps {
-  label: string
-  placeholder?: string
-  registration: UseFormRegisterReturn
-  error?: FieldError
+interface TextAreaFieldProps extends React.TextareaHTMLAttributes<HTMLTextAreaElement> {
+  label?: string
+  name: string
   className?: string
-  required?: boolean
-  rows?: number
 }
 
 /**
@@ -60,31 +56,37 @@ interface TextAreaFieldProps {
  */
 export function TextAreaField({
   label,
-  placeholder,
-  registration,
-  error,
+  name,
   className,
-  required = false,
+  placeholder,
+  required,
   rows = 3,
+  ...props
 }: TextAreaFieldProps) {
+  const { register, formState: { errors } } = useFormContext()
+  const error = errors[name]
+
   return (
     <div className={cn('space-y-1.5', className)}>
-      <Label htmlFor={registration.name} className="text-sm">
-        {label}
-        {required && <span className="text-destructive ml-1">*</span>}
-      </Label>
+      {label && (
+        <Label htmlFor={name} className={cn(error && "text-destructive")}>
+          {label}
+          {required && <span className="text-destructive ml-1">*</span>}
+        </Label>
+      )}
       <textarea
-        id={registration.name}
+        id={name}
         placeholder={placeholder}
         rows={rows}
         className={cn(
           'flex min-h-[80px] w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50',
           error && 'border-destructive'
         )}
-        {...registration}
+        {...register(name)}
+        {...props}
       />
       {error && (
-        <p className="text-xs text-destructive">{error.message}</p>
+        <p className="text-xs text-destructive">{error.message as string}</p>
       )}
     </div>
   )
