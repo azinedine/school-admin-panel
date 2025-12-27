@@ -75,6 +75,7 @@
             "selectWilaya": "Select Wilaya",
             "selectMunicipality": "Select Municipality",
             "selectInstitution": "Select Institution",
+            "noInstitutions": "No institutions found",
             "selectClass": "Select Class",
             "linkedStudent": "Linked Student ID",
             "emailPlaceholder": "example@school.com",
