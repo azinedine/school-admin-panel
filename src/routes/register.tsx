@@ -5,12 +5,14 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { useTranslation } from 'react-i18next'
 import { useAuthStore } from '@/store/auth-store'
 import { useRegister } from '@/hooks/use-auth'
+import { toast } from 'sonner'
 // Card components removed as they are unused
 import { LanguageSwitcher } from '@/components/language-switcher'
 import { UserPlus, ArrowRight } from 'lucide-react'
 import { cn } from '@/lib/utils'
-import { createRegistrationSchema, registrationDefaults, type RegistrationFormData } from '@/schemas/registration'
+import { createRegistrationSchema, registrationDefaults, type RegistrationFormData, type RegistrationPayload } from '@/schemas/registration'
 import { ActionButton } from '@/components/forms/ActionButton'
+import { FullScreenLoader } from '@/components/ui/full-screen-loader'
 
 // Modular Sections
 import { AccountInfoSection } from '@/components/forms/register/AccountInfoSection'
@@ -51,32 +53,42 @@ function RegisterPage() {
 
   // Submission
   const onSubmit = (data: RegistrationFormData) => {
-    const payload = {
-      name: data.name,
-      email: data.email,
-      password: data.password,
-      password_confirmation: data.password,
-      role: data.role,
-      wilaya: data.wilaya,
-      municipality: data.municipality,
-      institution: data.institution,
+    // Cast to any to access all potential fields across the union
+    const formData = data as any;
+    
+    const payload: RegistrationPayload = {
+      name: formData.name,
+      email: formData.email,
+      password: formData.password,
+      password_confirmation: formData.password,
+      role: formData.role,
+      wilaya: formData.wilaya,
+      municipality: formData.municipality,
+      institution: formData.institution,
       // Optional fields handled by backend or filtered
-      name_ar: data.name_ar,
-      gender: data.gender,
-      date_of_birth: data.date_of_birth,
-      phone: data.phone,
-
-      years_of_experience: data.years_of_experience,
-      subjects: data.subjects,
-      levels: data.levels,
-      class: data.class,
-      linkedStudentId: data.linkedStudentId,
+      name_ar: formData.name_ar,
+      gender: formData.gender,
+      date_of_birth: formData.date_of_birth,
+      phone: formData.phone,
+      years_of_experience: formData.years_of_experience,
+      subjects: formData.subjects,
+      levels: formData.levels,
+      class: formData.class,
+      linkedStudentId: formData.linkedStudentId,
+      // Admin fields
+      department: formData.department,
+      position: formData.position,
+      date_of_hiring: formData.dateOfHiring, // Transformed to snake_case for API
+      work_phone: formData.workPhone,
+      office_location: formData.officeLocation,
+      notes: formData.notes,
     }
     registerUser(payload)
   }
 
   return (
     <div className="min-h-screen bg-muted/20 p-4 lg:p-8 relative pt-10 lg:pt-16">
+      {loading && <FullScreenLoader />}
       <div className="absolute top-4 right-4 z-10">
         <LanguageSwitcher />
       </div>
@@ -95,7 +107,14 @@ function RegisterPage() {
         </div>
 
         <FormProvider {...methods}>
-          <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+          <form onSubmit={handleSubmit(onSubmit, () => {
+             toast.error(t('auth.validation.checkFields', 'Please check the form for errors'))
+          })} className="space-y-6">
+             {/* Show generic error if validation fails */}
+             {/* console.error("Validation Errors:", errors); */}
+             {/* Optional: toast.error(t('auth.validation.checkFields')); */}
+             {/* Since fields show their own errors, we might not need a toast, */}
+             {/* BUT for "Nothing happens" UX, a toast is helpful. */}
              <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                 {/* Account Information */}
                 <div className="space-y-6">
