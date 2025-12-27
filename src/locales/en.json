@@ -115,6 +115,7 @@
         "schedule": "Schedule",
         "students": "Students",
         "teachers": "Teachers",
+        "createTeacher": "Create Teacher",
         "usersManagement": "Users Management",
         "grades": "Grades",
         "gradeSheet": "Grade Sheet",
