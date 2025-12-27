@@ -113,7 +113,7 @@ export function useMunicipalities(wilayaId: number | undefined) {
 }
 
 // Fetch institutions with filters
-export function useInstitutions(filters: InstitutionFilters = {}) {
+export function useInstitutions(filters: InstitutionFilters = {}, options: { enabled?: boolean } = {}) {
   return useQuery<InstitutionsResponse>({
     queryKey: ['institutions', filters],
     queryFn: async () => {
@@ -126,6 +126,7 @@ export function useInstitutions(filters: InstitutionFilters = {}) {
       const response = await apiClient.get<InstitutionsResponse>(`/v1/institutions?${params.toString()}`)
       return response.data
     },
+    enabled: options.enabled,
   })
 }
 
