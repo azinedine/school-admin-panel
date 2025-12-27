@@ -92,7 +92,9 @@
             "passwordLength": "Le mot de passe doit comporter au moins 8 caractères",
             "wilayaRequired": "Veuillez sélectionner une wilaya",
             "municipalityRequired": "Veuillez sélectionner une commune",
-            "institutionRequired": "Veuillez sélectionner un établissement"
+            "institutionRequired": "Veuillez sélectionner un établissement",
+            "maxSubjects": "Vous ne pouvez sélectionner que jusqu'à 2 matières",
+            "invalidSubjectCombination": "Combinaison de matières invalide"
         },
         "roles": {
             "super_admin": "Super Administrateur",
