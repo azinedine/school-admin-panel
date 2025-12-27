@@ -94,8 +94,8 @@ function InstitutionsPage() {
   // Queries
   const { data: institutionsData, isLoading, error } = useInstitutions(filters)
   const { data: wilayas } = useWilayas()
-  const { data: filterMunicipalities } = useMunicipalities(filters.wilaya_id)
-  const { data: formMunicipalities } = useMunicipalities(formData.wilaya_id || undefined)
+  const { data: filterMunicipalities, isLoading: isLoadingFilterMunicipalities } = useMunicipalities(filters.wilaya_id)
+  const { data: formMunicipalities, isLoading: isLoadingFormMunicipalities } = useMunicipalities(formData.wilaya_id || undefined)
 
   // Mutations
   const createInstitution = useCreateInstitution()
@@ -241,12 +241,19 @@ function InstitutionsPage() {
             <Select
               value={filters.municipality_id?.toString() || 'all'}
               onValueChange={(v) => setFilters(f => ({ ...f, municipality_id: v === 'all' ? undefined : Number(v) }))}
-              disabled={!filters.wilaya_id}
+              disabled={!filters.wilaya_id || isLoadingFilterMunicipalities}
             >
               <SelectTrigger>
-                <SelectValue placeholder={t('pages.institutions.selectMunicipality')} />
+                {isLoadingFilterMunicipalities ? (
+                  <div className="flex items-center gap-2">
+                    <Loader2 className="h-4 w-4 animate-spin" />
+                    <span className="text-muted-foreground">{t('common.loading')}</span>
+                  </div>
+                ) : (
+                  <SelectValue placeholder={t('pages.institutions.selectMunicipality')} />
+                )}
               </SelectTrigger>
-              <SelectContent>
+              <SelectContent className="max-h-[300px] overflow-y-auto">
                 <SelectItem value="all">{t('common.all')}</SelectItem>
                 {filterMunicipalities?.map(m => (
                   <SelectItem key={m.id} value={m.id.toString()}>
@@ -405,13 +412,20 @@ function InstitutionsPage() {
                   <Select
                     value={formData.municipality_id?.toString() || ''}
                     onValueChange={(v) => setFormData(f => ({ ...f, municipality_id: Number(v) }))}
-                    disabled={!formData.wilaya_id}
+                    disabled={!formData.wilaya_id || isLoadingFormMunicipalities}
                     required
                   >
                     <SelectTrigger>
-                      <SelectValue placeholder={t('pages.institutions.selectMunicipality')} />
+                      {isLoadingFormMunicipalities ? (
+                        <div className="flex items-center gap-2">
+                          <Loader2 className="h-4 w-4 animate-spin" />
+                          <span className="text-muted-foreground">{t('common.loading')}</span>
+                        </div>
+                      ) : (
+                        <SelectValue placeholder={t('pages.institutions.selectMunicipality')} />
+                      )}
                     </SelectTrigger>
-                    <SelectContent>
+                    <SelectContent className="max-h-[300px] overflow-y-auto">
                       {formMunicipalities?.map(m => (
                         <SelectItem key={m.id} value={m.id.toString()}>
                           {m.name}
