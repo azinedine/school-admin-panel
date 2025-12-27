@@ -444,6 +444,7 @@ function InstitutionsPage() {
                     id="name"
                     value={formData.name}
                     onChange={(e) => setFormData(f => ({ ...f, name: e.target.value }))}
+                    placeholder={t('pages.institutions.placeholders.name')}
                     required
                   />
                 </div>
@@ -453,6 +454,7 @@ function InstitutionsPage() {
                     id="name_ar"
                     value={formData.name_ar}
                     onChange={(e) => setFormData(f => ({ ...f, name_ar: e.target.value }))}
+                    placeholder={t('pages.institutions.placeholders.nameAr')}
                     dir="rtl"
                   />
                 </div>
@@ -466,7 +468,7 @@ function InstitutionsPage() {
                   onValueChange={(v) => setFormData(f => ({ ...f, type: v }))}
                 >
                   <SelectTrigger>
-                    <SelectValue />
+                    <SelectValue placeholder={t('pages.institutions.selectType')} />
                   </SelectTrigger>
                   <SelectContent>
                     {INSTITUTION_TYPES.map(type => (
@@ -486,6 +488,7 @@ function InstitutionsPage() {
                     id="phone"
                     value={formData.phone}
                     onChange={(e) => setFormData(f => ({ ...f, phone: e.target.value }))}
+                    placeholder={t('pages.institutions.placeholders.phone')}
                   />
                 </div>
                 <div className="space-y-2">
@@ -495,6 +498,7 @@ function InstitutionsPage() {
                     type="email"
                     value={formData.email}
                     onChange={(e) => setFormData(f => ({ ...f, email: e.target.value }))}
+                    placeholder={t('pages.institutions.placeholders.email')}
                   />
                 </div>
               </div>
@@ -506,6 +510,7 @@ function InstitutionsPage() {
                   id="address"
                   value={formData.address}
                   onChange={(e) => setFormData(f => ({ ...f, address: e.target.value }))}
+                  placeholder={t('pages.institutions.placeholders.address')}
                 />
               </div>
 
