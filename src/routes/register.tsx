@@ -100,7 +100,7 @@ function RegisterPage() {
                       <AccountInfoSection />
                    </FormSection>
 
-                   <FormSection title={t('profilePage.personalInfo')} columns={1}>
+                   <FormSection title={t('auth.register.locationAndInstitution', 'Location & Institution')} columns={1}>
                       <LocationSection />
                    </FormSection>
                 </div>
