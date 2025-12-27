@@ -1,9 +1,6 @@
 import { createFileRoute } from '@tanstack/react-router'
+import { UnifiedProfilePage } from '@/components/profile/unified-profile-page'
 
 export const Route = createFileRoute('/_authenticated/student/profile')({
-  component: RouteComponent,
+  component: UnifiedProfilePage,
 })
-
-function RouteComponent() {
-  return <div>Hello "/_authenticated/student/profile"!</div>
-}
