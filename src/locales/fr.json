@@ -57,6 +57,8 @@
             "step1Desc": "Entrez vos informations personnelles",
             "step2Desc": "Complétez votre profil en tant que {{role}}",
             "description": "Entrez vos détails pour créer votre compte",
+            "accountInfo": "Informations du compte",
+            "additionalInfo": "Informations supplémentaires",
             "name": "Nom complet",
             "role": "Je suis un...",
             "submit": "Créer un compte",
@@ -73,7 +75,23 @@
             "selectMunicipality": "Sélectionner la Commune",
             "selectInstitution": "Sélectionner l'Établissement",
             "selectClass": "Sélectionner la Classe",
-            "linkedStudent": "ID Étudiant lié"
+            "linkedStudent": "ID Étudiant lié",
+            "emailPlaceholder": "exemple@ecole.com",
+            "passwordPlaceholder": "••••••••",
+            "phonePlaceholder": "+213 XXX XXX XXX",
+            "teacherIdPlaceholder": "T-12345",
+            "experiencePlaceholder": "0",
+            "nameArPlaceholder": "Entrez le nom en arabe",
+            "studentIdPlaceholder": "ID Étudiant",
+            "selectGender": "Sélectionner le genre"
+        },
+        "validation": {
+            "nameLength": "Le nom doit comporter au moins 2 caractères",
+            "emailInvalid": "Veuillez entrer une adresse email valide",
+            "passwordLength": "Le mot de passe doit comporter au moins 8 caractères",
+            "wilayaRequired": "Veuillez sélectionner une wilaya",
+            "municipalityRequired": "Veuillez sélectionner une commune",
+            "institutionRequired": "Veuillez sélectionner un établissement"
         },
         "roles": {
             "super_admin": "Super Administrateur",
@@ -236,7 +254,7 @@
             "deleteRoleDesc": "Êtes-vous sûr de vouloir supprimer le rôle \"{{name}}\" ? Cette action est irréversible.",
             "name": "Nom",
             "displayName": "Nom d'affichage",
-            "description": "Description",
+            "fieldDescription": "Description",
             "descriptionPlaceholder": "Brève description du rôle...",
             "type": "Type",
             "system": "Système",
