@@ -18,6 +18,7 @@ import { LocationSection } from '@/components/forms/register/LocationSection'
 import { PersonalInfoSection } from '@/components/forms/register/PersonalInfoSection'
 import { ProfessionalInfoSection } from '@/components/forms/register/ProfessionalInfoSection'
 import { AcademicSection } from '@/components/forms/register/AcademicSection'
+import { AdminAdditionalInfoSection } from '@/components/forms/register/AdminAdditionalInfoSection'
 import { FormSection } from '@/components/forms/FormSection'
 
 export const Route = createFileRoute('/register')({
@@ -119,12 +120,19 @@ function RegisterPage() {
                           </FormSection>
                         </>
                     )}
-                     <FormSection 
-                        title={role === 'teacher' ? t('profilePage.academicInfo') : t('auth.register.additionalInfo')} 
-                        columns={1}
-                     >
-                        <AcademicSection role={role} />
-                     </FormSection>
+                     
+                     {role === 'admin' ? (
+                       <FormSection title={t('auth.register.additionalInfo')} columns={1}>
+                          <AdminAdditionalInfoSection />
+                       </FormSection>
+                     ) : (
+                       <FormSection 
+                          title={role === 'teacher' ? t('profilePage.academicInfo') : t('auth.register.additionalInfo')} 
+                          columns={1}
+                       >
+                          <AcademicSection role={role} />
+                       </FormSection>
+                     )}
                 </div>
              </div>
 
