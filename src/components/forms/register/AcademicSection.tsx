@@ -2,10 +2,9 @@ import { useFormContext } from "react-hook-form"
 import { useTranslation } from "react-i18next"
 import { Label } from "@/components/ui/label"
 import { Checkbox } from "@/components/ui/checkbox"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { Controller } from "react-hook-form"
 import { subjectsList, classesList } from "@/data/mock-locations"
 import { TextField } from "../TextField"
+import { SelectField } from "../SelectField"
 
 interface AcademicSectionProps {
   role: 'teacher' | 'student' | 'parent' | 'admin'
@@ -14,9 +13,10 @@ interface AcademicSectionProps {
 export function AcademicSection({ role }: AcademicSectionProps) {
   const { t, i18n } = useTranslation()
   const isRTL = i18n.dir() === 'rtl'
-  const { control, setValue, watch } = useFormContext()
+  const { setValue, watch, formState: { errors } } = useFormContext()
   const selectedSubjects = watch('subjects')
   const selectedLevels = watch('levels')
+  const selectedClass = watch('class')
 
   const toggleSubject = (subjectId: string) => {
     const current = selectedSubjects || []
@@ -36,14 +36,19 @@ export function AcademicSection({ role }: AcademicSectionProps) {
     }
   }
 
+  const classOptions = classesList.map(c => ({
+    value: c.id,
+    label: c.name
+  }))
+
   if (role === 'teacher') {
     return (
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-3">
-        <div className="space-y-1.5">
-          <Label>{t('auth.register.subjects')}</Label>
-          <div className="border rounded-md p-2 max-h-32 overflow-y-auto grid grid-cols-2 gap-1">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+        <div className="space-y-2">
+          <Label className="text-sm font-medium">{t('auth.register.subjects')}</Label>
+          <div className="border rounded-md p-3 max-h-40 overflow-y-auto grid grid-cols-2 gap-2 bg-background/50">
             {subjectsList.map(s => (
-              <div key={s.id} className="flex items-center gap-2">
+              <div key={s.id} className="flex items-center gap-2 hover:bg-muted/50 p-1 rounded transition-colors">
                 <Checkbox 
                   id={`subject-${s.id}`} 
                   checked={(selectedSubjects || []).includes(s.id)}
@@ -51,7 +56,7 @@ export function AcademicSection({ role }: AcademicSectionProps) {
                 />
                 <Label 
                   htmlFor={`subject-${s.id}`} 
-                  className="text-xs font-normal cursor-pointer"
+                  className="text-xs font-normal cursor-pointer flex-1"
                 >
                   {isRTL ? s.nameAr : s.name}
                 </Label>
@@ -59,11 +64,11 @@ export function AcademicSection({ role }: AcademicSectionProps) {
             ))}
           </div>
         </div>
-        <div className="space-y-1.5">
-          <Label>{t('auth.register.levels')}</Label>
-          <div className="border rounded-md p-2 max-h-32 overflow-y-auto grid grid-cols-4 gap-1">
+        <div className="space-y-2">
+          <Label className="text-sm font-medium">{t('auth.register.levels')}</Label>
+          <div className="border rounded-md p-3 max-h-40 overflow-y-auto grid grid-cols-3 gap-2 bg-background/50">
             {classesList.map(l => (
-              <div key={l.id} className="flex items-center gap-1">
+              <div key={l.id} className="flex items-center gap-2 hover:bg-muted/50 p-1 rounded transition-colors">
                 <Checkbox 
                   id={`level-${l.id}`} 
                   checked={(selectedLevels || []).includes(l.id)}
@@ -71,7 +76,7 @@ export function AcademicSection({ role }: AcademicSectionProps) {
                 />
                 <Label 
                   htmlFor={`level-${l.id}`} 
-                  className="text-xs font-normal cursor-pointer"
+                  className="text-xs font-normal cursor-pointer flex-1"
                 >
                   {l.name}
                 </Label>
@@ -86,25 +91,14 @@ export function AcademicSection({ role }: AcademicSectionProps) {
   if (role === 'student') {
     return (
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-        <div className="space-y-1.5">
-          <Label>{t('auth.register.class')}</Label>
-          <Controller
-            name="class"
-            control={control}
-            render={({ field }) => (
-              <Select value={field.value || ''} onValueChange={field.onChange}>
-                <SelectTrigger>
-                  <SelectValue placeholder={t('auth.register.selectClass')} />
-                </SelectTrigger>
-                <SelectContent>
-                  {classesList.map(c => (
-                    <SelectItem key={c.id} value={c.id}>{c.name}</SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            )}
-          />
-        </div>
+        <SelectField
+            label={t('auth.register.class')}
+            value={selectedClass}
+            onChange={(val) => setValue('class', val)}
+            options={classOptions}
+            placeholder={t('auth.register.selectClass')}
+            error={errors.class as any}
+        />
       </div>
     )
   }
