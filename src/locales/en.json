@@ -93,7 +93,9 @@
             "passwordLength": "Password must be at least 8 characters",
             "wilayaRequired": "Please select a wilaya",
             "municipalityRequired": "Please select a municipality",
-            "institutionRequired": "Please select an institution"
+            "institutionRequired": "Please select an institution",
+            "maxSubjects": "You can only select up to 2 subjects",
+            "invalidSubjectCombination": "Invalid subject combination"
         },
         "roles": {
             "super_admin": "Super Administrator",
