@@ -109,10 +109,10 @@ function RegisterPage() {
                 <div className="space-y-6">
                     {role === 'teacher' && (
                         <>
-                          <FormSection title={t('profilePage.personalInfo')} columns={2}>
+                          <FormSection title={t('profilePage.personalInfo')} columns={1}>
                               <PersonalInfoSection />
                           </FormSection>
-                          <FormSection title={t('profilePage.professionalInfo')} columns={2}>
+                          <FormSection title={t('profilePage.professionalInfo')} columns={1}>
                               <ProfessionalInfoSection />
                           </FormSection>
                         </>
