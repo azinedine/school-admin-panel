@@ -92,7 +92,9 @@
             "passwordLength": "يجب أن تحتوي كلمة المرور على 8 أحرف على الأقل",
             "wilayaRequired": "يرجى اختيار الولاية",
             "municipalityRequired": "يرجى اختيار البلدية",
-            "institutionRequired": "يرجى اختيار المؤسسة"
+            "institutionRequired": "يرجى اختيار المؤسسة",
+            "maxSubjects": "يمكنك تحديد مادتين كحد أقصى",
+            "invalidSubjectCombination": "تركيبة مواد غير مقبولة"
         },
         "roles": {
             "super_admin": "المسؤول الأعلى",
