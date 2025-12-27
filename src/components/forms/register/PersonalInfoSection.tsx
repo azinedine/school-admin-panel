@@ -19,7 +19,7 @@ export function PersonalInfoSection() {
       <TextField
         name="name_ar"
         label={t('profilePage.arabicName')}
-        placeholder={t('auth.register.nameArPlaceholder', 'أدخل الاسم بالعربية')}
+        placeholder={t('auth.register.nameArPlaceholder')}
         dir="rtl"
       />
       
