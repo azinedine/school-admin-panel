@@ -1,14 +1,13 @@
-import { useState, useEffect } from 'react'
+// React imports removed as they are unused
 import { createFileRoute, redirect, Link } from '@tanstack/react-router'
 import { useForm, FormProvider, type Resolver } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useTranslation } from 'react-i18next'
 import { useAuthStore } from '@/store/auth-store'
 import { useRegister } from '@/hooks/use-auth'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from '@/components/ui/card'
-import { Button } from '@/components/ui/button'
+// Card components removed as they are unused
 import { LanguageSwitcher } from '@/components/language-switcher'
-import { UserPlus, ArrowLeft, ArrowRight, School, BookOpen, Users, User as UserIcon } from 'lucide-react'
+import { UserPlus, ArrowRight } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { registrationSchema, registrationDefaults, type RegistrationFormData } from '@/schemas/registration'
 import { ActionButton } from '@/components/forms/ActionButton'
@@ -19,6 +18,7 @@ import { LocationSection } from '@/components/forms/register/LocationSection'
 import { PersonalInfoSection } from '@/components/forms/register/PersonalInfoSection'
 import { ProfessionalInfoSection } from '@/components/forms/register/ProfessionalInfoSection'
 import { AcademicSection } from '@/components/forms/register/AcademicSection'
+import { FormSection } from '@/components/forms/FormSection'
 
 export const Route = createFileRoute('/register')({
   beforeLoad: () => {
@@ -32,7 +32,6 @@ export const Route = createFileRoute('/register')({
 function RegisterPage() {
   const { t, i18n } = useTranslation()
   const isRTL = i18n.dir() === 'rtl'
-  const [step, setStep] = useState(1)
 
   const { mutate: registerUser, isPending: loading } = useRegister()
 
@@ -44,36 +43,8 @@ function RegisterPage() {
   })
 
   // Destructure needed methods
-  const { handleSubmit, watch, trigger, setValue } = methods
-
-  // Watch Main Values
+  const { handleSubmit, watch } = methods
   const role = watch('role')
-  const selectedWilaya = watch('wilaya')
-  const selectedMunicipality = watch('municipality')
-
-  // Effect: Reset dependent fields
-  useEffect(() => {
-    setValue('municipality', '')
-    setValue('institution', '')
-  }, [selectedWilaya, setValue])
-
-  useEffect(() => {
-    setValue('institution', '')
-  }, [selectedMunicipality, setValue])
-
-  // Step Navigation
-  const handleNext = async (e: React.MouseEvent) => {
-    e.preventDefault() // Prevent form submission
-    const step1Fields: (keyof RegistrationFormData)[] = ['name', 'email', 'password', 'role']
-    const isValid = await trigger(step1Fields) // Validate Step 1 only
-    if (isValid) {
-      setStep(2)
-    }
-  }
-
-  const handleBack = () => {
-    setStep(1)
-  }
 
   // Submission
   const onSubmit = (data: RegistrationFormData) => {
@@ -101,119 +72,81 @@ function RegisterPage() {
     registerUser(payload)
   }
 
-  const renderStepIcon = () => {
-    switch (role) {
-      case 'admin': return <School className="h-6 w-6" />
-      case 'teacher': return <BookOpen className="h-6 w-6" />
-      case 'parent': return <Users className="h-6 w-6" />
-      default: return <UserIcon className="h-6 w-6" />
-    }
-  }
-
   return (
-    <div className="min-h-screen flex items-center justify-center bg-muted/20 p-2 sm:p-4 lg:p-6 relative">
-      <div className="absolute top-2 right-2 sm:top-4 sm:right-4">
+    <div className="min-h-screen flex items-center justify-center bg-muted/20 p-4 lg:p-8 relative">
+      <div className="absolute top-4 right-4 z-10">
         <LanguageSwitcher />
       </div>
-      
-      <Card className="w-full max-w-3xl shadow-lg border-0 bg-card transition-all duration-300">
-        <CardHeader className="space-y-1 text-center pb-2">
-          <div className="flex justify-center mb-3">
-            <div className="h-12 w-12 rounded-full bg-primary/10 flex items-center justify-center text-primary">
-              {step === 1 ? <UserPlus className="h-6 w-6" /> : renderStepIcon()}
+
+      <div className="w-full max-w-5xl mx-auto space-y-6">
+        <div className="text-center space-y-2 mb-8">
+           <div className="flex justify-center mb-4">
+            <div className="h-14 w-14 rounded-full bg-primary/10 flex items-center justify-center text-primary">
+              <UserPlus className="h-7 w-7" />
             </div>
           </div>
-          <CardTitle className="text-xl sm:text-2xl font-bold">
-            {t('auth.register.title')}
-          </CardTitle>
-          <CardDescription className="text-sm">
-            {step === 1 
-              ? t('auth.register.step1Desc') 
-              : t('auth.register.step2Desc', { role: t(`auth.roles.${role}`) })}
-          </CardDescription>
-          
-          <div className="flex gap-2 justify-center mt-3">
-            <div className={cn("h-1 w-8 rounded-full transition-colors", step >= 1 ? "bg-primary" : "bg-muted")} />
-            <div className={cn("h-1 w-8 rounded-full transition-colors", step >= 2 ? "bg-primary" : "bg-muted")} />
-          </div>
-        </CardHeader>
+          <h1 className="text-3xl font-bold tracking-tight">{t('auth.register.title')}</h1>
+          <p className="text-muted-foreground max-w-lg mx-auto">
+            {t('auth.register.step1Desc')}
+          </p>
+        </div>
 
         <FormProvider {...methods}>
-          <form onSubmit={handleSubmit(onSubmit)}>
-            <CardContent className="space-y-3 px-4 sm:px-6">
-              {step === 1 ? (
-                <AccountInfoSection />
-              ) : (
-                <div className="space-y-4">
-                  <LocationSection />
-                  
-                  {role === 'teacher' && (
-                    <>
-                      <div className="relative">
-                        <div className="absolute inset-0 flex items-center">
-                          <span className="w-full border-t" />
-                        </div>
-                        <div className="relative flex justify-center text-xs uppercase">
-                          <span className="bg-card px-2 text-muted-foreground">{t('profilePage.personalInfo')}</span>
-                        </div>
-                      </div>
-                      <PersonalInfoSection />
-                      
-                      <div className="relative">
-                        <div className="absolute inset-0 flex items-center">
-                          <span className="w-full border-t" />
-                        </div>
-                        <div className="relative flex justify-center text-xs uppercase">
-                          <span className="bg-card px-2 text-muted-foreground">{t('profilePage.professionalInfo')}</span>
-                        </div>
-                      </div>
-                      <ProfessionalInfoSection />
-                    </>
-                  )}
+          <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                {/* Account Information */}
+                <div className="space-y-6">
+                   <FormSection title={t('auth.register.accountInfo')} columns={1}>
+                      <AccountInfoSection />
+                   </FormSection>
 
-                  <AcademicSection role={role} />
+                   <FormSection title={t('profilePage.personalInfo')} columns={1}>
+                      <LocationSection />
+                   </FormSection>
                 </div>
-              )}
-            </CardContent>
-            
-            <CardFooter className="flex flex-col gap-3 px-4 sm:px-6 pt-2">
-              <div className="flex w-full gap-2">
-                {step === 2 && (
-                  <Button type="button" variant="outline" onClick={handleBack} className="flex-1">
-                    <ArrowLeft className={cn("h-4 w-4", isRTL ? "ml-2" : "mr-2")} />
-                    {t('common.back')}
-                  </Button>
-                )}
-                
-                {step === 1 ? (
-                  <Button type="button" onClick={handleNext} className="flex-1">
-                    {t('common.next')}
-                    <ArrowRight className={cn("h-4 w-4", isRTL ? "mr-2" : "ml-2")} />
-                  </Button>
-                ) : (
-                  <ActionButton 
-                    type="submit" 
-                    className="flex-1" 
-                    isLoading={loading}
-                    loadingText={t('common.processing')}
-                  >
-                    {t('auth.register.submit')}
-                  </ActionButton>
-                )}
-              </div>
-              
-              {step === 1 && (
-                <p className="text-sm text-center text-muted-foreground">
+
+                 {/* Role Specific Information */}
+                <div className="space-y-6">
+                    {role === 'teacher' && (
+                        <>
+                          <FormSection title={t('profilePage.personalInfo')} columns={2}>
+                              <PersonalInfoSection />
+                          </FormSection>
+                          <FormSection title={t('profilePage.professionalInfo')} columns={2}>
+                              <ProfessionalInfoSection />
+                          </FormSection>
+                        </>
+                    )}
+                     <FormSection 
+                        title={role === 'teacher' ? t('profilePage.academicInfo') : t('auth.register.additionalInfo')} 
+                        columns={1}
+                     >
+                        <AcademicSection role={role} />
+                     </FormSection>
+                </div>
+             </div>
+
+            <div className="flex flex-col sm:flex-row gap-4 items-center justify-between pt-4 border-t">
+               <p className="text-sm text-muted-foreground order-2 sm:order-1">
                   {t('auth.register.hasAccount')}{' '}
                   <Link to="/login" className="text-primary hover:underline font-medium">
                     {t('auth.login.submit')}
                   </Link>
                 </p>
-              )}
-            </CardFooter>
+
+                <ActionButton 
+                  type="submit" 
+                  className="w-full sm:w-auto min-w-[200px] order-1 sm:order-2" 
+                  isLoading={loading}
+                  loadingText={t('common.processing')}
+                >
+                  {t('auth.register.submit')}
+                  <ArrowRight className={cn("h-4 w-4", isRTL ? "mr-2" : "ml-2")} />
+                </ActionButton>
+            </div>
           </form>
         </FormProvider>
-      </Card>
+      </div>
     </div>
   )
 }
