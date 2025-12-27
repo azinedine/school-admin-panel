@@ -13,11 +13,7 @@ export function ProfessionalInfoSection() {
         placeholder={t('auth.register.phonePlaceholder')}
       />
       
-      <TextField
-        name="teacher_id"
-        label={t('profilePage.teacherId')}
-        placeholder={t('auth.register.teacherIdPlaceholder')}
-      />
+
 
       <TextField
         name="years_of_experience"
