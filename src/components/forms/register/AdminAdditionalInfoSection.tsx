@@ -1,8 +1,6 @@
 import { useTranslation } from "react-i18next"
 import { TextField, TextAreaField } from "../TextField"
-import { SelectField } from "../SelectField"
 import { DatePicker } from "../DatePicker"
-import { useSupervisors } from "@/hooks/use-supervisors"
 import { useFormContext } from "react-hook-form"
 
 interface AdminAdditionalInfoSectionProps {
@@ -11,27 +9,11 @@ interface AdminAdditionalInfoSectionProps {
 
 export function AdminAdditionalInfoSection({}: AdminAdditionalInfoSectionProps) {
   const { t } = useTranslation()
-  const { watch, setValue, formState: { errors } } = useFormContext()
-  const supervisorId = watch('supervisorId')
-
-  const { data: supervisors = [], isLoading: loadingSupervisors } = useSupervisors()
-
-  const supervisorOptions = supervisors.map(s => ({
-    value: s.id,
-    label: `${s.name} - ${s.position}`
-  }))
+  const {  } = useFormContext()
 
   return (
     <div className="space-y-4">
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        {/* Employee ID */}
-        <TextField
-          name="employeeId"
-          label={t('auth.register.employeeId')}
-          placeholder={t('auth.register.employeeIdPlaceholder')}
-          required
-        />
-
         {/* Department / Unit */}
         <TextField
           name="department"
@@ -70,17 +52,6 @@ export function AdminAdditionalInfoSection({}: AdminAdditionalInfoSectionProps) 
           label={t('auth.register.officeLocation')}
           placeholder={t('auth.register.officeLocationPlaceholder')}
           required
-        />
-        
-        {/* Supervisor */}
-        <SelectField
-          label={t('auth.register.supervisor')}
-          options={supervisorOptions}
-          value={supervisorId}
-          onChange={(val) => setValue('supervisorId', val)}
-          placeholder={loadingSupervisors ? t('common.loading') : t('auth.register.selectSupervisor')}
-          error={errors.supervisorId as any}
-          className="w-full"
         />
       </div>
 
