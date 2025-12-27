@@ -87,7 +87,7 @@ function InstitutionsPage() {
     address: '',
     phone: '',
     email: '',
-    type: 'primary' as string,
+    type: '' as string,
     is_active: true,
   })
 
@@ -125,7 +125,7 @@ function InstitutionsPage() {
       address: '',
       phone: '',
       email: '',
-      type: 'primary',
+      type: '',
       is_active: true,
     })
     setIsDialogOpen(true)
@@ -391,7 +391,7 @@ function InstitutionsPage() {
                 <div className="space-y-2">
                   <Label>{t('pages.institutions.wilaya')} *</Label>
                   <Select
-                    value={formData.wilaya_id?.toString() || ''}
+                    value={formData.wilaya_id ? formData.wilaya_id.toString() : undefined}
                     onValueChange={(v) => setFormData(f => ({ ...f, wilaya_id: Number(v) }))}
                     required
                   >
@@ -410,7 +410,7 @@ function InstitutionsPage() {
                 <div className="space-y-2">
                   <Label>{t('pages.institutions.municipality')} *</Label>
                   <Select
-                    value={formData.municipality_id?.toString() || ''}
+                    value={formData.municipality_id ? formData.municipality_id.toString() : undefined}
                     onValueChange={(v) => setFormData(f => ({ ...f, municipality_id: Number(v) }))}
                     disabled={!formData.wilaya_id || isLoadingFormMunicipalities}
                     required
@@ -464,7 +464,7 @@ function InstitutionsPage() {
               <div className="space-y-2">
                 <Label>{t('pages.institutions.type')} *</Label>
                 <Select
-                  value={formData.type}
+                  value={formData.type || undefined}
                   onValueChange={(v) => setFormData(f => ({ ...f, type: v }))}
                 >
                   <SelectTrigger>
