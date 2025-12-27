@@ -13,7 +13,7 @@ export const createRegistrationSchema = (t: (key: string) => string) => {
     name: z.string().min(2, t('auth.validation.nameLength')),
     email: z.string().email(t('auth.validation.emailInvalid')),
     password: z.string().min(8, t('auth.validation.passwordLength')),
-    role: z.enum(['admin', 'teacher', 'student', 'parent']),
+    // role: z.enum(['admin', 'teacher', 'student', 'parent']), // Removed, handled by discriminated union
     
     // Step 2: Location (common to all)
     wilaya: z.string().min(1, t('auth.validation.wilayaRequired')),
@@ -85,18 +85,52 @@ export const createRegistrationSchema = (t: (key: string) => string) => {
     notes: z.string().optional(),
   })
 
-  // Combined schema
-  return baseSchema.merge(teacherFields).merge(studentFields).merge(parentFields).merge(adminFields)
+  // Combined schema using discriminated union for conditional validation
+  return z.discriminatedUnion('role', [
+    baseSchema.extend({ role: z.literal('student') }).merge(studentFields),
+    baseSchema.extend({ role: z.literal('teacher') }).merge(teacherFields),
+    baseSchema.extend({ role: z.literal('parent') }).merge(parentFields),
+    baseSchema.extend({ role: z.literal('admin') }).merge(adminFields),
+  ])
 }
 
 // Export type based on a dummy schema (structure remains constant)
 const dummySchema = createRegistrationSchema((key) => key)
 export type RegistrationFormData = z.infer<typeof dummySchema>
 
+// The flat payload structure sent to the backend
+export interface RegistrationPayload {
+  name: string
+  email: string
+  password: string
+  password_confirmation: string
+  role: string
+  wilaya: string
+  municipality: string
+  institution: string
+  // Optional fields
+  name_ar?: string
+  gender?: 'male' | 'female'
+  date_of_birth?: string
+  phone?: string
+  years_of_experience?: number
+  subjects?: string[]
+  levels?: string[]
+  class?: string
+  linkedStudentId?: string
+  // Admin fields
+  department?: string
+  position?: string
+  date_of_hiring?: string
+  work_phone?: string
+  office_location?: string
+  notes?: string
+}
+
 /**
  * Default values for the registration form
  */
-export const registrationDefaults: RegistrationFormData = {
+export const registrationDefaults: any = {
   // Account
   name: '',
   email: '',
