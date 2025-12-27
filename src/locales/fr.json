@@ -84,7 +84,23 @@
             "experiencePlaceholder": "0",
             "nameArPlaceholder": "Entrez le nom en arabe",
             "studentIdPlaceholder": "ID Étudiant",
-            "selectGender": "Sélectionner le genre"
+            "selectGender": "Sélectionner le genre",
+            "employeeId": "ID Employé",
+            "employeeIdPlaceholder": "EMP-001",
+            "department": "Département / Unité",
+            "departmentPlaceholder": "ex: Support Informatique",
+            "position": "Poste / Titre",
+            "positionPlaceholder": "ex: Administrateur Réseau",
+            "dateOfHiring": "Date d'embauche",
+            "dateOfHiringPlaceholder": "Sélectionner une date",
+            "workPhone": "Téléphone professionnel",
+            "workPhonePlaceholder": "ex: +213 21 00 00 00",
+            "officeLocation": "Bureau",
+            "officeLocationPlaceholder": "ex: Bâtiment A, Salle 101",
+            "supervisor": "Superviseur",
+            "selectSupervisor": "Sélectionner un superviseur",
+            "notes": "Notes / Remarques",
+            "notesPlaceholder": "Toute information supplémentaire..."
         },
         "validation": {
             "nameLength": "Le nom doit comporter au moins 2 caractères",
@@ -94,7 +110,13 @@
             "municipalityRequired": "Veuillez sélectionner une commune",
             "institutionRequired": "Veuillez sélectionner un établissement",
             "maxSubjects": "Vous ne pouvez sélectionner que jusqu'à 2 matières",
-            "invalidSubjectCombination": "Combinaison de matières invalide"
+            "invalidSubjectCombination": "Combinaison de matières invalide",
+            "employeeIdRequired": "L'ID employé est requis",
+            "departmentRequired": "Le département est requis",
+            "positionRequired": "Le poste est requis",
+            "hiringDateRequired": "La date d'embauche est requise",
+            "officeLocationRequired": "Le bureau est requis",
+            "workPhoneRequired": "Le téléphone professionnel est requis"
         },
         "roles": {
             "super_admin": "Super Administrateur",
