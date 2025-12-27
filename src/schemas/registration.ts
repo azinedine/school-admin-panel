@@ -36,14 +36,11 @@ export const createRegistrationSchema = (t: (key: string) => string) => {
         // Prompt doesn't explicitly say required, but usually teachers have subjects. I'll stick to rules.
         
         const hasArabic = val.includes('arabic');
+        const hasIslamic = val.includes('islamic');
         const hasHistory = val.includes('history'); // History & Geography
         const hasCivic = val.includes('civic');
 
-        // Rule 1: Max 2 subjects allowed in any case?
-        // "Most subjects: single selection only" -> 1
-        // "Arabic language: can be combined with another subject" -> 1 + 1 = 2
-        // "History or Geography: can be combined with Civic Education" -> 1 + 1 = 2
-        
+        // Rule: Max 2 subjects allowed
         if (val.length > 2) {
           ctx.addIssue({
             code: z.ZodIssueCode.custom,
@@ -53,10 +50,10 @@ export const createRegistrationSchema = (t: (key: string) => string) => {
         }
 
         if (val.length === 2) {
-            // Check allowed combinations
+            // Strict pairs check
             const isValidCombination =
-                (hasArabic) || // Arabic + Any
-                (hasHistory && hasCivic); // History/Geo + Civic
+                (hasArabic && hasIslamic) || // Arabic + Islamic ONLY
+                (hasHistory && hasCivic);    // History + Civic ONLY
 
             if (!isValidCombination) {
                 ctx.addIssue({
