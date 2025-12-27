@@ -247,7 +247,15 @@
             "isActive": "Active",
             "noInstitutions": "No institutions found",
             "total": "{{count}} institutions",
-            "restored": "Institution restored successfully"
+            "restored": "Institution restored successfully",
+            "selectType": "Select a type",
+            "placeholders": {
+                "name": "Enter institution name",
+                "nameAr": "أدخل اسم المؤسسة",
+                "phone": "+213 XX XXX XXXX",
+                "email": "institution@example.com",
+                "address": "Enter full address"
+            }
         },
         "grades": {
             "title": "Grade Sheet",
