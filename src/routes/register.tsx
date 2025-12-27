@@ -43,7 +43,8 @@ function RegisterPage() {
   // Initialize Form
   const methods = useForm<RegistrationFormData>({
     resolver: zodResolver(registrationSchema) as Resolver<RegistrationFormData>,
-    defaultValues: registrationDefaults,
+    // Cast defaults to satisfy the Union type expected by useForm
+    defaultValues: registrationDefaults as unknown as RegistrationFormData,
     mode: 'onChange'
   })
 
@@ -53,36 +54,59 @@ function RegisterPage() {
 
   // Submission
   const onSubmit = (data: RegistrationFormData) => {
-    // Cast to any to access all potential fields across the union
-    const formData = data as any;
-    
-    const payload: RegistrationPayload = {
-      name: formData.name,
-      email: formData.email,
-      password: formData.password,
-      password_confirmation: formData.password,
-      role: formData.role,
-      wilaya: formData.wilaya,
-      municipality: formData.municipality,
-      institution: formData.institution,
-      // Optional fields handled by backend or filtered
-      name_ar: formData.name_ar,
-      gender: formData.gender,
-      date_of_birth: formData.date_of_birth,
-      phone: formData.phone,
-      years_of_experience: formData.years_of_experience,
-      subjects: formData.subjects,
-      levels: formData.levels,
-      class: formData.class,
-      linkedStudentId: formData.linkedStudentId,
-      // Admin fields
-      department: formData.department,
-      position: formData.position,
-      date_of_hiring: formData.dateOfHiring, // Transformed to snake_case for API
-      work_phone: formData.workPhone,
-      office_location: formData.officeLocation,
-      notes: formData.notes,
+    // initialize payload with common fields
+    const basePayload = {
+      name: data.name,
+      email: data.email,
+      password: data.password,
+      password_confirmation: data.password,
+      role: data.role,
+      wilaya: data.wilaya,
+      municipality: data.municipality,
+      institution: data.institution,
+    };
+
+    let rolePayload: Partial<RegistrationPayload> = {};
+
+    switch (data.role) {
+      case 'teacher':
+        rolePayload = {
+          name_ar: data.name_ar,
+          gender: data.gender,
+          date_of_birth: data.date_of_birth,
+          phone: data.phone,
+          years_of_experience: data.years_of_experience,
+          subjects: data.subjects,
+          levels: data.levels,
+        };
+        break;
+      case 'student':
+        rolePayload = {
+          class: data.class,
+        };
+        break;
+      case 'parent':
+        rolePayload = {
+          linkedStudentId: data.linkedStudentId,
+        };
+        break;
+      case 'admin':
+        rolePayload = {
+          department: data.department,
+          position: data.position,
+          date_of_hiring: data.dateOfHiring,
+          work_phone: data.workPhone,
+          office_location: data.officeLocation,
+          notes: data.notes,
+        };
+        break;
     }
+
+    const payload: RegistrationPayload = {
+      ...basePayload,
+      ...rolePayload,
+    }
+    
     registerUser(payload)
   }
 
