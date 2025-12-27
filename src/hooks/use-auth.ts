@@ -90,14 +90,22 @@ export const useUser = () => {
   return useQuery({
     queryKey: ['user'],
     queryFn: async () => {
-      const response = await apiClient.get('/user')
-      // Laravel API with UserResource returns: { data: { id, name, email, ... } }
-      // Axios unwraps the HTTP response, so response.data = { data: { user fields } }
-      const userData = response.data.data as User
-      
-      // Sync with auth store
-      updateUser(userData)
-      return userData
+      try {
+        const response = await apiClient.get('/user')
+        // Laravel API with UserResource returns: { data: { id, name, email, ... } }
+        // Axios unwraps the HTTP response, so response.data = { data: { user fields } }
+        const userData = response.data.data as User
+        
+        // Sync with auth store
+        updateUser(userData)
+        return userData
+      } catch (error) {
+        // If we can't fetch the user profile (likely due to 403/401), logout to prevent loop
+        if ((error as any).response?.status === 403 || (error as any).response?.status === 401) {
+             useAuthStore.getState().logout()
+        }
+        throw error
+      }
     },
     retry: false,
     staleTime: 1000 * 60 * 5, // 5 minutes
