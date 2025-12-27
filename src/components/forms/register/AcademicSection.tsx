@@ -109,7 +109,7 @@ export function AcademicSection({ role }: AcademicSectionProps) {
         <TextField
           name="linkedStudentId"
           label={t('auth.register.linkedStudent')}
-          placeholder="Student ID"
+          placeholder={t('auth.register.studentIdPlaceholder')}
         />
       </div>
     )
