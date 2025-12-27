@@ -133,7 +133,7 @@ function RolesPage() {
               <TableRow>
                 <TableHead>{t('pages.roles.name')}</TableHead>
                 <TableHead>{t('pages.roles.displayName')}</TableHead>
-                <TableHead>{t('pages.roles.description')}</TableHead>
+                <TableHead>{t('pages.roles.fieldDescription')}</TableHead>
                 <TableHead>{t('pages.roles.type')}</TableHead>
                 <TableHead className="text-right">{t('common.actions')}</TableHead>
               </TableRow>
@@ -217,7 +217,7 @@ function RolesPage() {
                 />
               </div>
               <div className="space-y-2">
-                <Label htmlFor="description">{t('pages.roles.description')}</Label>
+                <Label htmlFor="description">{t('pages.roles.fieldDescription')}</Label>
                 <Textarea
                   id="description"
                   value={formData.description}
