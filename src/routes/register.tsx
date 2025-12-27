@@ -47,6 +47,14 @@ function RegisterPage() {
   const [selectedSubjects, setSelectedSubjects] = useState<string[]>([])
   const [selectedLevels, setSelectedLevels] = useState<string[]>([])
   
+  // Teacher-specific fields
+  const [nameAr, setNameAr] = useState('')
+  const [gender, setGender] = useState<'male' | 'female' | ''>('')
+  const [dateOfBirth, setDateOfBirth] = useState('')
+  const [phone, setPhone] = useState('')
+  const [teacherId, setTeacherId] = useState('')
+  const [yearsOfExperience, setYearsOfExperience] = useState('')
+  
   const [selectedClass, setSelectedClass] = useState('') // For Student
   const [linkedStudentId, setLinkedStudentId] = useState('')
 
@@ -105,8 +113,16 @@ function RegisterPage() {
         wilaya: selectedWilaya,
         municipality: selectedMunicipality,
         institution: selectedInstitution,
+        // Teacher-specific fields
+        name_ar: nameAr,
+        gender: gender || undefined,
+        date_of_birth: dateOfBirth || undefined,
+        phone: phone || undefined,
+        teacher_id: teacherId || undefined,
+        years_of_experience: yearsOfExperience ? parseInt(yearsOfExperience) : undefined,
         subjects: selectedSubjects,
         levels: selectedLevels,
+        // Student/Parent fields
         class: selectedClass,
         linkedStudentId: linkedStudentId
     }
@@ -125,11 +141,11 @@ function RegisterPage() {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-muted/20 p-4 relative">
-      <div className="absolute top-4 right-4">
+    <div className="min-h-screen flex items-center justify-center bg-muted/20 p-2 sm:p-4 relative">
+      <div className="absolute top-2 right-2 sm:top-4 sm:right-4">
         <LanguageSwitcher />
       </div>
-      <Card className="w-full max-w-md shadow-lg border-0 bg-card transition-all duration-300">
+      <Card className="w-full max-w-lg shadow-lg border-0 bg-card transition-all duration-300">
         <CardHeader className="space-y-1 text-center">
           <div className="flex justify-center mb-4">
             <div className="h-12 w-12 rounded-full bg-primary/10 flex items-center justify-center text-primary transition-all">
@@ -150,7 +166,7 @@ function RegisterPage() {
         </CardHeader>
 
         <form onSubmit={step === 1 ? handleNext : handleRegister}>
-          <CardContent className="space-y-4">
+          <CardContent className="space-y-3">
             {step === 1 ? (
               <>
                 <div className="space-y-2">
@@ -213,7 +229,7 @@ function RegisterPage() {
             ) : (
               <>
                 {/* Location Hierarchy */}
-                <div className="grid grid-cols-2 gap-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                     <div className="space-y-2">
                         <Label>{t('auth.register.wilaya')}</Label>
                         <Select value={selectedWilaya} onValueChange={setSelectedWilaya} required>
@@ -275,6 +291,78 @@ function RegisterPage() {
 
                 {role === 'teacher' && (
                     <>
+                        {/* Personal Details */}
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                            <div className="space-y-2">
+                                <Label htmlFor="nameAr">{t('profilePage.arabicName')}</Label>
+                                <Input 
+                                    id="nameAr" 
+                                    value={nameAr}
+                                    onChange={(e) => setNameAr(e.target.value)}
+                                    placeholder={t('auth.register.nameArPlaceholder', 'أدخل الاسم بالعربية')}
+                                    dir="rtl"
+                                />
+                            </div>
+                            <div className="space-y-2">
+                                <Label>{t('profilePage.gender')}</Label>
+                                <Select value={gender} onValueChange={(v: 'male' | 'female') => setGender(v)}>
+                                    <SelectTrigger>
+                                        <SelectValue placeholder={t('auth.register.selectGender', 'Select gender')} />
+                                    </SelectTrigger>
+                                    <SelectContent>
+                                        <SelectItem value="male">{t('profilePage.male')}</SelectItem>
+                                        <SelectItem value="female">{t('profilePage.female')}</SelectItem>
+                                    </SelectContent>
+                                </Select>
+                            </div>
+                        </div>
+
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                            <div className="space-y-2">
+                                <Label htmlFor="dateOfBirth">{t('profilePage.dateOfBirth')}</Label>
+                                <Input 
+                                    id="dateOfBirth" 
+                                    type="date"
+                                    value={dateOfBirth}
+                                    onChange={(e) => setDateOfBirth(e.target.value)}
+                                />
+                            </div>
+                            <div className="space-y-2">
+                                <Label htmlFor="phone">{t('profilePage.phone')}</Label>
+                                <Input 
+                                    id="phone" 
+                                    type="tel"
+                                    value={phone}
+                                    onChange={(e) => setPhone(e.target.value)}
+                                    placeholder="+213 XXX XXX XXX"
+                                />
+                            </div>
+                        </div>
+
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                            <div className="space-y-2">
+                                <Label htmlFor="teacherId">{t('profilePage.teacherId')}</Label>
+                                <Input 
+                                    id="teacherId" 
+                                    value={teacherId}
+                                    onChange={(e) => setTeacherId(e.target.value)}
+                                    placeholder="T-12345"
+                                />
+                            </div>
+                            <div className="space-y-2">
+                                <Label htmlFor="yearsOfExperience">{t('profilePage.experience')}</Label>
+                                <Input 
+                                    id="yearsOfExperience" 
+                                    type="number"
+                                    min="0"
+                                    value={yearsOfExperience}
+                                    onChange={(e) => setYearsOfExperience(e.target.value)}
+                                    placeholder="0"
+                                />
+                            </div>
+                        </div>
+
+                        {/* Subjects Selection */}
                         <div className="space-y-2">
                             <Label>{t('auth.register.subjects')}</Label>
                             <div className="border rounded-md p-3 max-h-48 overflow-y-auto space-y-2">
@@ -322,7 +410,7 @@ function RegisterPage() {
 
                 {role === 'student' && (
                     <>
-                        <div className="grid grid-cols-2 gap-4">
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                              <div className="space-y-2">
                                 <Label>{t('auth.register.class')}</Label>
                                 <Select value={selectedClass} onValueChange={setSelectedClass} required>
