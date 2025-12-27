@@ -4,6 +4,7 @@ import { useAuthStore } from '@/store/auth-store'
 import type { User } from '@/store/types'
 import { useNavigate } from '@tanstack/react-router'
 import { toast } from 'sonner'
+import { isAxiosError, type AxiosError } from 'axios'
 
 import { type RegistrationPayload } from '@/schemas/registration'
 
@@ -12,8 +13,6 @@ interface AuthResponse {
   token_type: string
   user: User
 }
-
-import type { AxiosError } from 'axios'
 
 export const useLogin = () => {
   const login = useAuthStore((state) => state.login)
@@ -103,8 +102,10 @@ export const useUser = () => {
         return userData
       } catch (error) {
         // If we can't fetch the user profile (likely due to 403/401), logout to prevent loop
-        if ((error as any).response?.status === 403 || (error as any).response?.status === 401) {
+        if (isAxiosError(error)) {
+          if (error.response?.status === 403 || error.response?.status === 401) {
              useAuthStore.getState().logout()
+          }
         }
         throw error
       }
