@@ -23,6 +23,7 @@ import { Badge } from '@/components/ui/badge'
 import { Skeleton } from '@/components/ui/skeleton'
 import { Search, ChevronLeft, ChevronRight } from 'lucide-react'
 import { Card, CardContent, CardHeader } from '@/components/ui/card'
+import { ContentPage } from '@/components/layout/content-page'
 
 export const Route = createFileRoute('/_authenticated/admin/users')({
   component: AdminUsersPage,
@@ -56,13 +57,8 @@ function AdminUsersPage() {
   }
 
   return (
-    <div className="space-y-6">
-       <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
-        <div>
-          <h2 className="text-3xl font-bold tracking-tight">{t('users.title', 'Institution Users')}</h2>
-          <p className="text-muted-foreground">{t('users.description', 'Manage staff and teachers in your institution.')}</p>
-        </div>
-      </div>
+        <ContentPage title={t('users.title', 'Institution Users')} description={t('users.description', 'Manage staff and teachers in your institution.')}>
+  
 
       <Card>
         <CardHeader>
@@ -184,6 +180,7 @@ function AdminUsersPage() {
           )}
         </CardContent>
       </Card>
-    </div>
+        </ContentPage>
+
   )
 }
