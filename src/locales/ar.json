@@ -84,7 +84,23 @@
             "experiencePlaceholder": "0",
             "nameArPlaceholder": "أدخل الاسم بالعربية",
             "studentIdPlaceholder": "رقم الطالب",
-            "selectGender": "اختر الجنس"
+            "selectGender": "اختر الجنس",
+            "employeeId": "رقم الموظف",
+            "employeeIdPlaceholder": "EMP-001",
+            "department": "القسم / الوحدة",
+            "departmentPlaceholder": "مثال: الدعم الفني",
+            "position": "المسمى الوظيفي",
+            "positionPlaceholder": "مثال: مدير الشبكة",
+            "dateOfHiring": "تاريخ التوظيف",
+            "dateOfHiringPlaceholder": "اختر التاريخ",
+            "workPhone": "هاتف العمل",
+            "workPhonePlaceholder": "مثال: +213 21 00 00 00",
+            "officeLocation": "موقع المكتب",
+            "officeLocationPlaceholder": "مثال: المبنى أ، الغرفة 101",
+            "supervisor": "المشرف",
+            "selectSupervisor": "اختر المشرف",
+            "notes": "ملاحظات",
+            "notesPlaceholder": "أي معلومات إضافية..."
         },
         "validation": {
             "nameLength": "يجب أن يحتوي الاسم على 2 أحرف على الأقل",
@@ -94,7 +110,13 @@
             "municipalityRequired": "يرجى اختيار البلدية",
             "institutionRequired": "يرجى اختيار المؤسسة",
             "maxSubjects": "يمكنك تحديد مادتين كحد أقصى",
-            "invalidSubjectCombination": "تركيبة مواد غير مقبولة"
+            "invalidSubjectCombination": "تركيبة مواد غير مقبولة",
+            "employeeIdRequired": "رقم الموظف مطلوب",
+            "departmentRequired": "القسم مطلوب",
+            "positionRequired": "المسمى الوظيفي مطلوب",
+            "hiringDateRequired": "تاريخ التوظيف مطلوب",
+            "officeLocationRequired": "موقع المكتب مطلوب",
+            "workPhoneRequired": "هاتف العمل مطلوب"
         },
         "roles": {
             "super_admin": "المسؤول الأعلى",
