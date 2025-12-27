@@ -21,9 +21,11 @@ export function LocationSection() {
     selectedMunicipality ? { municipality_id: parseInt(selectedMunicipality), is_active: true } : {},
     { enabled: !!selectedMunicipality }
   )
-  const institutions = institutionsData?.data || []
-
   // Transform data for SelectField
+  const institutions = institutionsData?.data || []
+  const hasInstitutions = institutions.length > 0
+  const noInstitutionsFound = selectedMunicipality && !loadingInstitutions && !hasInstitutions
+
   const wilayaOptions = wilayas?.map(w => ({
     value: w.id.toString(),
     label: isRTL ? (w.name_ar || w.name) : w.name
@@ -34,10 +36,13 @@ export function LocationSection() {
     label: isRTL ? (m.name_ar || m.name) : m.name
   })) || []
 
-  const institutionOptions = institutions.map(i => ({
-    value: i.id.toString(),
-    label: isRTL ? (i.name_ar || i.name) : i.name
-  })) 
+  // Create institution options, handling empty state
+  const institutionOptions = hasInstitutions 
+    ? institutions.map(i => ({
+        value: i.id.toString(),
+        label: isRTL ? (i.name_ar || i.name) : i.name
+      }))
+    : []
 
   return (
     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
@@ -73,14 +78,18 @@ export function LocationSection() {
 
       <SelectField
          label={t('auth.register.institution')}
-         placeholder={t('auth.register.selectInstitution')}
+         placeholder={
+           noInstitutionsFound 
+             ? t('auth.register.noInstitutions') 
+             : t('auth.register.selectInstitution')
+         }
          options={institutionOptions}
          value={watch('institution')}
          onChange={(val) => setValue('institution', val)}
          isLoading={loadingInstitutions}
-         disabled={!selectedMunicipality}
+         disabled={!selectedMunicipality || noInstitutionsFound}
          error={errors.institution as any}
-         required
+         required={!noInstitutionsFound}
          className="sm:col-span-2 lg:col-span-1"
       />
     </div>
