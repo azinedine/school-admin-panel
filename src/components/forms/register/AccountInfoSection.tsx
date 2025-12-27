@@ -28,7 +28,7 @@ export function AccountInfoSection() {
         <TextField
           name="email"
           label={t('auth.login.email')}
-          placeholder="example@school.com"
+          placeholder={t('auth.register.emailPlaceholder')}
           type="email"
           required
         />
@@ -38,7 +38,7 @@ export function AccountInfoSection() {
         <PasswordField
             name="password"
             label={t('auth.login.password')}
-            placeholder="••••••••"
+            placeholder={t('auth.register.passwordPlaceholder')}
             required
         />
         
