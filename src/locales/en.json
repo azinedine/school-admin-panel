@@ -85,7 +85,23 @@
             "experiencePlaceholder": "0",
             "nameArPlaceholder": "Enter Arabic Name",
             "studentIdPlaceholder": "Student ID",
-            "selectGender": "Select Gender"
+            "selectGender": "Select Gender",
+            "employeeId": "Employee ID",
+            "employeeIdPlaceholder": "EMP-001",
+            "department": "Department / Unit",
+            "departmentPlaceholder": "e.g. IT Support",
+            "position": "Job Title",
+            "positionPlaceholder": "e.g. Network Administrator",
+            "dateOfHiring": "Date of Hiring",
+            "dateOfHiringPlaceholder": "Select date",
+            "workPhone": "Work Phone",
+            "workPhonePlaceholder": "e.g. +213 21 00 00 00",
+            "officeLocation": "Office Location",
+            "officeLocationPlaceholder": "e.g. Building A, Room 101",
+            "supervisor": "Supervisor",
+            "selectSupervisor": "Select Supervisor",
+            "notes": "Notes / Remarks",
+            "notesPlaceholder": "Any additional information..."
         },
         "validation": {
             "nameLength": "Name must be at least 2 characters",
@@ -95,7 +111,13 @@
             "municipalityRequired": "Please select a municipality",
             "institutionRequired": "Please select an institution",
             "maxSubjects": "You can only select up to 2 subjects",
-            "invalidSubjectCombination": "Invalid subject combination"
+            "invalidSubjectCombination": "Invalid subject combination",
+            "employeeIdRequired": "Employee ID is required",
+            "departmentRequired": "Department is required",
+            "positionRequired": "Position is required",
+            "hiringDateRequired": "Hiring Date is required",
+            "officeLocationRequired": "Office Location is required",
+            "workPhoneRequired": "Work Phone is required"
         },
         "roles": {
             "super_admin": "Super Administrator",
