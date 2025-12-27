@@ -74,6 +74,7 @@
             "selectWilaya": "اختر الولاية",
             "selectMunicipality": "اختر البلدية",
             "selectInstitution": "اختر المؤسسة",
+            "noInstitutions": "لا توجد مؤسسات",
             "selectClass": "اختر القسم",
             "linkedStudent": "معرف الطالب المرتبط",
             "emailPlaceholder": "example@school.com",
