@@ -65,7 +65,7 @@ function RegisterPage() {
       gender: data.gender,
       date_of_birth: data.date_of_birth,
       phone: data.phone,
-      teacher_id: data.teacher_id,
+
       years_of_experience: data.years_of_experience,
       subjects: data.subjects,
       levels: data.levels,
