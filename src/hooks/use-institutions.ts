@@ -142,6 +142,23 @@ export function useInstitution(id: number) {
   })
 }
 
+// Fetch institutions by location (Wilaya + Municipality)
+export function useInstitutionsByLocation(wilayaId?: number, municipalityId?: number, options: { enabled?: boolean } = {}) {
+  return useQuery<InstitutionsResponse>({
+    queryKey: ['institutions', 'location', wilayaId, municipalityId],
+    queryFn: async () => {
+      if (!wilayaId || !municipalityId) return { success: true, data: [], meta: { current_page: 1, last_page: 1, per_page: 15, total: 0 } }
+      
+      const response = await apiClient.get<InstitutionsResponse>(
+        `/v1/wilayas/${wilayaId}/municipalities/${municipalityId}/institutions`
+      )
+      return response.data
+    },
+    enabled: options.enabled && !!wilayaId && !!municipalityId,
+    retry: false,
+  })
+}
+
 // Create institution
 export function useCreateInstitution() {
   const queryClient = useQueryClient()
