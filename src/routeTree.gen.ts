@@ -42,6 +42,7 @@ import { Route as AuthenticatedSuperAdminSecurityRouteImport } from './routes/_a
 import { Route as AuthenticatedSuperAdminSchoolsRouteImport } from './routes/_authenticated/super-admin/schools'
 import { Route as AuthenticatedSuperAdminRolesRouteImport } from './routes/_authenticated/super-admin/roles'
 import { Route as AuthenticatedSuperAdminReportsRouteImport } from './routes/_authenticated/super-admin/reports'
+import { Route as AuthenticatedSuperAdminProfileRouteImport } from './routes/_authenticated/super-admin/profile'
 import { Route as AuthenticatedSuperAdminLogsRouteImport } from './routes/_authenticated/super-admin/logs'
 import { Route as AuthenticatedSuperAdminInstitutionsRouteImport } from './routes/_authenticated/super-admin/institutions'
 import { Route as AuthenticatedSuperAdminDashboardRouteImport } from './routes/_authenticated/super-admin/dashboard'
@@ -61,6 +62,7 @@ import { Route as AuthenticatedStudentAnnouncementsRouteImport } from './routes/
 import { Route as AuthenticatedPrepAddLessonRouteImport } from './routes/_authenticated/prep/add-lesson'
 import { Route as AuthenticatedParentTimetableRouteImport } from './routes/_authenticated/parent/timetable'
 import { Route as AuthenticatedParentSettingsRouteImport } from './routes/_authenticated/parent/settings'
+import { Route as AuthenticatedParentProfileRouteImport } from './routes/_authenticated/parent/profile'
 import { Route as AuthenticatedParentPaymentsRouteImport } from './routes/_authenticated/parent/payments'
 import { Route as AuthenticatedParentMessagesRouteImport } from './routes/_authenticated/parent/messages'
 import { Route as AuthenticatedParentGradesRouteImport } from './routes/_authenticated/parent/grades'
@@ -72,6 +74,7 @@ import { Route as AuthenticatedAdminUsersRouteImport } from './routes/_authentic
 import { Route as AuthenticatedAdminTimetablesRouteImport } from './routes/_authenticated/admin/timetables'
 import { Route as AuthenticatedAdminSettingsRouteImport } from './routes/_authenticated/admin/settings'
 import { Route as AuthenticatedAdminReportsRouteImport } from './routes/_authenticated/admin/reports'
+import { Route as AuthenticatedAdminProfileRouteImport } from './routes/_authenticated/admin/profile'
 import { Route as AuthenticatedAdminPaymentsRouteImport } from './routes/_authenticated/admin/payments'
 import { Route as AuthenticatedAdminMessagesRouteImport } from './routes/_authenticated/admin/messages'
 import { Route as AuthenticatedAdminGradesRouteImport } from './routes/_authenticated/admin/grades'
@@ -270,6 +273,12 @@ const AuthenticatedSuperAdminReportsRoute =
     path: '/reports',
     getParentRoute: () => AuthenticatedSuperAdminRouteRoute,
   } as any)
+const AuthenticatedSuperAdminProfileRoute =
+  AuthenticatedSuperAdminProfileRouteImport.update({
+    id: '/profile',
+    path: '/profile',
+    getParentRoute: () => AuthenticatedSuperAdminRouteRoute,
+  } as any)
 const AuthenticatedSuperAdminLogsRoute =
   AuthenticatedSuperAdminLogsRouteImport.update({
     id: '/logs',
@@ -384,6 +393,12 @@ const AuthenticatedParentSettingsRoute =
     path: '/settings',
     getParentRoute: () => AuthenticatedParentRouteRoute,
   } as any)
+const AuthenticatedParentProfileRoute =
+  AuthenticatedParentProfileRouteImport.update({
+    id: '/profile',
+    path: '/profile',
+    getParentRoute: () => AuthenticatedParentRouteRoute,
+  } as any)
 const AuthenticatedParentPaymentsRoute =
   AuthenticatedParentPaymentsRouteImport.update({
     id: '/payments',
@@ -447,6 +462,12 @@ const AuthenticatedAdminReportsRoute =
   AuthenticatedAdminReportsRouteImport.update({
     id: '/reports',
     path: '/reports',
+    getParentRoute: () => AuthenticatedAdminRouteRoute,
+  } as any)
+const AuthenticatedAdminProfileRoute =
+  AuthenticatedAdminProfileRouteImport.update({
+    id: '/profile',
+    path: '/profile',
     getParentRoute: () => AuthenticatedAdminRouteRoute,
   } as any)
 const AuthenticatedAdminPaymentsRoute =
@@ -522,6 +543,7 @@ export interface FileRoutesByFullPath {
   '/admin/grades': typeof AuthenticatedAdminGradesRoute
   '/admin/messages': typeof AuthenticatedAdminMessagesRoute
   '/admin/payments': typeof AuthenticatedAdminPaymentsRoute
+  '/admin/profile': typeof AuthenticatedAdminProfileRoute
   '/admin/reports': typeof AuthenticatedAdminReportsRoute
   '/admin/settings': typeof AuthenticatedAdminSettingsRoute
   '/admin/timetables': typeof AuthenticatedAdminTimetablesRoute
@@ -533,6 +555,7 @@ export interface FileRoutesByFullPath {
   '/parent/grades': typeof AuthenticatedParentGradesRoute
   '/parent/messages': typeof AuthenticatedParentMessagesRoute
   '/parent/payments': typeof AuthenticatedParentPaymentsRoute
+  '/parent/profile': typeof AuthenticatedParentProfileRoute
   '/parent/settings': typeof AuthenticatedParentSettingsRoute
   '/parent/timetable': typeof AuthenticatedParentTimetableRoute
   '/prep/add-lesson': typeof AuthenticatedPrepAddLessonRoute
@@ -552,6 +575,7 @@ export interface FileRoutesByFullPath {
   '/super-admin/dashboard': typeof AuthenticatedSuperAdminDashboardRoute
   '/super-admin/institutions': typeof AuthenticatedSuperAdminInstitutionsRoute
   '/super-admin/logs': typeof AuthenticatedSuperAdminLogsRoute
+  '/super-admin/profile': typeof AuthenticatedSuperAdminProfileRoute
   '/super-admin/reports': typeof AuthenticatedSuperAdminReportsRoute
   '/super-admin/roles': typeof AuthenticatedSuperAdminRolesRoute
   '/super-admin/schools': typeof AuthenticatedSuperAdminSchoolsRoute
@@ -595,6 +619,7 @@ export interface FileRoutesByTo {
   '/admin/grades': typeof AuthenticatedAdminGradesRoute
   '/admin/messages': typeof AuthenticatedAdminMessagesRoute
   '/admin/payments': typeof AuthenticatedAdminPaymentsRoute
+  '/admin/profile': typeof AuthenticatedAdminProfileRoute
   '/admin/reports': typeof AuthenticatedAdminReportsRoute
   '/admin/settings': typeof AuthenticatedAdminSettingsRoute
   '/admin/timetables': typeof AuthenticatedAdminTimetablesRoute
@@ -606,6 +631,7 @@ export interface FileRoutesByTo {
   '/parent/grades': typeof AuthenticatedParentGradesRoute
   '/parent/messages': typeof AuthenticatedParentMessagesRoute
   '/parent/payments': typeof AuthenticatedParentPaymentsRoute
+  '/parent/profile': typeof AuthenticatedParentProfileRoute
   '/parent/settings': typeof AuthenticatedParentSettingsRoute
   '/parent/timetable': typeof AuthenticatedParentTimetableRoute
   '/prep/add-lesson': typeof AuthenticatedPrepAddLessonRoute
@@ -625,6 +651,7 @@ export interface FileRoutesByTo {
   '/super-admin/dashboard': typeof AuthenticatedSuperAdminDashboardRoute
   '/super-admin/institutions': typeof AuthenticatedSuperAdminInstitutionsRoute
   '/super-admin/logs': typeof AuthenticatedSuperAdminLogsRoute
+  '/super-admin/profile': typeof AuthenticatedSuperAdminProfileRoute
   '/super-admin/reports': typeof AuthenticatedSuperAdminReportsRoute
   '/super-admin/roles': typeof AuthenticatedSuperAdminRolesRoute
   '/super-admin/schools': typeof AuthenticatedSuperAdminSchoolsRoute
@@ -670,6 +697,7 @@ export interface FileRoutesById {
   '/_authenticated/admin/grades': typeof AuthenticatedAdminGradesRoute
   '/_authenticated/admin/messages': typeof AuthenticatedAdminMessagesRoute
   '/_authenticated/admin/payments': typeof AuthenticatedAdminPaymentsRoute
+  '/_authenticated/admin/profile': typeof AuthenticatedAdminProfileRoute
   '/_authenticated/admin/reports': typeof AuthenticatedAdminReportsRoute
   '/_authenticated/admin/settings': typeof AuthenticatedAdminSettingsRoute
   '/_authenticated/admin/timetables': typeof AuthenticatedAdminTimetablesRoute
@@ -681,6 +709,7 @@ export interface FileRoutesById {
   '/_authenticated/parent/grades': typeof AuthenticatedParentGradesRoute
   '/_authenticated/parent/messages': typeof AuthenticatedParentMessagesRoute
   '/_authenticated/parent/payments': typeof AuthenticatedParentPaymentsRoute
+  '/_authenticated/parent/profile': typeof AuthenticatedParentProfileRoute
   '/_authenticated/parent/settings': typeof AuthenticatedParentSettingsRoute
   '/_authenticated/parent/timetable': typeof AuthenticatedParentTimetableRoute
   '/_authenticated/prep/add-lesson': typeof AuthenticatedPrepAddLessonRoute
@@ -700,6 +729,7 @@ export interface FileRoutesById {
   '/_authenticated/super-admin/dashboard': typeof AuthenticatedSuperAdminDashboardRoute
   '/_authenticated/super-admin/institutions': typeof AuthenticatedSuperAdminInstitutionsRoute
   '/_authenticated/super-admin/logs': typeof AuthenticatedSuperAdminLogsRoute
+  '/_authenticated/super-admin/profile': typeof AuthenticatedSuperAdminProfileRoute
   '/_authenticated/super-admin/reports': typeof AuthenticatedSuperAdminReportsRoute
   '/_authenticated/super-admin/roles': typeof AuthenticatedSuperAdminRolesRoute
   '/_authenticated/super-admin/schools': typeof AuthenticatedSuperAdminSchoolsRoute
@@ -745,6 +775,7 @@ export interface FileRouteTypes {
     | '/admin/grades'
     | '/admin/messages'
     | '/admin/payments'
+    | '/admin/profile'
     | '/admin/reports'
     | '/admin/settings'
     | '/admin/timetables'
@@ -756,6 +787,7 @@ export interface FileRouteTypes {
     | '/parent/grades'
     | '/parent/messages'
     | '/parent/payments'
+    | '/parent/profile'
     | '/parent/settings'
     | '/parent/timetable'
     | '/prep/add-lesson'
@@ -775,6 +807,7 @@ export interface FileRouteTypes {
     | '/super-admin/dashboard'
     | '/super-admin/institutions'
     | '/super-admin/logs'
+    | '/super-admin/profile'
     | '/super-admin/reports'
     | '/super-admin/roles'
     | '/super-admin/schools'
@@ -818,6 +851,7 @@ export interface FileRouteTypes {
     | '/admin/grades'
     | '/admin/messages'
     | '/admin/payments'
+    | '/admin/profile'
     | '/admin/reports'
     | '/admin/settings'
     | '/admin/timetables'
@@ -829,6 +863,7 @@ export interface FileRouteTypes {
     | '/parent/grades'
     | '/parent/messages'
     | '/parent/payments'
+    | '/parent/profile'
     | '/parent/settings'
     | '/parent/timetable'
     | '/prep/add-lesson'
@@ -848,6 +883,7 @@ export interface FileRouteTypes {
     | '/super-admin/dashboard'
     | '/super-admin/institutions'
     | '/super-admin/logs'
+    | '/super-admin/profile'
     | '/super-admin/reports'
     | '/super-admin/roles'
     | '/super-admin/schools'
@@ -892,6 +928,7 @@ export interface FileRouteTypes {
     | '/_authenticated/admin/grades'
     | '/_authenticated/admin/messages'
     | '/_authenticated/admin/payments'
+    | '/_authenticated/admin/profile'
     | '/_authenticated/admin/reports'
     | '/_authenticated/admin/settings'
     | '/_authenticated/admin/timetables'
@@ -903,6 +940,7 @@ export interface FileRouteTypes {
     | '/_authenticated/parent/grades'
     | '/_authenticated/parent/messages'
     | '/_authenticated/parent/payments'
+    | '/_authenticated/parent/profile'
     | '/_authenticated/parent/settings'
     | '/_authenticated/parent/timetable'
     | '/_authenticated/prep/add-lesson'
@@ -922,6 +960,7 @@ export interface FileRouteTypes {
     | '/_authenticated/super-admin/dashboard'
     | '/_authenticated/super-admin/institutions'
     | '/_authenticated/super-admin/logs'
+    | '/_authenticated/super-admin/profile'
     | '/_authenticated/super-admin/reports'
     | '/_authenticated/super-admin/roles'
     | '/_authenticated/super-admin/schools'
@@ -1189,6 +1228,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedSuperAdminReportsRouteImport
       parentRoute: typeof AuthenticatedSuperAdminRouteRoute
     }
+    '/_authenticated/super-admin/profile': {
+      id: '/_authenticated/super-admin/profile'
+      path: '/profile'
+      fullPath: '/super-admin/profile'
+      preLoaderRoute: typeof AuthenticatedSuperAdminProfileRouteImport
+      parentRoute: typeof AuthenticatedSuperAdminRouteRoute
+    }
     '/_authenticated/super-admin/logs': {
       id: '/_authenticated/super-admin/logs'
       path: '/logs'
@@ -1322,6 +1368,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedParentSettingsRouteImport
       parentRoute: typeof AuthenticatedParentRouteRoute
     }
+    '/_authenticated/parent/profile': {
+      id: '/_authenticated/parent/profile'
+      path: '/profile'
+      fullPath: '/parent/profile'
+      preLoaderRoute: typeof AuthenticatedParentProfileRouteImport
+      parentRoute: typeof AuthenticatedParentRouteRoute
+    }
     '/_authenticated/parent/payments': {
       id: '/_authenticated/parent/payments'
       path: '/payments'
@@ -1399,6 +1452,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAdminReportsRouteImport
       parentRoute: typeof AuthenticatedAdminRouteRoute
     }
+    '/_authenticated/admin/profile': {
+      id: '/_authenticated/admin/profile'
+      path: '/profile'
+      fullPath: '/admin/profile'
+      preLoaderRoute: typeof AuthenticatedAdminProfileRouteImport
+      parentRoute: typeof AuthenticatedAdminRouteRoute
+    }
     '/_authenticated/admin/payments': {
       id: '/_authenticated/admin/payments'
       path: '/payments'
@@ -1473,6 +1533,7 @@ interface AuthenticatedAdminRouteRouteChildren {
   AuthenticatedAdminGradesRoute: typeof AuthenticatedAdminGradesRoute
   AuthenticatedAdminMessagesRoute: typeof AuthenticatedAdminMessagesRoute
   AuthenticatedAdminPaymentsRoute: typeof AuthenticatedAdminPaymentsRoute
+  AuthenticatedAdminProfileRoute: typeof AuthenticatedAdminProfileRoute
   AuthenticatedAdminReportsRoute: typeof AuthenticatedAdminReportsRoute
   AuthenticatedAdminSettingsRoute: typeof AuthenticatedAdminSettingsRoute
   AuthenticatedAdminTimetablesRoute: typeof AuthenticatedAdminTimetablesRoute
@@ -1488,6 +1549,7 @@ const AuthenticatedAdminRouteRouteChildren: AuthenticatedAdminRouteRouteChildren
     AuthenticatedAdminGradesRoute: AuthenticatedAdminGradesRoute,
     AuthenticatedAdminMessagesRoute: AuthenticatedAdminMessagesRoute,
     AuthenticatedAdminPaymentsRoute: AuthenticatedAdminPaymentsRoute,
+    AuthenticatedAdminProfileRoute: AuthenticatedAdminProfileRoute,
     AuthenticatedAdminReportsRoute: AuthenticatedAdminReportsRoute,
     AuthenticatedAdminSettingsRoute: AuthenticatedAdminSettingsRoute,
     AuthenticatedAdminTimetablesRoute: AuthenticatedAdminTimetablesRoute,
@@ -1507,6 +1569,7 @@ interface AuthenticatedParentRouteRouteChildren {
   AuthenticatedParentGradesRoute: typeof AuthenticatedParentGradesRoute
   AuthenticatedParentMessagesRoute: typeof AuthenticatedParentMessagesRoute
   AuthenticatedParentPaymentsRoute: typeof AuthenticatedParentPaymentsRoute
+  AuthenticatedParentProfileRoute: typeof AuthenticatedParentProfileRoute
   AuthenticatedParentSettingsRoute: typeof AuthenticatedParentSettingsRoute
   AuthenticatedParentTimetableRoute: typeof AuthenticatedParentTimetableRoute
 }
@@ -1521,6 +1584,7 @@ const AuthenticatedParentRouteRouteChildren: AuthenticatedParentRouteRouteChildr
     AuthenticatedParentGradesRoute: AuthenticatedParentGradesRoute,
     AuthenticatedParentMessagesRoute: AuthenticatedParentMessagesRoute,
     AuthenticatedParentPaymentsRoute: AuthenticatedParentPaymentsRoute,
+    AuthenticatedParentProfileRoute: AuthenticatedParentProfileRoute,
     AuthenticatedParentSettingsRoute: AuthenticatedParentSettingsRoute,
     AuthenticatedParentTimetableRoute: AuthenticatedParentTimetableRoute,
   }
@@ -1570,6 +1634,7 @@ interface AuthenticatedSuperAdminRouteRouteChildren {
   AuthenticatedSuperAdminDashboardRoute: typeof AuthenticatedSuperAdminDashboardRoute
   AuthenticatedSuperAdminInstitutionsRoute: typeof AuthenticatedSuperAdminInstitutionsRoute
   AuthenticatedSuperAdminLogsRoute: typeof AuthenticatedSuperAdminLogsRoute
+  AuthenticatedSuperAdminProfileRoute: typeof AuthenticatedSuperAdminProfileRoute
   AuthenticatedSuperAdminReportsRoute: typeof AuthenticatedSuperAdminReportsRoute
   AuthenticatedSuperAdminRolesRoute: typeof AuthenticatedSuperAdminRolesRoute
   AuthenticatedSuperAdminSchoolsRoute: typeof AuthenticatedSuperAdminSchoolsRoute
@@ -1588,6 +1653,7 @@ const AuthenticatedSuperAdminRouteRouteChildren: AuthenticatedSuperAdminRouteRou
     AuthenticatedSuperAdminInstitutionsRoute:
       AuthenticatedSuperAdminInstitutionsRoute,
     AuthenticatedSuperAdminLogsRoute: AuthenticatedSuperAdminLogsRoute,
+    AuthenticatedSuperAdminProfileRoute: AuthenticatedSuperAdminProfileRoute,
     AuthenticatedSuperAdminReportsRoute: AuthenticatedSuperAdminReportsRoute,
     AuthenticatedSuperAdminRolesRoute: AuthenticatedSuperAdminRolesRoute,
     AuthenticatedSuperAdminSchoolsRoute: AuthenticatedSuperAdminSchoolsRoute,
