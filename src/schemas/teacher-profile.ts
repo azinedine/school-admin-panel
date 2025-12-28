@@ -27,13 +27,28 @@ export const teacherProfileSchema = z.object({
   // Contact info
   phone: z.string().optional().nullable(),
   address: z.string().optional().nullable(),
-  wilaya: z.string().optional().nullable(),
-  municipality: z.string().optional().nullable(),
+  wilaya: z.object({
+    id: z.number(),
+    name: z.string(),
+    name_ar: z.string().optional().nullable(),
+  }).optional().nullable(),
+  municipality: z.object({
+    id: z.number(),
+    name: z.string(),
+    name_ar: z.string().optional().nullable(),
+    wilaya: z.object({
+      id: z.number(),
+      name: z.string(),
+      name_ar: z.string().optional().nullable(),
+    }).optional().nullable(),
+  }).optional().nullable(),
   
   // Institution
   institution: z.object({
     id: z.number(),
     name: z.string(),
+    name_ar: z.string().optional().nullable(),
+    type: z.string().optional().nullable(),
   }).optional().nullable(),
   
   // Academic assignments
