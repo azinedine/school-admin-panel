@@ -22,8 +22,7 @@ import {
   ProfileAvatar,
   ProfileSkeleton,
 } from '@/components/profile'
-import { useUser } from '@/hooks/use-auth'
-import { useAuthStore } from '@/store/auth-store'
+import { useUser } from '@/features/users/api/use-user'
 
 import { useState } from 'react'
 import { EditProfileDialog } from './EditProfileDialog'
@@ -33,14 +32,11 @@ import { Pencil } from 'lucide-react'
 export function UnifiedProfilePage() {
   const { t, i18n } = useTranslation()
   const isRTL = i18n.dir() === 'rtl'
-  const { data: userData, isLoading, isError, error } = useUser()
-  // Fallback to store user if hook is loading (for immediate display)
-  const storeUser = useAuthStore((state) => state.user)
-  const profile = userData || storeUser
+  
+  // Use TanStack Query directly - sole owner of server state
+  const { data: profile, isLoading, isError, error } = useUser()
   
   const [isEditOpen, setIsEditOpen] = useState(false)
-  
-
 
   // Format date for display
   const formatDate = (dateString: string | null | undefined) => {
@@ -76,7 +72,7 @@ export function UnifiedProfilePage() {
       }
     >
       {/* Loading State */}
-      {isLoading && !profile && <ProfileSkeleton />}
+      {isLoading && <ProfileSkeleton />}
 
       {/* Error State */}
       {isError && (
@@ -84,7 +80,7 @@ export function UnifiedProfilePage() {
           <AlertCircle className="h-4 w-4" />
           <AlertDescription className="flex items-center gap-2">
             <strong>{t('common.error')}:</strong>
-            {(error as Error)?.message || t('profilePage.loadError')}
+            {error?.message || t('profilePage.loadError')}
           </AlertDescription>
         </Alert>
       )}
@@ -232,6 +228,7 @@ export function UnifiedProfilePage() {
                 <ProfileInfoRow
                   label={t('profilePage.municipality')}
                   value={isRTL ? (profile.municipality?.name_ar || profile.municipality?.name) : profile.municipality?.name}
+                  icon={MapPin}
                 />
                 <ProfileInfoRow
                   label={t('profilePage.address')}
