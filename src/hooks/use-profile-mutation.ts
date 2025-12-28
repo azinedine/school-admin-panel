@@ -19,7 +19,13 @@ export function useUpdateProfile(userId: number) {
             const response = await apiClient.put<{ data: User }>(`/v1/users/${userId}`, payload)
             return response.data.data
         },
-        onSuccess: () => {
+        onSuccess: (data) => {
+            // Immediate UI update via cache
+            queryClient.setQueryData(['user', userId], data)
+            // Also update the 'user' key which might be used by useAuth
+            queryClient.setQueryData(['user'], data)
+
+            // Invalidate to ensure consistency
             queryClient.invalidateQueries({ queryKey: ['user'] })
             queryClient.invalidateQueries({ queryKey: ['users'] })
         },
