@@ -46,9 +46,9 @@ const optionalString = z.string().optional().transform(val => val === '' ? undef
 
 // Validation Schema
 const profileSchema = z.object({
-  name: z.string().min(2).optional(),
+  name: z.string().min(2, 'Name must be at least 2 characters'),
   name_ar: z.string().optional(),
-  email: z.string().email().optional(),
+  email: z.string().email('Invalid email address'),
   phone: z.string().optional(),
   address: z.string().optional(),
   gender: z.enum(['male', 'female']).optional(),
@@ -137,7 +137,7 @@ export function EditProfileDialog({ user, isOpen, onClose }: EditProfileDialogPr
         email: user.email || '',
         phone: user.phone || '',
         address: user.address || '',
-        gender: user.gender,
+        gender: user.gender || undefined,
         date_of_birth: user.date_of_birth ? new Date(user.date_of_birth) : undefined,
         wilaya: user.wilaya || '',
         municipality: user.municipality || '',
@@ -145,7 +145,7 @@ export function EditProfileDialog({ user, isOpen, onClose }: EditProfileDialogPr
         work_phone: user.work_phone || '',
         office_location: user.office_location || '',
         date_of_hiring: user.date_of_hiring ? new Date(user.date_of_hiring) : undefined,
-        years_of_experience: user.years_of_experience,
+        years_of_experience: user.years_of_experience ?? undefined,
       })
     }
   }, [user, isOpen, form])
@@ -177,6 +177,7 @@ export function EditProfileDialog({ user, isOpen, onClose }: EditProfileDialogPr
   const onSubmit = async (values: ProfileFormValues) => {
     setIsSubmitting(true)
     try {
+      // Format date for API (YYYY-MM-DD)
       const payload = {
         ...values,
         date_of_birth: values.date_of_birth ? format(values.date_of_birth, 'yyyy-MM-dd') : null,
@@ -186,7 +187,10 @@ export function EditProfileDialog({ user, isOpen, onClose }: EditProfileDialogPr
       const response = await apiClient.put<{ data: User }>(`/v1/users/${user.id}`, payload)
       const updatedUser = response.data.data
 
+      // Update global store
       setUser(updatedUser)
+      
+      // Invalidate queries to refresh UI
       queryClient.invalidateQueries({ queryKey: ['user'] })
       queryClient.invalidateQueries({ queryKey: ['users'] })
 
@@ -220,7 +224,9 @@ export function EditProfileDialog({ user, isOpen, onClose }: EditProfileDialogPr
                 name="name"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>{t('profilePage.fullName')}</FormLabel>
+                    <FormLabel>
+                      {t('profilePage.fullName')} <span className="text-destructive">*</span>
+                    </FormLabel>
                     <FormControl>
                       <Input {...field} placeholder="John Doe" />
                     </FormControl>
