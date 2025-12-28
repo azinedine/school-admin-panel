@@ -3,6 +3,7 @@
  */
 
 export interface User {
+
   id: number
   name: string
   email: string
@@ -11,10 +12,12 @@ export interface User {
   // Profile fields
   wilaya?: string
   municipality?: string
+
   institution?: {
     id: number
     name: string
   }
+  user_institution_id?: string
   subjects?: string[]
   levels?: string[]
   class?: string
