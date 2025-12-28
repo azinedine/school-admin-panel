@@ -8,7 +8,6 @@ import {
   Briefcase,
   GraduationCap,
   Building,
-  Clock,
   IdCard,
   AlertCircle,
   FileText
@@ -248,26 +247,6 @@ export function UnifiedProfilePage() {
                 )}
               </ProfileSection>
 
-              {/* Teaching Assignments (Teacher Only) */}
-               {(profile.assigned_classes || profile.groups || profile.weekly_teaching_load) && (
-                   <ProfileSection title={t('profilePage.teachingInfo')}>
-                    {profile.assigned_classes && <ProfileInfoRowList
-                      label={t('profilePage.assignedClasses')}
-                      values={profile.assigned_classes}
-                      icon={GraduationCap}
-                    />}
-                    {profile.groups && <ProfileInfoRowList
-                      label={t('profilePage.groups')}
-                      values={profile.groups}
-                    />}
-                    {profile.weekly_teaching_load && <ProfileInfoRow
-                      label={t('profilePage.weeklyLoad')}
-                      value={t('profilePage.hoursPerWeek', { count: profile.weekly_teaching_load })}
-                      icon={Clock}
-                    />}
-                  </ProfileSection>
-              )}
-              
               {/* Notes Section (Admin Only typically) */}
                {profile.notes && (
                   <ProfileSection title={t('profilePage.notes')}>
