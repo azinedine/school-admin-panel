@@ -41,6 +41,9 @@ import { useAuthStore } from '@/store/auth-store'
 import type { User } from '@/store/types'
 import { useWilayas, useMunicipalities, useInstitutionsByLocation, useInstitution } from '@/hooks/use-institutions'
 
+// Helper for optional string that handles empty string
+const optionalString = z.string().optional().transform(val => val === '' ? undefined : val)
+
 // Validation Schema
 const profileSchema = z.object({
   name: z.string().min(2).optional(),
@@ -50,9 +53,9 @@ const profileSchema = z.object({
   address: z.string().optional(),
   gender: z.enum(['male', 'female']).optional(),
   date_of_birth: z.date().optional(),
-  wilaya: z.string().optional(),
-  municipality: z.string().optional(),
-  user_institution_id: z.string().optional(), 
+  wilaya: optionalString,
+  municipality: optionalString,
+  user_institution_id: optionalString, 
   work_phone: z.string().optional(),
   office_location: z.string().optional(),
   date_of_hiring: z.date().optional(),
@@ -85,7 +88,7 @@ export function EditProfileDialog({ user, isOpen, onClose }: EditProfileDialogPr
       email: user.email || '',
       phone: user.phone || '',
       address: user.address || '',
-      gender: user.gender,
+      gender: user.gender || undefined,
       date_of_birth: user.date_of_birth ? new Date(user.date_of_birth) : undefined,
       wilaya: user.wilaya || '',
       municipality: user.municipality || '',
@@ -93,9 +96,16 @@ export function EditProfileDialog({ user, isOpen, onClose }: EditProfileDialogPr
       work_phone: user.work_phone || '',
       office_location: user.office_location || '',
       date_of_hiring: user.date_of_hiring ? new Date(user.date_of_hiring) : undefined,
-      years_of_experience: user.years_of_experience,
+      years_of_experience: user.years_of_experience ?? undefined,
     },
   })
+
+  // Debugging: Log errors
+  useEffect(() => {
+    if (Object.keys(form.formState.errors).length > 0) {
+      console.error('Validation Errors:', form.formState.errors)
+    }
+  }, [form.formState.errors])
 
   // Watch for cascading selects
   const selectedWilaya = form.watch('wilaya')
