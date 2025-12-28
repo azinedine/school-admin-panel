@@ -4,7 +4,7 @@ import { SidebarProvider } from '@/components/ui/sidebar'
 import { AppSidebar } from '@/components/layout/app-sidebar'
 import { useDirection } from '@/hooks/use-direction'
 import { cn } from '@/lib/utils'
-import { useUser } from '@/hooks/use-auth'
+import { useUser } from '@/features/users/api/use-user'
 import { Loader2 } from 'lucide-react'
 
 interface Props {
