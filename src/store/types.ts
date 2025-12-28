@@ -44,6 +44,7 @@ export interface User {
   notes?: string
   created_at: string
   updated_at?: string
+  last_login_at?: string
   status: 'active' | 'inactive' | 'suspended'
   can?: {
     viewAny: boolean
