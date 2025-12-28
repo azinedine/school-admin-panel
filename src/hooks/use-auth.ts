@@ -17,6 +17,7 @@ interface AuthResponse {
 export const useLogin = () => {
   const login = useAuthStore((state) => state.login)
   const navigate = useNavigate()
+  const queryClient = useQueryClient()
 
   return useMutation({
     mutationFn: async (credentials: Record<string, unknown>) => {
@@ -27,6 +28,8 @@ export const useLogin = () => {
       // Inject default role if missing from backend
       const userWithRole = { ...data.user, role: data.user.role || 'admin' }
       login(userWithRole, data.access_token)
+      // Invalidate user query to ensure fresh data is fetched
+      queryClient.invalidateQueries({ queryKey: ['user'] })
       toast.success('Logged in successfully')
       navigate({ to: '/' })
     },
@@ -39,6 +42,7 @@ export const useLogin = () => {
 export const useRegister = () => {
   const login = useAuthStore((state) => state.login)
   const navigate = useNavigate()
+  const queryClient = useQueryClient()
 
   return useMutation({
     mutationFn: async (credentials: RegistrationPayload) => {
@@ -48,6 +52,8 @@ export const useRegister = () => {
     onSuccess: (data) => {
       const userWithRole = { ...data.user, role: data.user.role || 'admin' }
       login(userWithRole, data.access_token)
+      // Invalidate user query to ensure fresh data is fetched
+      queryClient.invalidateQueries({ queryKey: ['user'] })
       toast.success('Account created successfully')
       navigate({ to: '/' })
     },
