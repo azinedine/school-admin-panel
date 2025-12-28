@@ -1,7 +1,7 @@
 import { useMemo, useCallback, useState, useEffect } from "react"
 import { ArrowUpDown, Search, Users, TrendingUp, CheckCircle, XCircle, UserMinus, Clock, History, Trash2, GripVertical, Star, MoreVertical, Move, UserX, UserPlus, Info } from "lucide-react"
 import { useTranslation } from "react-i18next"
-import { useNavigate } from "@tanstack/react-router"
+import { useLocation } from "@tanstack/react-router"
 import {
   DndContext,
   closestCenter,
@@ -479,7 +479,7 @@ function SortableStudentRow({
 export function GradeSheetTable() {
   const { t } = useTranslation()
   const { isRTL } = useDirection()
-  const navigate = useNavigate()
+  const location = useLocation()
   
   // Persistent stores
   const students = useGradesStore((state) => state.students)
@@ -500,9 +500,9 @@ export function GradeSheetTable() {
   const handleClassSelect = useCallback((classId: string) => {
     // Update store immediately for instant UI feedback
     setSelectedClass(classId)
-    // Update URL to keep sidebar in sync
-    navigate({ to: '/grades', search: { class: classId } })
-  }, [setSelectedClass, navigate])
+    // Update URL to keep sidebar in sync - use current pathname since grades route is role-specific
+    window.history.replaceState(null, '', `${location.pathname}?class=${classId}`)
+  }, [setSelectedClass, location.pathname])
   
   // Get student count for a class
   const getClassStudentCount = useCallback((classId: string) => {
