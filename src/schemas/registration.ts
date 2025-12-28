@@ -14,11 +14,11 @@ export const createRegistrationSchema = (t: (key: string) => string) => {
     email: z.string().email(t('auth.validation.emailInvalid')),
     password: z.string().min(8, t('auth.validation.passwordLength')),
     // role: z.enum(['admin', 'teacher', 'student', 'parent']), // Removed, handled by discriminated union
-    
+
     // Step 2: Location (common to all)
     wilaya: z.string().min(1, t('auth.validation.wilayaRequired')),
     municipality: z.string().min(1, t('auth.validation.municipalityRequired')),
-    institution: z.string().min(1, t('auth.validation.institutionRequired')),
+    institution_id: z.string().min(1, t('auth.validation.institutionRequired')),
   })
 
   // Teacher-specific fields
@@ -33,7 +33,7 @@ export const createRegistrationSchema = (t: (key: string) => string) => {
       .superRefine((val, ctx) => {
         if (val.length === 0) return z.NEVER; // Optional validation handled by min(1) if required, but prompt implies required for teacher? Let's check. 
         // Prompt doesn't explicitly say required, but usually teachers have subjects. I'll stick to rules.
-        
+
         const hasArabic = val.includes('arabic');
         const hasIslamic = val.includes('islamic');
         const hasHistory = val.includes('history'); // History & Geography
@@ -49,19 +49,19 @@ export const createRegistrationSchema = (t: (key: string) => string) => {
         }
 
         if (val.length === 2) {
-            // Strict pairs check
-            const isValidCombination =
-                (hasArabic && hasIslamic) || // Arabic + Islamic ONLY
-                (hasHistory && hasCivic);    // History + Civic ONLY
+          // Strict pairs check
+          const isValidCombination =
+            (hasArabic && hasIslamic) || // Arabic + Islamic ONLY
+            (hasHistory && hasCivic);    // History + Civic ONLY
 
-            if (!isValidCombination) {
-                ctx.addIssue({
-                    code: z.ZodIssueCode.custom,
-                    message: t('auth.validation.invalidSubjectCombination'),
-                });
-            }
+          if (!isValidCombination) {
+            ctx.addIssue({
+              code: z.ZodIssueCode.custom,
+              message: t('auth.validation.invalidSubjectCombination'),
+            });
+          }
         }
-    }),
+      }),
     levels: z.array(z.string()).default([]),
   })
 
@@ -107,7 +107,7 @@ export interface RegistrationPayload {
   role: string
   wilaya: string
   municipality: string
-  institution: string
+  institution_id: string
   // Optional fields
   name_ar?: string
   gender?: 'male' | 'female'
@@ -136,8 +136,8 @@ export interface RegistrationFormState {
   role: 'admin' | 'teacher' | 'student' | 'parent' | string // string allowed for initial state
   wilaya: string
   municipality: string
-  institution: string
-  
+  institution_id: string
+
   // Optional fields
   name_ar: string
   gender?: 'male' | 'female'
@@ -148,7 +148,7 @@ export interface RegistrationFormState {
   levels: string[]
   class: string
   linkedStudentId: string
-  
+
   // Admin fields (CamelCase as per Schema)
   department: string
   position: string
@@ -167,12 +167,12 @@ export const registrationDefaults: RegistrationFormState = {
   email: '',
   password: '',
   role: 'student',
-  
+
   // Location
   wilaya: '',
   municipality: '',
-  institution: '',
-  
+  institution_id: '',
+
   // Teacher fields
   name_ar: '',
   gender: undefined,
@@ -181,10 +181,10 @@ export const registrationDefaults: RegistrationFormState = {
   years_of_experience: undefined,
   subjects: [],
   levels: [],
-  
+
   // Student fields
   class: '',
-  
+
   // Parent fields
   linkedStudentId: '',
 
