@@ -23,47 +23,49 @@ import { useRegister } from '@/hooks/use-auth'
 import { wilayas, municipalities, institutions, subjectsList, classesList } from '@/data/mock-locations'
 
 // Define validation schema using Zod
-const formSchema = z.object({
-  name: z.string().min(2, { message: "Name must be at least 2 characters." }),
-  email: z.string().email({ message: "Invalid email address." }),
-  password: z.string().min(8, { message: "Password must be at least 8 characters." }),
-  role: z.enum(["admin", "teacher", "student", "parent"]),
+const createRegistrationSchema = (t: (key: string) => string) => {
+  return z.object({
+    name: z.string().min(2, { message: t('auth.validation.nameLength') }),
+    email: z.string().email({ message: t('auth.validation.emailInvalid') }),
+    password: z.string().min(8, { message: t('auth.validation.passwordLength') }),
+    role: z.enum(["admin", "teacher", "student", "parent"]),
+    
+    // Location fields - required for all roles in this app logic (from previous code)
+    wilaya: z.string().min(1, { message: t('auth.validation.wilayaRequired') }),
+    municipality: z.string().min(1, { message: t('auth.validation.municipalityRequired') }),
+    institution: z.string().min(1, { message: t('auth.validation.institutionRequired') }),
   
-  // Location fields - required for all roles in this app logic (from previous code)
-  wilaya: z.string().min(1, { message: "Please select a wilaya." }),
-  municipality: z.string().min(1, { message: "Please select a municipality." }),
-  institution: z.string().min(1, { message: "Please select an institution." }),
-
-  // Role specific fields (optional but validated if role matches)
-  subjects: z.array(z.string()).optional(),
-  levels: z.array(z.string()).optional(),
-  class: z.string().optional(),
-  linkedStudentId: z.string().optional(),
-}).refine((data) => {
-  if (data.role === 'teacher') {
-    if (!data.subjects || data.subjects.length === 0) return false;
-    if (!data.levels || data.levels.length === 0) return false;
-  }
-  return true;
-}, {
-  message: "Teachers must select at least one subject and one level.",
-  path: ["subjects"], // Show error on subjects field
-}).refine((data) => {
-  if (data.role === 'student' && !data.class) return false;
-  return true;
-}, {
-  message: "Students must select a class.",
-  path: ["class"],
-}).refine((data) => {
-  if (data.role === 'parent' && !data.linkedStudentId) return false;
-  return true;
-}, {
-  message: "Parents must provide a Student ID.",
-  path: ["linkedStudentId"],
-});
+    // Role specific fields (optional but validated if role matches)
+    subjects: z.array(z.string()).optional(),
+    levels: z.array(z.string()).optional(),
+    class: z.string().optional(),
+    linkedStudentId: z.string().optional(),
+  }).refine((data) => {
+    if (data.role === 'teacher') {
+      if (!data.subjects || data.subjects.length === 0) return false;
+      if (!data.levels || data.levels.length === 0) return false;
+    }
+    return true;
+  }, {
+    message: t('auth.validation.teacherSubjectsRequired'),
+    path: ["subjects"], // Show error on subjects field
+  }).refine((data) => {
+    if (data.role === 'student' && !data.class) return false;
+    return true;
+  }, {
+    message: t('auth.validation.studentClassRequired'),
+    path: ["class"],
+  }).refine((data) => {
+    if (data.role === 'parent' && !data.linkedStudentId) return false;
+    return true;
+  }, {
+    message: t('auth.validation.parentStudentIdRequired'),
+    path: ["linkedStudentId"],
+  });
+}
 
 // Infer type from schema
-type FormValues = z.infer<typeof formSchema>
+type FormValues = z.infer<ReturnType<typeof createRegistrationSchema>>
 
 interface RegistrationFormProps {
   onSuccess?: () => void;
@@ -78,9 +80,12 @@ export function RegistrationForm({ onSuccess }: RegistrationFormProps) {
   // React Query mutation hook
   const { mutate: registerUser, isPending: isSubmitting } = useRegister()
 
+  // Create schema with translations
+  const registrationSchema = createRegistrationSchema(t)
+
   // Initialize form
   const form = useForm<FormValues>({
-    resolver: zodResolver(formSchema),
+    resolver: zodResolver(registrationSchema),
     defaultValues: {
       name: "",
       email: "",
@@ -134,10 +139,11 @@ export function RegistrationForm({ onSuccess }: RegistrationFormProps) {
     const payload = {
       ...data,
       password_confirmation: data.password, // Backend requirement
+      institution_id: data.institution || '', // Pass institution_id as required by RegistrationPayload
       // Override with names for backend (legacy support)
-      wilaya: isRTL ? wilayaData?.nameAr : wilayaData?.name,
-      municipality: isRTL ? muniData?.nameAr : muniData?.name,
-      institution: isRTL ? instData?.nameAr : instData?.name,
+      wilaya: (isRTL ? wilayaData?.nameAr : wilayaData?.name) || '',
+      municipality: (isRTL ? muniData?.nameAr : muniData?.name) || '',
+      institution: (isRTL ? instData?.nameAr : instData?.name) || '',
       subjects: subjectNames,
       levels: levelNames,
     }
@@ -160,7 +166,7 @@ export function RegistrationForm({ onSuccess }: RegistrationFormProps) {
              } else {
                  form.setError("root", { 
                      type: "server", 
-                     message: "Registration failed. Please try again." 
+                     message: t('auth.validation.registrationFailed', 'Registration failed. Please try again.') 
                  });
              }
         }
