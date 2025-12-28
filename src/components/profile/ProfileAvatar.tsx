@@ -10,6 +10,7 @@ interface ProfileAvatarProps {
   role: string
   status?: 'active' | 'inactive' | 'suspended'
   className?: string
+  size?: 'lg' | 'md' | 'sm'
 }
 
 /**
@@ -22,7 +23,8 @@ export function ProfileAvatar({
   avatarUrl, 
   role,
   status = 'active',
-  className 
+  className,
+  size = 'lg'
 }: ProfileAvatarProps) {
   // Generate initials from name
   const initials = name
@@ -39,9 +41,15 @@ export function ProfileAvatar({
   }
 
 
+  const sizeClasses = {
+    sm: 'h-10 w-10',
+    md: 'h-16 w-16',
+    lg: 'h-20 w-20'
+  }
+
   return (
     <div className={cn('flex items-center gap-4 p-4', className)}>
-      <Avatar className="h-20 w-20 border-2 border-primary/10">
+      <Avatar className={cn(sizeClasses[size || 'lg'], "border-2 border-primary/10")}>
         <AvatarImage src={avatarUrl || undefined} alt={name} />
         <AvatarFallback className="text-xl font-semibold bg-primary/10 text-primary">
           {initials}
