@@ -24,15 +24,14 @@ import {
   SidebarMenuItem,
   useSidebar,
 } from '@/components/ui/sidebar'
-import { useAuthStore } from '@/store/auth-store'
-import { useLogout } from '@/hooks/use-auth'
+import { useUser, useLogout } from '@/hooks/use-auth'
 import { Skeleton } from '@/components/ui/skeleton'
 import { FullScreenLoader } from '@/components/ui/full-screen-loader'
 
 export function NavUser() {
   const { isMobile } = useSidebar()
   const { t } = useTranslation()
-  const user = useAuthStore((state) => state.user)
+  const { data: user } = useUser()
 
   const { mutate: logoutUser, isPending: isLoggingOut } = useLogout()
 
