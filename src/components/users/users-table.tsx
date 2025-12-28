@@ -30,7 +30,7 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
 import { Button } from '@/components/ui/button'
-import { useUser as useCurrentUser } from '@/hooks/use-auth'
+import { useUser as useCurrentUser } from '@/features/users/api/use-user'
 import { useUpdateUser, useDeleteUser } from '@/hooks/use-users'
 import { UserDetailsSheet } from './UserDetailsSheet'
 import { ConfirmDeleteDialog } from './ConfirmDeleteDialog'
@@ -92,6 +92,7 @@ export function UsersTable({ data, isLoading }: UsersTableProps) {
     })
   }
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any -- TanStack Table columns with mixed accessor types require any
   const columns: ColumnDef<User, any>[] = [
     columnHelper.accessor('name', {
       header: t('users.columns.name', 'Name'),
