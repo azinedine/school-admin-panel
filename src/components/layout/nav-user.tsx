@@ -24,7 +24,8 @@ import {
   SidebarMenuItem,
   useSidebar,
 } from '@/components/ui/sidebar'
-import { useUser, useLogout } from '@/hooks/use-auth'
+import { useUser } from '@/features/users/api/use-user'
+import { useLogout } from '@/hooks/use-auth'
 import { Skeleton } from '@/components/ui/skeleton'
 import { FullScreenLoader } from '@/components/ui/full-screen-loader'
 
