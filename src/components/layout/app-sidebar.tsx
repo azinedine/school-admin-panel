@@ -8,7 +8,7 @@ import {
   SidebarRail,
 } from '@/components/ui/sidebar'
 import { Building2 } from 'lucide-react'
-import { useAuthStore } from '@/store/auth-store'
+import { useUser } from '@/hooks/queries/use-user'
 import { NavGroup } from '@/components/layout/nav-group'
 import { NavUser } from '@/components/layout/nav-user'
 import { LanguageSwitcher } from '@/components/language-switcher'
@@ -24,7 +24,7 @@ import {
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   const { isRTL } = useDirection()
   const { t } = useTranslation()
-  const user = useAuthStore((state) => state.user)
+  const { data: user } = useUser()
 
   // Select sidebar items based on role
   const sidebarItems = useMemo(() => {
