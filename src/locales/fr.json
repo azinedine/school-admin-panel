@@ -234,7 +234,13 @@
         "deleteAccountDesc": "Supprimer définitivement votre compte et toutes les données associées",
         "deleteAccountBtn": "Supprimer le compte",
         "deleteAccountConfirmTitle": "Êtes-vous absolument sûr ?",
-        "deleteAccountConfirmDesc": "Cette action est irréversible. Cela supprimera définitivement votre compte et toutes vos données de nos serveurs."
+        "deleteAccountConfirmDesc": "Cette action est irréversible. Cela supprimera définitivement votre compte et toutes vos données de nos serveurs.",
+        "validation": {
+            "nameLength": "Le nom doit comporter au moins 2 caractères",
+            "emailInvalid": "Veuillez entrer une adresse email valide",
+            "phoneInvalid": "Veuillez entrer un numéro de téléphone valide",
+            "dateInvalid": "Veuillez entrer une date valide"
+        }
     },
     "user": {
         "upgradeToPro": "Passer à Pro",
