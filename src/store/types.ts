@@ -16,6 +16,8 @@ export interface User {
   institution?: {
     id: number
     name: string
+    name_ar?: string
+    type?: string
   }
   user_institution_id?: string
   subjects?: string[]
