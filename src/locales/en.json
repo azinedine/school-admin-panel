@@ -257,7 +257,13 @@
         "deleteAccountDesc": "Permanently delete your account and all associated data",
         "deleteAccountBtn": "Delete Account",
         "deleteAccountConfirmTitle": "Are you absolutely sure?",
-        "deleteAccountConfirmDesc": "This action cannot be undone. This will permanently delete your account and remove all your data from our servers."
+        "deleteAccountConfirmDesc": "This action cannot be undone. This will permanently delete your account and remove all your data from our servers.",
+        "validation": {
+            "nameLength": "Name must be at least 2 characters",
+            "emailInvalid": "Please enter a valid email address",
+            "phoneInvalid": "Please enter a valid phone number",
+            "dateInvalid": "Please enter a valid date"
+        }
     },
     "user": {
         "upgradeToPro": "Upgrade to Pro",
