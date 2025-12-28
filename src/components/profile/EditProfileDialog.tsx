@@ -31,7 +31,7 @@ type ProfileFormInputValues = {
   date_of_birth?: string
   wilaya?: string
   municipality?: string
-  user_institution_id?: string
+  institution_id?: string
   work_phone?: string
   office_location?: string
   date_of_hiring?: string
@@ -64,7 +64,7 @@ export function EditProfileDialog({ user, isOpen, onClose }: EditProfileDialogPr
       date_of_birth: user.date_of_birth ? format(new Date(user.date_of_birth), 'yyyy-MM-dd') : undefined,
       wilaya: user.wilaya || '',
       municipality: user.municipality || '',
-      user_institution_id: user.user_institution_id?.toString() || '',
+      institution_id: user.institution?.id.toString() || '',
       work_phone: user.work_phone || '',
       office_location: user.office_location || '',
       date_of_hiring: user.date_of_hiring ? format(new Date(user.date_of_hiring), 'yyyy-MM-dd') : undefined,
@@ -89,7 +89,7 @@ export function EditProfileDialog({ user, isOpen, onClose }: EditProfileDialogPr
   
   // Get current institution details to pre-fill location if needed
   const { data: currentInstitution } = useInstitution(
-    user.user_institution_id ? parseInt(user.user_institution_id) : 0
+    user.institution?.id ? user.institution.id : 0,
   )
 
   // Reset form when user changes or dialog opens
@@ -105,7 +105,7 @@ export function EditProfileDialog({ user, isOpen, onClose }: EditProfileDialogPr
         date_of_birth: user.date_of_birth ? format(new Date(user.date_of_birth), 'yyyy-MM-dd') : undefined,
         wilaya: user.wilaya || '',
         municipality: user.municipality || '',
-        user_institution_id: user.user_institution_id?.toString() || '',
+        institution_id: user.institution?.id.toString() || '',
         work_phone: user.work_phone || '',
         office_location: user.office_location || '',
         date_of_hiring: user.date_of_hiring ? format(new Date(user.date_of_hiring), 'yyyy-MM-dd') : undefined,
@@ -233,7 +233,7 @@ export function EditProfileDialog({ user, isOpen, onClose }: EditProfileDialogPr
                     onChange={(val) => {
                        field.onChange(val)
                        form.setValue('municipality', undefined)
-                       form.setValue('user_institution_id', undefined)
+                       form.setValue('institution_id', undefined)
                     }}
                     error={fieldState.error}
                   />
@@ -254,7 +254,7 @@ export function EditProfileDialog({ user, isOpen, onClose }: EditProfileDialogPr
                     value={field.value}
                     onChange={(val) => {
                        field.onChange(val)
-                       form.setValue('user_institution_id', undefined)
+                       form.setValue('institution_id', undefined)
                     }}
                     disabled={!selectedWilaya}
                     error={fieldState.error}
@@ -265,7 +265,7 @@ export function EditProfileDialog({ user, isOpen, onClose }: EditProfileDialogPr
             
              <Controller
                 control={form.control}
-                name="user_institution_id"
+                name="institution_id"
                 render={({ field, fieldState }) => (
                   <SelectField
                     label={t('profilePage.institution')}
