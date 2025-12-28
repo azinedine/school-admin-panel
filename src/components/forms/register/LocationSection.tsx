@@ -55,7 +55,7 @@ export function LocationSection() {
         onChange={(val) => {
             setValue('wilaya', val)
             setValue('municipality', '') // Reset dependents
-            setValue('institution', '') 
+            setValue('institution_id', '') 
         }}
         isLoading={loadingWilayas}
         error={errors.wilaya as any}
@@ -69,7 +69,7 @@ export function LocationSection() {
         value={selectedMunicipality}
         onChange={(val) => {
             setValue('municipality', val)
-            setValue('institution', '') // Reset dependent
+            setValue('institution_id', '') // Reset dependent
         }}
         isLoading={loadingMunicipalities}
         disabled={!selectedWilaya}
@@ -85,11 +85,11 @@ export function LocationSection() {
              : t('auth.register.selectInstitution')
          }
          options={institutionOptions}
-         value={watch('institution')}
-         onChange={(val) => setValue('institution', val)}
+         value={watch('institution_id')}
+         onChange={(val) => setValue('institution_id', val)}
          isLoading={loadingInstitutions}
          disabled={!selectedMunicipality || noInstitutionsFound}
-         error={errors.institution as any}
+         error={errors.institution_id as any}
          required={!noInstitutionsFound}
          className="sm:col-span-2 lg:col-span-1"
       />
