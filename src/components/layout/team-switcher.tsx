@@ -5,7 +5,7 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from '@/components/ui/sidebar'
-import { useUser } from '@/hooks/use-auth'
+import { useUser } from '@/features/users/api/use-user'
 
 export function TeamSwitcher() {
   const { t } = useTranslation()
