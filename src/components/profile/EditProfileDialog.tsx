@@ -39,6 +39,7 @@ import { cn } from '@/lib/utils'
 import { apiClient } from '@/lib/api-client'
 import { useAuthStore } from '@/store/auth-store'
 import type { User } from '@/store/types'
+import { useWilayas, useMunicipalities, useInstitutionsByLocation, useInstitution } from '@/hooks/use-institutions'
 
 // Validation Schema
 const profileSchema = z.object({
@@ -51,10 +52,11 @@ const profileSchema = z.object({
   date_of_birth: z.date().optional(),
   wilaya: z.string().optional(),
   municipality: z.string().optional(),
+  user_institution_id: z.string().optional(), 
   work_phone: z.string().optional(),
   office_location: z.string().optional(),
   date_of_hiring: z.date().optional(),
-    years_of_experience: z
+  years_of_experience: z
     .union([z.string(), z.number()])
     .optional()
     .transform((val) => (val === '' ? undefined : Number(val))),
@@ -69,7 +71,8 @@ interface EditProfileDialogProps {
 }
 
 export function EditProfileDialog({ user, isOpen, onClose }: EditProfileDialogProps) {
-  const { t } = useTranslation()
+  const { t, i18n } = useTranslation()
+  const isRTL = i18n.dir() === 'rtl'
   const queryClient = useQueryClient()
   const { setUser } = useAuthStore()
   const [isSubmitting, setIsSubmitting] = useState(false)
@@ -83,16 +86,37 @@ export function EditProfileDialog({ user, isOpen, onClose }: EditProfileDialogPr
       phone: user.phone || '',
       address: user.address || '',
       gender: user.gender,
-      // Handle date string to Date object conversion
       date_of_birth: user.date_of_birth ? new Date(user.date_of_birth) : undefined,
       wilaya: user.wilaya || '',
       municipality: user.municipality || '',
+      user_institution_id: user.user_institution_id?.toString() || '',
       work_phone: user.work_phone || '',
       office_location: user.office_location || '',
       date_of_hiring: user.date_of_hiring ? new Date(user.date_of_hiring) : undefined,
       years_of_experience: user.years_of_experience,
     },
   })
+
+  // Watch for cascading selects
+  const selectedWilaya = form.watch('wilaya')
+  const selectedMunicipality = form.watch('municipality')
+  // Removed unused currentInstitutionId
+
+  // Fetch data
+  const { data: wilayas } = useWilayas()
+  const { data: municipalities } = useMunicipalities(
+    selectedWilaya ? parseInt(selectedWilaya) : undefined
+  )
+  const { data: institutionsData, isLoading: loadingInstitutions } = useInstitutionsByLocation(
+    selectedWilaya ? parseInt(selectedWilaya) : undefined,
+    selectedMunicipality ? parseInt(selectedMunicipality) : undefined,
+    { enabled: !!selectedWilaya && !!selectedMunicipality }
+  )
+  
+  // Get current institution details to pre-fill location if needed
+  const { data: currentInstitution } = useInstitution(
+    user.user_institution_id ? parseInt(user.user_institution_id) : 0
+  )
 
   // Reset form when user changes or dialog opens
   useEffect(() => {
@@ -107,6 +131,7 @@ export function EditProfileDialog({ user, isOpen, onClose }: EditProfileDialogPr
         date_of_birth: user.date_of_birth ? new Date(user.date_of_birth) : undefined,
         wilaya: user.wilaya || '',
         municipality: user.municipality || '',
+        user_institution_id: user.user_institution_id?.toString() || '',
         work_phone: user.work_phone || '',
         office_location: user.office_location || '',
         date_of_hiring: user.date_of_hiring ? new Date(user.date_of_hiring) : undefined,
@@ -115,10 +140,33 @@ export function EditProfileDialog({ user, isOpen, onClose }: EditProfileDialogPr
     }
   }, [user, isOpen, form])
 
+  // Pre-fill location based on current institution
+  useEffect(() => {
+    if (isOpen && currentInstitution && !form.getValues('wilaya')) {
+      // Only set if not already set manually or by initial default values (which are usually empty strings for strings)
+      // Actually defaultValues above sets wilaya to user.wilaya. 
+      // If user.wilaya is missing but we have institution, we should use institution's location.
+      if (currentInstitution.wilaya_id) {
+         form.setValue('wilaya', currentInstitution.wilaya_id.toString())
+      }
+      if (currentInstitution.municipality_id) {
+        // Use timeout to allow municipality query to enable after wilaya is set
+        setTimeout(() => {
+           form.setValue('municipality', currentInstitution.municipality_id.toString())
+        }, 100)
+      }
+    }
+  }, [isOpen, currentInstitution, form])
+
+
+  const institutions = institutionsData?.data || []
+  const hasInstitutions = institutions.length > 0
+  // Ensure strict boolean for disabled prop
+  const noInstitutionsFound = !!selectedMunicipality && !loadingInstitutions && !hasInstitutions
+
   const onSubmit = async (values: ProfileFormValues) => {
     setIsSubmitting(true)
     try {
-      // Format date for API (YYYY-MM-DD)
       const payload = {
         ...values,
         date_of_birth: values.date_of_birth ? format(values.date_of_birth, 'yyyy-MM-dd') : null,
@@ -128,10 +176,7 @@ export function EditProfileDialog({ user, isOpen, onClose }: EditProfileDialogPr
       const response = await apiClient.put<{ data: User }>(`/v1/users/${user.id}`, payload)
       const updatedUser = response.data.data
 
-      // Update global store
       setUser(updatedUser)
-      
-      // Invalidate queries to refresh UI
       queryClient.invalidateQueries({ queryKey: ['user'] })
       queryClient.invalidateQueries({ queryKey: ['users'] })
 
@@ -173,7 +218,6 @@ export function EditProfileDialog({ user, isOpen, onClose }: EditProfileDialogPr
                   </FormItem>
                 )}
               />
-               {/* Arabic Name */}
               <FormField
                 control={form.control}
                 name="name_ar"
@@ -204,7 +248,6 @@ export function EditProfileDialog({ user, isOpen, onClose }: EditProfileDialogPr
             />
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              {/* Phone */}
               <FormField
                 control={form.control}
                 name="phone"
@@ -219,7 +262,6 @@ export function EditProfileDialog({ user, isOpen, onClose }: EditProfileDialogPr
                 )}
               />
 
-              {/* Gender */}
               <FormField
                 control={form.control}
                 name="gender"
@@ -243,7 +285,6 @@ export function EditProfileDialog({ user, isOpen, onClose }: EditProfileDialogPr
               />
             </div>
 
-            {/* Date of Birth */}
             <FormField
               control={form.control}
               name="date_of_birth"
@@ -286,7 +327,6 @@ export function EditProfileDialog({ user, isOpen, onClose }: EditProfileDialogPr
               )}
             />
 
-            {/* Address */}
             <FormField
               control={form.control}
               name="address"
@@ -302,36 +342,106 @@ export function EditProfileDialog({ user, isOpen, onClose }: EditProfileDialogPr
             />
 
              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              {/* Wilaya - Text for now */}
+              {/* Wilaya Select */}
               <FormField
                 control={form.control}
                 name="wilaya"
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>{t('profilePage.wilaya')}</FormLabel>
-                    <FormControl>
-                      <Input {...field} />
-                    </FormControl>
+                    <Select 
+                      onValueChange={(val) => {
+                        field.onChange(val)
+                        form.setValue('municipality', '')
+                        form.setValue('user_institution_id', '')
+                      }} 
+                      value={field.value}
+                    >
+                      <FormControl>
+                        <SelectTrigger>
+                          <SelectValue placeholder={t('profilePage.selectWilaya', 'Select Wilaya')} />
+                        </SelectTrigger>
+                      </FormControl>
+                      <SelectContent>
+                        {wilayas?.map((w) => (
+                           <SelectItem key={w.id} value={w.id.toString()}>
+                             {isRTL ? (w.name_ar || w.name) : w.name}
+                           </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
                     <FormMessage />
                   </FormItem>
                 )}
               />
               
-              {/* Municipality - Text for now */}
+              {/* Municipality Select */}
               <FormField
                 control={form.control}
                 name="municipality"
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>{t('profilePage.municipality')}</FormLabel>
-                    <FormControl>
-                      <Input {...field} />
-                    </FormControl>
+                    <Select 
+                      onValueChange={(val) => {
+                        field.onChange(val)
+                        form.setValue('user_institution_id', '')
+                      }} 
+                      value={field.value}
+                      disabled={!selectedWilaya}
+                    >
+                      <FormControl>
+                        <SelectTrigger>
+                          <SelectValue placeholder={t('profilePage.selectMunicipality', 'Select Municipality')} />
+                        </SelectTrigger>
+                      </FormControl>
+                      <SelectContent>
+                         {municipalities?.map((m) => (
+                           <SelectItem key={m.id} value={m.id.toString()}>
+                             {isRTL ? (m.name_ar || m.name) : m.name}
+                           </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
                     <FormMessage />
                   </FormItem>
                 )}
               />
             </div>
+            
+            {/* Institution Select */}
+             <FormField
+                control={form.control}
+                name="user_institution_id"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>{t('profilePage.institution')}</FormLabel>
+                    <Select 
+                      onValueChange={field.onChange} 
+                      value={field.value}
+                      disabled={!selectedMunicipality || noInstitutionsFound}
+                    >
+                      <FormControl>
+                        <SelectTrigger>
+                          <SelectValue placeholder={
+                             noInstitutionsFound 
+                             ? t('auth.register.noInstitutions', 'No institutions found')
+                             : t('profilePage.selectInstitution', 'Select Institution')
+                          } />
+                        </SelectTrigger>
+                      </FormControl>
+                      <SelectContent>
+                         {institutions.map((i) => (
+                           <SelectItem key={i.id} value={i.id.toString()}>
+                             {isRTL ? (i.name_ar || i.name) : i.name}
+                           </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
 
             {/* Admin only fields (if user is admin) */}
             {(user.role === 'admin' || user.role === 'manager' || user.role === 'super_admin') && (
