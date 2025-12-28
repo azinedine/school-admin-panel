@@ -1,70 +1,53 @@
+/**
+ * Auth Store (Minimal)
+ * 
+ * This store ONLY handles client state for authentication:
+ * - Token storage/persistence
+ * - Authentication flag derived from token presence
+ * 
+ * All server state (user data, permissions) is managed by TanStack Query.
+ * This follows the principle: "TanStack Query = sole owner of server state"
+ * 
+ * @example
+ * ```tsx
+ * const isAuthenticated = useAuthStore(s => s.isAuthenticated)
+ * const token = useAuthStore(s => s.token)
+ * ```
+ */
+
 import { create } from 'zustand'
 import { devtools, persist, createJSONStorage } from 'zustand/middleware'
-
-import type { User } from './types'
 import { authStorage } from './storage'
 
-/**
- * Authentication Store State
- */
+// =============================================================================
+// Types
+// =============================================================================
+
 interface AuthState {
-  user: User | null
   token: string | null
   isAuthenticated: boolean
 }
 
-/**
- * Authentication Store Actions
- */
 interface AuthActions {
-  login: (user: User, token: string) => void
-  logout: () => void
-  updateUser: (user: Partial<User>) => void
-  setUser: (user: User) => void
+  setToken: (token: string) => void
+  clearToken: () => void
 }
 
-/**
- * Combined Auth Store Type
- */
 type AuthStore = AuthState & AuthActions
 
-/**
- * Initial state for auth store
- */
+// =============================================================================
+// Initial State
+// =============================================================================
+
 const initialState: AuthState = {
-  user: null,
   token: null,
   isAuthenticated: false,
 }
 
-/**
- * Authentication Store
- * 
- * Handles user authentication state with IndexedDB persistence.
- * 
- * @example
- * ```tsx
- * import { useAuthStore } from '@/store/auth-store'
- * 
- * function LoginButton() {
- *   const { login, logout, isAuthenticated, user } = useAuthStore()
- *   
- *   const handleLogin = async () => {
- *     const response = await api.login(credentials)
- *     login(response.user, response.token)
- *   }
- *   
- *   return isAuthenticated ? (
- *     <div>
- *       <p>Welcome, {user?.name}</p>
- *       <button onClick={logout}>Logout</button>
- *     </div>
- *   ) : (
- *     <button onClick={handleLogin}>Login</button>
- *   )
- * }
- * ```
- */
+// =============================================================================
+// Store Implementation
+// =============================================================================
+
 export const useAuthStore = create<AuthStore>()(
   devtools(
     persist(
@@ -72,62 +55,42 @@ export const useAuthStore = create<AuthStore>()(
         ...initialState,
 
         /**
-         * Login user and save authentication data
+         * Set token after successful login.
+         * User data is NOT stored here - it lives in TanStack Query cache.
          */
-        login: (user, token) =>
+        setToken: (token) =>
           set(
             {
-              user,
               token,
               isAuthenticated: true,
             },
             false,
-            'auth/login'
+            'auth/setToken'
           ),
 
         /**
-         * Logout user and clear authentication data
+         * Clear token on logout.
+         * Query cache should be cleared separately via queryClient.clear()
          */
-        logout: () =>
+        clearToken: () =>
           set(
             initialState,
             false,
-            'auth/logout'
-          ),
-
-        /**
-         * Update user profile data
-         */
-        updateUser: (userData) =>
-          set(
-            (state) => ({
-              user: state.user ? { ...state.user, ...userData } : null,
-            }),
-            false,
-            'auth/updateUser'
-          ),
-
-        /**
-         * Set user (alias for updateUser for backward compatibility/clarity)
-         */
-        setUser: (user) =>
-          set(
-            () => ({ user: user as User }),
-            false,
-            'auth/setUser'
+            'auth/clearToken'
           ),
       }),
       {
         name: 'auth-storage',
-        storage: createJSONStorage(() => authStorage), // Using localStorage
+        storage: createJSONStorage(() => authStorage),
       }
     ),
     { name: 'AuthStore' }
   )
 )
 
-/**
- * Selector hooks for optimized re-renders
- */
-export const useUser = () => useAuthStore((state) => state.user)
+// =============================================================================
+// Selectors
+// =============================================================================
+
 export const useIsAuthenticated = () => useAuthStore((state) => state.isAuthenticated)
+export const useToken = () => useAuthStore((state) => state.token)
