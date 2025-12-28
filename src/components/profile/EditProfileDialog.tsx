@@ -14,11 +14,9 @@ import {
 import { Form } from '@/components/ui/form'
 import { TextField, SelectField, DatePicker, ActionButton } from '@/components/forms'
 import { useWilayas, useMunicipalities, useInstitutionsByLocation, useInstitution } from '@/hooks/use-institutions'
-import { useAuthStore } from '@/store/auth-store'
-import type { User } from '@/store/types'
-import { createProfileSchema } from '@/schemas/profile-schema'
 import { useUpdateProfile } from '@/hooks/use-profile-mutation'
-import { toast } from 'sonner'
+import type { User } from '@/features/users/types/user.types'
+import { createProfileSchema } from '@/schemas/profile-schema'
 
 // Mapped type for form inputs (native date inputs use strings)
 export type ProfileFormInputValues = {
@@ -47,8 +45,9 @@ interface EditProfileDialogProps {
 export function EditProfileDialog({ user, isOpen, onClose }: EditProfileDialogProps) {
   const { t, i18n } = useTranslation()
   const isRTL = i18n.dir() === 'rtl'
+  
+  // Use mutation hook (handles cache update via invalidation)
   const { mutateAsync: updateProfile, isPending } = useUpdateProfile(user.id)
-  const { setUser } = useAuthStore()
 
   const profileSchema = useMemo(() => createProfileSchema(t), [t])
 
@@ -135,26 +134,21 @@ export function EditProfileDialog({ user, isOpen, onClose }: EditProfileDialogPr
   const hasInstitutions = institutions.length > 0
   const noInstitutionsFound = !!selectedMunicipality && !loadingInstitutions && !hasInstitutions
 
-  // The resolver returns ProfileFormInputValues, so we use that type for the handler
+  // Submit handler - mutation handles cache update
   const onSubmit = async (values: ProfileFormInputValues) => {
     try {
-      // Convert the form values back to the expected API format
       const profileValues = {
         ...values,
         date_of_birth: values.date_of_birth ? values.date_of_birth : undefined,
         date_of_hiring: values.date_of_hiring ? values.date_of_hiring : undefined,
         years_of_experience: values.years_of_experience ? Number(values.years_of_experience) : undefined,
-        // wilaya and municipality should be sent as string IDs to match the API expectation
         wilaya: values.wilaya || undefined,
         municipality: values.municipality || undefined,
       }
-      const updatedUser = await updateProfile(profileValues)
-      setUser(updatedUser as User) // Ensure compatible type if needed
-      toast.success(t('common.updateSuccess', 'Profile updated successfully'))
+      await updateProfile(profileValues)
       onClose()
     } catch (error) {
       console.error('Failed to update profile:', error)
-      toast.error(t('common.error', 'Failed to update profile'))
     }
   }
 
