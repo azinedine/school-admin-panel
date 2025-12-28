@@ -4,6 +4,8 @@ import { SidebarProvider } from '@/components/ui/sidebar'
 import { AppSidebar } from '@/components/layout/app-sidebar'
 import { useDirection } from '@/hooks/use-direction'
 import { cn } from '@/lib/utils'
+import { useUser } from '@/hooks/use-auth'
+import { Loader2 } from 'lucide-react'
 
 interface Props {
   children?: React.ReactNode
@@ -12,6 +14,18 @@ interface Props {
 export function AuthenticatedLayout({ children }: Props) {
   const defaultOpen = Cookies.get('sidebar_state') !== 'false'
   const { isRTL } = useDirection()
+  
+  // Fetch user via TanStack Query (sole owner of server state)
+  const { isLoading } = useUser()
+  
+  // Show loading state during initial data fetch
+  if (isLoading) {
+    return (
+      <div className="h-screen w-screen flex items-center justify-center bg-background">
+        <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
+      </div>
+    )
+  }
   
   return (
     <SidebarProvider defaultOpen={defaultOpen} className="h-screen overflow-hidden">
