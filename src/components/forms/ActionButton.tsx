@@ -1,7 +1,7 @@
-import { Button } from "@/components/ui/button"
+import { Button, type ButtonProps } from "@/components/ui/button"
 import { Loader2 } from "lucide-react"
 
-interface ActionButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
+interface ActionButtonProps extends ButtonProps {
   isLoading?: boolean
   loadingText?: string
   children: React.ReactNode
