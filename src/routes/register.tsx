@@ -63,7 +63,7 @@ function RegisterPage() {
       role: data.role,
       wilaya: data.wilaya,
       municipality: data.municipality,
-      institution: data.institution,
+      institution_id: data.institution_id,
     };
 
     let rolePayload: Partial<RegistrationPayload> = {};
