@@ -239,7 +239,9 @@
             "nameLength": "Le nom doit comporter au moins 2 caractères",
             "emailInvalid": "Veuillez entrer une adresse email valide",
             "phoneInvalid": "Veuillez entrer un numéro de téléphone valide",
-            "dateInvalid": "Veuillez entrer une date valide"
+            "dateInvalid": "Veuillez entrer une date valide",
+            "maxSubjects": "Vous ne pouvez sélectionner que jusqu'à 2 matières",
+            "invalidSubjectCombination": "Combinaison de matières invalide"
         }
     },
     "user": {
