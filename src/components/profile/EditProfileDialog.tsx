@@ -1,4 +1,4 @@
-import { useEffect } from 'react'
+import { useEffect, useMemo } from 'react'
 import { useForm, Controller } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useTranslation } from 'react-i18next'
@@ -16,12 +16,12 @@ import { TextField, SelectField, DatePicker, ActionButton } from '@/components/f
 import { useWilayas, useMunicipalities, useInstitutionsByLocation, useInstitution } from '@/hooks/use-institutions'
 import { useAuthStore } from '@/store/auth-store'
 import type { User } from '@/store/types'
-import { profileSchema, type ProfileFormValues } from '@/schemas/profile-schema'
+import { createProfileSchema } from '@/schemas/profile-schema'
 import { useUpdateProfile } from '@/hooks/use-profile-mutation'
 import { toast } from 'sonner'
 
 // Mapped type for form inputs (native date inputs use strings)
-type ProfileFormInputValues = {
+export type ProfileFormInputValues = {
   name: string
   name_ar?: string
   email: string
@@ -50,9 +50,11 @@ export function EditProfileDialog({ user, isOpen, onClose }: EditProfileDialogPr
   const { mutateAsync: updateProfile, isPending } = useUpdateProfile(user.id)
   const { setUser } = useAuthStore()
 
+  const profileSchema = useMemo(() => createProfileSchema(t), [t])
+
   // Use ProfileFormInputValues to allow string dates in defaultValues
   const form = useForm<ProfileFormInputValues>({
-    resolver: zodResolver(profileSchema) as any,
+    resolver: zodResolver(profileSchema),
     defaultValues: {
       name: user.name || '',
       name_ar: user.name_ar || '',
@@ -62,8 +64,8 @@ export function EditProfileDialog({ user, isOpen, onClose }: EditProfileDialogPr
       gender: user.gender || undefined,
       // Format dates for native date input (YYYY-MM-DD)
       date_of_birth: user.date_of_birth ? format(new Date(user.date_of_birth), 'yyyy-MM-dd') : undefined,
-      wilaya: user.wilaya || '',
-      municipality: user.municipality || '',
+      wilaya: user.wilaya?.id ? user.wilaya.id.toString() : '',
+      municipality: user.municipality?.id ? user.municipality.id.toString() : '',
       institution_id: user.institution?.id.toString() || '',
       work_phone: user.work_phone || '',
       office_location: user.office_location || '',
@@ -103,8 +105,8 @@ export function EditProfileDialog({ user, isOpen, onClose }: EditProfileDialogPr
         address: user.address || '',
         gender: user.gender || undefined,
         date_of_birth: user.date_of_birth ? format(new Date(user.date_of_birth), 'yyyy-MM-dd') : undefined,
-        wilaya: user.wilaya || '',
-        municipality: user.municipality || '',
+        wilaya: user.wilaya?.id ? user.wilaya.id.toString() : '',
+        municipality: user.municipality?.id ? user.municipality.id.toString() : '',
         institution_id: user.institution?.id.toString() || '',
         work_phone: user.work_phone || '',
         office_location: user.office_location || '',
@@ -133,10 +135,20 @@ export function EditProfileDialog({ user, isOpen, onClose }: EditProfileDialogPr
   const hasInstitutions = institutions.length > 0
   const noInstitutionsFound = !!selectedMunicipality && !loadingInstitutions && !hasInstitutions
 
-  // The resolver returns ProfileFormValues (with Dates), so we use that type for the handler
-  const onSubmit = async (values: ProfileFormValues) => {
+  // The resolver returns ProfileFormInputValues, so we use that type for the handler
+  const onSubmit = async (values: ProfileFormInputValues) => {
     try {
-      const updatedUser = await updateProfile(values)
+      // Convert the form values back to the expected API format
+      const profileValues = {
+        ...values,
+        date_of_birth: values.date_of_birth ? values.date_of_birth : undefined,
+        date_of_hiring: values.date_of_hiring ? values.date_of_hiring : undefined,
+        years_of_experience: values.years_of_experience ? Number(values.years_of_experience) : undefined,
+        // wilaya and municipality should be sent as string IDs to match the API expectation
+        wilaya: values.wilaya || undefined,
+        municipality: values.municipality || undefined,
+      }
+      const updatedUser = await updateProfile(profileValues)
       setUser(updatedUser as User) // Ensure compatible type if needed
       toast.success(t('common.updateSuccess', 'Profile updated successfully'))
       onClose()
@@ -157,7 +169,7 @@ export function EditProfileDialog({ user, isOpen, onClose }: EditProfileDialogPr
         </DialogHeader>
 
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit as any)} className="space-y-4">
+          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
             
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                <TextField
