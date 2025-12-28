@@ -23,20 +23,17 @@ export const createRegistrationSchema = (t: (key: string) => string) => {
 
   // Teacher-specific fields
   const teacherFields = z.object({
-    name_ar: z.string().optional(),
-    gender: z.enum(['male', 'female']).optional(),
-    date_of_birth: z.string().optional(),
-    phone: z.string().optional(),
-    years_of_experience: z.coerce.number().min(0).optional(),
+    name_ar: z.string().min(1, t('auth.validation.arabicNameRequired')),
+    gender: z.enum(['male', 'female'], { message: t('auth.validation.genderRequired') }),
+    date_of_birth: z.string().min(1, t('auth.validation.dobRequired')),
+    phone: z.string().min(1, t('auth.validation.phoneRequired')),
+    years_of_experience: z.coerce.number().min(0, t('auth.validation.experienceRequired')),
     subjects: z.array(z.string())
-      .default([])
+      .min(1, t('auth.validation.subjectsRequired'))
       .superRefine((val, ctx) => {
-        if (val.length === 0) return z.NEVER; // Optional validation handled by min(1) if required, but prompt implies required for teacher? Let's check. 
-        // Prompt doesn't explicitly say required, but usually teachers have subjects. I'll stick to rules.
-
         const hasArabic = val.includes('arabic');
         const hasIslamic = val.includes('islamic');
-        const hasHistory = val.includes('history'); // History & Geography
+        const hasHistory = val.includes('history');
         const hasCivic = val.includes('civic');
 
         // Rule: Max 2 subjects allowed
@@ -49,10 +46,9 @@ export const createRegistrationSchema = (t: (key: string) => string) => {
         }
 
         if (val.length === 2) {
-          // Strict pairs check
           const isValidCombination =
-            (hasArabic && hasIslamic) || // Arabic + Islamic ONLY
-            (hasHistory && hasCivic);    // History + Civic ONLY
+            (hasArabic && hasIslamic) ||
+            (hasHistory && hasCivic);
 
           if (!isValidCombination) {
             ctx.addIssue({
@@ -62,17 +58,17 @@ export const createRegistrationSchema = (t: (key: string) => string) => {
           }
         }
       }),
-    levels: z.array(z.string()).default([]),
+    levels: z.array(z.string()).min(1, t('auth.validation.levelsRequired')),
   })
 
   // Student-specific fields
   const studentFields = z.object({
-    class: z.string().optional(),
+    class: z.string().min(1, t('auth.validation.classRequired')),
   })
 
   // Parent-specific fields
   const parentFields = z.object({
-    linkedStudentId: z.string().optional(),
+    linkedStudentId: z.string().min(1, t('auth.validation.linkedStudentRequired')),
   })
 
   // Admin-specific fields
