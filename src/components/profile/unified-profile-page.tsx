@@ -38,6 +38,8 @@ export function UnifiedProfilePage() {
   // Fallback to store user if hook is loading (for immediate display)
   const storeUser = useAuthStore((state) => state.user)
   const profile = userData || storeUser
+
+  console.log(userData)
   
   const [isEditOpen, setIsEditOpen] = useState(false)
 
