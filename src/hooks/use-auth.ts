@@ -1,12 +1,19 @@
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
-import { apiClient } from '@/lib/api-client'
+/**
+ * Auth Mutation Hooks
+ * 
+ * These hooks handle authentication mutations (login, register, logout).
+ * They sync the auth store with server responses and manage query cache.
+ */
+
+import { useMutation, useQueryClient } from '@tanstack/react-query'
+import { apiClient, auth } from '@/lib/api-client'
 import { useAuthStore } from '@/store/auth-store'
 import type { User } from '@/store/types'
 import { useNavigate } from '@tanstack/react-router'
 import { toast } from 'sonner'
-import { isAxiosError, type AxiosError } from 'axios'
-
+import type { AxiosError } from 'axios'
 import { type RegistrationPayload } from '@/schemas/registration'
+import { userKeys } from '@/features/users/api/use-user'
 
 interface AuthResponse {
   access_token: string
@@ -26,10 +33,10 @@ export const useLogin = () => {
     },
     onSuccess: (data) => {
       // Inject default role if missing from backend
-      const userWithRole = { ...data.user, role: data.user.role || 'admin' }
+      const userWithRole = { ...data.user, role: data.user.role || 'admin' } as User
       login(userWithRole, data.access_token)
-      // Invalidate user query to ensure fresh data is fetched
-      queryClient.invalidateQueries({ queryKey: ['user'] })
+      // Set user data in query cache for TanStack Query consumers
+      queryClient.setQueryData(userKeys.current(), userWithRole)
       toast.success('Logged in successfully')
       navigate({ to: '/' })
     },
@@ -50,17 +57,16 @@ export const useRegister = () => {
       return response.data
     },
     onSuccess: (data) => {
-      const userWithRole = { ...data.user, role: data.user.role || 'admin' }
+      const userWithRole = { ...data.user, role: data.user.role || 'admin' } as User
       login(userWithRole, data.access_token)
-      // Invalidate user query to ensure fresh data is fetched
-      queryClient.invalidateQueries({ queryKey: ['user'] })
+      // Set user data in query cache
+      queryClient.setQueryData(userKeys.current(), userWithRole)
       toast.success('Account created successfully')
       navigate({ to: '/' })
     },
     onError: (error: AxiosError<{ message: string }>) => {
-        // Handle validation errors key by key if needed, or just show generic message
-        const message = error.response?.data?.message || 'Registration failed';
-        toast.error(message)
+      const message = error.response?.data?.message || 'Registration failed'
+      toast.error(message)
     },
   })
 }
@@ -81,43 +87,11 @@ export const useLogout = () => {
       navigate({ to: '/login' })
     },
     onError: () => {
-        // Even if API fails, we should logout client-side
-        logout()
-        queryClient.clear()
-        navigate({ to: '/login' })
+      // Even if API fails, we should logout client-side
+      logout()
+      queryClient.clear()
+      navigate({ to: '/login' })
     }
-  })
-}
-
-import { auth } from '@/lib/api-client'
-
-export const useUser = () => {
-  const updateUser = useAuthStore((state) => state.updateUser)
-  
-  return useQuery({
-    queryKey: ['user'],
-    queryFn: async () => {
-      try {
-        const response = await apiClient.get('/user')
-        // Laravel API with UserResource returns: { data: { id, name, email, ... } }
-        // Axios unwraps the HTTP response, so response.data = { data: { user fields } }
-        const userData = response.data.data as User
-        
-        // Sync with auth store
-        updateUser(userData)
-        return userData
-      } catch (error) {
-        // If we can't fetch the user profile (likely due to 403/401), logout to prevent loop
-        if (isAxiosError(error)) {
-          if (error.response?.status === 403 || error.response?.status === 401) {
-             useAuthStore.getState().logout()
-          }
-        }
-        throw error
-      }
-    },
-    retry: false,
-    staleTime: 1000 * 60 * 5, // 5 minutes
   })
 }
 
@@ -131,8 +105,8 @@ export const useDeleteAccount = () => {
       await auth.deleteUser()
     },
     onSuccess: () => {
-      logout() // Clear local state
-      queryClient.clear() // Clear all queries from cache to prevents stale data
+      logout()
+      queryClient.clear()
       navigate({ to: '/login' })
       toast.success('Account deleted successfully')
     },
