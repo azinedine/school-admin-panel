@@ -56,9 +56,11 @@ apiClient.interceptors.response.use(
     if (error.response) {
       switch (error.response.status) {
         case 401:
-          // Token expired or invalid
+          // Token expired, invalid, or "Unauthenticated"
           console.error('Unauthorized access - logging out')
           useAuthStore.getState().logout()
+          // Force redirect to login
+          window.location.href = '/login'
           break
         case 403:
           console.error('Forbidden access')
@@ -73,7 +75,7 @@ apiClient.interceptors.response.use(
           console.error('API error:', error.response.status)
       }
     }
-    
+
     return Promise.reject(error)
   }
 )
