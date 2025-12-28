@@ -63,7 +63,20 @@ apiClient.interceptors.response.use(
           window.location.href = '/login'
           break
         case 403:
-          console.error('Forbidden access')
+          // Check if account is suspended
+          const responseData = error.response.data as { error_code?: string } | undefined
+          if (responseData?.error_code === 'ACCOUNT_SUSPENDED') {
+            console.error('Account suspended - redirecting to suspended page')
+            // Update the user status in the store to reflect suspended state
+            const authStore = useAuthStore.getState()
+            if (authStore.user) {
+              authStore.updateUser({ ...authStore.user, status: 'suspended' })
+            }
+            // Redirect to suspended page
+            window.location.href = '/suspended'
+          } else {
+            console.error('Forbidden access')
+          }
           break
         case 404:
           console.error('Resource not found')
