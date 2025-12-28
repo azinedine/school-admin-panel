@@ -262,7 +262,9 @@
             "nameLength": "Name must be at least 2 characters",
             "emailInvalid": "Please enter a valid email address",
             "phoneInvalid": "Please enter a valid phone number",
-            "dateInvalid": "Please enter a valid date"
+            "dateInvalid": "Please enter a valid date",
+            "maxSubjects": "You can only select up to 2 subjects",
+            "invalidSubjectCombination": "Invalid subject combination"
         }
     },
     "user": {
