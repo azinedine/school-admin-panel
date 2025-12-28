@@ -82,7 +82,20 @@ export const useUsersManagement = ({ page = 1, role, limit = 10 }: UseUsersManag
       params.append('per_page', limit.toString())
       if (role) params.append('role', role)
 
-      const response = await apiClient.get<UsersManagementResponse>(`/v1/users?${params.toString()}`)
+
+      // Determine endpoint based on user role (Super Admins get enhanced data)
+      // We can't use hooks inside this async function, so pass it or check store outside
+      // But queryFn is standard async. We can access store via import if not needing reactivity inside fn?
+      // Better to check inside the component and pass "endpoint" or "isSuperAdmin" to hook?
+      // Actually, easier: just check auth store here directly if possible, OR rely on the hook logic below.
+
+      // Let's use the store state directly from the import since it's outside React render cycle
+      const { user } = await import('@/store/auth-store').then(m => m.useAuthStore.getState())
+      const isSuperAdmin = user?.role === 'super_admin'
+
+      const endpoint = isSuperAdmin ? '/v1/super-admin/users' : '/v1/users'
+
+      const response = await apiClient.get<UsersManagementResponse>(`${endpoint}?${params.toString()}`)
       return response.data
     },
     placeholderData: (previousData) => previousData, // Keep previous data while fetching new page
