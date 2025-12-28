@@ -38,10 +38,10 @@ export function UnifiedProfilePage() {
   // Fallback to store user if hook is loading (for immediate display)
   const storeUser = useAuthStore((state) => state.user)
   const profile = userData || storeUser
-
-  console.log(userData)
   
   const [isEditOpen, setIsEditOpen] = useState(false)
+  
+
 
   // Format date for display
   const formatDate = (dateString: string | null | undefined) => {
@@ -227,12 +227,12 @@ export function UnifiedProfilePage() {
                 )}
                 <ProfileInfoRow
                   label={t('profilePage.wilaya')}
-                  value={profile.wilaya}
+                  value={isRTL ? (profile.wilaya?.name_ar || profile.wilaya?.name) : profile.wilaya?.name}
                   icon={MapPin}
                 />
                 <ProfileInfoRow
                   label={t('profilePage.municipality')}
-                  value={profile.municipality}
+                  value={isRTL ? (profile.municipality?.name_ar || profile.municipality?.name) : profile.municipality?.name}
                 />
                 <ProfileInfoRow
                   label={t('profilePage.address')}
