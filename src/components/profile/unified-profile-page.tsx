@@ -32,7 +32,8 @@ import { Button } from '@/components/ui/button'
 import { Pencil } from 'lucide-react'
 
 export function UnifiedProfilePage() {
-  const { t } = useTranslation()
+  const { t, i18n } = useTranslation()
+  const isRTL = i18n.dir() === 'rtl'
   const { data: userData, isLoading, isError, error } = useUser()
   // Fallback to store user if hook is loading (for immediate display)
   const storeUser = useAuthStore((state) => state.user)
@@ -172,7 +173,7 @@ export function UnifiedProfilePage() {
                 
                 <ProfileInfoRow
                   label={t('profilePage.institution')}
-                  value={profile.institution?.name}
+                  value={isRTL ? (profile.institution?.name_ar || profile.institution?.name) : profile.institution?.name}
                   icon={Building}
                 />
                 
