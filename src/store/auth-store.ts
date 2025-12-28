@@ -20,6 +20,7 @@ interface AuthActions {
   login: (user: User, token: string) => void
   logout: () => void
   updateUser: (user: Partial<User>) => void
+  setUser: (user: User) => void
 }
 
 /**
@@ -104,6 +105,16 @@ export const useAuthStore = create<AuthStore>()(
             }),
             false,
             'auth/updateUser'
+          ),
+
+        /**
+         * Set user (alias for updateUser for backward compatibility/clarity)
+         */
+        setUser: (user) =>
+          set(
+            () => ({ user: user as User }),
+            false,
+            'auth/setUser'
           ),
       }),
       {
