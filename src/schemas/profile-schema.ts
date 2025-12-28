@@ -13,7 +13,7 @@ export const profileSchema = z.object({
     date_of_birth: z.coerce.date().optional(),
     wilaya: optionalString,
     municipality: optionalString,
-    user_institution_id: optionalString,
+    institution_id: optionalString,
     work_phone: z.string().optional(),
     office_location: z.string().optional(),
     date_of_hiring: z.coerce.date().optional(),
