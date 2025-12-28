@@ -76,7 +76,7 @@ export function LessonDetailDialog({
     endTime: '09:00',
     mode: 'fullClass' as 'fullClass' | 'groups',
     group: 'first' as 'first' | 'second',
-    status: undefined as 'completed' | 'postponed' | 'deleted' | undefined,
+    status: undefined as 'completed' | 'postponed' | 'cancelled' | 'deleted' | 'custom' | undefined,
     statusNote: '',
     field: '',
     learningSegment: '',
