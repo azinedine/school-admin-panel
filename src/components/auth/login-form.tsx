@@ -20,13 +20,15 @@ import { Link } from '@tanstack/react-router'
 import { useLogin } from '@/hooks/use-auth'
 
 // Define validation schema using Zod
-const formSchema = z.object({
-  email: z.string().email({ message: "Invalid email address." }),
-  password: z.string().min(1, { message: "Password is required." }),
-})
+const createLoginSchema = (t: (key: string) => string) => {
+  return z.object({
+    email: z.string().min(1, { message: t('auth.validation.emailRequired') }).email({ message: t('auth.validation.emailInvalid') }),
+    password: z.string().min(1, { message: t('auth.validation.passwordRequired') }),
+  })
+}
 
 // Infer type from schema
-type FormValues = z.infer<typeof formSchema>
+type FormValues = z.infer<ReturnType<typeof createLoginSchema>>
 
 export function LoginForm() {
   const { t, i18n } = useTranslation()
@@ -36,9 +38,12 @@ export function LoginForm() {
   // React Query mutation hook
   const { mutate: loginUser, isPending: isSubmitting } = useLogin()
 
+  // Create schema with translations
+  const loginSchema = createLoginSchema(t)
+
   // Initialize form
   const form = useForm<FormValues>({
-    resolver: zodResolver(formSchema),
+    resolver: zodResolver(loginSchema),
     defaultValues: {
       email: "",
       password: "",
