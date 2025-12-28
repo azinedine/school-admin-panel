@@ -8,7 +8,7 @@ import {
   SidebarRail,
 } from '@/components/ui/sidebar'
 import { Building2 } from 'lucide-react'
-import { useUser } from '@/hooks/use-auth'
+import { useUser } from '@/features/users/api/use-user'
 import { NavGroup } from '@/components/layout/nav-group'
 import { NavUser } from '@/components/layout/nav-user'
 import { LanguageSwitcher } from '@/components/language-switcher'
