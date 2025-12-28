@@ -70,8 +70,9 @@ export function UsersTable({ data, isLoading }: UsersTableProps) {
                 : t('pages.users.suspendAccount.activated', 'User activated successfully')
             )
         },
-        onError: () => {
+        onError: (error) => {
             toast.dismiss(loadingToast)
+            console.error('Failed to update user status:', error)
             toast.error(t('pages.users.suspendAccount.error', 'Failed to update user status'))
         }
       }
