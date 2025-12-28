@@ -10,8 +10,21 @@ export interface User {
   role: 'admin' | 'teacher' | 'student' | 'parent' | 'manager' | 'super_admin'
   avatar?: string
   // Profile fields
-  wilaya?: string
-  municipality?: string
+  wilaya?: {
+    id: number
+    name: string
+    name_ar?: string
+  }
+  municipality?: {
+    id: number
+    name: string
+    name_ar?: string
+    wilaya?: {
+      id: number
+      name: string
+      name_ar?: string
+    }
+  }
 
   institution?: {
     id: number
