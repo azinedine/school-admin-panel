@@ -95,12 +95,12 @@ export function InstitutionInfoSection({ user }: SectionProps) {
       />
       <ProfileInfoRow
         label={t('profilePage.wilaya')}
-        value={user.wilaya}
+        value={typeof user.wilaya === 'object' ? user.wilaya?.name : user.wilaya}
         icon={MapPin}
       />
       <ProfileInfoRow
         label={t('profilePage.municipality')}
-        value={user.municipality}
+        value={typeof user.municipality === 'object' ? user.municipality?.name : user.municipality}
       />
     </ProfileSection>
   )
