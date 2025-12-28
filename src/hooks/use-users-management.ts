@@ -90,7 +90,7 @@ export const useUsersManagement = ({ page = 1, role, limit = 10 }: UseUsersManag
       // Actually, easier: just check auth store here directly if possible, OR rely on the hook logic below.
 
       // Let's use the store state directly from the import since it's outside React render cycle
-      const { user } = await import('@/store/auth-store').then(m => m.useAuthStore.getState())
+      const user = (await import('@/store/auth-store').then(m => m.useAuthStore.getState())).user
       const isSuperAdmin = user?.role === 'super_admin'
 
       const endpoint = isSuperAdmin ? '/v1/super-admin/users' : '/v1/users'
