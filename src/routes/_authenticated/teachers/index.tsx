@@ -40,7 +40,7 @@ export const Route = createFileRoute('/_authenticated/teachers/')({
 import { FullScreenLoader } from '@/components/ui/full-screen-loader'
 
 function TeachersPage() {
-  const { t } = useTranslation()
+  const { t, i18n } = useTranslation()
   const { data, isLoading } = useTeachers()
   const { mutate: deleteTeacher, isPending: isDeleting } = useDeleteTeacher()
 
@@ -75,19 +75,32 @@ function TeachersPage() {
               <TableHeader>
                 <TableRow>
                   <TableHead>{t('common.name', 'Name')}</TableHead>
+                  <TableHead>{t('profilePage.institution', 'School')}</TableHead>
+                  <TableHead>{t('profilePage.wilaya', 'State')}</TableHead>
+                  <TableHead>{t('profilePage.gender', 'Gender')}</TableHead>
                   <TableHead>{t('common.email', 'Email')}</TableHead>
-                  <TableHead>{t('common.joined', 'Joined')}</TableHead>
                   <TableHead className="text-right">{t('common.actions', 'Actions')}</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
                 {data?.data.map((teacher) => (
                   <TableRow key={teacher.id}>
-                    <TableCell className="font-medium">{teacher.name}</TableCell>
-                    <TableCell>{teacher.email}</TableCell>
-                    <TableCell>
-                      {new Date(teacher.created_at).toLocaleDateString()}
+                    <TableCell className="font-medium">
+                        <div className="flex flex-col">
+                            <span>{i18n.dir() === 'rtl' ? (teacher.name_ar || teacher.name) : teacher.name}</span>
+                            {teacher.name_ar && i18n.dir() !== 'rtl' && <span className="text-xs text-muted-foreground">{teacher.name_ar}</span>}
+                        </div>
                     </TableCell>
+                    <TableCell>
+                        {i18n.dir() === 'rtl' ? (teacher.institution?.name_ar || teacher.institution?.name) : teacher.institution?.name}
+                    </TableCell>
+                    <TableCell>
+                        {i18n.dir() === 'rtl' ? (teacher.wilaya?.name_ar || teacher.wilaya?.name) : teacher.wilaya?.name}
+                    </TableCell>
+                    <TableCell>
+                        {teacher.gender ? t(`profilePage.${teacher.gender}`) : '-'}
+                    </TableCell>
+                    <TableCell>{teacher.email}</TableCell>
                     <TableCell className="text-right">
                       <AlertDialog>
                         <AlertDialogTrigger asChild>
