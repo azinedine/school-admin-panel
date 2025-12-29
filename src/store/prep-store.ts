@@ -86,19 +86,19 @@ interface PrepActions {
   getPlanByWeek: (weekNumber: number) => DailyPlanEntry[]
   getPlanByWeekAndDay: (weekNumber: number, day: DailyPlanEntry['day']) => DailyPlanEntry[]
   clearAllPlans: () => void
-  
+
   // Timetable actions
   setTimetable: (entries: Omit<TimetableEntry, 'id'>[]) => void
   getTimetableByDay: (day: TimetableEntry['day']) => TimetableEntry[]
   getAllTimetableSlots: () => TimetableEntry[]
   initializeTimetable: (entries: Omit<TimetableEntry, 'id'>[]) => void
   clearTimetable: () => void
-  
+
   // Term date actions
   setTermDates: (startDate: string, endDate: string) => void
   getTermDates: () => { startDate: string | null; endDate: string | null }
   clearTermDates: () => void
-  
+
   // Lesson template actions
   addLessonTemplate: (template: Omit<LessonTemplate, 'id' | 'createdAt'>) => void
   updateLessonTemplate: (id: string, updates: Partial<LessonTemplate>) => void
@@ -289,6 +289,13 @@ export const usePrepStore = create<PrepStore>()(
     }),
     {
       name: 'school-admin-prep',
+      partialize: (state) => ({
+        planEntries: state.planEntries,
+        termStartDate: state.termStartDate,
+        termEndDate: state.termEndDate,
+        lessonTemplates: state.lessonTemplates,
+        memos: state.memos,
+      }),
     }
   )
 )
