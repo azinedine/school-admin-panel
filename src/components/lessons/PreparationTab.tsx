@@ -39,7 +39,7 @@ import type { LessonPreparation, LessonPreparationApiPayload } from '@/schemas/l
  * Part of unified Lesson Management feature
  */
 export const PreparationTab = memo(function PreparationTab() {
-    const { t } = useTranslation()
+    const { t, i18n } = useTranslation()
     const user = useAuthStore((state) => state.user)
 
     console.log(user)
@@ -241,10 +241,36 @@ export const PreparationTab = memo(function PreparationTab() {
             {/* Create/Edit Form Dialog */}
             <Dialog open={formDialogOpen} onOpenChange={setFormDialogOpen}>
                 <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto p-0">
-                    <div className="px-6 py-4 border-b">
+                    <div className="px-6 py-4 border-b flex justify-between items-center">
                         <DialogTitle>
                             {selectedPrep ? t('lessons.editPrep', 'Edit Lesson Preparation') : t('lessons.createPrep', 'New Lesson Preparation')}
                         </DialogTitle>
+                        <div className="flex gap-1">
+                            <Button
+                                variant={i18n.language === 'en' ? 'default' : 'ghost'}
+                                size="sm"
+                                onClick={() => i18n.changeLanguage('en')}
+                                className="h-7 px-2 text-xs"
+                            >
+                                EN
+                            </Button>
+                            <Button
+                                variant={i18n.language === 'fr' ? 'default' : 'ghost'}
+                                size="sm"
+                                onClick={() => i18n.changeLanguage('fr')}
+                                className="h-7 px-2 text-xs"
+                            >
+                                FR
+                            </Button>
+                            <Button
+                                variant={i18n.language === 'ar' ? 'default' : 'ghost'}
+                                size="sm"
+                                onClick={() => i18n.changeLanguage('ar')}
+                                className="h-7 px-2 text-xs"
+                            >
+                                AR
+                            </Button>
+                        </div>
                     </div>
                     <div className="p-6">
                         <LessonPrepForm
