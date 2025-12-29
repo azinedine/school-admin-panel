@@ -32,6 +32,7 @@ import { usePrepStore } from '@/store/prep-store'
 import { toast } from 'sonner'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { MemoLibrary } from '@/components/MemoLibrary'
+import { LessonPageNav } from '@/routes/_authenticated/teacher/lessons/_addLessons/LessonPageNav'
 
 const ACADEMIC_YEARS: Array<LessonTemplate['academicYear']> = ['1st', '2nd', '3rd', '4th']
 
@@ -184,6 +185,9 @@ function AddLessonPage() {
       title={t('nav.lessonManagement')}
     >
       <Tabs defaultValue="lessons" className="space-y-6">
+        {/* Page Navigation */}
+        <LessonPageNav />
+
         <TabsList>
           <TabsTrigger value="lessons">{t('pages.addLesson.title')}</TabsTrigger>
           <TabsTrigger value="memos">{t('pages.prep.memos.title')}</TabsTrigger>
@@ -461,7 +465,7 @@ function AddLessonPage() {
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
-    </ContentPage>
+    </ContentPage >
   )
 }
 
