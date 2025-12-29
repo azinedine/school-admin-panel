@@ -1,7 +1,7 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import { toast } from 'sonner'
 import { apiClient } from '@/lib/api-client'
-import type { LessonPreparation, LessonPreparationFormData } from '@/schemas/lesson-preparation'
+import type { LessonPreparation, LessonPreparationApiPayload } from '@/schemas/lesson-preparation'
 
 /**
  * Query key factory for lesson preparations
@@ -42,7 +42,7 @@ const fetchLessonPrepDetail = async (id: number): Promise<LessonPreparation> => 
 /**
  * Create a new lesson preparation
  */
-const createLessonPrep = async (data: LessonPreparationFormData): Promise<LessonPreparation> => {
+const createLessonPrep = async (data: LessonPreparationApiPayload): Promise<LessonPreparation> => {
   const response = await apiClient.post<LessonPreparation>(
     '/v1/lesson-preparations',
     data
@@ -53,7 +53,7 @@ const createLessonPrep = async (data: LessonPreparationFormData): Promise<Lesson
 /**
  * Update an existing lesson preparation
  */
-const updateLessonPrep = async (id: number, data: Partial<LessonPreparationFormData>): Promise<LessonPreparation> => {
+const updateLessonPrep = async (id: number, data: Partial<LessonPreparationApiPayload>): Promise<LessonPreparation> => {
   const response = await apiClient.put<LessonPreparation>(
     `/v1/lesson-preparations/${id}`,
     data
@@ -195,7 +195,7 @@ export function useUpdateLessonPrep(id: number) {
   const queryClient = useQueryClient()
 
   return useMutation({
-    mutationFn: (data: Partial<LessonPreparationFormData>) => updateLessonPrep(id, data),
+    mutationFn: (data: Partial<LessonPreparationApiPayload>) => updateLessonPrep(id, data),
     onSuccess: (updatedPrep) => {
       // Invalidate list queries
       queryClient.invalidateQueries({
