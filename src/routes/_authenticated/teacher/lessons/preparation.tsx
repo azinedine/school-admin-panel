@@ -18,6 +18,7 @@ import { useLessonPreps, useCreateLessonPrep, useUpdateLessonPrep } from '@/hook
 import { LessonPrepForm } from '@/routes/_authenticated/teacher/lessons/_addLessons/LessonPrepForm'
 import { LessonPrepTable } from '@/routes/_authenticated/teacher/lessons/_addLessons/LessonPrepTable'
 import { LessonPrepDetails } from '@/routes/_authenticated/teacher/lessons/_addLessons/LessonPrepDetails'
+import { LessonPageNav } from '@/routes/_authenticated/teacher/lessons/_addLessons/LessonPageNav'
 
 import type { LessonPreparation, LessonPreparationFormData } from '@/schemas/lesson-preparation'
 
@@ -86,6 +87,9 @@ function PreparationPage() {
         </Button>
       }
     >
+      {/* Page Navigation */}
+      <LessonPageNav />
+
       {/* Tabs for status filtering */}
       <Tabs value={statusFilter} onValueChange={(v) => setStatusFilter(v as typeof statusFilter)} className="mb-6">
         <TabsList>
