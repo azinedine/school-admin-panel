@@ -1,155 +1,57 @@
-import { useState } from 'react'
 import { createFileRoute, redirect } from '@tanstack/react-router'
 import { useAuthStore } from '@/store/auth-store'
 import { useTranslation } from 'react-i18next'
-import { Settings, Calendar } from 'lucide-react'
 import { ContentPage } from '@/components/layout/content-page'
-import { TimetableEmptyState } from '@/components/TimetableEmptyState'
-import { TimetableSetupDialog } from '@/components/TimetableSetupDialog'
-import { TermSetupDialog } from '@/components/TermSetupDialog'
-import { LessonPrepByClass } from '@/routes/_authenticated/teacher/lessons/_addLessons/LessonPrepByClass'
-import { Button } from '@/components/ui/button'
-import { Card } from '@/components/ui/card'
-import { usePrepStore } from '@/store/prep-store'
-import { LessonPageNav } from '@/routes/_authenticated/teacher/lessons/_addLessons/LessonPageNav'
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
+import { LessonsTab, PreparationTab, TimetableTab } from '@/components/lessons'
+import { BookOpen, FileText, Calendar } from 'lucide-react'
 
-function PrepPage() {
+/**
+ * Unified Lesson Management Page
+ * 
+ * Merges lessons library, preparation view, and timetable planning
+ * into a single cohesive feature with tabs.
+ * 
+ * - Lessons Tab: CRUD operations for lesson library
+ * - Preparation Tab: Read-only view of lesson preparations
+ * - Timetable Tab: Term and schedule planning
+ */
+function LessonManagementPage() {
   const { t } = useTranslation()
-  const {
-    isTimetableInitialized,
-    getAllTimetableSlots,
-    initializeTimetable,
-    setTimetable,
-    getTermDates,
-    setTermDates,
-  } = usePrepStore()
-  const [timetableDialogOpen, setTimetableDialogOpen] = useState(false)
-  const [termDialogOpen, setTermDialogOpen] = useState(false)
 
-  const termDates = getTermDates()
-  const hasTermDates = termDates.startDate && termDates.endDate
-
-  // Step 1: If no timetable, show timetable setup
-  if (!isTimetableInitialized) {
-    return (
-      <ContentPage
-        title={t('pages.prep.title')}
-        description={t('pages.prep.description')}
-      >
-        <TimetableEmptyState onSetupClick={() => setTimetableDialogOpen(true)} />
-
-        <TimetableSetupDialog
-          open={timetableDialogOpen}
-          onOpenChange={setTimetableDialogOpen}
-          onSave={(entries) => {
-            initializeTimetable(entries)
-            // After timetable is set, prompt for term dates
-            setTermDialogOpen(true)
-          }}
-        />
-
-        <TermSetupDialog
-          open={termDialogOpen}
-          onOpenChange={setTermDialogOpen}
-          onSave={(startDate, endDate) => {
-            setTermDates(startDate, endDate)
-          }}
-        />
-      </ContentPage>
-    )
-  }
-
-  // Step 2: If timetable exists but no term dates, show term setup
-  if (!hasTermDates) {
-    return (
-      <ContentPage
-        title={t('pages.prep.title')}
-        description={t('pages.prep.description')}
-      >
-        <Card className="p-8">
-          <div className="text-center space-y-6">
-            <div className="flex justify-center">
-              <Calendar className="h-16 w-16 text-primary" />
-            </div>
-            <div className="space-y-2">
-              <h2 className="text-2xl font-bold">
-                {t('pages.prep.termSetup.title')}
-              </h2>
-              <p className="text-muted-foreground">
-                {t('pages.prep.termSetup.description')}
-              </p>
-            </div>
-            <Button onClick={() => setTermDialogOpen(true)} size="lg">
-              <Calendar className="h-5 w-5 ltr:mr-2 rtl:ml-2" />
-              {t('pages.prep.termSetup.title')}
-            </Button>
-          </div>
-        </Card>
-
-        <TermSetupDialog
-          open={termDialogOpen}
-          onOpenChange={setTermDialogOpen}
-          onSave={(startDate, endDate) => {
-            setTermDates(startDate, endDate)
-          }}
-        />
-      </ContentPage>
-    )
-  }
-
-  // Step 3: Show lesson prep organized by class
   return (
     <ContentPage
-      title={t('pages.prep.title')}
-      description={t('pages.prep.description')}
-      headerActions={
-        <div className="flex gap-2">
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={() => setTermDialogOpen(true)}
-          >
-            <Calendar className="h-4 w-4 ltr:mr-2 rtl:ml-2" />
-            {t('pages.prep.termSetup.title')}
-          </Button>
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={() => setTimetableDialogOpen(true)}
-          >
-            <Settings className="h-4 w-4 ltr:mr-2 rtl:ml-2" />
-            {t('pages.prep.timetable.edit')}
-          </Button>
-        </div>
-      }
+      title={t('nav.lessonManagement', 'Lesson Management')}
+      description={t('lessons.description', 'Manage your lessons, preparations, and schedule')}
     >
-      {/* Page Navigation */}
-      <LessonPageNav />
+      <Tabs defaultValue="lessons" className="space-y-6">
+        <TabsList className="grid w-full grid-cols-3 lg:w-[400px]">
+          <TabsTrigger value="lessons" className="gap-2">
+            <BookOpen className="h-4 w-4" />
+            <span className="hidden sm:inline">{t('lessons.tabs.library', 'Library')}</span>
+          </TabsTrigger>
+          <TabsTrigger value="preparation" className="gap-2">
+            <FileText className="h-4 w-4" />
+            <span className="hidden sm:inline">{t('lessons.tabs.preparation', 'Preparation')}</span>
+          </TabsTrigger>
+          <TabsTrigger value="timetable" className="gap-2">
+            <Calendar className="h-4 w-4" />
+            <span className="hidden sm:inline">{t('lessons.tabs.timetable', 'Timetable')}</span>
+          </TabsTrigger>
+        </TabsList>
 
-      {/* Lessons Organized by Class */}
-      <LessonPrepByClass />
+        <TabsContent value="lessons" className="mt-6">
+          <LessonsTab />
+        </TabsContent>
 
-      {/* Edit Timetable Dialog */}
-      <TimetableSetupDialog
-        open={timetableDialogOpen}
-        onOpenChange={setTimetableDialogOpen}
-        existingTimetable={getAllTimetableSlots()}
-        onSave={(entries) => {
-          setTimetable(entries)
-          setTimetableDialogOpen(false)
-        }}
-      />
+        <TabsContent value="preparation" className="mt-6">
+          <PreparationTab />
+        </TabsContent>
 
-      {/* Edit Term Dates Dialog */}
-      <TermSetupDialog
-        open={termDialogOpen}
-        onOpenChange={setTermDialogOpen}
-        existingStartDate={termDates.startDate || undefined}
-        existingEndDate={termDates.endDate || undefined}
-        onSave={(startDate, endDate) => {
-          setTermDates(startDate, endDate)
-        }}
-      />
+        <TabsContent value="timetable" className="mt-6">
+          <TimetableTab />
+        </TabsContent>
+      </Tabs>
     </ContentPage>
   )
 }
@@ -163,5 +65,5 @@ export const Route = createFileRoute('/_authenticated/teacher/lessons/')({
       })
     }
   },
-  component: PrepPage,
+  component: LessonManagementPage,
 })
