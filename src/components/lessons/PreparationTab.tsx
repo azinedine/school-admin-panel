@@ -230,7 +230,14 @@ export const PreparationTab = memo(function PreparationTab() {
                             <Button variant="outline" onClick={() => setViewDialogOpen(false)}>
                                 {t('common.close', 'Close')}
                             </Button>
-                            <Button onClick={() => { setViewDialogOpen(false); selectedPrep && handleEdit(selectedPrep); }}>
+                            <Button
+                                onClick={() => {
+                                    setViewDialogOpen(false);
+                                    if (selectedPrep) {
+                                        handleEdit(selectedPrep);
+                                    }
+                                }}
+                            >
                                 <Plus className="h-4 w-4 mr-2" />
                                 {t('common.edit', 'Edit')}
                             </Button>
