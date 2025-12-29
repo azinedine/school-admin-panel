@@ -17,6 +17,7 @@ import {
     DialogHeader,
     DialogTitle,
 } from '@/components/ui/dialog'
+import { useAuthStore } from '@/store/auth-store'
 import {
     AlertDialog,
     AlertDialogAction,
@@ -39,6 +40,9 @@ import type { LessonPreparation, LessonPreparationFormData } from '@/schemas/les
  */
 export const PreparationTab = memo(function PreparationTab() {
     const { t } = useTranslation()
+    const user = useAuthStore((state) => state.user)
+
+    console.log(user)
 
     // State
     const [viewDialogOpen, setViewDialogOpen] = useState(false)
@@ -247,7 +251,9 @@ export const PreparationTab = memo(function PreparationTab() {
                             initialData={selectedPrep}
                             onSubmit={handleFormSubmit}
                             isLoading={createMutation.isPending || updateMutation.isPending}
-                            classes={['1AS', '2AS', '3AS', '1AM', '2AM', '3AM', '4AM']}
+                            classes={user?.levels && user.levels.length > 0
+                                ? user.levels
+                                : ['1AS', '2AS', '3AS', '1AM', '2AM', '3AM', '4AM']}
                             onCancel={() => setFormDialogOpen(false)}
                         />
                     </div>
