@@ -155,8 +155,8 @@ export function LessonPrepForm({
                 {/* Basic Information */}
                 <Card>
                     <CardHeader>
-                        <CardTitle>{t('lessons.prep.basicInfo', 'Basic Information')}</CardTitle>
-                        <CardDescription>{t('lessons.prep.basicInfoDesc', 'Lesson title, class and date')}</CardDescription>
+                        <CardTitle>{t('pages.prep.basicInfo', 'Basic Information')}</CardTitle>
+                        <CardDescription>{t('pages.prep.basicInfoDesc', 'Lesson title, class and date')}</CardDescription>
                     </CardHeader>
                     <CardContent className="space-y-6">
                         <FormField
@@ -164,10 +164,10 @@ export function LessonPrepForm({
                             name="title"
                             render={({ field }) => (
                                 <FormItem>
-                                    <FormLabel>{t('lessons.prep.lessonTitle', 'Lesson Title')}</FormLabel>
+                                    <FormLabel>{t('pages.prep.lessonTitle', 'Lesson Title')}</FormLabel>
                                     <FormControl>
                                         <Input
-                                            placeholder={t('lessons.prep.lessonTitlePlaceholder', 'e.g., Introduction to Photosynthesis')}
+                                            placeholder={t('pages.prep.lessonTitlePlaceholder', '')}
                                             {...field}
                                             disabled={isLoading}
                                         />
@@ -183,7 +183,7 @@ export function LessonPrepForm({
                                 name="class"
                                 render={({ field }) => (
                                     <FormItem>
-                                        <FormLabel>{t('lessons.prep.class', 'Class')}</FormLabel>
+                                        <FormLabel>{t('pages.prep.class', 'Class')}</FormLabel>
                                         <Select
                                             onValueChange={field.onChange}
                                             defaultValue={field.value}
@@ -191,7 +191,7 @@ export function LessonPrepForm({
                                         >
                                             <FormControl>
                                                 <SelectTrigger>
-                                                    <SelectValue placeholder={t('lessons.prep.selectClass', 'Select class')} />
+                                                    <SelectValue placeholder={t('pages.prep.selectClass', 'Select class')} />
                                                 </SelectTrigger>
                                             </FormControl>
                                             <SelectContent>
@@ -226,7 +226,7 @@ export function LessonPrepForm({
                                     name="date"
                                     render={({ field }) => (
                                         <FormItem>
-                                            <FormLabel>{t('lessons.prep.date', 'Date')}</FormLabel>
+                                            <FormLabel>{t('pages.prep.date', 'Date')}</FormLabel>
                                             <FormControl>
                                                 <Input
                                                     type="date"
@@ -244,7 +244,7 @@ export function LessonPrepForm({
                                     name="duration_minutes"
                                     render={({ field }) => (
                                         <FormItem>
-                                            <FormLabel>{t('lessons.prep.duration', 'Duration (min)')}</FormLabel>
+                                            <FormLabel>{t('pages.prep.duration', 'Duration (min)')}</FormLabel>
                                             <FormControl>
                                                 <Input
                                                     type="number"
@@ -265,10 +265,10 @@ export function LessonPrepForm({
                             name="description"
                             render={({ field }) => (
                                 <FormItem>
-                                    <FormLabel>{t('lessons.prep.description', 'Description')}</FormLabel>
+                                    <FormLabel>{t('pages.prep.description', 'Description')}</FormLabel>
                                     <FormControl>
                                         <Textarea
-                                            placeholder={t('lessons.prep.descriptionPlaceholder', 'Brief description of the lesson...')}
+                                            placeholder={t('pages.prep.descriptionPlaceholder', 'Brief description of the lesson...')}
                                             className="min-h-[80px]"
                                             {...field}
                                             disabled={isLoading}
@@ -286,7 +286,7 @@ export function LessonPrepForm({
                     {/* Learning Objectives */}
                     <Card>
                         <CardHeader className="pb-3">
-                            <CardTitle className="text-base">{t('lessons.prep.learningObjectives', 'Learning Objectives')}</CardTitle>
+                            <CardTitle className="text-base">{t('pages.prep.learningObjectives', 'Learning Objectives')}</CardTitle>
                         </CardHeader>
                         <CardContent className="space-y-3">
                             {objectiveFields.map((field, index) => (
@@ -298,7 +298,7 @@ export function LessonPrepForm({
                                             <FormItem className="flex-1 space-y-0">
                                                 <FormControl>
                                                     <Input
-                                                        placeholder={`${t('lessons.prep.objectivePlaceholder', 'Objective')} ${index + 1}`}
+                                                        placeholder={`${t('pages.prep.objectivePlaceholder', 'Objective')} ${index + 1}`}
                                                         {...field}
                                                         disabled={isLoading}
                                                         className="h-9"
@@ -329,7 +329,7 @@ export function LessonPrepForm({
                                 className="w-full h-8 dashed border-dashed"
                             >
                                 <Plus className="h-3 w-3 mr-2" />
-                                {t('lessons.prep.addObjective', 'Add Objective')}
+                                {t('pages.prep.addObjective', 'Add Objective')}
                             </Button>
                         </CardContent>
                     </Card>
@@ -337,7 +337,7 @@ export function LessonPrepForm({
                     {/* Key Topics */}
                     <Card>
                         <CardHeader className="pb-3">
-                            <CardTitle className="text-base">{t('lessons.prep.keyTopics', 'Key Topics')}</CardTitle>
+                            <CardTitle className="text-base">{t('pages.prep.keyTopics', 'Key Topics')}</CardTitle>
                         </CardHeader>
                         <CardContent className="space-y-3">
                             {topicFields.map((field, index) => (
@@ -349,7 +349,7 @@ export function LessonPrepForm({
                                             <FormItem className="flex-1 space-y-0">
                                                 <FormControl>
                                                     <Input
-                                                        placeholder={`${t('lessons.prep.topicPlaceholder', 'Topic')} ${index + 1}`}
+                                                        placeholder={`${t('pages.prep.topicPlaceholder', 'Topic')} ${index + 1}`}
                                                         {...field}
                                                         disabled={isLoading}
                                                         className="h-9"
@@ -380,7 +380,7 @@ export function LessonPrepForm({
                                 className="w-full h-8 dashed border-dashed"
                             >
                                 <Plus className="h-3 w-3 mr-2" />
-                                {t('lessons.prep.addTopic', 'Add Topic')}
+                                {t('pages.prep.addTopic', 'Add Topic')}
                             </Button>
                         </CardContent>
                     </Card>
@@ -391,7 +391,7 @@ export function LessonPrepForm({
                     {/* Teaching Methods */}
                     <Card>
                         <CardHeader className="pb-3">
-                            <CardTitle className="text-base">{t('lessons.prep.teachingMethods', 'Teaching Methods')}</CardTitle>
+                            <CardTitle className="text-base">{t('pages.prep.teachingMethods', 'Teaching Methods')}</CardTitle>
                         </CardHeader>
                         <CardContent className="space-y-3">
                             <div className="flex flex-wrap gap-2 mb-2">
@@ -420,16 +420,24 @@ export function LessonPrepForm({
                                 disabled={isLoading}
                             >
                                 <SelectTrigger className="h-9">
-                                    <SelectValue placeholder={t('lessons.prep.addMethod', 'Add method')} />
+                                    <SelectValue placeholder={t('pages.prep.addMethod', 'Add method')} />
                                 </SelectTrigger>
                                 <SelectContent>
                                     {teachingMethods
                                         .filter((method) => !methodFields.some((f) => f.value === method))
-                                        .map((method) => (
-                                            <SelectItem key={method} value={method}>
-                                                {method}
-                                            </SelectItem>
-                                        ))}
+                                        .map((method) => {
+                                            // Convert to camelCase key
+                                            const key = method
+                                                .toLowerCase()
+                                                .replace(/[^a-zA-Z0-9]+(.)/g, (m, chr) => chr.toUpperCase())
+                                                .replace(/[^a-zA-Z0-9]/g, '')
+
+                                            return (
+                                                <SelectItem key={method} value={method}>
+                                                    {t(`pages.prep.teachingMethodsOptions.${key}`, method)}
+                                                </SelectItem>
+                                            )
+                                        })}
                                 </SelectContent>
                             </Select>
                         </CardContent>
@@ -438,7 +446,7 @@ export function LessonPrepForm({
                     {/* Resources */}
                     <Card>
                         <CardHeader className="pb-3">
-                            <CardTitle className="text-base">{t('lessons.prep.resources', 'Resources')}</CardTitle>
+                            <CardTitle className="text-base">{t('pages.prep.resources', 'Resources')}</CardTitle>
                         </CardHeader>
                         <CardContent className="space-y-3">
                             {resourceFields.map((field, index) => (
@@ -450,7 +458,7 @@ export function LessonPrepForm({
                                             <FormItem className="flex-1 space-y-0">
                                                 <FormControl>
                                                     <Input
-                                                        placeholder={`${t('lessons.prep.resourcePlaceholder', 'Resource')} ${index + 1}`}
+                                                        placeholder={`${t('pages.prep.resourcePlaceholder', 'Resource')} ${index + 1}`}
                                                         {...field}
                                                         disabled={isLoading}
                                                         className="h-9"
@@ -481,7 +489,7 @@ export function LessonPrepForm({
                                 className="w-full h-8 dashed border-dashed"
                             >
                                 <Plus className="h-3 w-3 mr-2" />
-                                {t('lessons.prep.addResource', 'Add Resource')}
+                                {t('pages.prep.addResource', 'Add Resource')}
                             </Button>
                         </CardContent>
                     </Card>
@@ -490,11 +498,11 @@ export function LessonPrepForm({
                 {/* Assessment */}
                 <Card>
                     <CardHeader>
-                        <CardTitle>{t('lessons.prep.assessment', 'Assessment')}</CardTitle>
+                        <CardTitle>{t('pages.prep.assessment', 'Assessment')}</CardTitle>
                     </CardHeader>
                     <CardContent className="space-y-4">
                         <div>
-                            <label className="text-sm font-medium mb-3 block">{t('lessons.prep.assessmentMethods', 'Assessment Methods')}</label>
+                            <label className="text-sm font-medium mb-3 block">{t('pages.prep.assessmentMethods', 'Assessment Methods')}</label>
                             <div className="flex flex-wrap gap-2 mb-3">
                                 {assessmentFields.map((field, index) => (
                                     <Badge key={field.id} variant="secondary" className="pl-2 pr-1 h-7">
@@ -521,16 +529,24 @@ export function LessonPrepForm({
                                 disabled={isLoading}
                             >
                                 <SelectTrigger className="h-9">
-                                    <SelectValue placeholder={t('lessons.prep.addAssessmentMethod', 'Add assessment method')} />
+                                    <SelectValue placeholder={t('pages.prep.addAssessmentMethod', 'Add assessment method')} />
                                 </SelectTrigger>
                                 <SelectContent>
                                     {assessmentMethods
                                         .filter((method) => !assessmentFields.some((f) => f.value === method))
-                                        .map((method) => (
-                                            <SelectItem key={method} value={method}>
-                                                {method}
-                                            </SelectItem>
-                                        ))}
+                                        .map((method) => {
+                                            // Convert to camelCase key
+                                            const key = method
+                                                .toLowerCase()
+                                                .replace(/[^a-zA-Z0-9]+(.)/g, (m, chr) => chr.toUpperCase())
+                                                .replace(/[^a-zA-Z0-9]/g, '')
+
+                                            return (
+                                                <SelectItem key={method} value={method}>
+                                                    {t(`pages.prep.assessmentMethodsOptions.${key}`, method)}
+                                                </SelectItem>
+                                            )
+                                        })}
                                 </SelectContent>
                             </Select>
                         </div>
@@ -540,10 +556,10 @@ export function LessonPrepForm({
                             name="assessment_criteria"
                             render={({ field }) => (
                                 <FormItem>
-                                    <FormLabel>{t('lessons.prep.assessmentCriteria', 'Assessment Criteria')}</FormLabel>
+                                    <FormLabel>{t('pages.prep.assessmentCriteria', 'Assessment Criteria')}</FormLabel>
                                     <FormControl>
                                         <Textarea
-                                            placeholder={t('lessons.prep.assessmentCriteriaPlaceholder', "Describe how you'll evaluate student performance...")}
+                                            placeholder={t('pages.prep.assessmentCriteriaPlaceholder', "Describe how you'll evaluate student performance...")}
                                             className="min-h-[80px]"
                                             {...field}
                                             disabled={isLoading}
@@ -564,7 +580,7 @@ export function LessonPrepForm({
                             name="status"
                             render={({ field }) => (
                                 <FormItem>
-                                    <FormLabel>{t('lessons.prep.preparationStatus', 'Preparation Status')}</FormLabel>
+                                    <FormLabel>{t('pages.prep.preparationStatus', 'Preparation Status')}</FormLabel>
                                     <Select
                                         onValueChange={field.onChange}
                                         defaultValue={field.value}
@@ -576,9 +592,9 @@ export function LessonPrepForm({
                                             </SelectTrigger>
                                         </FormControl>
                                         <SelectContent>
-                                            <SelectItem value="draft">{t('lessons.prep.status.draft', 'Draft (Work in Progress)')}</SelectItem>
-                                            <SelectItem value="ready">{t('lessons.prep.status.ready', 'Ready to Teach')}</SelectItem>
-                                            <SelectItem value="delivered">{t('lessons.prep.status.delivered', 'Mark as Delivered')}</SelectItem>
+                                            <SelectItem value="draft">{t('pages.prep.status.draft', 'Draft (Work in Progress)')}</SelectItem>
+                                            <SelectItem value="ready">{t('pages.prep.status.ready', 'Ready to Teach')}</SelectItem>
+                                            <SelectItem value="delivered">{t('pages.prep.status.delivered', 'Mark as Delivered')}</SelectItem>
                                         </SelectContent>
                                     </Select>
                                     <FormMessage />
@@ -602,7 +618,7 @@ export function LessonPrepForm({
                     )}
                     <Button type="submit" disabled={isLoading}>
                         {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-                        {initialData ? t('lessons.prep.update', 'Update Preparation') : t('lessons.prep.create', 'Create Preparation')}
+                        {initialData ? t('pages.prep.update', 'Update Preparation') : t('pages.prep.create', 'Create Preparation')}
                     </Button>
                 </div>
             </form>
