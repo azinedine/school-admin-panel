@@ -3,6 +3,9 @@ import { z } from 'zod'
 /**
  * Lesson Preparation Schema
  * Validates all fields for creating and updating lesson preparations
+ * 
+ * NOTE: subject is excluded from schema validation.
+ * Subject is identity-bound to the teacher and resolved from auth user.
  */
 
 export const lessonPreparationSchema = z.object({
@@ -11,8 +14,7 @@ export const lessonPreparationSchema = z.object({
     .min(3, 'Title must be at least 3 characters')
     .max(255, 'Title must be less than 255 characters'),
 
-  subject: z.string()
-    .min(1, 'Please select a subject'),
+  // NOTE: subject removed - identity-bound to teacher
 
   class: z.string()
     .min(1, 'Please select a class'),
@@ -64,6 +66,7 @@ export type LessonPreparationFormData = z.output<typeof lessonPreparationSchema>
 export interface LessonPreparation extends LessonPreparationFormData {
   id: number
   teacher_id: number
+  subject: string // Resolved from backend
   created_at: string
   updated_at: string
 }
@@ -73,7 +76,6 @@ export interface LessonPreparation extends LessonPreparationFormData {
  */
 export const lessonPreparationDefaults: Partial<LessonPreparationFormData> = {
   title: '',
-  subject: '',
   class: '',
   date: new Date().toISOString().split('T')[0],
   duration_minutes: 45,
