@@ -1,3 +1,6 @@
 export { LessonForm } from './LessonForm'
 export { LessonCard, LessonCardGrid } from './LessonCard'
 export { LessonViewDialog } from './LessonViewDialog'
+export { LessonsTab } from './LessonsTab'
+export { PreparationTab } from './PreparationTab'
+export { TimetableTab } from './TimetableTab'
