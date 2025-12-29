@@ -35,21 +35,24 @@ import { useGradesStore } from '@/store/grades-store'
 
 import { LessonSelector } from './LessonSelector'
 import { LessonDetailsSheet } from './LessonDetailsSheet'
+import { useLessonPreps } from '@/hooks/use-lesson-preparation'
 
 
 export function LessonPrepByClass() {
   const { t } = useTranslation()
-  const { 
+  const {
     planEntries,
-    addPlanEntry, 
+    addPlanEntry,
     deletePlanEntry,
     updatePlanEntry,
-    getAllLessonTemplates,
   } = usePrepStore()
-  
+
+  // Use lesson preparations from backend as templates
+  const { data: lessonPreps = [] } = useLessonPreps()
+
   // Get all classes from grades system
   const { classes: gradesClasses } = useGradesStore()
-  
+
   // Get all unique class names from grades
   const classes = useMemo(() => {
     return gradesClasses.map(c => c.name).sort()
@@ -61,7 +64,7 @@ export function LessonPrepByClass() {
   const [selectedStatusLesson, setSelectedStatusLesson] = useState<DailyPlanEntry | null>(null)
   const [statusNote, setStatusNote] = useState('')
   const [pendingStatus, setPendingStatus] = useState<DailyPlanEntry['status'] | null>(null)
-  
+
   // Lesson Details Sheet state
   const [detailsOpen, setDetailsOpen] = useState(false)
   const [detailsLesson, setDetailsLesson] = useState<DailyPlanEntry | null>(null)
@@ -78,12 +81,12 @@ export function LessonPrepByClass() {
     setEditMode(true)
     setDetailsOpen(true)
   }
-  
+
   const handleSaveDetails = (id: string, updates: Partial<DailyPlanEntry>) => {
     updatePlanEntry(id, updates)
     // Optional: Add toast success here if needed, but the store update is reactive
   }
-  
+
 
 
   // Get lessons for selected class
@@ -114,7 +117,7 @@ export function LessonPrepByClass() {
   const defaultSelectorYear = useMemo(() => {
     const classData = gradesClasses.find(c => c.name === selectedClass)
     const grade = classData?.grade || ''
-    
+
     if (grade.startsWith('1')) return '1st'
     if (grade.startsWith('2')) return '2nd'
     if (grade.startsWith('3')) return '3rd'
@@ -150,8 +153,8 @@ export function LessonPrepByClass() {
     }
 
     // Check for duplicates
-    const isDuplicate = planEntries.some(entry => 
-      entry.class === lessonData.class && 
+    const isDuplicate = planEntries.some(entry =>
+      entry.class === lessonData.class &&
       entry.lessonTitle === lessonData.lessonTitle
     )
 
@@ -181,7 +184,7 @@ export function LessonPrepByClass() {
   // Format date for display (handles YYYY-MM-DD as local date)
   const formatDate = (date?: string) => {
     if (!date) return t('pages.prep.noDate')
-    
+
     // Check if YYYY-MM-DD
     if (date.match(/^\d{4}-\d{2}-\d{2}$/)) {
       const parts = date.split('-')
@@ -189,19 +192,19 @@ export function LessonPrepByClass() {
       const month = parseInt(parts[1], 10) - 1
       const day = parseInt(parts[2], 10)
       const localDate = new Date(year, month, day)
-      
-      return localDate.toLocaleDateString(undefined, { 
-        weekday: 'short', 
-        month: 'short', 
-        day: 'numeric' 
+
+      return localDate.toLocaleDateString(undefined, {
+        weekday: 'short',
+        month: 'short',
+        day: 'numeric'
       })
     }
-    
+
     // Fallback for other formats
-    return new Date(date).toLocaleDateString(undefined, { 
-      weekday: 'short', 
-      month: 'short', 
-      day: 'numeric' 
+    return new Date(date).toLocaleDateString(undefined, {
+      weekday: 'short',
+      month: 'short',
+      day: 'numeric'
     })
   }
 
@@ -219,7 +222,7 @@ export function LessonPrepByClass() {
 
   const handleStatusChange = (lesson: DailyPlanEntry, newStatus: string) => {
     const status = newStatus as DailyPlanEntry['status']
-    
+
     // If status requires a note (custom or postponed), open dialog
     if (status === 'custom' || status === 'postponed') {
       setSelectedStatusLesson(lesson)
@@ -230,9 +233,9 @@ export function LessonPrepByClass() {
     }
 
     // Otherwise update directly
-    updatePlanEntry(lesson.id, { 
+    updatePlanEntry(lesson.id, {
       status,
-      statusNote: undefined 
+      statusNote: undefined
     })
   }
 
@@ -294,7 +297,7 @@ export function LessonPrepByClass() {
                     <TableCell colSpan={5} className="text-center py-8 text-muted-foreground">
                       <div className="space-y-4">
                         <p>{t('pages.prep.table.noLessons')}</p>
-                    
+
                       </div>
                     </TableCell>
                   </TableRow>
@@ -331,18 +334,17 @@ export function LessonPrepByClass() {
                       <TableCell>
                         <div className="space-y-1">
                           <div className="flex items-center gap-2">
-                            <p 
+                            <p
                               className="font-semibold cursor-pointer hover:underline text-primary"
                               onClick={() => handleViewDetails(lesson)}
                             >
                               {lesson.lessonTitle}
                             </p>
                             {lesson.status && (
-                              <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium ${
-                                lesson.status === 'completed' ? 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200' :
+                              <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium ${lesson.status === 'completed' ? 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200' :
                                 lesson.status === 'postponed' ? 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200' :
-                                'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200'
-                              }`}>
+                                  'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200'
+                                }`}>
                                 {t(`pages.prep.status.${lesson.status}`)}
                               </span>
                             )}
@@ -360,13 +362,12 @@ export function LessonPrepByClass() {
                           value={lesson.status || 'none'}
                           onValueChange={(value) => handleStatusChange(lesson, value)}
                         >
-                          <SelectTrigger className={`h-8 w-full ${
-                            lesson.status === 'completed' ? 'bg-green-100 text-green-800 border-green-200 dark:bg-green-900 dark:text-green-300 dark:border-green-800' :
+                          <SelectTrigger className={`h-8 w-full ${lesson.status === 'completed' ? 'bg-green-100 text-green-800 border-green-200 dark:bg-green-900 dark:text-green-300 dark:border-green-800' :
                             lesson.status === 'postponed' ? 'bg-orange-100 text-orange-800 border-orange-200 dark:bg-orange-900 dark:text-orange-300 dark:border-orange-800' :
-                            lesson.status === 'cancelled' ? 'bg-red-100 text-red-800 border-red-200 dark:bg-red-900 dark:text-red-300 dark:border-red-800' :
-                            lesson.status === 'custom' ? 'bg-blue-100 text-blue-800 border-blue-200 dark:bg-blue-900 dark:text-blue-300 dark:border-blue-800' :
-                            ''
-                          }`}>
+                              lesson.status === 'cancelled' ? 'bg-red-100 text-red-800 border-red-200 dark:bg-red-900 dark:text-red-300 dark:border-red-800' :
+                                lesson.status === 'custom' ? 'bg-blue-100 text-blue-800 border-blue-200 dark:bg-blue-900 dark:text-blue-300 dark:border-blue-800' :
+                                  ''
+                            }`}>
                             <SelectValue placeholder={t('pages.prep.status.none')} />
                           </SelectTrigger>
                           <SelectContent>
@@ -385,16 +386,16 @@ export function LessonPrepByClass() {
                       </TableCell>
                       <TableCell className="text-center">
                         <div className="flex items-center justify-center gap-1">
-                          <Button 
-                            variant="ghost" 
+                          <Button
+                            variant="ghost"
                             size="sm"
                             onClick={() => handleEdit(lesson)}
                             className="text-blue-600 hover:text-blue-700"
                           >
                             <Edit2 className="h-4 w-4" />
                           </Button>
-                          <Button 
-                            variant="ghost" 
+                          <Button
+                            variant="ghost"
                             size="sm"
                             onClick={() => handleDelete(lesson.id)}
                             className="text-destructive hover:text-destructive"
@@ -409,7 +410,7 @@ export function LessonPrepByClass() {
               </TableBody>
             </Table>
           </div>
-          
+
           <div className="p-4 border-t flex justify-center">
             <Button onClick={handleAddLesson} variant="outline" size="sm">
               <Plus className="h-4 w-4 ltr:mr-2 rtl:ml-2" />
@@ -423,7 +424,19 @@ export function LessonPrepByClass() {
         open={selectorOpen}
         onOpenChange={setSelectorOpen}
         onSelect={handleTemplateSelected}
-        templates={getAllLessonTemplates()}
+        templates={lessonPreps.map(prep => ({
+          id: prep.id.toString(),
+          academicYear: '1st', // Default to 1st since backend doesn't have this yet or infer from class
+          lessonTitle: prep.title,
+          field: prep.subject,
+          learningSegment: prep.learning_objectives[0] || '', // Approximation
+          knowledgeResource: '',
+          lessonElements: prep.key_topics,
+          assessment: prep.assessment_criteria || '',
+          lessonContent: prep.description || '',
+          practiceNotes: prep.notes || '',
+          createdAt: prep.created_at,
+        }))}
         addedLessonTitles={addedLessonTitles}
         defaultYear={defaultSelectorYear}
       />
@@ -432,8 +445,8 @@ export function LessonPrepByClass() {
         <DialogContent>
           <DialogHeader>
             <DialogTitle>
-              {pendingStatus === 'postponed' 
-                ? t('pages.prep.status.postponedReason') 
+              {pendingStatus === 'postponed'
+                ? t('pages.prep.status.postponedReason')
                 : t('pages.prep.status.addNote')}
             </DialogTitle>
             <DialogDescription>
