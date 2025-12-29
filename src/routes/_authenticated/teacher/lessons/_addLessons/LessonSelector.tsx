@@ -28,6 +28,7 @@ interface LessonSelectorProps {
   templates: LessonTemplate[]
   addedLessonTitles?: string[]
   defaultYear?: '1st' | '2nd' | '3rd' | '4th'
+  availableYears?: string[]
 }
 
 export function LessonSelector({
@@ -37,17 +38,23 @@ export function LessonSelector({
   templates,
   addedLessonTitles = [],
   defaultYear = '1st',
+  availableYears = ['1st', '2nd', '3rd', '4th'],
 }: LessonSelectorProps) {
   const { t } = useTranslation()
   const [searchTerm, setSearchTerm] = useState('')
   const [selectedField, setSelectedField] = useState<string>('all')
-  const [selectedYear, setSelectedYear] = useState<string>(defaultYear)
+  const [selectedYear, setSelectedYear] = useState<string>(availableYears[0] || defaultYear)
+
 
   useEffect(() => {
     if (open) {
-      setSelectedYear(defaultYear)
+      if (availableYears.includes(defaultYear)) {
+        setSelectedYear(defaultYear)
+      } else if (availableYears.length > 0) {
+        setSelectedYear(availableYears[0])
+      }
     }
-  }, [open, defaultYear])
+  }, [open, defaultYear, availableYears])
 
   // Get unique fields for filter
   const fields = useMemo(() => {
@@ -84,7 +91,7 @@ export function LessonSelector({
         <div className="border-b px-4 bg-muted/10">
           <Tabs value={selectedYear} onValueChange={setSelectedYear} className="w-full">
             <TabsList className="w-full justify-start rounded-none border-b-0 bg-transparent p-0 h-auto">
-              {['1st', '2nd', '3rd', '4th'].map((year) => (
+              {availableYears.map((year) => (
                 <TabsTrigger
                   key={year}
                   value={year}
@@ -135,7 +142,7 @@ export function LessonSelector({
             <div className="space-y-3">
               {filteredTemplates.map((template) => {
                 const isAdded = addedLessonTitles.includes(template.lessonTitle)
-                
+
                 return (
                   <div
                     key={template.id}
@@ -183,7 +190,7 @@ export function LessonSelector({
             </div>
           )}
         </div>
-        
+
         <div className="p-4 border-t bg-muted/10 text-xs text-center text-muted-foreground">
           {filteredTemplates.length} {t('pages.addLesson.lessonsCount', { count: filteredTemplates.length })}
         </div>
