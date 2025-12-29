@@ -5,9 +5,12 @@ import { Plus, X, Loader2 } from 'lucide-react'
 import { ClassContextDisplay } from './ClassContextDisplay'
 
 import {
-    lessonPreparationSchema,
-    lessonPreparationDefaults,
+    lessonPreparationFormSchema,
+    defaultFormValues,
+    toFormData,
+    toApiPayload,
     type LessonPreparationFormData,
+    type LessonPreparationApiPayload,
     type LessonPreparation,
 } from '@/schemas/lesson-preparation'
 
@@ -34,7 +37,7 @@ import { Badge } from '@/components/ui/badge'
 
 interface LessonPrepFormProps {
     initialData?: LessonPreparation | null
-    onSubmit: (data: LessonPreparationFormData) => Promise<void>
+    onSubmit: (data: LessonPreparationApiPayload) => Promise<void>
     isLoading?: boolean
     classes?: string[]
     teachingMethods?: string[]
@@ -75,24 +78,10 @@ export function LessonPrepForm({
 }: LessonPrepFormProps) {
 
     const form = useForm<LessonPreparationFormData>({
-        resolver: zodResolver(lessonPreparationSchema),
+        resolver: zodResolver(lessonPreparationFormSchema),
         defaultValues: initialData
-            ? {
-                title: initialData.title,
-                class: initialData.class,
-                date: initialData.date,
-                duration_minutes: initialData.duration_minutes,
-                learning_objectives: initialData.learning_objectives,
-                description: initialData.description || '',
-                key_topics: initialData.key_topics,
-                teaching_methods: initialData.teaching_methods,
-                resources_needed: initialData.resources_needed || [],
-                assessment_methods: initialData.assessment_methods || [],
-                assessment_criteria: initialData.assessment_criteria || '',
-                notes: initialData.notes || '',
-                status: initialData.status,
-            }
-            : (lessonPreparationDefaults as LessonPreparationFormData),
+            ? toFormData(initialData)
+            : (defaultFormValues as LessonPreparationFormData),
     })
 
     const {
@@ -143,7 +132,8 @@ export function LessonPrepForm({
     const handleSubmit = useCallback(
         async (data: LessonPreparationFormData) => {
             try {
-                await onSubmit(data)
+                const apiPayload = toApiPayload(data)
+                await onSubmit(apiPayload)
             } catch (error) {
                 console.error('Form submission error:', error)
             }
