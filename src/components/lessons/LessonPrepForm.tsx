@@ -44,6 +44,7 @@ interface LessonPrepFormProps {
     teachingMethods?: string[]
     assessmentMethods?: string[]
     onCancel?: () => void
+    language?: string
 }
 
 const defaultTeachingMethods = [
@@ -76,8 +77,13 @@ export function LessonPrepForm({
     teachingMethods = defaultTeachingMethods,
     assessmentMethods = defaultAssessmentMethods,
     onCancel,
+    language,
 }: LessonPrepFormProps) {
-    const { t } = useTranslation()
+    const { t: originalT, i18n } = useTranslation()
+
+    // Use the passed language if available, otherwise fall back to global
+    // We use a fixed T function for the specific language to ensure only this form changes
+    const t = language ? i18n.getFixedT(language) : originalT
 
     const form = useForm<LessonPreparationFormData>({
         resolver: zodResolver(lessonPreparationFormSchema),
@@ -145,7 +151,7 @@ export function LessonPrepForm({
 
     return (
         <Form {...form}>
-            <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-6">
+            <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-6" dir={i18n.dir(language || i18n.language)}>
                 {/* Basic Information */}
                 <Card>
                     <CardHeader>
