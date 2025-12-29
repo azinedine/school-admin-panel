@@ -2,6 +2,7 @@ import { useCallback } from 'react'
 import { useForm, useFieldArray } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { Plus, X, Loader2 } from 'lucide-react'
+import { ClassContextDisplay } from './ClassContextDisplay'
 
 import {
     lessonPreparationSchema,
@@ -215,6 +216,7 @@ export function LessonPrepForm({
                                                 )}
                                             </SelectContent>
                                         </Select>
+                                        <ClassContextDisplay classId={field.value} />
                                         <FormMessage />
                                     </FormItem>
                                 )}
