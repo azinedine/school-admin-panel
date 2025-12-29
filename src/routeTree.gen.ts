@@ -83,7 +83,6 @@ import { Route as AuthenticatedAdminAnnouncementsRouteImport } from './routes/_a
 import { Route as AuthenticatedTeacherLessonsIndexRouteImport } from './routes/_authenticated/teacher/lessons/index'
 import { Route as AuthenticatedTeacherLessonsPreparationRouteImport } from './routes/_authenticated/teacher/lessons/preparation'
 import { Route as AuthenticatedTeacherLessonsAddLessonRouteImport } from './routes/_authenticated/teacher/lessons/add-lesson'
-import { Route as AuthenticatedTeacherLessonsAddRouteImport } from './routes/_authenticated/teacher/lessons/add'
 
 const UnauthorizedRoute = UnauthorizedRouteImport.update({
   id: '/unauthorized',
@@ -519,12 +518,6 @@ const AuthenticatedTeacherLessonsAddLessonRoute =
     path: '/lessons/add-lesson',
     getParentRoute: () => AuthenticatedTeacherRouteRoute,
   } as any)
-const AuthenticatedTeacherLessonsAddRoute =
-  AuthenticatedTeacherLessonsAddRouteImport.update({
-    id: '/lessons/add',
-    path: '/lessons/add',
-    getParentRoute: () => AuthenticatedTeacherRouteRoute,
-  } as any)
 
 export interface FileRoutesByFullPath {
   '/login': typeof LoginRoute
@@ -597,7 +590,6 @@ export interface FileRoutesByFullPath {
   '/students': typeof AuthenticatedStudentsIndexRoute
   '/teachers': typeof AuthenticatedTeachersIndexRoute
   '/users': typeof AuthenticatedUsersIndexRoute
-  '/teacher/lessons/add': typeof AuthenticatedTeacherLessonsAddRoute
   '/teacher/lessons/add-lesson': typeof AuthenticatedTeacherLessonsAddLessonRoute
   '/teacher/lessons/preparation': typeof AuthenticatedTeacherLessonsPreparationRoute
   '/teacher/lessons': typeof AuthenticatedTeacherLessonsIndexRoute
@@ -673,7 +665,6 @@ export interface FileRoutesByTo {
   '/students': typeof AuthenticatedStudentsIndexRoute
   '/teachers': typeof AuthenticatedTeachersIndexRoute
   '/users': typeof AuthenticatedUsersIndexRoute
-  '/teacher/lessons/add': typeof AuthenticatedTeacherLessonsAddRoute
   '/teacher/lessons/add-lesson': typeof AuthenticatedTeacherLessonsAddLessonRoute
   '/teacher/lessons/preparation': typeof AuthenticatedTeacherLessonsPreparationRoute
   '/teacher/lessons': typeof AuthenticatedTeacherLessonsIndexRoute
@@ -751,7 +742,6 @@ export interface FileRoutesById {
   '/_authenticated/students/': typeof AuthenticatedStudentsIndexRoute
   '/_authenticated/teachers/': typeof AuthenticatedTeachersIndexRoute
   '/_authenticated/users/': typeof AuthenticatedUsersIndexRoute
-  '/_authenticated/teacher/lessons/add': typeof AuthenticatedTeacherLessonsAddRoute
   '/_authenticated/teacher/lessons/add-lesson': typeof AuthenticatedTeacherLessonsAddLessonRoute
   '/_authenticated/teacher/lessons/preparation': typeof AuthenticatedTeacherLessonsPreparationRoute
   '/_authenticated/teacher/lessons/': typeof AuthenticatedTeacherLessonsIndexRoute
@@ -829,7 +819,6 @@ export interface FileRouteTypes {
     | '/students'
     | '/teachers'
     | '/users'
-    | '/teacher/lessons/add'
     | '/teacher/lessons/add-lesson'
     | '/teacher/lessons/preparation'
     | '/teacher/lessons'
@@ -905,7 +894,6 @@ export interface FileRouteTypes {
     | '/students'
     | '/teachers'
     | '/users'
-    | '/teacher/lessons/add'
     | '/teacher/lessons/add-lesson'
     | '/teacher/lessons/preparation'
     | '/teacher/lessons'
@@ -982,7 +970,6 @@ export interface FileRouteTypes {
     | '/_authenticated/students/'
     | '/_authenticated/teachers/'
     | '/_authenticated/users/'
-    | '/_authenticated/teacher/lessons/add'
     | '/_authenticated/teacher/lessons/add-lesson'
     | '/_authenticated/teacher/lessons/preparation'
     | '/_authenticated/teacher/lessons/'
@@ -1516,13 +1503,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedTeacherLessonsAddLessonRouteImport
       parentRoute: typeof AuthenticatedTeacherRouteRoute
     }
-    '/_authenticated/teacher/lessons/add': {
-      id: '/_authenticated/teacher/lessons/add'
-      path: '/lessons/add'
-      fullPath: '/teacher/lessons/add'
-      preLoaderRoute: typeof AuthenticatedTeacherLessonsAddRouteImport
-      parentRoute: typeof AuthenticatedTeacherRouteRoute
-    }
   }
 }
 
@@ -1681,7 +1661,6 @@ interface AuthenticatedTeacherRouteRouteChildren {
   AuthenticatedTeacherReportsRoute: typeof AuthenticatedTeacherReportsRoute
   AuthenticatedTeacherSettingsRoute: typeof AuthenticatedTeacherSettingsRoute
   AuthenticatedTeacherStudentsRoute: typeof AuthenticatedTeacherStudentsRoute
-  AuthenticatedTeacherLessonsAddRoute: typeof AuthenticatedTeacherLessonsAddRoute
   AuthenticatedTeacherLessonsAddLessonRoute: typeof AuthenticatedTeacherLessonsAddLessonRoute
   AuthenticatedTeacherLessonsPreparationRoute: typeof AuthenticatedTeacherLessonsPreparationRoute
   AuthenticatedTeacherLessonsIndexRoute: typeof AuthenticatedTeacherLessonsIndexRoute
@@ -1702,7 +1681,6 @@ const AuthenticatedTeacherRouteRouteChildren: AuthenticatedTeacherRouteRouteChil
     AuthenticatedTeacherReportsRoute: AuthenticatedTeacherReportsRoute,
     AuthenticatedTeacherSettingsRoute: AuthenticatedTeacherSettingsRoute,
     AuthenticatedTeacherStudentsRoute: AuthenticatedTeacherStudentsRoute,
-    AuthenticatedTeacherLessonsAddRoute: AuthenticatedTeacherLessonsAddRoute,
     AuthenticatedTeacherLessonsAddLessonRoute:
       AuthenticatedTeacherLessonsAddLessonRoute,
     AuthenticatedTeacherLessonsPreparationRoute:
