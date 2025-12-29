@@ -123,14 +123,14 @@ export const PreparationTab = memo(function PreparationTab() {
             {/* Header with Actions & Filters */}
             <div className="flex flex-col lg:flex-row gap-4 items-start lg:items-center justify-between">
                 <div>
-                    <h2 className="text-2xl font-bold tracking-tight">{t('lessons.preparations', 'Lesson Preparations')}</h2>
+                    <h2 className="text-2xl font-bold tracking-tight">{t('pages.prep.preparations', 'Lesson Preparations')}</h2>
                     <p className="text-muted-foreground">
-                        {t('lessons.managePreps', 'Create and manage your lesson plans and teaching materials.')}
+                        {t('pages.prep.managePreps', 'Create and manage your lesson plans and teaching materials.')}
                     </p>
                 </div>
                 <Button onClick={handleCreate} className="gap-2 shrink-0">
                     <Plus className="h-4 w-4" />
-                    {t('lessons.createPrep', 'Create Preparation')}
+                    {t('pages.prep.createPrep', 'Create Preparation')}
                 </Button>
             </div>
 
@@ -157,13 +157,13 @@ export const PreparationTab = memo(function PreparationTab() {
                             {t('common.all', 'All Status')} <span className="text-muted-foreground ml-1">({statusCounts.all})</span>
                         </SelectItem>
                         <SelectItem value="draft">
-                            {t('lessons.status.draft', 'Draft')} <span className="text-muted-foreground ml-1">({statusCounts.draft})</span>
+                            {t('pages.prep.status.draft', 'Draft')} <span className="text-muted-foreground ml-1">({statusCounts.draft})</span>
                         </SelectItem>
                         <SelectItem value="ready">
-                            {t('lessons.status.ready', 'Ready')} <span className="text-muted-foreground ml-1">({statusCounts.ready})</span>
+                            {t('pages.prep.status.ready', 'Ready')} <span className="text-muted-foreground ml-1">({statusCounts.ready})</span>
                         </SelectItem>
                         <SelectItem value="delivered">
-                            {t('lessons.status.delivered', 'Delivered')} <span className="text-muted-foreground ml-1">({statusCounts.delivered})</span>
+                            {t('pages.prep.status.delivered', 'Delivered')} <span className="text-muted-foreground ml-1">({statusCounts.delivered})</span>
                         </SelectItem>
                     </SelectContent>
                 </Select>
@@ -182,13 +182,13 @@ export const PreparationTab = memo(function PreparationTab() {
                         </div>
                         <h3 className="text-lg font-semibold mb-1">
                             {searchQuery || statusFilter !== 'all'
-                                ? t('lessons.noMatchingPreps', 'No preparations match your filters')
-                                : t('lessons.noPreparations', 'No lesson preparations yet')}
+                                ? t('pages.prep.noMatchingPreps', 'No preparations match your filters')
+                                : t('pages.prep.noPreparations', 'No lesson preparations yet')}
                         </h3>
                         <p className="text-sm text-muted-foreground max-w-sm mb-6">
                             {searchQuery || statusFilter !== 'all'
-                                ? t('lessons.tryAdjusting', 'Try adjusting your search or filters to find what you looking for.')
-                                : t('lessons.startCreating', 'Start by creating your first lesson preparation plan.')}
+                                ? t('pages.prep.tryAdjusting', 'Try adjusting your search or filters to find what you looking for.')
+                                : t('pages.prep.startCreating', 'Start by creating your first lesson preparation plan.')}
                         </p>
                         {(searchQuery || statusFilter !== 'all') ? (
                             <Button variant="outline" onClick={() => { setSearchQuery(''); setStatusFilter('all'); }}>
@@ -197,7 +197,7 @@ export const PreparationTab = memo(function PreparationTab() {
                         ) : (
                             <Button onClick={handleCreate}>
                                 <Plus className="h-4 w-4 mr-2" />
-                                {t('lessons.createFirst', 'Create First Preparation')}
+                                {t('pages.prep.createFirst', 'Create First Preparation')}
                             </Button>
                         )}
                     </CardContent>
@@ -251,7 +251,7 @@ export const PreparationTab = memo(function PreparationTab() {
                 <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto p-0">
                     <div className="px-6 py-4 border-b flex justify-between items-center">
                         <DialogTitle>
-                            {selectedPrep ? t('lessons.editPrep', 'Edit Lesson Preparation') : t('lessons.createPrep', 'New Lesson Preparation')}
+                            {selectedPrep ? t('pages.prep.editPrep', 'Edit Lesson Preparation') : t('pages.prep.createPrep', 'New Lesson Preparation')}
                         </DialogTitle>
                         <div className="flex gap-1">
                             <Button
@@ -301,7 +301,7 @@ export const PreparationTab = memo(function PreparationTab() {
                     <AlertDialogHeader>
                         <AlertDialogTitle>{t('common.deleteConfirmTitle', 'Are you sure?')}</AlertDialogTitle>
                         <AlertDialogDescription>
-                            {t('lessons.deletePrepConfirm', 'This action cannot be undone. This will permanently delete the lesson preparation.')}
+                            {t('pages.prep.deletePrepConfirm', 'This action cannot be undone. This will permanently delete the lesson preparation.')}
                         </AlertDialogDescription>
                     </AlertDialogHeader>
                     <AlertDialogFooter>
