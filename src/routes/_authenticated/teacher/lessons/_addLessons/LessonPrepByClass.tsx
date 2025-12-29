@@ -36,6 +36,7 @@ import { useGradesStore } from '@/store/grades-store'
 import { LessonSelector } from './LessonSelector'
 import { LessonDetailsSheet } from './LessonDetailsSheet'
 import { useLessonPreps } from '@/hooks/use-lesson-preparation'
+import { useCurrentUser } from '@/store/auth-store'
 
 
 export function LessonPrepByClass() {
@@ -47,11 +48,28 @@ export function LessonPrepByClass() {
     updatePlanEntry,
   } = usePrepStore()
 
-  // Use lesson preparations from backend as templates
+  const user = useCurrentUser()
   const { data: lessonPreps = [] } = useLessonPreps()
-
-  // Get all classes from grades system
   const { classes: gradesClasses } = useGradesStore()
+
+  // Calculate available years for the selector based on teacher's assigned levels
+  const availableSelectorYears = useMemo(() => {
+    // Default to all if no user or no levels assigned (e.g. admin)
+    if (!user?.levels || user.levels.length === 0) {
+      return ['1st', '2nd', '3rd', '4th']
+    }
+
+    const years = new Set<string>()
+    user.levels.forEach(level => {
+      if (level.startsWith('1')) years.add('1st')
+      if (level.startsWith('2')) years.add('2nd')
+      if (level.startsWith('3')) years.add('3rd')
+      if (level.startsWith('4')) years.add('4th')
+    })
+
+    const sortedYears = Array.from(years).sort()
+    return sortedYears.length > 0 ? sortedYears : ['1st', '2nd', '3rd', '4th']
+  }, [user])
 
   // Get all unique class names from grades
   const classes = useMemo(() => {
@@ -439,6 +457,7 @@ export function LessonPrepByClass() {
         }))}
         addedLessonTitles={addedLessonTitles}
         defaultYear={defaultSelectorYear}
+        availableYears={availableSelectorYears}
       />
 
       <Dialog open={statusNoteOpen} onOpenChange={setStatusNoteOpen}>
