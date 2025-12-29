@@ -181,17 +181,8 @@ export const TEACHER_SIDEBAR: NavGroup[] = [
       },
       {
         title: 'nav.lessons',
+        url: '/teacher/lessons',
         icon: BookOpen,
-        items: [
-          {
-            title: 'nav.lessonPreparation',
-            url: '/teacher/lessons/preparation',
-          },
-          {
-            title: 'nav.addLesson',
-            url: '/teacher/lessons/add',
-          },
-        ]
       },
       {
         title: 'nav.announcements',
