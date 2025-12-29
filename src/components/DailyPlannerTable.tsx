@@ -12,7 +12,7 @@ import {
 import { Button } from '@/components/ui/button'
 import { Card } from '@/components/ui/card'
 import { usePrepStore, type DailyPlanEntry } from '@/store/prep-store'
-import { LessonDetailDialog } from '../routes/_authenticated/teacher/lessons/addLessons/LessonDetailDialog'
+import { LessonDetailDialog } from '../routes/_authenticated/teacher/lessons/_addLessons/LessonDetailDialog'
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -26,14 +26,14 @@ interface DailyPlannerTableProps {
 
 export function DailyPlannerTable({ selectedDay }: DailyPlannerTableProps) {
   const { t } = useTranslation()
-  const { 
-    getTimetableByDay, 
+  const {
+    getTimetableByDay,
     getPlanByDay,
-    addPlanEntry, 
-    updatePlanEntry, 
+    addPlanEntry,
+    updatePlanEntry,
     deletePlanEntry,
   } = usePrepStore()
-  
+
   // Get timetable slots for selected day
   const timetableSlots = useMemo(() => {
     return getTimetableByDay(selectedDay)
@@ -52,7 +52,7 @@ export function DailyPlannerTable({ selectedDay }: DailyPlannerTableProps) {
       return 0
     })
   }, [selectedDay, getPlanByDay])
-  
+
   const [dialogState, setDialogState] = useState<{
     open: boolean
     day: string
@@ -95,10 +95,10 @@ export function DailyPlannerTable({ selectedDay }: DailyPlannerTableProps) {
   // Format date for display
   const formatDate = (date?: string) => {
     if (!date) return t('pages.prep.noDate')
-    return new Date(date).toLocaleDateString(undefined, { 
-      weekday: 'short', 
-      month: 'short', 
-      day: 'numeric' 
+    return new Date(date).toLocaleDateString(undefined, {
+      weekday: 'short',
+      month: 'short',
+      day: 'numeric'
     })
   }
 
@@ -162,7 +162,7 @@ export function DailyPlannerTable({ selectedDay }: DailyPlannerTableProps) {
                         {lesson.class && (
                           <p className="text-xs text-muted-foreground">
                             {lesson.class}
-                            {lesson.group && lesson.mode === 'groups' && 
+                            {lesson.group && lesson.mode === 'groups' &&
                               ` • ${t(`pages.prep.groups.${lesson.group}`)}`
                             }
                           </p>
@@ -181,7 +181,7 @@ export function DailyPlannerTable({ selectedDay }: DailyPlannerTableProps) {
                             <Edit className="h-4 w-4 ltr:mr-2 rtl:ml-2" />
                             {t('common.edit')}
                           </DropdownMenuItem>
-                          <DropdownMenuItem 
+                          <DropdownMenuItem
                             onClick={() => handleDelete(lesson.id)}
                             className="text-destructive"
                           >
@@ -197,7 +197,7 @@ export function DailyPlannerTable({ selectedDay }: DailyPlannerTableProps) {
             </TableBody>
           </Table>
         </div>
-        
+
         {dayLessons.length > 0 && (
           <div className="p-4 border-t">
             <Button onClick={handleAddLesson} variant="outline" size="sm">
