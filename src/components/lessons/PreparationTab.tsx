@@ -48,6 +48,7 @@ export const PreparationTab = memo(function PreparationTab() {
     const [viewDialogOpen, setViewDialogOpen] = useState(false)
     const [formDialogOpen, setFormDialogOpen] = useState(false)
     const [deleteDialogOpen, setDeleteDialogOpen] = useState(false)
+    const [formLanguage, setFormLanguage] = useState(i18n.language)
 
     const [selectedPrep, setSelectedPrep] = useState<LessonPreparation | null>(null)
     const [prepToDelete, setPrepToDelete] = useState<LessonPreparation | null>(null)
@@ -247,25 +248,25 @@ export const PreparationTab = memo(function PreparationTab() {
                         </DialogTitle>
                         <div className="flex gap-1">
                             <Button
-                                variant={i18n.language === 'en' ? 'default' : 'ghost'}
+                                variant={formLanguage === 'en' ? 'default' : 'ghost'}
                                 size="sm"
-                                onClick={() => i18n.changeLanguage('en')}
+                                onClick={() => setFormLanguage('en')}
                                 className="h-7 px-2 text-xs"
                             >
                                 EN
                             </Button>
                             <Button
-                                variant={i18n.language === 'fr' ? 'default' : 'ghost'}
+                                variant={formLanguage === 'fr' ? 'default' : 'ghost'}
                                 size="sm"
-                                onClick={() => i18n.changeLanguage('fr')}
+                                onClick={() => setFormLanguage('fr')}
                                 className="h-7 px-2 text-xs"
                             >
                                 FR
                             </Button>
                             <Button
-                                variant={i18n.language === 'ar' ? 'default' : 'ghost'}
+                                variant={formLanguage === 'ar' ? 'default' : 'ghost'}
                                 size="sm"
-                                onClick={() => i18n.changeLanguage('ar')}
+                                onClick={() => setFormLanguage('ar')}
                                 className="h-7 px-2 text-xs"
                             >
                                 AR
@@ -281,6 +282,7 @@ export const PreparationTab = memo(function PreparationTab() {
                                 ? user.levels
                                 : ['1AS', '2AS', '3AS', '1AM', '2AM', '3AM', '4AM']}
                             onCancel={() => setFormDialogOpen(false)}
+                            language={formLanguage}
                         />
                     </div>
                 </DialogContent>
