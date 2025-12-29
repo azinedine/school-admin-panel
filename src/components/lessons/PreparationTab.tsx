@@ -32,7 +32,7 @@ import { useLessonPreps, useCreateLessonPrep, useUpdateLessonPrep, useDeleteLess
 import { LessonPrepDetails } from './LessonPrepDetails'
 import { LessonPrepForm } from './LessonPrepForm'
 import { PreparationCard } from './PreparationCard'
-import type { LessonPreparation, LessonPreparationFormData } from '@/schemas/lesson-preparation'
+import type { LessonPreparation, LessonPreparationApiPayload } from '@/schemas/lesson-preparation'
 
 /**
  * PreparationTab - CRUD Management of lesson preparations
@@ -101,7 +101,7 @@ export const PreparationTab = memo(function PreparationTab() {
         }
     }
 
-    const handleFormSubmit = async (data: LessonPreparationFormData) => {
+    const handleFormSubmit = async (data: LessonPreparationApiPayload) => {
         if (selectedPrep) {
             await updateMutation.mutateAsync(data)
         } else {
