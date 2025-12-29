@@ -15,9 +15,9 @@ import {
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs'
 
 import { useLessonPreps, useCreateLessonPrep, useUpdateLessonPrep } from '@/hooks/use-lesson-preparation'
-import { LessonPrepForm } from '@/routes/_authenticated/teacher/lessons/addLessons/LessonPrepForm'
-import { LessonPrepTable } from '@/routes/_authenticated/teacher/lessons/addLessons/LessonPrepTable'
-import { LessonPrepDetails } from '@/routes/_authenticated/teacher/lessons/addLessons/LessonPrepDetails'
+import { LessonPrepForm } from '@/routes/_authenticated/teacher/lessons/_addLessons/LessonPrepForm'
+import { LessonPrepTable } from '@/routes/_authenticated/teacher/lessons/_addLessons/LessonPrepTable'
+import { LessonPrepDetails } from '@/routes/_authenticated/teacher/lessons/_addLessons/LessonPrepDetails'
 
 import type { LessonPreparation, LessonPreparationFormData } from '@/schemas/lesson-preparation'
 
