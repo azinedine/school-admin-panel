@@ -1,6 +1,7 @@
-import { useState, memo } from 'react'
+import { useState, memo, useEffect } from 'react'
+import { useTimetable, useUpdateTimetable } from '@/hooks/use-timetable'
 import { useTranslation } from 'react-i18next'
-import { Calendar, Settings } from 'lucide-react'
+import { Calendar, Settings, Loader2 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Card } from '@/components/ui/card'
 import { TimetableEmptyState } from '@/components/TimetableEmptyState'
@@ -24,14 +25,33 @@ export const TimetableTab = memo(function TimetableTab() {
         setTermDates,
     } = usePrepStore()
 
+    const { data: remoteTimetable, isLoading } = useTimetable()
+    const updateTimetableMutation = useUpdateTimetable()
+
+    // Sync remote data to store on load
+    useEffect(() => {
+        if (remoteTimetable && remoteTimetable.length > 0) {
+            initializeTimetable(remoteTimetable)
+        }
+    }, [remoteTimetable, initializeTimetable])
+
     const [timetableDialogOpen, setTimetableDialogOpen] = useState(false)
     const [termDialogOpen, setTermDialogOpen] = useState(false)
 
     const termDates = getTermDates()
     const hasTermDates = termDates.startDate && termDates.endDate
 
+    // Loading State
+    if (isLoading) {
+        return (
+            <div className="flex items-center justify-center py-20">
+                <Loader2 className="h-8 w-8 animate-spin text-primary" />
+            </div>
+        )
+    }
+
     // Step 1: If no timetable, show timetable setup
-    if (!isTimetableInitialized) {
+    if (!isTimetableInitialized && (!remoteTimetable || remoteTimetable.length === 0)) {
         return (
             <div className="space-y-6">
                 <TimetableEmptyState onSetupClick={() => setTimetableDialogOpen(true)} />
@@ -39,7 +59,10 @@ export const TimetableTab = memo(function TimetableTab() {
                 <TimetableSetupDialog
                     open={timetableDialogOpen}
                     onOpenChange={setTimetableDialogOpen}
-                    onSave={(entries) => {
+                    onSave={async (entries) => {
+                        // Save to backend
+                        await updateTimetableMutation.mutateAsync(entries)
+                        // Store update handles by the effect or manually if optimistic
                         initializeTimetable(entries)
                         // After timetable is set, prompt for term dates
                         setTermDialogOpen(true)
@@ -123,7 +146,8 @@ export const TimetableTab = memo(function TimetableTab() {
                 open={timetableDialogOpen}
                 onOpenChange={setTimetableDialogOpen}
                 existingTimetable={getAllTimetableSlots()}
-                onSave={(entries) => {
+                onSave={async (entries) => {
+                    await updateTimetableMutation.mutateAsync(entries)
                     setTimetable(entries)
                     setTimetableDialogOpen(false)
                 }}
