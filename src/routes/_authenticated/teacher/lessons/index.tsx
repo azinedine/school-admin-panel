@@ -11,6 +11,7 @@ import { LessonPrepByClass } from '@/routes/_authenticated/teacher/lessons/_addL
 import { Button } from '@/components/ui/button'
 import { Card } from '@/components/ui/card'
 import { usePrepStore } from '@/store/prep-store'
+import { LessonPageNav } from '@/routes/_authenticated/teacher/lessons/_addLessons/LessonPageNav'
 
 function PrepPage() {
   const { t } = useTranslation()
@@ -122,6 +123,9 @@ function PrepPage() {
         </div>
       }
     >
+      {/* Page Navigation */}
+      <LessonPageNav />
+
       {/* Lessons Organized by Class */}
       <LessonPrepByClass />
 
