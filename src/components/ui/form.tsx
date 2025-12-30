@@ -1,6 +1,7 @@
 "use client"
 
 import * as React from "react"
+import { useTranslation } from "react-i18next"
 import * as LabelPrimitive from "@radix-ui/react-label"
 import { Slot } from "@radix-ui/react-slot"
 import {
@@ -147,7 +148,14 @@ const FormMessage = React.forwardRef<
   React.HTMLAttributes<HTMLParagraphElement>
 >(({ className, children, ...props }, ref) => {
   const { error, formMessageId } = useFormField()
-  const body = error ? String(error?.message ?? "") : children
+  const { t } = useTranslation()
+
+  let body = error ? String(error?.message ?? "") : children
+
+  // Translate if the message looks like an i18n key
+  if (typeof body === 'string' && body.startsWith('pages.')) {
+    body = t(body)
+  }
 
   if (!body) {
     return null
