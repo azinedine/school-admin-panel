@@ -163,10 +163,10 @@ export function LessonPrepForm({
               name="title"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Lesson Title</FormLabel>
+                  <FormLabel>Lesson Number</FormLabel>
                   <FormControl>
                     <Input
-                      placeholder="e.g., Introduction to Photosynthesis"
+                      placeholder="e.g., 1"
                       {...field}
                       disabled={isLoading}
                     />
