@@ -1,18 +1,46 @@
 import { z } from 'zod'
 
 /**
+ * Validation message keys (for i18n lookup)
+ * Usage: t(message) where message is the key
+ */
+const v = {
+  lessonNumberRequired: 'pages.prep.validation.lessonNumberRequired',
+  lessonNumberMax: 'pages.prep.validation.lessonNumberMax',
+  subjectRequired: 'pages.prep.validation.subjectRequired',
+  levelRequired: 'pages.prep.validation.levelRequired',
+  dateRequired: 'pages.prep.validation.dateRequired',
+  durationMin: 'pages.prep.validation.durationMin',
+  durationMax: 'pages.prep.validation.durationMax',
+  domainRequired: 'pages.prep.validation.domainRequired',
+  learningUnitRequired: 'pages.prep.validation.learningUnitRequired',
+  knowledgeResourceRequired: 'pages.prep.validation.knowledgeResourceRequired',
+  lessonElementRequired: 'pages.prep.validation.lessonElementRequired',
+  lessonElementsMin: 'pages.prep.validation.lessonElementsMin',
+  assessmentDetailsRequired: 'pages.prep.validation.assessmentDetailsRequired',
+  homeworkDetailsRequired: 'pages.prep.validation.homeworkDetailsRequired',
+  objectiveRequired: 'pages.prep.validation.objectiveRequired',
+  objectivesMin: 'pages.prep.validation.objectivesMin',
+  topicRequired: 'pages.prep.validation.topicRequired',
+  topicsMin: 'pages.prep.validation.topicsMin',
+  methodRequired: 'pages.prep.validation.methodRequired',
+  methodsMin: 'pages.prep.validation.methodsMin',
+  resourceRequired: 'pages.prep.validation.resourceRequired',
+}
+
+/**
  * Common field definitions reused across schemas
  */
 const commonFields = {
   lesson_number: z.string()
-    .min(1, 'Lesson number is required')
-    .max(50, 'Lesson number must be less than 50 characters'),
-  subject: z.string().min(1, 'Please select a subject'),
-  level: z.string().min(1, 'Please select a level'),
-  date: z.string().refine((date) => !isNaN(Date.parse(date)), 'Please enter a valid date'),
+    .min(1, v.lessonNumberRequired)
+    .max(50, v.lessonNumberMax),
+  subject: z.string().min(1, v.subjectRequired),
+  level: z.string().min(1, v.levelRequired),
+  date: z.string().refine((date) => !isNaN(Date.parse(date)), v.dateRequired),
   duration_minutes: z.number()
-    .min(15, 'Duration must be at least 15 minutes')
-    .max(480, 'Duration must be less than 8 hours'),
+    .min(15, v.durationMin)
+    .max(480, v.durationMax),
   description: z.string().max(2000).optional(),
   assessment_criteria: z.string().max(1000).optional(),
   notes: z.string().max(2000).optional(),
@@ -21,8 +49,8 @@ const commonFields = {
 
 const lessonElementsSchema = z.array(z.object({
   id: z.string().optional(),
-  content: z.string().min(1, 'Element content cannot be empty')
-})).min(1, 'Add at least one lesson element')
+  content: z.string().min(1, v.lessonElementRequired)
+})).min(1, v.lessonElementsMin)
 
 /**
  * 1. Form Schema (UI Layer)
@@ -31,9 +59,9 @@ const lessonElementsSchema = z.array(z.object({
 export const lessonPreparationFormSchema = z.object({
   ...commonFields,
   // Pedagogical Context
-  domain: z.string().min(1, 'Domain is required'),
-  learning_unit: z.string().min(1, 'Learning Unit is required'),
-  knowledge_resource: z.string().min(1, 'Knowledge Resource is required'),
+  domain: z.string().min(1, v.domainRequired),
+  learning_unit: z.string().min(1, v.learningUnitRequired),
+  knowledge_resource: z.string().min(1, v.knowledgeResourceRequired),
 
   // Lesson Flow
   lesson_elements: lessonElementsSchema,
@@ -43,22 +71,22 @@ export const lessonPreparationFormSchema = z.object({
   evaluation_content: z.string().optional(),
 
   // Legacy fields (kept for backward compatibility or future use if needed, but made optional in UI logic if replaced)
-  learning_objectives: z.array(z.object({ value: z.string().min(1, 'Objective is required') }))
-    .min(1, 'Add at least one learning objective'),
-  key_topics: z.array(z.object({ value: z.string().min(1, 'Topic is required') }))
-    .min(1, 'Add at least one key topic'),
-  teaching_methods: z.array(z.object({ value: z.string().min(1, 'Method is required') }))
-    .min(1, 'Select at least one teaching method'),
-  resources_needed: z.array(z.object({ value: z.string().min(1, 'Resource is required') })),
-  assessment_methods: z.array(z.object({ value: z.string().min(1, 'Method is required') })),
+  learning_objectives: z.array(z.object({ value: z.string().min(1, v.objectiveRequired) }))
+    .min(1, v.objectivesMin),
+  key_topics: z.array(z.object({ value: z.string().min(1, v.topicRequired) }))
+    .min(1, v.topicsMin),
+  teaching_methods: z.array(z.object({ value: z.string().min(1, v.methodRequired) }))
+    .min(1, v.methodsMin),
+  resources_needed: z.array(z.object({ value: z.string().min(1, v.resourceRequired) })),
+  assessment_methods: z.array(z.object({ value: z.string().min(1, v.methodRequired) })),
 }).superRefine((data, ctx) => {
   if (!data.evaluation_content || data.evaluation_content.length < 3) {
     ctx.addIssue({
       code: z.ZodIssueCode.custom,
       path: ['evaluation_content'],
       message: data.evaluation_type === 'assessment'
-        ? "Please provide assessment details"
-        : "Please provide homework details",
+        ? v.assessmentDetailsRequired
+        : v.homeworkDetailsRequired,
     });
   }
 })
