@@ -1,4 +1,4 @@
-import { useFormContext } from "react-hook-form"
+import { useFormContext, type FieldError } from "react-hook-form"
 import { useTranslation } from "react-i18next"
 import { TextField } from "../TextField"
 import { DatePicker } from "../DatePicker"
@@ -29,7 +29,7 @@ export function PersonalInfoSection() {
         onChange={(val) => setValue('gender', val)}
         options={genderOptions}
         placeholder={t('auth.register.selectGender')}
-        error={errors.gender as any}
+        error={errors.gender as FieldError | undefined}
       />
 
       <DatePicker
