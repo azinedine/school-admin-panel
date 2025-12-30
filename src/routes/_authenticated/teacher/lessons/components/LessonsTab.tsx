@@ -34,8 +34,8 @@ export const LessonsTab = memo(function LessonsTab() {
     const filteredPreps = readyPreps.filter((prep) => {
         const query = searchQuery.toLowerCase()
         return (
-            prep.title.toLowerCase().includes(query) ||
-            (prep.class && prep.class.toLowerCase().includes(query)) ||
+            prep.lesson_number.toLowerCase().includes(query) ||
+            (prep.level && prep.level.toLowerCase().includes(query)) ||
             (prep.subject && prep.subject.toLowerCase().includes(query))
         )
     })
@@ -115,7 +115,7 @@ export const LessonsTab = memo(function LessonsTab() {
                 <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
                     <DialogHeader>
                         <DialogTitle className="flex items-center gap-2">
-                            <span className="text-xl">{selectedPrep?.title}</span>
+                            <span className="text-xl">{selectedPrep?.lesson_number}</span>
                         </DialogTitle>
                     </DialogHeader>
                     <div className="mt-4">
