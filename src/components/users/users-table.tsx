@@ -161,7 +161,8 @@ export function UsersTable({ data, isLoading }: UsersTableProps) {
       cell: (info) => {
         try {
             return format(new Date(info.getValue()), 'MMM d, yyyy')
-        } catch (e) {
+        } catch (error) {
+            console.error('Failed to format date:', error)
             return '-'
         }
       },
