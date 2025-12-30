@@ -1,13 +1,17 @@
 import { useCallback } from 'react'
 import { useForm, useFieldArray } from 'react-hook-form'
+import { useCurrentUser } from '@/store/auth-store'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { Plus, X } from 'lucide-react'
 
 import {
-  lessonPreparationSchema,
-  lessonPreparationDefaults,
+  lessonPreparationFormSchema as lessonPreparationSchema,
+  defaultFormValues as lessonPreparationDefaults,
+  toFormData,
+  toApiPayload,
   type LessonPreparationFormData,
   type LessonPreparation,
+  type LessonPreparationApiPayload,
 } from '@/schemas/lesson-preparation'
 
 import {
@@ -34,12 +38,14 @@ import { Badge } from '@/components/ui/badge'
 
 interface LessonPrepFormProps {
   initialData?: LessonPreparation
-  onSubmit: (data: LessonPreparationFormData) => Promise<void>
+  onSubmit: (data: LessonPreparationApiPayload) => Promise<void>
   isLoading?: boolean
   classes?: string[]
   subjects?: string[]
   teachingMethods?: string[]
   assessmentMethods?: string[]
+  onCancel?: () => void
+  language?: string
 }
 
 const defaultTeachingMethods = [
@@ -72,18 +78,25 @@ export function LessonPrepForm({
   subjects = [],
   teachingMethods = defaultTeachingMethods,
   assessmentMethods = defaultAssessmentMethods,
+  onCancel,
+  // language = 'en', // Reserved for future localization
 }: LessonPrepFormProps) {
+
+  const user = useCurrentUser()
+  const availableClasses = classes.length > 0 ? classes : (user?.assigned_classes || [])
+
+
 
   const form = useForm<LessonPreparationFormData>({
     resolver: zodResolver(lessonPreparationSchema),
-    defaultValues: initialData || (lessonPreparationDefaults as LessonPreparationFormData),
+    defaultValues: initialData ? toFormData(initialData) : (lessonPreparationDefaults as LessonPreparationFormData),
   })
 
   const {
     fields: objectiveFields,
     append: appendObjective,
     remove: removeObjective,
-  } = useFieldArray<LessonPreparationFormData>({
+  } = useFieldArray({
     control: form.control,
     name: 'learning_objectives',
   })
@@ -92,7 +105,7 @@ export function LessonPrepForm({
     fields: topicFields,
     append: appendTopic,
     remove: removeTopic,
-  } = useFieldArray<LessonPreparationFormData>({
+  } = useFieldArray({
     control: form.control,
     name: 'key_topics',
   })
@@ -101,7 +114,7 @@ export function LessonPrepForm({
     fields: methodFields,
     append: appendMethod,
     remove: removeMethod,
-  } = useFieldArray<LessonPreparationFormData>({
+  } = useFieldArray({
     control: form.control,
     name: 'teaching_methods',
   })
@@ -110,7 +123,7 @@ export function LessonPrepForm({
     fields: assessmentFields,
     append: appendAssessment,
     remove: removeAssessment,
-  } = useFieldArray<LessonPreparationFormData>({
+  } = useFieldArray({
     control: form.control,
     name: 'assessment_methods',
   })
@@ -119,7 +132,7 @@ export function LessonPrepForm({
     fields: resourceFields,
     append: appendResource,
     remove: removeResource,
-  } = useFieldArray<LessonPreparationFormData>({
+  } = useFieldArray({
     control: form.control,
     name: 'resources_needed',
   })
@@ -127,7 +140,7 @@ export function LessonPrepForm({
   const handleSubmit = useCallback(
     async (data: LessonPreparationFormData) => {
       try {
-        await onSubmit(data)
+        await onSubmit(toApiPayload(data))
       } catch (error) {
         console.error('Form submission error:', error)
       }
@@ -210,7 +223,7 @@ export function LessonPrepForm({
                         </SelectTrigger>
                       </FormControl>
                       <SelectContent>
-                        {classes.map((className) => (
+                        {availableClasses.map((className) => (
                           <SelectItem key={className} value={className}>
                             {className}
                           </SelectItem>
@@ -620,8 +633,8 @@ export function LessonPrepForm({
 
         {/* Submit Buttons */}
         <div className="flex gap-4 justify-end">
-          <Button type="reset" variant="outline" disabled={isLoading}>
-            Reset
+          <Button type="button" variant="outline" onClick={onCancel} disabled={isLoading}>
+            Cancel
           </Button>
           <Button type="submit" disabled={isLoading}>
             {isLoading ? 'Saving...' : initialData ? 'Update Preparation' : 'Create Preparation'}
