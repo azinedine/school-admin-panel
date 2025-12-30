@@ -67,8 +67,8 @@ export const PreparationTab = memo(function PreparationTab() {
         const matchesStatus = statusFilter === 'all' || prep.status === statusFilter
         const query = searchQuery.toLowerCase()
         const matchesSearch =
-            prep.title.toLowerCase().includes(query) ||
-            (prep.class && prep.class.toLowerCase().includes(query)) ||
+            prep.lesson_number.toLowerCase().includes(query) ||
+            (prep.level && prep.level.toLowerCase().includes(query)) ||
             (prep.subject && prep.subject.toLowerCase().includes(query))
         return matchesStatus && matchesSearch
     })
@@ -221,7 +221,7 @@ export const PreparationTab = memo(function PreparationTab() {
                 <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
                     <DialogHeader>
                         <DialogTitle className="flex items-center gap-2">
-                            <span className="text-xl">{selectedPrep?.title}</span>
+                            <span className="text-xl">{selectedPrep?.lesson_number}</span>
                         </DialogTitle>
                     </DialogHeader>
                     <div className="mt-4">
