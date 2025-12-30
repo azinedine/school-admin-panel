@@ -26,7 +26,7 @@ interface LessonSelectorProps {
   onOpenChange: (open: boolean) => void
   onSelect: (template: LessonTemplate) => void
   templates: LessonTemplate[]
-  addedLessonTitles?: string[]
+  addedLessonNumbers?: string[]
   defaultYear?: '1st' | '2nd' | '3rd' | '4th'
   availableYears?: string[]
 }
@@ -36,7 +36,7 @@ export function LessonSelector({
   onOpenChange,
   onSelect,
   templates,
-  addedLessonTitles = [],
+  addedLessonNumbers = [],
   defaultYear = '1st',
   availableYears = ['1st', '2nd', '3rd', '4th'],
 }: LessonSelectorProps) {
@@ -65,7 +65,7 @@ export function LessonSelector({
   // Filter templates
   const filteredTemplates = useMemo(() => {
     return templates.filter((template) => {
-      const matchesSearch = template.lessonTitle
+      const matchesSearch = template.lessonNumber
         .toLowerCase()
         .includes(searchTerm.toLowerCase())
       const matchesField =
@@ -141,7 +141,7 @@ export function LessonSelector({
           ) : (
             <div className="space-y-3">
               {filteredTemplates.map((template) => {
-                const isAdded = addedLessonTitles.includes(template.lessonTitle)
+                const isAdded = addedLessonNumbers.includes(template.lessonNumber)
 
                 return (
                   <div
@@ -152,7 +152,7 @@ export function LessonSelector({
                     <div className="space-y-1 flex-1">
                       <div className="flex items-center gap-2">
                         <h4 className="font-semibold text-foreground group-hover:text-primary transition-colors">
-                          {template.lessonTitle}
+                          {template.lessonNumber}
                         </h4>
                         {isAdded && (
                           <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200">
