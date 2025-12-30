@@ -1,4 +1,4 @@
-import { useFormContext } from "react-hook-form"
+import { useFormContext, type FieldError } from "react-hook-form"
 import { useTranslation } from "react-i18next"
 import { TextField } from "../TextField"
 import { PasswordField } from "../PasswordField"
@@ -48,7 +48,7 @@ export function AccountInfoSection() {
             onChange={(val) => setValue('role', val)}
             options={roleOptions}
             placeholder={t('auth.register.selectRole')}
-            error={errors.role as any}
+            error={errors.role as FieldError}
             required
         />
       </div>
