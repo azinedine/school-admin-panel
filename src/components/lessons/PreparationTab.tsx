@@ -288,6 +288,7 @@ export const PreparationTab = memo(function PreparationTab() {
                             classes={user?.levels && user.levels.length > 0
                                 ? user.levels
                                 : ['1AS', '2AS', '3AS', '1AM', '2AM', '3AM', '4AM']}
+                            subjects={user?.subjects || []}
                             onCancel={() => setFormDialogOpen(false)}
                             language={formLanguage}
                         />
