@@ -11,9 +11,10 @@ import {
     DialogTitle,
 } from '@/components/ui/dialog'
 import { useLessonPreps } from '@/hooks/use-lesson-preparation'
-import { PreparationCard } from '@/components/lessons_compponents/PreparationCard'
+// import { PreparationCard } from '@/components/lessons_compponents/PreparationCard'
 import { LessonPrepDetails } from './LessonPrepDetails'
 import type { LessonPreparation } from '@/schemas/lesson-preparation'
+import { PreparationCard } from './PreparationCard'
 
 /**
  * LessonsTab (Library) - View Ready Lesson Preparations
