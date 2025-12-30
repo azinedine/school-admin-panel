@@ -1,5 +1,5 @@
 import { useTranslation } from 'react-i18next'
-import { BookOpen, Calendar as CalendarIcon, Clock, ChevronRight, Pencil, Trash2, Eye } from 'lucide-react'
+import { BookOpen, Calendar as CalendarIcon, Clock, Pencil, Trash2, Eye, Layers, Target, Lightbulb, Users } from 'lucide-react'
 import { Card, CardContent } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
@@ -97,11 +97,29 @@ export function PreparationCard({
                     <h3 className="font-semibold text-lg line-clamp-2 leading-tight mb-2 group-hover:text-primary transition-colors">
                         {prep.lesson_number}
                     </h3>
+
+                    {/* Pedagogical Context */}
+                    {(prep.domain || prep.learning_unit) && (
+                        <div className="mb-3 text-xs text-muted-foreground/90 space-y-1">
+                            {prep.domain && (
+                                <div className="flex items-center gap-1.5">
+                                    <BookOpen className="h-3 w-3 text-indigo-500" />
+                                    <span className="truncate max-w-[200px]">{prep.domain}</span>
+                                </div>
+                            )}
+                            {prep.learning_unit && (
+                                <div className="flex items-center gap-1.5">
+                                    <Layers className="h-3 w-3 text-indigo-500" />
+                                    <span className="truncate max-w-[200px]">{prep.learning_unit}</span>
+                                </div>
+                            )}
+                        </div>
+                    )}
+
                     <div className="flex flex-wrap gap-y-1 gap-x-3 text-sm text-muted-foreground">
                         {prep.level && (
                             <div className="flex items-center gap-1.5">
-                                <BookOpen className="h-3.5 w-3.5" />
-                                <span>{prep.level}</span>
+                                <span className="font-medium text-foreground/80">{prep.level}</span>
                             </div>
                         )}
 
@@ -119,9 +137,30 @@ export function PreparationCard({
                     </div>
                 </div>
 
-                <div className="pt-2 flex items-center text-xs text-muted-foreground/80 border-t mt-2">
-                    <span className="truncate">{prep.subject || 'All Subjects'}</span>
-                    <ChevronRight className="h-3 w-3 ml-auto opacity-50" />
+                <div className="pt-2 flex items-center justify-between text-xs text-muted-foreground/80 border-t mt-2">
+                    <span className="truncate font-medium">{prep.subject || 'All Subjects'}</span>
+
+                    {/* Item Counts */}
+                    <div className="flex gap-2">
+                        {(prep.learning_objectives?.length ?? 0) > 0 && (
+                            <span title="Objectives" className="flex items-center gap-1 bg-blue-50 text-blue-700 px-1.5 py-0.5 rounded">
+                                <Target className="h-3 w-3" />
+                                {prep.learning_objectives?.length}
+                            </span>
+                        )}
+                        {(prep.key_topics?.length ?? 0) > 0 && (
+                            <span title="Topics" className="flex items-center gap-1 bg-amber-50 text-amber-700 px-1.5 py-0.5 rounded">
+                                <Lightbulb className="h-3 w-3" />
+                                {prep.key_topics?.length}
+                            </span>
+                        )}
+                        {(prep.teaching_methods?.length ?? 0) > 0 && (
+                            <span title="Methods" className="flex items-center gap-1 bg-emerald-50 text-emerald-700 px-1.5 py-0.5 rounded">
+                                <Users className="h-3 w-3" />
+                                {prep.teaching_methods?.length}
+                            </span>
+                        )}
+                    </div>
                 </div>
             </CardContent>
         </Card>
