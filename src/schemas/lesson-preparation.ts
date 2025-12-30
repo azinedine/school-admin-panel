@@ -19,12 +19,30 @@ const commonFields = {
   status: z.enum(['draft', 'ready', 'delivered']),
 }
 
+const lessonElementsSchema = z.array(z.object({
+  id: z.string().optional(),
+  content: z.string().min(1, 'Element content cannot be empty')
+})).min(1, 'Add at least one lesson element')
+
 /**
  * 1. Form Schema (UI Layer)
  * Optimized for React Hook Form usage (objects with IDs/Values)
  */
 export const lessonPreparationFormSchema = z.object({
   ...commonFields,
+  // Pedagogical Context
+  domain: z.string().min(1, 'Domain is required'),
+  learning_unit: z.string().min(1, 'Learning Unit is required'),
+  knowledge_resource: z.string().min(1, 'Knowledge Resource is required'),
+
+  // Lesson Flow
+  lesson_elements: lessonElementsSchema,
+
+  // Evaluation
+  evaluation_type: z.enum(['assessment', 'homework']),
+  evaluation_content: z.string().optional(),
+
+  // Legacy fields (kept for backward compatibility or future use if needed, but made optional in UI logic if replaced)
   learning_objectives: z.array(z.object({ value: z.string().min(1, 'Objective is required') }))
     .min(1, 'Add at least one learning objective'),
   key_topics: z.array(z.object({ value: z.string().min(1, 'Topic is required') }))
@@ -33,6 +51,16 @@ export const lessonPreparationFormSchema = z.object({
     .min(1, 'Select at least one teaching method'),
   resources_needed: z.array(z.object({ value: z.string().min(1, 'Resource is required') })),
   assessment_methods: z.array(z.object({ value: z.string().min(1, 'Method is required') })),
+}).superRefine((data, ctx) => {
+  if (!data.evaluation_content || data.evaluation_content.length < 3) {
+    ctx.addIssue({
+      code: z.ZodIssueCode.custom,
+      path: ['evaluation_content'],
+      message: data.evaluation_type === 'assessment'
+        ? "Please provide assessment details"
+        : "Please provide homework details",
+    });
+  }
 })
 
 export type LessonPreparationFormData = z.infer<typeof lessonPreparationFormSchema>
@@ -43,6 +71,17 @@ export type LessonPreparationFormData = z.infer<typeof lessonPreparationFormSche
  */
 export const lessonPreparationApiSchema = z.object({
   ...commonFields,
+  domain: z.string(),
+  learning_unit: z.string(),
+  knowledge_resource: z.string(),
+  lesson_elements: z.array(z.object({
+    id: z.string().optional(),
+    content: z.string()
+  })),
+  evaluation_type: z.enum(['assessment', 'homework']),
+  evaluation_content: z.string().optional(),
+
+  // Legacy arrays needed for type compatibility if backend still expects them
   learning_objectives: z.array(z.string()),
   key_topics: z.array(z.string()),
   teaching_methods: z.array(z.string()),
@@ -82,16 +121,32 @@ export const defaultFormValues: Partial<LessonPreparationFormData> = {
   assessment_criteria: '',
   notes: '',
   status: 'draft',
+
+  // New Pedagogical Defaults
+  domain: '',
+  learning_unit: '',
+  knowledge_resource: '',
+  lesson_elements: [{ content: '' }],
+  evaluation_type: 'assessment',
+  evaluation_content: '',
 }
 
 // Transform API Entity -> Form Data (for Editing)
 export const toFormData = (entity: LessonPreparation): LessonPreparationFormData => ({
   ...entity,
-  learning_objectives: entity.learning_objectives.map(v => ({ value: v })),
-  key_topics: entity.key_topics.map(v => ({ value: v })),
-  teaching_methods: entity.teaching_methods.map(v => ({ value: v })),
-  resources_needed: entity.resources_needed.map(v => ({ value: v })),
-  assessment_methods: entity.assessment_methods.map(v => ({ value: v })),
+  learning_objectives: entity.learning_objectives?.map(v => ({ value: v })) ?? [{ value: '' }],
+  key_topics: entity.key_topics?.map(v => ({ value: v })) ?? [{ value: '' }],
+  teaching_methods: entity.teaching_methods?.map(v => ({ value: v })) ?? [],
+  resources_needed: entity.resources_needed?.map(v => ({ value: v })) ?? [],
+  assessment_methods: entity.assessment_methods?.map(v => ({ value: v })) ?? [],
+
+  // Pedagogical Fields
+  domain: entity.domain ?? '',
+  learning_unit: entity.learning_unit ?? '',
+  knowledge_resource: entity.knowledge_resource ?? '',
+  lesson_elements: entity.lesson_elements?.length ? entity.lesson_elements : [{ content: '' }],
+  evaluation_type: entity.evaluation_type ?? 'assessment',
+  evaluation_content: entity.evaluation_content ?? '',
 })
 
 // Transform Form Data -> API Payload (for Submission)
