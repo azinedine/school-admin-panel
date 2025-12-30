@@ -1,6 +1,6 @@
 import { useState, memo } from 'react'
 import { useTranslation } from 'react-i18next'
-import { BookOpen, Loader2, Search, Filter, Plus, Trash2 } from 'lucide-react'
+import { BookOpen, Loader2, Search, Filter, Plus, Trash2, X } from 'lucide-react'
 import { Card, CardContent } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -16,6 +16,7 @@ import {
     DialogContent,
     DialogHeader,
     DialogTitle,
+    DialogClose,
 } from '@/components/ui/dialog'
 import { useAuthStore } from '@/store/auth-store'
 import {
@@ -32,6 +33,7 @@ import { useLessonPreps, useCreateLessonPrep, useUpdateLessonPrep, useDeleteLess
 import { LessonPrepDetails } from './LessonPrepDetails'
 import { LessonPrepForm } from './LessonPrepForm'
 import { PreparationCard } from './PreparationCard'
+import { FormLanguageSelector } from '@/components/FormLanguageSelector'
 import type { LessonPreparation, LessonPreparationApiPayload } from '@/schemas/lesson-preparation'
 
 /**
@@ -248,36 +250,22 @@ export const PreparationTab = memo(function PreparationTab() {
 
             {/* Create/Edit Form Dialog */}
             <Dialog open={formDialogOpen} onOpenChange={setFormDialogOpen}>
-                <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto p-0">
+                <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto p-0 [&>button]:hidden">
                     <div className="px-6 py-4 border-b flex justify-between items-center">
                         <DialogTitle>
                             {selectedPrep ? t('pages.prep.editPrep', 'Edit Lesson Preparation') : t('pages.prep.createPrep', 'New Lesson Preparation')}
                         </DialogTitle>
-                        <div className="flex gap-1">
-                            <Button
-                                variant={formLanguage === 'en' ? 'default' : 'ghost'}
-                                size="sm"
-                                onClick={() => setFormLanguage('en')}
-                                className="h-7 px-2 text-xs"
-                            >
-                                EN
-                            </Button>
-                            <Button
-                                variant={formLanguage === 'fr' ? 'default' : 'ghost'}
-                                size="sm"
-                                onClick={() => setFormLanguage('fr')}
-                                className="h-7 px-2 text-xs"
-                            >
-                                FR
-                            </Button>
-                            <Button
-                                variant={formLanguage === 'ar' ? 'default' : 'ghost'}
-                                size="sm"
-                                onClick={() => setFormLanguage('ar')}
-                                className="h-7 px-2 text-xs"
-                            >
-                                AR
-                            </Button>
+                        <div className="flex items-center gap-2">
+                            <FormLanguageSelector
+                                value={formLanguage}
+                                onChange={setFormLanguage}
+                            />
+                            <DialogClose asChild>
+                                <Button variant="ghost" size="icon" className="h-8 w-8">
+                                    <X className="h-4 w-4" />
+                                    <span className="sr-only">Close</span>
+                                </Button>
+                            </DialogClose>
                         </div>
                     </div>
                     <div className="p-6">
