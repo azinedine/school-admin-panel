@@ -34,7 +34,6 @@ import {
     toFormData,
     toApiPayload
 } from '@/schemas/lesson-preparation'
-import { ClassContextDisplay } from './ClassContextDisplay'
 import { LessonPrepPedagogicalContext } from './LessonPrepPedagogicalContext'
 import { LessonPrepElements } from './LessonPrepElements'
 import { LessonPrepEvaluation } from './LessonPrepEvaluation'
@@ -42,7 +41,7 @@ import { LessonPrepEvaluation } from './LessonPrepEvaluation'
 interface LessonPrepFormProps {
     initialData?: LessonPreparation | null
     subjects?: string[]
-    classes?: string[]
+    levels?: string[]
     onCancel?: () => void
     isLoading?: boolean
     language?: string
@@ -52,7 +51,7 @@ interface LessonPrepFormProps {
 export function LessonPrepForm({
     initialData,
     subjects = [],
-    classes = [],
+    levels = [],
     onCancel,
     isLoading,
     language,
@@ -150,7 +149,7 @@ export function LessonPrepForm({
                                     name="class"
                                     render={({ field }) => (
                                         <FormItem>
-                                            <FormLabel>{t('pages.prep.class', 'Class')}</FormLabel>
+                                            <FormLabel>{t('pages.prep.level', 'Level')}</FormLabel>
                                             <Select
                                                 onValueChange={field.onChange}
                                                 defaultValue={field.value}
@@ -158,22 +157,21 @@ export function LessonPrepForm({
                                             >
                                                 <FormControl>
                                                     <SelectTrigger>
-                                                        <SelectValue placeholder={t('pages.prep.selectClass', 'Select class')} />
+                                                        <SelectValue placeholder={t('pages.prep.selectLevel', 'Select level')} />
                                                     </SelectTrigger>
                                                 </FormControl>
                                                 <SelectContent>
-                                                    {classes.length > 0 ? (
-                                                        classes.map((className) => (
-                                                            <SelectItem key={className} value={className}>
-                                                                {className}
+                                                    {levels.length > 0 ? (
+                                                        levels.map((level) => (
+                                                            <SelectItem key={level} value={level}>
+                                                                {level}
                                                             </SelectItem>
                                                         ))
                                                     ) : (
-                                                        <SelectItem value="1AS" disabled>No classes</SelectItem>
+                                                        <SelectItem value="none" disabled>{t('pages.prep.noLevels', 'No levels assigned')}</SelectItem>
                                                     )}
                                                 </SelectContent>
                                             </Select>
-                                            <ClassContextDisplay classId={field.value} />
                                             <FormMessage />
                                         </FormItem>
                                     )}
