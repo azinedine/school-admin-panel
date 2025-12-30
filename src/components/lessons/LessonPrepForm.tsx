@@ -1,20 +1,13 @@
-import { useCallback } from 'react'
-import { useForm, useFieldArray } from 'react-hook-form'
+import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useTranslation } from 'react-i18next'
-import { Plus, X, Loader2 } from 'lucide-react'
-import { ClassContextDisplay } from './ClassContextDisplay'
-
 import {
-    lessonPreparationFormSchema,
-    defaultFormValues,
-    toFormData,
-    toApiPayload,
-    type LessonPreparationFormData,
-    type LessonPreparationApiPayload,
-    type LessonPreparation,
-} from '@/schemas/lesson-preparation'
-
+    Loader2,
+    BookOpen,
+    FileText
+} from 'lucide-react'
+import { Button } from '@/components/ui/button'
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import {
     Form,
     FormControl,
@@ -24,8 +17,6 @@ import {
     FormMessage,
 } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
-import { Textarea } from '@/components/ui/textarea'
-import { Button } from '@/components/ui/button'
 import {
     Select,
     SelectContent,
@@ -33,241 +24,82 @@ import {
     SelectTrigger,
     SelectValue,
 } from '@/components/ui/select'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
-import { Badge } from '@/components/ui/badge'
+import { Textarea } from '@/components/ui/textarea'
+import {
+    type LessonPreparationFormData,
+    type LessonPreparationApiPayload,
+    type LessonPreparation,
+    lessonPreparationFormSchema,
+    defaultFormValues,
+    toFormData,
+    toApiPayload
+} from '@/schemas/lesson-preparation'
+import { ClassContextDisplay } from './ClassContextDisplay'
+import { LessonPrepPedagogicalContext } from './LessonPrepPedagogicalContext'
+import { LessonPrepElements } from './LessonPrepElements'
+import { LessonPrepEvaluation } from './LessonPrepEvaluation'
 
 interface LessonPrepFormProps {
     initialData?: LessonPreparation | null
-    onSubmit: (data: LessonPreparationApiPayload) => Promise<void>
-    isLoading?: boolean
-    classes?: string[]
     subjects?: string[]
-    teachingMethods?: string[]
-    assessmentMethods?: string[]
+    classes?: string[]
     onCancel?: () => void
+    isLoading?: boolean
     language?: string
+    onSubmit: (data: LessonPreparationApiPayload) => Promise<void>
 }
-
-const defaultTeachingMethods = [
-    'Lecture',
-    'Discussion',
-    'Group Work',
-    'Individual Work',
-    'Practical Demonstration',
-    'Case Study',
-    'Brainstorming',
-    'Problem-Based Learning',
-]
-
-const defaultAssessmentMethods = [
-    'Quiz',
-    'Test',
-    'Assignment',
-    'Presentation',
-    'Peer Review',
-    'Self-Assessment',
-    'Practical Exam',
-    'Project',
-]
 
 export function LessonPrepForm({
     initialData,
-    onSubmit,
-    isLoading = false,
-    classes = [],
     subjects = [],
-    teachingMethods = defaultTeachingMethods,
-    assessmentMethods = defaultAssessmentMethods,
+    classes = [],
     onCancel,
+    isLoading,
     language,
+    onSubmit
 }: LessonPrepFormProps) {
     const { t: originalT, i18n } = useTranslation()
-
-    // Use the passed language if available, otherwise fall back to global
-    // We use a fixed T function for the specific language to ensure only this form changes
+    // Use fixed language if provided, otherwise default to i18n
     const t = language ? i18n.getFixedT(language) : originalT
 
     const form = useForm<LessonPreparationFormData>({
         resolver: zodResolver(lessonPreparationFormSchema),
-        defaultValues: initialData
-            ? toFormData(initialData)
-            : (defaultFormValues as LessonPreparationFormData),
+        defaultValues: initialData ? toFormData(initialData) : defaultFormValues,
     })
 
-    const {
-        fields: objectiveFields,
-        append: appendObjective,
-        remove: removeObjective,
-    } = useFieldArray<LessonPreparationFormData>({
-        control: form.control,
-        name: 'learning_objectives',
-    })
-
-    const {
-        fields: topicFields,
-        append: appendTopic,
-        remove: removeTopic,
-    } = useFieldArray<LessonPreparationFormData>({
-        control: form.control,
-        name: 'key_topics',
-    })
-
-    const {
-        fields: methodFields,
-        append: appendMethod,
-        remove: removeMethod,
-    } = useFieldArray<LessonPreparationFormData>({
-        control: form.control,
-        name: 'teaching_methods',
-    })
-
-    const {
-        fields: assessmentFields,
-        append: appendAssessment,
-        remove: removeAssessment,
-    } = useFieldArray<LessonPreparationFormData>({
-        control: form.control,
-        name: 'assessment_methods',
-    })
-
-    const {
-        fields: resourceFields,
-        append: appendResource,
-        remove: removeResource,
-    } = useFieldArray<LessonPreparationFormData>({
-        control: form.control,
-        name: 'resources_needed',
-    })
-
-    const handleSubmit = useCallback(
-        async (data: LessonPreparationFormData) => {
-            try {
-                const apiPayload = toApiPayload(data)
-                await onSubmit(apiPayload)
-            } catch (error) {
-                console.error('Form submission error:', error)
-            }
-        },
-        [onSubmit]
-    )
+    const handleSubmit = async (data: LessonPreparationFormData) => {
+        const payload = toApiPayload(data)
+        await onSubmit(payload)
+    }
 
     return (
         <Form {...form}>
-            <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-6" dir={i18n.dir(language || i18n.language)}>
-                {/* Basic Information */}
-                <Card>
-                    <CardHeader>
-                        <CardTitle>{t('pages.prep.basicInfo', 'Basic Information')}</CardTitle>
-                        <CardDescription>{t('pages.prep.basicInfoDesc', 'Lesson title, class and date')}</CardDescription>
-                    </CardHeader>
-                    <CardContent className="space-y-6">
-                        <FormField
-                            control={form.control}
-                            name="title"
-                            render={({ field }) => (
-                                <FormItem>
-                                    <FormLabel>{t('pages.prep.lessonTitle', 'Lesson Title')}</FormLabel>
-                                    <FormControl>
-                                        <Input
-                                            placeholder={t('pages.prep.lessonTitlePlaceholder', '')}
-                                            {...field}
-                                            disabled={isLoading}
-                                        />
-                                    </FormControl>
-                                    <FormMessage />
-                                </FormItem>
-                            )}
-                        />
-
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-6" dir={language === 'ar' ? 'rtl' : 'ltr'}>
+                {/* 1. Context & Setup */}
+                <div className="grid gap-6 md:grid-cols-2">
+                    {/* Basic Info Card */}
+                    <Card className="h-full overflow-hidden border-2 shadow-sm">
+                        <CardHeader className="bg-muted/30 pb-4 border-b">
+                            <div className="flex items-center gap-2">
+                                <div className="p-2 bg-primary/10 rounded-lg">
+                                    <BookOpen className="h-5 w-5 text-primary" />
+                                </div>
+                                <div>
+                                    <CardTitle className="text-lg">{t('pages.prep.basicInfo', 'Basic Information')}</CardTitle>
+                                    <CardDescription>{t('pages.prep.basicInfoDesc', 'Lesson title, class and date')}</CardDescription>
+                                </div>
+                            </div>
+                        </CardHeader>
+                        <CardContent className="space-y-6 pt-6">
                             <FormField
                                 control={form.control}
-                                name="subject"
+                                name="title"
                                 render={({ field }) => (
                                     <FormItem>
-                                        <FormLabel>{t('pages.prep.subject', 'Subject')}</FormLabel>
-                                        <Select
-                                            onValueChange={field.onChange}
-                                            defaultValue={field.value}
-                                            disabled={isLoading}
-                                        >
-                                            <FormControl>
-                                                <SelectTrigger>
-                                                    <SelectValue placeholder={t('pages.prep.selectSubject', 'Select subject')} />
-                                                </SelectTrigger>
-                                            </FormControl>
-                                            <SelectContent>
-                                                {subjects.length > 0 ? (
-                                                    subjects.map((subject) => (
-                                                        <SelectItem key={subject} value={subject}>
-                                                            {subject}
-                                                        </SelectItem>
-                                                    ))
-                                                ) : (
-                                                    <SelectItem value="General" disabled>
-                                                        {t('pages.prep.noSubjects', 'No subjects assigned')}
-                                                    </SelectItem>
-                                                )}
-                                            </SelectContent>
-                                        </Select>
-                                        <FormMessage />
-                                    </FormItem>
-                                )}
-                            />
-
-                            <FormField
-                                control={form.control}
-                                name="class"
-                                render={({ field }) => (
-                                    <FormItem>
-                                        <FormLabel>{t('pages.prep.class', 'Class')}</FormLabel>
-                                        <Select
-                                            onValueChange={field.onChange}
-                                            defaultValue={field.value}
-                                            disabled={isLoading}
-                                        >
-                                            <FormControl>
-                                                <SelectTrigger>
-                                                    <SelectValue placeholder={t('pages.prep.selectClass', 'Select class')} />
-                                                </SelectTrigger>
-                                            </FormControl>
-                                            <SelectContent>
-                                                {classes.length > 0 ? (
-                                                    classes.map((className) => (
-                                                        <SelectItem key={className} value={className}>
-                                                            {className}
-                                                        </SelectItem>
-                                                    ))
-                                                ) : (
-                                                    <>
-                                                        <SelectItem value="1AS">1AS</SelectItem>
-                                                        <SelectItem value="2AS">2AS</SelectItem>
-                                                        <SelectItem value="3AS">3AS</SelectItem>
-                                                        <SelectItem value="1AM">1AM</SelectItem>
-                                                        <SelectItem value="2AM">2AM</SelectItem>
-                                                        <SelectItem value="3AM">3AM</SelectItem>
-                                                        <SelectItem value="4AM">4AM</SelectItem>
-                                                    </>
-                                                )}
-                                            </SelectContent>
-                                        </Select>
-                                        <ClassContextDisplay classId={field.value} />
-                                        <FormMessage />
-                                    </FormItem>
-                                )}
-                            />
-                        </div>
-
-                        <div className="grid grid-cols-2 gap-3">
-                            <FormField
-                                control={form.control}
-                                name="date"
-                                render={({ field }) => (
-                                    <FormItem>
-                                        <FormLabel>{t('pages.prep.date', 'Date')}</FormLabel>
+                                        <FormLabel>{t('pages.prep.lessonTitle', 'Lesson Title')}</FormLabel>
                                         <FormControl>
                                             <Input
-                                                type="date"
+                                                placeholder={t('pages.prep.lessonTitlePlaceholder', '')}
                                                 {...field}
                                                 disabled={isLoading}
                                             />
@@ -277,342 +109,154 @@ export function LessonPrepForm({
                                 )}
                             />
 
-                            <FormField
-                                control={form.control}
-                                name="duration_minutes"
-                                render={({ field }) => (
-                                    <FormItem>
-                                        <FormLabel>{t('pages.prep.duration', 'Duration (min)')}</FormLabel>
-                                        <FormControl>
-                                            <Input
-                                                type="number"
-                                                {...field}
-                                                onChange={(e) => field.onChange(parseInt(e.target.value))}
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <FormField
+                                    control={form.control}
+                                    name="subject"
+                                    render={({ field }) => (
+                                        <FormItem>
+                                            <FormLabel>{t('pages.prep.subject', 'Subject')}</FormLabel>
+                                            <Select
+                                                onValueChange={field.onChange}
+                                                defaultValue={field.value}
                                                 disabled={isLoading}
-                                            />
-                                        </FormControl>
-                                        <FormMessage />
-                                    </FormItem>
-                                )}
-                            />
-                        </div>
-
-
-                        <FormField
-                            control={form.control}
-                            name="description"
-                            render={({ field }) => (
-                                <FormItem>
-                                    <FormLabel>{t('pages.prep.description', 'Description')}</FormLabel>
-                                    <FormControl>
-                                        <Textarea
-                                            placeholder={t('pages.prep.descriptionPlaceholder', 'Brief description of the lesson...')}
-                                            className="min-h-[80px]"
-                                            {...field}
-                                            disabled={isLoading}
-                                        />
-                                    </FormControl>
-                                    <FormMessage />
-                                </FormItem>
-                            )}
-                        />
-                    </CardContent>
-                </Card>
-
-                {/* Content Section */}
-                <div className="grid md:grid-cols-2 gap-6">
-                    {/* Learning Objectives */}
-                    <Card>
-                        <CardHeader className="pb-3">
-                            <CardTitle className="text-base">{t('pages.prep.learningObjectives', 'Learning Objectives')}</CardTitle>
-                        </CardHeader>
-                        <CardContent className="space-y-3">
-                            {objectiveFields.map((field, index) => (
-                                <div key={field.id} className="flex gap-2">
-                                    <FormField
-                                        control={form.control}
-                                        name={`learning_objectives.${index}.value`}
-                                        render={({ field }) => (
-                                            <FormItem className="flex-1 space-y-0">
+                                            >
                                                 <FormControl>
-                                                    <Input
-                                                        placeholder={`${t('pages.prep.objectivePlaceholder', 'Objective')} ${index + 1}`}
-                                                        {...field}
-                                                        disabled={isLoading}
-                                                        className="h-9"
-                                                    />
+                                                    <SelectTrigger>
+                                                        <SelectValue placeholder={t('pages.prep.selectSubject', 'Select subject')} />
+                                                    </SelectTrigger>
                                                 </FormControl>
-                                                <FormMessage />
-                                            </FormItem>
-                                        )}
-                                    />
-                                    <Button
-                                        type="button"
-                                        variant="ghost"
-                                        size="icon"
-                                        className="h-9 w-9 text-muted-foreground"
-                                        onClick={() => removeObjective(index)}
-                                        disabled={isLoading || objectiveFields.length === 1}
-                                    >
-                                        <X className="h-4 w-4" />
-                                    </Button>
-                                </div>
-                            ))}
-                            <Button
-                                type="button"
-                                variant="outline"
-                                size="sm"
-                                onClick={() => appendObjective({ value: '' })}
-                                disabled={isLoading}
-                                className="w-full h-8 dashed border-dashed"
-                            >
-                                <Plus className="h-3 w-3 mr-2" />
-                                {t('pages.prep.addObjective', 'Add Objective')}
-                            </Button>
-                        </CardContent>
-                    </Card>
+                                                <SelectContent>
+                                                    {subjects.length > 0 ? (
+                                                        subjects.map((subject) => (
+                                                            <SelectItem key={subject} value={subject}>
+                                                                {subject}
+                                                            </SelectItem>
+                                                        ))
+                                                    ) : (
+                                                        <SelectItem value="General" disabled>
+                                                            {t('pages.prep.noSubjects', 'No subjects assigned')}
+                                                        </SelectItem>
+                                                    )}
+                                                </SelectContent>
+                                            </Select>
+                                            <FormMessage />
+                                        </FormItem>
+                                    )}
+                                />
 
-                    {/* Key Topics */}
-                    <Card>
-                        <CardHeader className="pb-3">
-                            <CardTitle className="text-base">{t('pages.prep.keyTopics', 'Key Topics')}</CardTitle>
-                        </CardHeader>
-                        <CardContent className="space-y-3">
-                            {topicFields.map((field, index) => (
-                                <div key={field.id} className="flex gap-2">
-                                    <FormField
-                                        control={form.control}
-                                        name={`key_topics.${index}.value`}
-                                        render={({ field }) => (
-                                            <FormItem className="flex-1 space-y-0">
+                                <FormField
+                                    control={form.control}
+                                    name="class"
+                                    render={({ field }) => (
+                                        <FormItem>
+                                            <FormLabel>{t('pages.prep.class', 'Class')}</FormLabel>
+                                            <Select
+                                                onValueChange={field.onChange}
+                                                defaultValue={field.value}
+                                                disabled={isLoading}
+                                            >
                                                 <FormControl>
-                                                    <Input
-                                                        placeholder={`${t('pages.prep.topicPlaceholder', 'Topic')} ${index + 1}`}
-                                                        {...field}
-                                                        disabled={isLoading}
-                                                        className="h-9"
-                                                    />
+                                                    <SelectTrigger>
+                                                        <SelectValue placeholder={t('pages.prep.selectClass', 'Select class')} />
+                                                    </SelectTrigger>
                                                 </FormControl>
-                                                <FormMessage />
-                                            </FormItem>
-                                        )}
-                                    />
-                                    <Button
-                                        type="button"
-                                        variant="ghost"
-                                        size="icon"
-                                        className="h-9 w-9 text-muted-foreground"
-                                        onClick={() => removeTopic(index)}
-                                        disabled={isLoading || topicFields.length === 1}
-                                    >
-                                        <X className="h-4 w-4" />
-                                    </Button>
-                                </div>
-                            ))}
-                            <Button
-                                type="button"
-                                variant="outline"
-                                size="sm"
-                                onClick={() => appendTopic({ value: '' })}
-                                disabled={isLoading}
-                                className="w-full h-8 dashed border-dashed"
-                            >
-                                <Plus className="h-3 w-3 mr-2" />
-                                {t('pages.prep.addTopic', 'Add Topic')}
-                            </Button>
-                        </CardContent>
-                    </Card>
-                </div>
-
-                {/* Methodology & Resources */}
-                <div className="grid md:grid-cols-2 gap-6">
-                    {/* Teaching Methods */}
-                    <Card>
-                        <CardHeader className="pb-3">
-                            <CardTitle className="text-base">{t('pages.prep.teachingMethods', 'Teaching Methods')}</CardTitle>
-                        </CardHeader>
-                        <CardContent className="space-y-3">
-                            <div className="flex flex-wrap gap-2 mb-2">
-                                {methodFields.map((field, index) => (
-                                    <Badge key={field.id} variant="secondary" className="pl-2 pr-1 h-7">
-                                        {field.value}
-                                        <Button
-                                            type="button"
-                                            variant="ghost"
-                                            size="sm"
-                                            className="h-4 w-4 p-0 ml-1 hover:bg-transparent"
-                                            onClick={() => removeMethod(index)}
-                                            disabled={isLoading}
-                                        >
-                                            <X className="h-3 w-3" />
-                                        </Button>
-                                    </Badge>
-                                ))}
+                                                <SelectContent>
+                                                    {classes.length > 0 ? (
+                                                        classes.map((className) => (
+                                                            <SelectItem key={className} value={className}>
+                                                                {className}
+                                                            </SelectItem>
+                                                        ))
+                                                    ) : (
+                                                        <SelectItem value="1AS" disabled>No classes</SelectItem>
+                                                    )}
+                                                </SelectContent>
+                                            </Select>
+                                            <ClassContextDisplay classId={field.value} />
+                                            <FormMessage />
+                                        </FormItem>
+                                    )}
+                                />
                             </div>
-                            <Select
-                                onValueChange={(value) => {
-                                    if (value && !methodFields.some((f) => f.value === value)) {
-                                        appendMethod({ value })
-                                    }
-                                }}
-                                disabled={isLoading}
-                            >
-                                <SelectTrigger className="h-9">
-                                    <SelectValue placeholder={t('pages.prep.addMethod', 'Add method')} />
-                                </SelectTrigger>
-                                <SelectContent>
-                                    {teachingMethods
-                                        .filter((method) => !methodFields.some((f) => f.value === method))
-                                        .map((method) => {
-                                            // Convert to camelCase key
-                                            const key = method
-                                                .toLowerCase()
-                                                .replace(/[^a-zA-Z0-9]+(.)/g, (m, chr) => chr.toUpperCase())
-                                                .replace(/[^a-zA-Z0-9]/g, '')
 
-                                            return (
-                                                <SelectItem key={method} value={method}>
-                                                    {t(`pages.prep.teachingMethodsOptions.${key}`, method)}
-                                                </SelectItem>
-                                            )
-                                        })}
-                                </SelectContent>
-                            </Select>
+                            <div className="grid grid-cols-2 gap-4">
+                                <FormField
+                                    control={form.control}
+                                    name="date"
+                                    render={({ field }) => (
+                                        <FormItem>
+                                            <FormLabel>{t('pages.prep.date', 'Date')}</FormLabel>
+                                            <FormControl>
+                                                <Input
+                                                    type="date"
+                                                    {...field}
+                                                    disabled={isLoading}
+                                                />
+                                            </FormControl>
+                                            <FormMessage />
+                                        </FormItem>
+                                    )}
+                                />
+
+                                <FormField
+                                    control={form.control}
+                                    name="duration_minutes"
+                                    render={({ field }) => (
+                                        <FormItem>
+                                            <FormLabel>{t('pages.prep.duration', 'Duration (min)')}</FormLabel>
+                                            <FormControl>
+                                                <Input
+                                                    type="number"
+                                                    {...field}
+                                                    onChange={(e) => field.onChange(parseInt(e.target.value))}
+                                                    disabled={isLoading}
+                                                />
+                                            </FormControl>
+                                            <FormMessage />
+                                        </FormItem>
+                                    )}
+                                />
+                            </div>
                         </CardContent>
                     </Card>
 
-                    {/* Resources */}
-                    <Card>
-                        <CardHeader className="pb-3">
-                            <CardTitle className="text-base">{t('pages.prep.resources', 'Resources')}</CardTitle>
-                        </CardHeader>
-                        <CardContent className="space-y-3">
-                            {resourceFields.map((field, index) => (
-                                <div key={field.id} className="flex gap-2">
-                                    <FormField
-                                        control={form.control}
-                                        name={`resources_needed.${index}.value`}
-                                        render={({ field }) => (
-                                            <FormItem className="flex-1 space-y-0">
-                                                <FormControl>
-                                                    <Input
-                                                        placeholder={`${t('pages.prep.resourcePlaceholder', 'Resource')} ${index + 1}`}
-                                                        {...field}
-                                                        disabled={isLoading}
-                                                        className="h-9"
-                                                    />
-                                                </FormControl>
-                                                <FormMessage />
-                                            </FormItem>
-                                        )}
-                                    />
-                                    <Button
-                                        type="button"
-                                        variant="ghost"
-                                        size="icon"
-                                        className="h-9 w-9 text-muted-foreground"
-                                        onClick={() => removeResource(index)}
-                                        disabled={isLoading}
-                                    >
-                                        <X className="h-4 w-4" />
-                                    </Button>
-                                </div>
-                            ))}
-                            <Button
-                                type="button"
-                                variant="outline"
-                                size="sm"
-                                onClick={() => appendResource({ value: '' })}
-                                disabled={isLoading}
-                                className="w-full h-8 dashed border-dashed"
-                            >
-                                <Plus className="h-3 w-3 mr-2" />
-                                {t('pages.prep.addResource', 'Add Resource')}
-                            </Button>
-                        </CardContent>
-                    </Card>
+                    {/* Pedagogical Identification (New) */}
+                    <div className="h-full">
+                        <LessonPrepPedagogicalContext
+                            control={form.control}
+                            isLoading={isLoading}
+                            language={language}
+                        />
+                    </div>
                 </div>
 
-                {/* Assessment */}
-                <Card>
-                    <CardHeader>
-                        <CardTitle>{t('pages.prep.assessment', 'Assessment')}</CardTitle>
+                {/* 2. Lesson Content (Dynamic Elements) */}
+                <LessonPrepElements
+                    control={form.control}
+                    isLoading={isLoading}
+                    language={language}
+                />
+
+                {/* 3. Evaluation Section (New) */}
+                <LessonPrepEvaluation
+                    control={form.control}
+                    isLoading={isLoading}
+                    language={language}
+                />
+
+                {/* Legacy / Additional Info (Collapsible or just below) */}
+                <Card className="border-2 shadow-sm overflow-hidden">
+                    <CardHeader className="bg-muted/30 pb-4 border-b">
+                        <div className="flex items-center gap-2">
+                            <div className="p-2 bg-primary/10 rounded-lg">
+                                <FileText className="h-5 w-5 text-primary" />
+                            </div>
+                            <CardTitle className="text-lg">{t('pages.prep.legacy.additional', 'Additional Information')}</CardTitle>
+                        </div>
                     </CardHeader>
-                    <CardContent className="space-y-4">
-                        <div>
-                            <label className="text-sm font-medium mb-3 block">{t('pages.prep.assessmentMethods', 'Assessment Methods')}</label>
-                            <div className="flex flex-wrap gap-2 mb-3">
-                                {assessmentFields.map((field, index) => (
-                                    <Badge key={field.id} variant="secondary" className="pl-2 pr-1 h-7">
-                                        {field.value}
-                                        <Button
-                                            type="button"
-                                            variant="ghost"
-                                            size="sm"
-                                            className="h-4 w-4 p-0 ml-1 hover:bg-transparent"
-                                            onClick={() => removeAssessment(index)}
-                                            disabled={isLoading}
-                                        >
-                                            <X className="h-3 w-3" />
-                                        </Button>
-                                    </Badge>
-                                ))}
-                            </div>
-                            <Select
-                                onValueChange={(value) => {
-                                    if (value && !assessmentFields.some((f) => f.value === value)) {
-                                        appendAssessment({ value })
-                                    }
-                                }}
-                                disabled={isLoading}
-                            >
-                                <SelectTrigger className="h-9">
-                                    <SelectValue placeholder={t('pages.prep.addAssessmentMethod', 'Add assessment method')} />
-                                </SelectTrigger>
-                                <SelectContent>
-                                    {assessmentMethods
-                                        .filter((method) => !assessmentFields.some((f) => f.value === method))
-                                        .map((method) => {
-                                            // Convert to camelCase key
-                                            const key = method
-                                                .toLowerCase()
-                                                .replace(/[^a-zA-Z0-9]+(.)/g, (m, chr) => chr.toUpperCase())
-                                                .replace(/[^a-zA-Z0-9]/g, '')
-
-                                            return (
-                                                <SelectItem key={method} value={method}>
-                                                    {t(`pages.prep.assessmentMethodsOptions.${key}`, method)}
-                                                </SelectItem>
-                                            )
-                                        })}
-                                </SelectContent>
-                            </Select>
-                        </div>
-
-                        <FormField
-                            control={form.control}
-                            name="assessment_criteria"
-                            render={({ field }) => (
-                                <FormItem>
-                                    <FormLabel>{t('pages.prep.assessmentCriteria', 'Assessment Criteria')}</FormLabel>
-                                    <FormControl>
-                                        <Textarea
-                                            placeholder={t('pages.prep.assessmentCriteriaPlaceholder', "Describe how you'll evaluate student performance...")}
-                                            className="min-h-[80px]"
-                                            {...field}
-                                            disabled={isLoading}
-                                        />
-                                    </FormControl>
-                                    <FormMessage />
-                                </FormItem>
-                            )}
-                        />
-                    </CardContent>
-                </Card>
-
-                {/* Status */}
-                <Card>
-                    <CardContent className="pt-6">
+                    <CardContent className="space-y-6 pt-6">
+                        {/* Status Field */}
                         <FormField
                             control={form.control}
                             name="status"
@@ -639,11 +283,30 @@ export function LessonPrepForm({
                                 </FormItem>
                             )}
                         />
+
+                        <FormField
+                            control={form.control}
+                            name="notes"
+                            render={({ field }) => (
+                                <FormItem>
+                                    <FormLabel>{t('pages.prep.notes', 'Notes')}</FormLabel>
+                                    <FormControl>
+                                        <Textarea
+                                            placeholder={t('pages.prep.notesPlaceholder', 'Any private notes...')}
+                                            className="min-h-[80px]"
+                                            {...field}
+                                            disabled={isLoading}
+                                        />
+                                    </FormControl>
+                                    <FormMessage />
+                                </FormItem>
+                            )}
+                        />
                     </CardContent>
                 </Card>
 
-                {/* Submit Buttons */}
-                <div className="flex gap-4 justify-end sticky bottom-0 bg-background/95 backdrop-blur py-4 border-t mt-8 z-10">
+                {/* Actions */}
+                <div className="flex justify-end space-x-4 pt-4 sticky bottom-0 bg-background/95 backdrop-blur py-4 border-t mt-8 z-10">
                     {onCancel && (
                         <Button
                             type="button"
@@ -660,6 +323,6 @@ export function LessonPrepForm({
                     </Button>
                 </div>
             </form>
-        </Form >
+        </Form>
     )
 }
