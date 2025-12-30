@@ -1,4 +1,5 @@
-import { useForm } from 'react-hook-form'
+import { useForm, type FieldErrors } from 'react-hook-form'
+import { toast } from 'sonner'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useTranslation } from 'react-i18next'
 import {
@@ -36,6 +37,7 @@ import {
     toApiPayload
 } from '@/schemas/lesson-preparation'
 import { LessonPrepPedagogicalContext } from './LessonPrepPedagogicalContext'
+import { LessonPrepLegacyFields } from './LessonPrepLegacyFields'
 import { LessonPrepElements } from './LessonPrepElements'
 import { LessonPrepEvaluation } from './LessonPrepEvaluation'
 
@@ -72,10 +74,18 @@ export function LessonPrepForm({
         await onSubmit(payload)
     }
 
+    const onInvalid = (errors: FieldErrors<LessonPreparationFormData>) => {
+        console.error('Form validation errors:', errors)
+        const errorFields = Object.keys(errors).map(key => t(`pages.prep.${key}`, key)).join(', ')
+        toast.error(t('common.formErrors', 'Please check the form for errors'), {
+            description: errorFields ? `${t('common.errorsIn', 'Errors in')}: ${errorFields}` : undefined
+        })
+    }
+
     return (
         <FormLanguageProvider language={language}>
             <Form {...form}>
-                <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-6" dir={language === 'ar' ? 'rtl' : 'ltr'}>
+                <form onSubmit={form.handleSubmit(handleSubmit, onInvalid)} className="space-y-6" dir={language === 'ar' ? 'rtl' : 'ltr'}>
                     {/* 1. Context & Setup */}
                     <div className="grid gap-6 md:grid-cols-2">
                         {/* Basic Info Card */}
@@ -232,6 +242,13 @@ export function LessonPrepForm({
                             />
                         </div>
                     </div>
+
+                    {/* 1.5. Objectives & Topics (Legacy/Core) */}
+                    <LessonPrepLegacyFields
+                        control={form.control}
+                        isLoading={isLoading}
+                        language={language}
+                    />
 
                     {/* 2. Lesson Content (Dynamic Elements) */}
                     <LessonPrepElements
