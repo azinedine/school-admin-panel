@@ -1,10 +1,10 @@
 import { z } from 'zod'
 
 /**
- * Validation message keys (for i18n lookup)
- * Usage: t(message) where message is the key
+ * Validation message keys (i18n translation keys)
+ * These keys are resolved by FormMessage component at render time
  */
-const v = {
+const V = {
   lessonNumberRequired: 'pages.prep.validation.lessonNumberRequired',
   lessonNumberMax: 'pages.prep.validation.lessonNumberMax',
   subjectRequired: 'pages.prep.validation.subjectRequired',
@@ -29,39 +29,42 @@ const v = {
 }
 
 /**
- * Common field definitions reused across schemas
+ * Common fields with i18n validation keys
  */
 const commonFields = {
   lesson_number: z.string()
-    .min(1, v.lessonNumberRequired)
-    .max(50, v.lessonNumberMax),
-  subject: z.string().min(1, v.subjectRequired),
-  level: z.string().min(1, v.levelRequired),
-  date: z.string().refine((date) => !isNaN(Date.parse(date)), v.dateRequired),
+    .min(1, V.lessonNumberRequired)
+    .max(50, V.lessonNumberMax),
+  subject: z.string().min(1, V.subjectRequired),
+  level: z.string().min(1, V.levelRequired),
+  date: z.string().refine((date) => !isNaN(Date.parse(date)), V.dateRequired),
   duration_minutes: z.number()
-    .min(15, v.durationMin)
-    .max(480, v.durationMax),
+    .min(15, V.durationMin)
+    .max(480, V.durationMax),
   description: z.string().max(2000).optional(),
   assessment_criteria: z.string().max(1000).optional(),
   notes: z.string().max(2000).optional(),
   status: z.enum(['draft', 'ready', 'delivered']),
 }
 
+/**
+ * Lesson elements schema
+ */
 const lessonElementsSchema = z.array(z.object({
   id: z.string().optional(),
-  content: z.string().min(1, v.lessonElementRequired)
-})).min(1, v.lessonElementsMin)
+  content: z.string().min(1, V.lessonElementRequired)
+})).min(1, V.lessonElementsMin)
 
 /**
- * 1. Form Schema (UI Layer)
- * Optimized for React Hook Form usage (objects with IDs/Values)
+ * Form Schema (UI Layer)
+ * Validation messages are i18n keys - translated by FormMessage
  */
 export const lessonPreparationFormSchema = z.object({
   ...commonFields,
   // Pedagogical Context
-  domain: z.string().min(1, v.domainRequired),
-  learning_unit: z.string().min(1, v.learningUnitRequired),
-  knowledge_resource: z.string().min(1, v.knowledgeResourceRequired),
+  domain: z.string().min(1, V.domainRequired),
+  learning_unit: z.string().min(1, V.learningUnitRequired),
+  knowledge_resource: z.string().min(1, V.knowledgeResourceRequired),
 
   // Lesson Flow
   lesson_elements: lessonElementsSchema,
@@ -70,23 +73,20 @@ export const lessonPreparationFormSchema = z.object({
   evaluation_type: z.enum(['assessment', 'homework']),
   evaluation_content: z.string().optional(),
 
-  // Legacy fields (kept for backward compatibility or future use if needed, but made optional in UI logic if replaced)
-  learning_objectives: z.array(z.object({ value: z.string().min(1, v.objectiveRequired) }))
-    .min(1, v.objectivesMin),
-  key_topics: z.array(z.object({ value: z.string().min(1, v.topicRequired) }))
-    .min(1, v.topicsMin),
-  teaching_methods: z.array(z.object({ value: z.string().min(1, v.methodRequired) }))
-    .min(1, v.methodsMin),
-  resources_needed: z.array(z.object({ value: z.string().min(1, v.resourceRequired) })),
-  assessment_methods: z.array(z.object({ value: z.string().min(1, v.methodRequired) })),
+  // Legacy fields
+  learning_objectives: z.array(z.object({ value: z.string().min(1, V.objectiveRequired) })),
+  key_topics: z.array(z.object({ value: z.string().min(1, V.topicRequired) })),
+  teaching_methods: z.array(z.object({ value: z.string().min(1, V.methodRequired) })),
+  resources_needed: z.array(z.object({ value: z.string().min(1, V.resourceRequired) })),
+  assessment_methods: z.array(z.object({ value: z.string().min(1, V.methodRequired) })),
 }).superRefine((data, ctx) => {
   if (!data.evaluation_content || data.evaluation_content.length < 3) {
     ctx.addIssue({
       code: z.ZodIssueCode.custom,
       path: ['evaluation_content'],
       message: data.evaluation_type === 'assessment'
-        ? v.assessmentDetailsRequired
-        : v.homeworkDetailsRequired,
+        ? V.assessmentDetailsRequired
+        : V.homeworkDetailsRequired,
     });
   }
 })
@@ -94,11 +94,18 @@ export const lessonPreparationFormSchema = z.object({
 export type LessonPreparationFormData = z.infer<typeof lessonPreparationFormSchema>
 
 /**
- * 2. API Schema (Data Layer)
- * Optimized for Backend Contract (Flat Arrays)
+ * API Schema (Data Layer)
  */
 export const lessonPreparationApiSchema = z.object({
-  ...commonFields,
+  lesson_number: z.string(),
+  subject: z.string(),
+  level: z.string(),
+  date: z.string(),
+  duration_minutes: z.number(),
+  description: z.string().optional(),
+  assessment_criteria: z.string().optional(),
+  notes: z.string().optional(),
+  status: z.enum(['draft', 'ready', 'delivered']),
   domain: z.string(),
   learning_unit: z.string(),
   knowledge_resource: z.string(),
@@ -108,8 +115,6 @@ export const lessonPreparationApiSchema = z.object({
   })),
   evaluation_type: z.enum(['assessment', 'homework']),
   evaluation_content: z.string().optional(),
-
-  // Legacy arrays needed for type compatibility if backend still expects them
   learning_objectives: z.array(z.string()),
   key_topics: z.array(z.string()),
   teaching_methods: z.array(z.string()),
@@ -120,8 +125,7 @@ export const lessonPreparationApiSchema = z.object({
 export type LessonPreparationApiPayload = z.infer<typeof lessonPreparationApiSchema>
 
 /**
- * 3. Domain Entity (Response)
- * What the API returns to us (usually matches API Schema + ID/Timestamps)
+ * Domain Entity (Response)
  */
 export interface LessonPreparation extends LessonPreparationApiPayload {
   id: number
@@ -132,9 +136,9 @@ export interface LessonPreparation extends LessonPreparationApiPayload {
 }
 
 /**
- * Helpers/Adapters
+ * Default form values
  */
-export const defaultFormValues: Partial<LessonPreparationFormData> = {
+export const defaultFormValues: LessonPreparationFormData = {
   lesson_number: '',
   subject: '',
   level: '',
@@ -149,8 +153,6 @@ export const defaultFormValues: Partial<LessonPreparationFormData> = {
   assessment_criteria: '',
   notes: '',
   status: 'draft',
-
-  // New Pedagogical Defaults
   domain: '',
   learning_unit: '',
   knowledge_resource: '',
@@ -159,7 +161,7 @@ export const defaultFormValues: Partial<LessonPreparationFormData> = {
   evaluation_content: '',
 }
 
-// Transform API Entity -> Form Data (for Editing)
+// Transform API Entity -> Form Data
 export const toFormData = (entity: LessonPreparation): LessonPreparationFormData => ({
   ...entity,
   learning_objectives: entity.learning_objectives?.map(v => ({ value: v })) ?? [{ value: '' }],
@@ -167,8 +169,6 @@ export const toFormData = (entity: LessonPreparation): LessonPreparationFormData
   teaching_methods: entity.teaching_methods?.map(v => ({ value: v })) ?? [],
   resources_needed: entity.resources_needed?.map(v => ({ value: v })) ?? [],
   assessment_methods: entity.assessment_methods?.map(v => ({ value: v })) ?? [],
-
-  // Pedagogical Fields
   domain: entity.domain ?? '',
   learning_unit: entity.learning_unit ?? '',
   knowledge_resource: entity.knowledge_resource ?? '',
@@ -177,7 +177,7 @@ export const toFormData = (entity: LessonPreparation): LessonPreparationFormData
   evaluation_content: entity.evaluation_content ?? '',
 })
 
-// Transform Form Data -> API Payload (for Submission)
+// Transform Form Data -> API Payload
 export const toApiPayload = (formData: LessonPreparationFormData): LessonPreparationApiPayload => ({
   ...formData,
   learning_objectives: formData.learning_objectives.map(item => item.value),
