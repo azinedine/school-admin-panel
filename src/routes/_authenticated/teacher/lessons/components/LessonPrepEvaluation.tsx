@@ -96,8 +96,8 @@ export function LessonPrepEvaluation({
                                     {...field}
                                     placeholder={
                                         evaluationType === 'assessment'
-                                            ? t('pages.prep.assessmentPlaceholder', 'Describe the assessment...')
-                                            : t('pages.prep.homeworkPlaceholder', 'Describe the homework...')
+                                            ? t('pages.prep.assessmentPlaceholder')
+                                            : t('pages.prep.homeworkPlaceholder')
                                     }
                                     className="min-h-[100px] border-amber-200/40 focus-visible:ring-amber-500/20"
                                     disabled={isLoading}
