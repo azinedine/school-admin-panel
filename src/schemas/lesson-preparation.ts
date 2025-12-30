@@ -76,7 +76,7 @@ export const lessonPreparationFormSchema = z.object({
   // Legacy fields
   learning_objectives: z.array(z.object({ value: z.string().min(1, V.objectiveRequired) })),
   key_topics: z.array(z.object({ value: z.string().min(1, V.topicRequired) })),
-  teaching_methods: z.array(z.object({ value: z.string().min(1, V.methodRequired) })),
+  teaching_methods: z.array(z.object({ value: z.string().min(1, V.methodRequired) })).min(1, V.methodsMin),
   resources_needed: z.array(z.object({ value: z.string().min(1, V.resourceRequired) })),
   assessment_methods: z.array(z.object({ value: z.string().min(1, V.methodRequired) })),
 }).superRefine((data, ctx) => {
@@ -144,9 +144,9 @@ export const defaultFormValues: LessonPreparationFormData = {
   level: '',
   date: new Date().toISOString().split('T')[0],
   duration_minutes: 45,
-  learning_objectives: [{ value: '' }],
+  learning_objectives: [],
   description: '',
-  key_topics: [{ value: '' }],
+  key_topics: [],
   teaching_methods: [],
   resources_needed: [],
   assessment_methods: [],
@@ -164,8 +164,8 @@ export const defaultFormValues: LessonPreparationFormData = {
 // Transform API Entity -> Form Data
 export const toFormData = (entity: LessonPreparation): LessonPreparationFormData => ({
   ...entity,
-  learning_objectives: entity.learning_objectives?.map(v => ({ value: v })) ?? [{ value: '' }],
-  key_topics: entity.key_topics?.map(v => ({ value: v })) ?? [{ value: '' }],
+  learning_objectives: entity.learning_objectives?.map(v => ({ value: v })) ?? [],
+  key_topics: entity.key_topics?.map(v => ({ value: v })) ?? [],
   teaching_methods: entity.teaching_methods?.map(v => ({ value: v })) ?? [],
   resources_needed: entity.resources_needed?.map(v => ({ value: v })) ?? [],
   assessment_methods: entity.assessment_methods?.map(v => ({ value: v })) ?? [],
