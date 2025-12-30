@@ -124,11 +124,11 @@ export function LessonPrepByClass() {
       })
   }, [planEntries, selectedClass])
 
-  // Get list of already-added lesson titles for the selected class
-  const addedLessonTitles = useMemo(() => {
+  // Get list of already-added lesson numbers for the selected class
+  const addedLessonNumbers = useMemo(() => {
     return planEntries
       .filter(entry => entry.class === selectedClass)
-      .map(entry => entry.lessonTitle)
+      .map(entry => entry.lessonNumber)
   }, [planEntries, selectedClass])
 
   // Determine default year for selector based on class grade
@@ -155,7 +155,7 @@ export function LessonPrepByClass() {
       day: 'monday' as DailyPlanEntry['day'], // Default
       timeSlot: '08:00-09:00', // Default
       class: selectedClass,
-      lessonTitle: template.lessonTitle,
+      lessonNumber: template.lessonNumber,
       lessonContent: template.lessonContent,
       practiceNotes: template.practiceNotes,
       date: new Date().toISOString().split('T')[0], // Today's date
@@ -173,7 +173,7 @@ export function LessonPrepByClass() {
     // Check for duplicates
     const isDuplicate = planEntries.some(entry =>
       entry.class === lessonData.class &&
-      entry.lessonTitle === lessonData.lessonTitle
+      entry.lessonNumber === lessonData.lessonNumber
     )
 
     if (isDuplicate) {
@@ -189,7 +189,7 @@ export function LessonPrepByClass() {
     // Show success toast
     import('sonner').then(({ toast }) => {
       toast.success(t('pages.prep.addLesson'), {
-        description: template.lessonTitle,
+        description: template.lessonNumber,
       })
     })
   }
@@ -356,7 +356,7 @@ export function LessonPrepByClass() {
                               className="font-semibold cursor-pointer hover:underline text-primary"
                               onClick={() => handleViewDetails(lesson)}
                             >
-                              {lesson.lessonTitle}
+                              {lesson.lessonNumber}
                             </p>
                             {lesson.status && (
                               <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium ${lesson.status === 'completed' ? 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200' :
@@ -445,7 +445,7 @@ export function LessonPrepByClass() {
         templates={lessonPreps.map(prep => ({
           id: prep.id.toString(),
           academicYear: '1st', // Default to 1st since backend doesn't have this yet or infer from class
-          lessonTitle: prep.title,
+          lessonNumber: prep.lesson_number,
           field: prep.subject,
           learningSegment: prep.learning_objectives[0] || '', // Approximation
           knowledgeResource: '',
@@ -455,7 +455,7 @@ export function LessonPrepByClass() {
           practiceNotes: prep.notes || '',
           createdAt: prep.created_at,
         }))}
-        addedLessonTitles={addedLessonTitles}
+        addedLessonNumbers={addedLessonNumbers}
         defaultYear={defaultSelectorYear}
         availableYears={availableSelectorYears}
       />
