@@ -137,6 +137,15 @@ export function LessonPrepForm({
     name: 'resources_needed',
   })
 
+  const {
+    fields: elementFields,
+    append: appendElement,
+    remove: removeElement,
+  } = useFieldArray({
+    control: form.control,
+    name: 'lesson_elements',
+  })
+
   const handleSubmit = useCallback(
     async (data: LessonPreparationFormData) => {
       try {
@@ -294,6 +303,59 @@ export function LessonPrepForm({
                 </FormItem>
               )}
             />
+          </CardContent>
+        </Card>
+
+        {/* Pedagogical Context */}
+        <Card>
+          <CardHeader>
+            <CardTitle>Pedagogical Context</CardTitle>
+            <CardDescription>Define the educational framework for this lesson</CardDescription>
+          </CardHeader>
+          <CardContent className="space-y-6">
+            <FormField
+              control={form.control}
+              name="domain"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Domain</FormLabel>
+                  <FormControl>
+                    <Input placeholder="e.g., Natural Sciences" {...field} disabled={isLoading} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <FormField
+                control={form.control}
+                name="learning_unit"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Learning Unit</FormLabel>
+                    <FormControl>
+                      <Input placeholder="e.g., Unit 1" {...field} disabled={isLoading} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={form.control}
+                name="knowledge_resource"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Knowledge Resource</FormLabel>
+                    <FormControl>
+                      <Input placeholder="e.g., Textbook p.45" {...field} disabled={isLoading} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
           </CardContent>
         </Card>
 
@@ -495,6 +557,61 @@ export function LessonPrepForm({
           </CardContent>
         </Card>
 
+        {/* Lesson Elements / Flow */}
+        <Card>
+          <CardHeader>
+            <CardTitle>Lesson Elements</CardTitle>
+            <CardDescription>Sequence of activities and content</CardDescription>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            {elementFields.map((field, index) => (
+              <div key={field.id} className="flex gap-2 items-start">
+                <span className="mt-3 text-sm font-medium text-muted-foreground w-6">
+                  {index + 1}.
+                </span>
+                <FormField
+                  control={form.control}
+                  name={`lesson_elements.${index}.content`}
+                  render={({ field }) => (
+                    <FormItem className="flex-1">
+                      <FormControl>
+                        <Textarea
+                          placeholder={`Activity / Element content...`}
+                          className="min-h-[80px]"
+                          {...field}
+                          disabled={isLoading}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <Button
+                  type="button"
+                  variant="ghost"
+                  size="icon"
+                  className="mt-1"
+                  onClick={() => removeElement(index)}
+                  disabled={isLoading || elementFields.length === 1}
+                >
+                  <X className="h-4 w-4" />
+                </Button>
+              </div>
+            ))}
+            <Button
+              type="button"
+              variant="outline"
+              size="sm"
+              onClick={() => appendElement({ content: '' })}
+              disabled={isLoading}
+              className="gap-2 ml-8"
+            >
+              <Plus className="h-4 w-4" />
+              Add Element
+            </Button>
+          </CardContent>
+        </Card>
+
         {/* Assessment */}
         <Card>
           <CardHeader>
@@ -559,6 +676,60 @@ export function LessonPrepForm({
                     />
                   </FormControl>
                   <FormDescription>Optional. Define grading criteria and rubrics.</FormDescription>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          </CardContent>
+        </Card>
+
+        {/* Evaluation */}
+        <Card>
+          <CardHeader>
+            <CardTitle>Evaluation</CardTitle>
+            <CardDescription>Homwork or In-Class Assessment</CardDescription>
+          </CardHeader>
+          <CardContent className="space-y-6">
+            <FormField
+              control={form.control}
+              name="evaluation_type"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Evaluation Type</FormLabel>
+                  <Select
+                    onValueChange={field.onChange}
+                    defaultValue={field.value}
+                    disabled={isLoading}
+                  >
+                    <FormControl>
+                      <SelectTrigger>
+                        <SelectValue placeholder="Select type" />
+                      </SelectTrigger>
+                    </FormControl>
+                    <SelectContent>
+                      <SelectItem value="assessment">In-Class Assessment</SelectItem>
+                      <SelectItem value="homework">Homework</SelectItem>
+                    </SelectContent>
+                  </Select>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={form.control}
+              name="evaluation_content"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Evaluation Details</FormLabel>
+                  <FormControl>
+                    <Textarea
+                      placeholder="Describe the assessment or homework assignment..."
+                      className="min-h-[100px]"
+                      {...field}
+                      disabled={isLoading}
+                    />
+                  </FormControl>
                   <FormMessage />
                 </FormItem>
               )}
@@ -641,6 +812,6 @@ export function LessonPrepForm({
           </Button>
         </div>
       </form>
-    </Form>
+    </Form >
   )
 }
