@@ -285,9 +285,7 @@ export const PreparationTab = memo(function PreparationTab() {
                             initialData={selectedPrep}
                             onSubmit={handleFormSubmit}
                             isLoading={createMutation.isPending || updateMutation.isPending}
-                            classes={user?.levels && user.levels.length > 0
-                                ? user.levels
-                                : ['1AS', '2AS', '3AS', '1AM', '2AM', '3AM', '4AM']}
+                            classes={user?.assigned_classes || []}
                             subjects={user?.subjects || []}
                             onCancel={() => setFormDialogOpen(false)}
                             language={formLanguage}
