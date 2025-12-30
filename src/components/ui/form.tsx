@@ -18,6 +18,31 @@ import { Label } from "@/components/ui/label"
 
 const Form = FormProvider
 
+// Language context for form-specific language override
+type FormLanguageContextValue = {
+  language?: string
+}
+
+const FormLanguageContext = React.createContext<FormLanguageContextValue>({})
+
+// Provider to wrap forms with a specific language
+const FormLanguageProvider = ({
+  language,
+  children
+}: {
+  language?: string
+  children: React.ReactNode
+}) => {
+  return (
+    <FormLanguageContext.Provider value={{ language }}>
+      {children}
+    </FormLanguageContext.Provider>
+  )
+}
+
+// Hook to get the form's language
+const useFormLanguage = () => React.useContext(FormLanguageContext)
+
 type FormFieldContextValue<
   TFieldValues extends FieldValues = FieldValues,
   TName extends FieldPath<TFieldValues> = FieldPath<TFieldValues>
@@ -148,7 +173,11 @@ const FormMessage = React.forwardRef<
   React.HTMLAttributes<HTMLParagraphElement>
 >(({ className, children, ...props }, ref) => {
   const { error, formMessageId } = useFormField()
-  const { t } = useTranslation()
+  const { language } = useFormLanguage()
+  const { t: globalT, i18n } = useTranslation()
+
+  // Use form-specific language if provided, otherwise use global
+  const t = language ? i18n.getFixedT(language) : globalT
 
   let body = error ? String(error?.message ?? "") : children
 
@@ -176,7 +205,9 @@ FormMessage.displayName = "FormMessage"
 
 export {
   useFormField,
+  useFormLanguage,
   Form,
+  FormLanguageProvider,
   FormItem,
   FormLabel,
   FormControl,
