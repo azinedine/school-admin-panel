@@ -45,13 +45,13 @@ export function LessonPrepDetails({ data }: LessonPrepDetailsProps) {
     <div className="space-y-6">
       {/* Header */}
       <div>
-        <h1 className="text-3xl font-bold mb-2">{data.title}</h1>
+        <h1 className="text-3xl font-bold mb-2">{data.lesson_number}</h1>
         <div className="flex gap-3 flex-wrap">
           <Badge variant="outline" className={statusConfig[data.status].color}>
             {statusConfig[data.status].label}
           </Badge>
           <Badge variant="secondary">{data.subject}</Badge>
-          <Badge variant="secondary">{data.class}</Badge>
+          <Badge variant="secondary">{data.level}</Badge>
         </div>
       </div>
 
@@ -78,7 +78,7 @@ export function LessonPrepDetails({ data }: LessonPrepDetailsProps) {
             </div>
             <div>
               <p className="text-sm text-muted-foreground mb-1">Class</p>
-              <p className="font-medium">{data.class}</p>
+              <p className="font-medium">{data.level}</p>
             </div>
           </div>
 
