@@ -55,10 +55,10 @@ export function LessonDetailDialog({
   const { t } = useTranslation()
   const getAllLessonTemplates = usePrepStore((state) => state.getAllLessonTemplates)
   const planEntries = usePrepStore((state) => state.planEntries)
-  
+
   const [selectorOpen, setSelectorOpen] = useState(false)
   const [selectedTemplate, setSelectedTemplate] = useState<LessonTemplate | null>(initialTemplate || null)
-  
+
   // Multi-group state
   const [activeGroups, setActiveGroups] = useState<('first' | 'second')[]>(['first'])
   const [groupTimes, setGroupTimes] = useState({
@@ -68,7 +68,7 @@ export function LessonDetailDialog({
 
   const [formData, setFormData] = useState({
     class: '',
-    lessonTitle: '',
+    lessonNumber: '',
     lessonContent: '',
     practiceNotes: '',
     date: '',
@@ -94,10 +94,10 @@ export function LessonDetailDialog({
     if (existingLesson) {
       // Split timeSlot "08:00-09:00" if needed, but usually it's passed as prop
       const [start, end] = existingLesson.timeSlot.split('-')
-      
+
       setFormData({
         class: existingLesson.class,
-        lessonTitle: existingLesson.lessonTitle,
+        lessonNumber: existingLesson.lessonNumber,
         lessonContent: existingLesson.lessonContent,
         practiceNotes: existingLesson.practiceNotes,
         date: existingLesson.date || '',
@@ -117,10 +117,10 @@ export function LessonDetailDialog({
       // Reset multi-group state (edit mode is single group)
       setActiveGroups([existingLesson.group || 'first'])
     } else if (initialTemplate) {
-       // Populate from initial template
-       setFormData({
+      // Populate from initial template
+      setFormData({
         class: prefilledClass || '',
-        lessonTitle: initialTemplate.lessonTitle,
+        lessonNumber: initialTemplate.lessonNumber,
         lessonContent: initialTemplate.lessonContent,
         practiceNotes: initialTemplate.practiceNotes,
         date: new Date().toISOString().split('T')[0], // Default to today for scheduling
@@ -143,7 +143,7 @@ export function LessonDetailDialog({
       // Reset form for new lesson, use prefilled class if available
       setFormData({
         class: prefilledClass || '',
-        lessonTitle: '',
+        lessonNumber: '',
         lessonContent: '',
         practiceNotes: '',
         date: '',
@@ -170,7 +170,7 @@ export function LessonDetailDialog({
     // Prepare the lesson data from template
     const lessonData = {
       class: prefilledClass || formData.class,
-      lessonTitle: template.lessonTitle,
+      lessonNumber: template.lessonNumber,
       lessonContent: template.lessonContent,
       practiceNotes: template.practiceNotes,
       date: formData.date || new Date().toISOString().split('T')[0],
@@ -186,9 +186,9 @@ export function LessonDetailDialog({
     }
 
     // Check for duplicates
-    const isDuplicate = planEntries.some(entry => 
-      entry.class === lessonData.class && 
-      entry.lessonTitle === lessonData.lessonTitle &&
+    const isDuplicate = planEntries.some(entry =>
+      entry.class === lessonData.class &&
+      entry.lessonNumber === lessonData.lessonNumber &&
       (!existingLesson || entry.id !== existingLesson.id)
     )
 
@@ -219,7 +219,7 @@ export function LessonDetailDialog({
 
     // Show success toast
     toast.success(t('pages.prep.addLesson'), {
-      description: template.lessonTitle,
+      description: template.lessonNumber,
     })
 
     // Close the selector
@@ -231,7 +231,7 @@ export function LessonDetailDialog({
     setSelectedTemplate(null)
     setFormData((prev) => ({
       ...prev,
-      lessonTitle: '',
+      lessonNumber: '',
       field: '',
       learningSegment: '',
       knowledgeResource: '',
@@ -243,14 +243,14 @@ export function LessonDetailDialog({
   }
 
   const handleSave = () => {
-    if (!formData.class.trim() || !formData.lessonTitle.trim() || !formData.date.trim()) {
+    if (!formData.class.trim() || !formData.lessonNumber.trim() || !formData.date.trim()) {
       return // Basic validation
     }
 
     // Check for duplicates
-    const isDuplicate = planEntries.some(entry => 
-      entry.class === formData.class && 
-      entry.lessonTitle === formData.lessonTitle &&
+    const isDuplicate = planEntries.some(entry =>
+      entry.class === formData.class &&
+      entry.lessonNumber === formData.lessonNumber &&
       (!existingLesson || entry.id !== existingLesson.id)
     )
 
@@ -258,27 +258,27 @@ export function LessonDetailDialog({
       toast.error(t('pages.prep.lessonAlreadyAssigned'))
       return
     }
-    
+
     // Construct timeSlot
     // If not scheduling, use the prop 'timeSlot'
     // If scheduling, use 'startTime-endTime' OR just 'startTime' if end is empty?
     // Let's assume timeSlot prop takes precedence if enableScheduling is false
-    
+
     let finalTimeSlot = timeSlot
     let finalGroup = group as DailyPlanEntry['group']
     let finalMode = 'groups' as DailyPlanEntry['mode']
 
     if (enableScheduling) {
-       finalTimeSlot = `${formData.startTime}-${formData.endTime}`
-       finalMode = formData.mode
-       finalGroup = formData.mode === 'groups' ? formData.group : undefined
+      finalTimeSlot = `${formData.startTime}-${formData.endTime}`
+      finalMode = formData.mode
+      finalGroup = formData.mode === 'groups' ? formData.group : undefined
     }
 
     if (existingLesson && onUpdate) {
       // Update existing lesson (Single Entry)
       onUpdate(existingLesson.id, {
         ...formData,
-        timeSlot: enableScheduling ? finalTimeSlot : undefined, 
+        timeSlot: enableScheduling ? finalTimeSlot : undefined,
         mode: enableScheduling ? finalMode : undefined,
         group: enableScheduling ? finalGroup : undefined,
       })
@@ -287,28 +287,28 @@ export function LessonDetailDialog({
       if (enableScheduling && formData.mode === 'groups') {
         // Multi-group creation logic
         activeGroups.forEach(g => {
-             const groupTime = groupTimes[g]
-             const entryTimeSlot = `${groupTime.start}-${groupTime.end}`
-             
-             onSave({
-                day: day as DailyPlanEntry['day'],
-                timeSlot: entryTimeSlot,
-                ...formData,
-                // Override with specific group details
-                mode: 'groups',
-                group: g,
-             })
-        })
-      } else {
-         // Single entry creation (Full Class or fallback)
+          const groupTime = groupTimes[g]
+          const entryTimeSlot = `${groupTime.start}-${groupTime.end}`
+
           onSave({
             day: day as DailyPlanEntry['day'],
-            timeSlot: finalTimeSlot,
+            timeSlot: entryTimeSlot,
             ...formData,
-            // Ensure explicit values take precedence
-            mode: finalMode,
-            group: finalGroup,
+            // Override with specific group details
+            mode: 'groups',
+            group: g,
           })
+        })
+      } else {
+        // Single entry creation (Full Class or fallback)
+        onSave({
+          day: day as DailyPlanEntry['day'],
+          timeSlot: finalTimeSlot,
+          ...formData,
+          // Ensure explicit values take precedence
+          mode: finalMode,
+          group: finalGroup,
+        })
       }
     }
 
@@ -316,7 +316,7 @@ export function LessonDetailDialog({
   }
 
   const toggleGroup = (g: 'first' | 'second') => {
-    setActiveGroups(prev => 
+    setActiveGroups(prev =>
       prev.includes(g) ? prev.filter(item => item !== g) : [...prev, g]
     )
   }
@@ -324,8 +324,8 @@ export function LessonDetailDialog({
   // Update time for a specific group
   const updateGroupTime = (g: 'first' | 'second', type: 'start' | 'end', value: string) => {
     setGroupTimes(prev => ({
-        ...prev,
-        [g]: { ...prev[g], [type]: value }
+      ...prev,
+      [g]: { ...prev[g], [type]: value }
     }))
   }
 
@@ -348,10 +348,10 @@ export function LessonDetailDialog({
               </h3>
               <div className="flex gap-2 items-center">
                 <div className="flex-1">
-                   {selectedTemplate ? (
+                  {selectedTemplate ? (
                     <div className="flex items-center justify-between p-2 border rounded-md bg-muted/50">
                       <div className="flex flex-col">
-                        <span className="font-medium text-sm">{selectedTemplate.lessonTitle}</span>
+                        <span className="font-medium text-sm">{selectedTemplate.lessonNumber}</span>
                         <span className="text-xs text-muted-foreground">{selectedTemplate.field}</span>
                       </div>
                       <Button
@@ -361,10 +361,10 @@ export function LessonDetailDialog({
                         onClick={handleClearTemplate}
                         className="h-8 w-8 p-0"
                       >
-                         <X className="h-4 w-4" />
+                        <X className="h-4 w-4" />
                       </Button>
                     </div>
-                   ) : (
+                  ) : (
                     <Button
                       type="button"
                       variant="outline"
@@ -374,7 +374,7 @@ export function LessonDetailDialog({
                       <BookOpen className="w-4 h-4 mr-2 rtl:ml-2" />
                       {t('pages.prep.selectFromLibrary')}
                     </Button>
-                   )}
+                  )}
                 </div>
               </div>
             </div>
@@ -392,7 +392,7 @@ export function LessonDetailDialog({
             <h3 className="text-sm font-semibold text-foreground border-b pb-2">
               {t('pages.prep.sections.basicInfo')}
             </h3>
-            
+
             <div className="grid gap-2">
               <Label htmlFor="class">{t('pages.prep.class')}</Label>
               <Input
@@ -419,7 +419,7 @@ export function LessonDetailDialog({
 
             {enableScheduling && (
               <>
-                 <div className="grid gap-2">
+                <div className="grid gap-2">
                   <Label htmlFor="mode">{t('pages.prep.mode')}</Label>
                   <Select
                     value={formData.mode}
@@ -434,7 +434,7 @@ export function LessonDetailDialog({
                     </SelectContent>
                   </Select>
                 </div>
-                
+
                 {/* Full Class Time */}
                 {formData.mode === 'fullClass' && (
                   <div className="grid grid-cols-2 gap-4">
@@ -458,94 +458,94 @@ export function LessonDetailDialog({
                     </div>
                   </div>
                 )}
-                
+
                 {/* Multi-Group Time Selection (Only for New Lessons) */}
                 {formData.mode === 'groups' && !existingLesson && (
-                   <div className="space-y-4 pt-2 border rounded-md p-4">
-                      <Label>{t('pages.prep.groups.title')}</Label>
-                      
-                      {/* Group 1 */}
-                      <div className="flex items-end gap-4">
-                         <div className="flex items-center space-x-2 pb-2.5">
-                            <Checkbox 
-                              id="group1" 
-                              checked={activeGroups.includes('first')}
-                              onCheckedChange={() => toggleGroup('first')}
-                            />
-                            <Label htmlFor="group1" className="cursor-pointer font-normal">
-                              {t('pages.prep.group1')}
-                            </Label>
-                         </div>
-                         {activeGroups.includes('first') && (
-                           <div className="flex gap-2 flex-1">
-                              <div className="grid gap-1 flex-1">
-                                <Label className="text-xs text-muted-foreground">{t('pages.prep.startTime')}</Label>
-                                <Input 
-                                  type="time" 
-                                  className="h-8" 
-                                  value={groupTimes.first.start}
-                                  onChange={(e) => updateGroupTime('first', 'start', e.target.value)}
-                                />
-                              </div>
-                              <div className="grid gap-1 flex-1">
-                                <Label className="text-xs text-muted-foreground">{t('pages.prep.endTime')}</Label>
-                                <Input 
-                                  type="time" 
-                                  className="h-8"
-                                  value={groupTimes.first.end}
-                                  onChange={(e) => updateGroupTime('first', 'end', e.target.value)}
-                                />
-                              </div>
-                           </div>
-                         )}
-                      </div>
+                  <div className="space-y-4 pt-2 border rounded-md p-4">
+                    <Label>{t('pages.prep.groups.title')}</Label>
 
-                      {/* Group 2 */}
-                      <div className="flex items-end gap-4">
-                         <div className="flex items-center space-x-2 pb-2.5">
-                            <Checkbox 
-                              id="group2" 
-                              checked={activeGroups.includes('second')}
-                              onCheckedChange={() => toggleGroup('second')}
-                            />
-                            <Label htmlFor="group2" className="cursor-pointer font-normal">
-                              {t('pages.prep.group2')}
-                            </Label>
-                         </div>
-                         {activeGroups.includes('second') && (
-                           <div className="flex gap-2 flex-1">
-                              <div className="grid gap-1 flex-1">
-                                <Label className="text-xs text-muted-foreground">{t('pages.prep.startTime')}</Label>
-                                <Input 
-                                  type="time" 
-                                  className="h-8" 
-                                  value={groupTimes.second.start}
-                                  onChange={(e) => updateGroupTime('second', 'start', e.target.value)}
-                                />
-                              </div>
-                              <div className="grid gap-1 flex-1">
-                                <Label className="text-xs text-muted-foreground">{t('pages.prep.endTime')}</Label>
-                                <Input 
-                                  type="time" 
-                                  className="h-8"
-                                  value={groupTimes.second.end}
-                                  onChange={(e) => updateGroupTime('second', 'end', e.target.value)}
-                                />
-                              </div>
-                           </div>
-                         )}
+                    {/* Group 1 */}
+                    <div className="flex items-end gap-4">
+                      <div className="flex items-center space-x-2 pb-2.5">
+                        <Checkbox
+                          id="group1"
+                          checked={activeGroups.includes('first')}
+                          onCheckedChange={() => toggleGroup('first')}
+                        />
+                        <Label htmlFor="group1" className="cursor-pointer font-normal">
+                          {t('pages.prep.group1')}
+                        </Label>
                       </div>
-                      
-                      {activeGroups.length === 0 && (
-                        <p className="text-xs text-destructive">
-                           {t('pages.prep.selectAtLeastOneGroup')}
-                        </p>
+                      {activeGroups.includes('first') && (
+                        <div className="flex gap-2 flex-1">
+                          <div className="grid gap-1 flex-1">
+                            <Label className="text-xs text-muted-foreground">{t('pages.prep.startTime')}</Label>
+                            <Input
+                              type="time"
+                              className="h-8"
+                              value={groupTimes.first.start}
+                              onChange={(e) => updateGroupTime('first', 'start', e.target.value)}
+                            />
+                          </div>
+                          <div className="grid gap-1 flex-1">
+                            <Label className="text-xs text-muted-foreground">{t('pages.prep.endTime')}</Label>
+                            <Input
+                              type="time"
+                              className="h-8"
+                              value={groupTimes.first.end}
+                              onChange={(e) => updateGroupTime('first', 'end', e.target.value)}
+                            />
+                          </div>
+                        </div>
                       )}
-                   </div>
+                    </div>
+
+                    {/* Group 2 */}
+                    <div className="flex items-end gap-4">
+                      <div className="flex items-center space-x-2 pb-2.5">
+                        <Checkbox
+                          id="group2"
+                          checked={activeGroups.includes('second')}
+                          onCheckedChange={() => toggleGroup('second')}
+                        />
+                        <Label htmlFor="group2" className="cursor-pointer font-normal">
+                          {t('pages.prep.group2')}
+                        </Label>
+                      </div>
+                      {activeGroups.includes('second') && (
+                        <div className="flex gap-2 flex-1">
+                          <div className="grid gap-1 flex-1">
+                            <Label className="text-xs text-muted-foreground">{t('pages.prep.startTime')}</Label>
+                            <Input
+                              type="time"
+                              className="h-8"
+                              value={groupTimes.second.start}
+                              onChange={(e) => updateGroupTime('second', 'start', e.target.value)}
+                            />
+                          </div>
+                          <div className="grid gap-1 flex-1">
+                            <Label className="text-xs text-muted-foreground">{t('pages.prep.endTime')}</Label>
+                            <Input
+                              type="time"
+                              className="h-8"
+                              value={groupTimes.second.end}
+                              onChange={(e) => updateGroupTime('second', 'end', e.target.value)}
+                            />
+                          </div>
+                        </div>
+                      )}
+                    </div>
+
+                    {activeGroups.length === 0 && (
+                      <p className="text-xs text-destructive">
+                        {t('pages.prep.selectAtLeastOneGroup')}
+                      </p>
+                    )}
+                  </div>
                 )}
-                
+
                 {/* Legacy Single Group Select (For Edit Mode) */}
-                 {formData.mode === 'groups' && existingLesson && (
+                {formData.mode === 'groups' && existingLesson && (
                   <div className="grid gap-2">
                     <Label htmlFor="group">{t('pages.prep.selectGroup')}</Label>
                     <Select
@@ -560,38 +560,40 @@ export function LessonDetailDialog({
                         <SelectItem value="second">{t('pages.prep.group2')}</SelectItem>
                       </SelectContent>
                     </Select>
-                     <div className="grid grid-cols-2 gap-4">
-                        <div className="grid gap-2">
-                          <Label htmlFor="startTime">{t('pages.prep.startTime')} *</Label>
-                          <Input
-                            id="startTime"
-                            type="time"
-                            value={formData.startTime}
-                            onChange={(e) => setFormData({ ...formData, startTime: e.target.value })}
-                          />
-                        </div>
-                        <div className="grid gap-2">
-                          <Label htmlFor="endTime">{t('pages.prep.endTime')} *</Label>
-                          <Input
-                            id="endTime"
-                            type="time"
-                            value={formData.endTime}
-                            onChange={(e) => setFormData({ ...formData, endTime: e.target.value })}
-                          />
-                        </div>
+                    <div className="grid grid-cols-2 gap-4">
+                      <div className="grid gap-2">
+                        <Label htmlFor="startTime">{t('pages.prep.startTime')} *</Label>
+                        <Input
+                          id="startTime"
+                          type="time"
+                          value={formData.startTime}
+                          onChange={(e) => setFormData({ ...formData, startTime: e.target.value })}
+                        />
                       </div>
+                      <div className="grid gap-2">
+                        <Label htmlFor="endTime">{t('pages.prep.endTime')} *</Label>
+                        <Input
+                          id="endTime"
+                          type="time"
+                          value={formData.endTime}
+                          onChange={(e) => setFormData({ ...formData, endTime: e.target.value })}
+                        />
+                      </div>
+                    </div>
                   </div>
                 )}
               </>
             )}
 
             <div className="grid gap-2">
-              <Label htmlFor="lessonTitle">{t('pages.prep.lessonTitle')} *</Label>
+              <Label htmlFor="lessonNumber">{t('pages.prep.lessonNumber')} *</Label>
               <Input
-                id="lessonTitle"
-                value={formData.lessonTitle}
-                onChange={(e) => setFormData({ ...formData, lessonTitle: e.target.value })}
-                placeholder={t('pages.prep.lessonTitle')}
+                id="lessonNumber"
+                type="number"
+                value={formData.lessonNumber}
+                onChange={(e) => setFormData({ ...formData, lessonNumber: e.target.value })}
+                placeholder={t('pages.prep.lessonNumberPlaceholder')}
+                min="1"
               />
             </div>
 
@@ -599,8 +601,8 @@ export function LessonDetailDialog({
               <Label htmlFor="status">{t('pages.prep.status.label')}</Label>
               <Select
                 value={formData.status || 'none'}
-                onValueChange={(value) => setFormData({ 
-                  ...formData, 
+                onValueChange={(value) => setFormData({
+                  ...formData,
                   status: value === 'none' ? undefined : value as 'completed' | 'postponed' | 'deleted',
                   statusNote: value === 'none' ? '' : formData.statusNote
                 })}
@@ -779,9 +781,9 @@ export function LessonDetailDialog({
           <Button variant="outline" onClick={() => onOpenChange(false)}>
             {t('common.cancel')}
           </Button>
-          <Button 
+          <Button
             onClick={handleSave}
-            disabled={!formData.class.trim() || !formData.lessonTitle.trim() || !formData.date.trim()}
+            disabled={!formData.class.trim() || !formData.lessonNumber.trim() || !formData.date.trim()}
           >
             {t('common.save')}
           </Button>
