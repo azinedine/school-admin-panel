@@ -15,6 +15,7 @@ import {
     FormItem,
     FormLabel,
     FormMessage,
+    FormLanguageProvider,
 } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
 import {
@@ -72,257 +73,260 @@ export function LessonPrepForm({
     }
 
     return (
-        <Form {...form}>
-            <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-6" dir={language === 'ar' ? 'rtl' : 'ltr'}>
-                {/* 1. Context & Setup */}
-                <div className="grid gap-6 md:grid-cols-2">
-                    {/* Basic Info Card */}
-                    <Card className="h-full overflow-hidden border-2 shadow-sm">
+        <FormLanguageProvider language={language}>
+            <Form {...form}>
+                <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-6" dir={language === 'ar' ? 'rtl' : 'ltr'}>
+                    {/* 1. Context & Setup */}
+                    <div className="grid gap-6 md:grid-cols-2">
+                        {/* Basic Info Card */}
+                        <Card className="h-full overflow-hidden border-2 shadow-sm">
+                            <CardHeader className="bg-muted/30 pb-4 border-b">
+                                <div className="flex items-center gap-2">
+                                    <div className="p-2 bg-primary/10 rounded-lg">
+                                        <BookOpen className="h-5 w-5 text-primary" />
+                                    </div>
+                                    <div>
+                                        <CardTitle className="text-lg">{t('pages.prep.basicInfo', 'Basic Information')}</CardTitle>
+                                        <CardDescription>{t('pages.prep.basicInfoDesc', 'Lesson title, class and date')}</CardDescription>
+                                    </div>
+                                </div>
+                            </CardHeader>
+                            <CardContent className="space-y-6 pt-6">
+                                <FormField
+                                    control={form.control}
+                                    name="lesson_number"
+                                    render={({ field }) => (
+                                        <FormItem>
+                                            <FormLabel>{t('pages.prep.lessonNumber', 'Lesson Number')}</FormLabel>
+                                            <FormControl>
+                                                <Input
+                                                    type="number"
+                                                    placeholder={t('pages.prep.lessonNumberPlaceholder', '1, 2, 3...')}
+                                                    {...field}
+                                                    disabled={isLoading}
+                                                    min={1}
+                                                />
+                                            </FormControl>
+                                            <FormMessage />
+                                        </FormItem>
+                                    )}
+                                />
+
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                    <FormField
+                                        control={form.control}
+                                        name="subject"
+                                        render={({ field }) => (
+                                            <FormItem>
+                                                <FormLabel>{t('pages.prep.subject', 'Subject')}</FormLabel>
+                                                <Select
+                                                    onValueChange={field.onChange}
+                                                    defaultValue={field.value}
+                                                    disabled={isLoading}
+                                                >
+                                                    <FormControl>
+                                                        <SelectTrigger>
+                                                            <SelectValue placeholder={t('pages.prep.selectSubject')} />
+                                                        </SelectTrigger>
+                                                    </FormControl>
+                                                    <SelectContent>
+                                                        {subjects.length > 0 ? (
+                                                            subjects.map((subject) => (
+                                                                <SelectItem key={subject} value={subject}>
+                                                                    {subject}
+                                                                </SelectItem>
+                                                            ))
+                                                        ) : (
+                                                            <SelectItem value="General" disabled>
+                                                                {t('pages.prep.noSubjects')}
+                                                            </SelectItem>
+                                                        )}
+                                                    </SelectContent>
+                                                </Select>
+                                                <FormMessage />
+                                            </FormItem>
+                                        )}
+                                    />
+
+                                    <FormField
+                                        control={form.control}
+                                        name="level"
+                                        render={({ field }) => (
+                                            <FormItem>
+                                                <FormLabel>{t('pages.prep.level', 'Level')}</FormLabel>
+                                                <Select
+                                                    onValueChange={field.onChange}
+                                                    defaultValue={field.value}
+                                                    disabled={isLoading}
+                                                >
+                                                    <FormControl>
+                                                        <SelectTrigger>
+                                                            <SelectValue placeholder={t('pages.prep.selectLevel')} />
+                                                        </SelectTrigger>
+                                                    </FormControl>
+                                                    <SelectContent>
+                                                        {levels.length > 0 ? (
+                                                            levels.map((level) => (
+                                                                <SelectItem key={level} value={level}>
+                                                                    {level}
+                                                                </SelectItem>
+                                                            ))
+                                                        ) : (
+                                                            <SelectItem value="none" disabled>{t('pages.prep.noLevels', 'No levels assigned')}</SelectItem>
+                                                        )}
+                                                    </SelectContent>
+                                                </Select>
+                                                <FormMessage />
+                                            </FormItem>
+                                        )}
+                                    />
+                                </div>
+
+                                <div className="grid grid-cols-2 gap-4">
+                                    <FormField
+                                        control={form.control}
+                                        name="date"
+                                        render={({ field }) => (
+                                            <FormItem>
+                                                <FormLabel>{t('pages.prep.date', 'Date')}</FormLabel>
+                                                <FormControl>
+                                                    <Input
+                                                        type="date"
+                                                        {...field}
+                                                        disabled={isLoading}
+                                                    />
+                                                </FormControl>
+                                                <FormMessage />
+                                            </FormItem>
+                                        )}
+                                    />
+
+                                    <FormField
+                                        control={form.control}
+                                        name="duration_minutes"
+                                        render={({ field }) => (
+                                            <FormItem>
+                                                <FormLabel>{t('pages.prep.duration', 'Duration (min)')}</FormLabel>
+                                                <FormControl>
+                                                    <Input
+                                                        type="number"
+                                                        {...field}
+                                                        onChange={(e) => field.onChange(parseInt(e.target.value))}
+                                                        disabled={isLoading}
+                                                    />
+                                                </FormControl>
+                                                <FormMessage />
+                                            </FormItem>
+                                        )}
+                                    />
+                                </div>
+                            </CardContent>
+                        </Card>
+
+                        {/* Pedagogical Identification (New) */}
+                        <div className="h-full">
+                            <LessonPrepPedagogicalContext
+                                control={form.control}
+                                isLoading={isLoading}
+                                language={language}
+                            />
+                        </div>
+                    </div>
+
+                    {/* 2. Lesson Content (Dynamic Elements) */}
+                    <LessonPrepElements
+                        control={form.control}
+                        isLoading={isLoading}
+                        language={language}
+                    />
+
+                    {/* 3. Evaluation Section (New) */}
+                    <LessonPrepEvaluation
+                        control={form.control}
+                        isLoading={isLoading}
+                        language={language}
+                    />
+
+                    {/* Legacy / Additional Info (Collapsible or just below) */}
+                    <Card className="border-2 shadow-sm overflow-hidden">
                         <CardHeader className="bg-muted/30 pb-4 border-b">
                             <div className="flex items-center gap-2">
                                 <div className="p-2 bg-primary/10 rounded-lg">
-                                    <BookOpen className="h-5 w-5 text-primary" />
+                                    <FileText className="h-5 w-5 text-primary" />
                                 </div>
-                                <div>
-                                    <CardTitle className="text-lg">{t('pages.prep.basicInfo', 'Basic Information')}</CardTitle>
-                                    <CardDescription>{t('pages.prep.basicInfoDesc', 'Lesson title, class and date')}</CardDescription>
-                                </div>
+                                <CardTitle className="text-lg">{t('pages.prep.legacy.additional')}</CardTitle>
                             </div>
                         </CardHeader>
                         <CardContent className="space-y-6 pt-6">
+                            {/* Status Field */}
                             <FormField
                                 control={form.control}
-                                name="lesson_number"
+                                name="status"
                                 render={({ field }) => (
                                     <FormItem>
-                                        <FormLabel>{t('pages.prep.lessonNumber', 'Lesson Number')}</FormLabel>
+                                        <FormLabel>{t('pages.prep.preparationStatus')}</FormLabel>
+                                        <Select
+                                            onValueChange={field.onChange}
+                                            defaultValue={field.value}
+                                            disabled={isLoading}
+                                        >
+                                            <FormControl>
+                                                <SelectTrigger>
+                                                    <SelectValue />
+                                                </SelectTrigger>
+                                            </FormControl>
+                                            <SelectContent>
+                                                <SelectItem value="draft">{t('pages.prep.status.draft', 'Draft (Work in Progress)')}</SelectItem>
+                                                <SelectItem value="ready">{t('pages.prep.status.ready', 'Ready to Teach')}</SelectItem>
+                                                <SelectItem value="delivered">{t('pages.prep.status.delivered', 'Mark as Delivered')}</SelectItem>
+                                            </SelectContent>
+                                        </Select>
+                                        <FormMessage />
+                                    </FormItem>
+                                )}
+                            />
+
+                            <FormField
+                                control={form.control}
+                                name="notes"
+                                render={({ field }) => (
+                                    <FormItem>
+                                        <FormLabel>{t('pages.prep.notes')}</FormLabel>
                                         <FormControl>
-                                            <Input
-                                                type="number"
-                                                placeholder={t('pages.prep.lessonNumberPlaceholder', '1, 2, 3...')}
+                                            <Textarea
+                                                placeholder={t('pages.prep.notesPlaceholder')}
+                                                className="min-h-[80px]"
                                                 {...field}
                                                 disabled={isLoading}
-                                                min={1}
                                             />
                                         </FormControl>
                                         <FormMessage />
                                     </FormItem>
                                 )}
                             />
-
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                <FormField
-                                    control={form.control}
-                                    name="subject"
-                                    render={({ field }) => (
-                                        <FormItem>
-                                            <FormLabel>{t('pages.prep.subject', 'Subject')}</FormLabel>
-                                            <Select
-                                                onValueChange={field.onChange}
-                                                defaultValue={field.value}
-                                                disabled={isLoading}
-                                            >
-                                                <FormControl>
-                                                    <SelectTrigger>
-                                                        <SelectValue placeholder={t('pages.prep.selectSubject')} />
-                                                    </SelectTrigger>
-                                                </FormControl>
-                                                <SelectContent>
-                                                    {subjects.length > 0 ? (
-                                                        subjects.map((subject) => (
-                                                            <SelectItem key={subject} value={subject}>
-                                                                {subject}
-                                                            </SelectItem>
-                                                        ))
-                                                    ) : (
-                                                        <SelectItem value="General" disabled>
-                                                            {t('pages.prep.noSubjects')}
-                                                        </SelectItem>
-                                                    )}
-                                                </SelectContent>
-                                            </Select>
-                                            <FormMessage />
-                                        </FormItem>
-                                    )}
-                                />
-
-                                <FormField
-                                    control={form.control}
-                                    name="level"
-                                    render={({ field }) => (
-                                        <FormItem>
-                                            <FormLabel>{t('pages.prep.level', 'Level')}</FormLabel>
-                                            <Select
-                                                onValueChange={field.onChange}
-                                                defaultValue={field.value}
-                                                disabled={isLoading}
-                                            >
-                                                <FormControl>
-                                                    <SelectTrigger>
-                                                        <SelectValue placeholder={t('pages.prep.selectLevel')} />
-                                                    </SelectTrigger>
-                                                </FormControl>
-                                                <SelectContent>
-                                                    {levels.length > 0 ? (
-                                                        levels.map((level) => (
-                                                            <SelectItem key={level} value={level}>
-                                                                {level}
-                                                            </SelectItem>
-                                                        ))
-                                                    ) : (
-                                                        <SelectItem value="none" disabled>{t('pages.prep.noLevels', 'No levels assigned')}</SelectItem>
-                                                    )}
-                                                </SelectContent>
-                                            </Select>
-                                            <FormMessage />
-                                        </FormItem>
-                                    )}
-                                />
-                            </div>
-
-                            <div className="grid grid-cols-2 gap-4">
-                                <FormField
-                                    control={form.control}
-                                    name="date"
-                                    render={({ field }) => (
-                                        <FormItem>
-                                            <FormLabel>{t('pages.prep.date', 'Date')}</FormLabel>
-                                            <FormControl>
-                                                <Input
-                                                    type="date"
-                                                    {...field}
-                                                    disabled={isLoading}
-                                                />
-                                            </FormControl>
-                                            <FormMessage />
-                                        </FormItem>
-                                    )}
-                                />
-
-                                <FormField
-                                    control={form.control}
-                                    name="duration_minutes"
-                                    render={({ field }) => (
-                                        <FormItem>
-                                            <FormLabel>{t('pages.prep.duration', 'Duration (min)')}</FormLabel>
-                                            <FormControl>
-                                                <Input
-                                                    type="number"
-                                                    {...field}
-                                                    onChange={(e) => field.onChange(parseInt(e.target.value))}
-                                                    disabled={isLoading}
-                                                />
-                                            </FormControl>
-                                            <FormMessage />
-                                        </FormItem>
-                                    )}
-                                />
-                            </div>
                         </CardContent>
                     </Card>
 
-                    {/* Pedagogical Identification (New) */}
-                    <div className="h-full">
-                        <LessonPrepPedagogicalContext
-                            control={form.control}
-                            isLoading={isLoading}
-                            language={language}
-                        />
-                    </div>
-                </div>
-
-                {/* 2. Lesson Content (Dynamic Elements) */}
-                <LessonPrepElements
-                    control={form.control}
-                    isLoading={isLoading}
-                    language={language}
-                />
-
-                {/* 3. Evaluation Section (New) */}
-                <LessonPrepEvaluation
-                    control={form.control}
-                    isLoading={isLoading}
-                    language={language}
-                />
-
-                {/* Legacy / Additional Info (Collapsible or just below) */}
-                <Card className="border-2 shadow-sm overflow-hidden">
-                    <CardHeader className="bg-muted/30 pb-4 border-b">
-                        <div className="flex items-center gap-2">
-                            <div className="p-2 bg-primary/10 rounded-lg">
-                                <FileText className="h-5 w-5 text-primary" />
-                            </div>
-                            <CardTitle className="text-lg">{t('pages.prep.legacy.additional')}</CardTitle>
-                        </div>
-                    </CardHeader>
-                    <CardContent className="space-y-6 pt-6">
-                        {/* Status Field */}
-                        <FormField
-                            control={form.control}
-                            name="status"
-                            render={({ field }) => (
-                                <FormItem>
-                                    <FormLabel>{t('pages.prep.preparationStatus')}</FormLabel>
-                                    <Select
-                                        onValueChange={field.onChange}
-                                        defaultValue={field.value}
-                                        disabled={isLoading}
-                                    >
-                                        <FormControl>
-                                            <SelectTrigger>
-                                                <SelectValue />
-                                            </SelectTrigger>
-                                        </FormControl>
-                                        <SelectContent>
-                                            <SelectItem value="draft">{t('pages.prep.status.draft', 'Draft (Work in Progress)')}</SelectItem>
-                                            <SelectItem value="ready">{t('pages.prep.status.ready', 'Ready to Teach')}</SelectItem>
-                                            <SelectItem value="delivered">{t('pages.prep.status.delivered', 'Mark as Delivered')}</SelectItem>
-                                        </SelectContent>
-                                    </Select>
-                                    <FormMessage />
-                                </FormItem>
-                            )}
-                        />
-
-                        <FormField
-                            control={form.control}
-                            name="notes"
-                            render={({ field }) => (
-                                <FormItem>
-                                    <FormLabel>{t('pages.prep.notes')}</FormLabel>
-                                    <FormControl>
-                                        <Textarea
-                                            placeholder={t('pages.prep.notesPlaceholder')}
-                                            className="min-h-[80px]"
-                                            {...field}
-                                            disabled={isLoading}
-                                        />
-                                    </FormControl>
-                                    <FormMessage />
-                                </FormItem>
-                            )}
-                        />
-                    </CardContent>
-                </Card>
-
-                {/* Actions */}
-                <div className="flex justify-end space-x-4 pt-4 sticky bottom-0 bg-background/95 backdrop-blur py-4 border-t mt-8 z-10">
-                    {onCancel && (
-                        <Button
-                            type="button"
-                            variant="outline"
-                            onClick={onCancel}
-                            disabled={isLoading}
-                        >
-                            {t('common.cancel', 'Cancel')}
+                    {/* Actions */}
+                    <div className="flex justify-end space-x-4 pt-4 sticky bottom-0 bg-background/95 backdrop-blur py-4 border-t mt-8 z-10">
+                        {onCancel && (
+                            <Button
+                                type="button"
+                                variant="outline"
+                                onClick={onCancel}
+                                disabled={isLoading}
+                            >
+                                {t('common.cancel', 'Cancel')}
+                            </Button>
+                        )}
+                        <Button type="submit" disabled={isLoading}>
+                            {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+                            {initialData ? t('pages.prep.update', 'Update Preparation') : t('pages.prep.create', 'Create Preparation')}
                         </Button>
-                    )}
-                    <Button type="submit" disabled={isLoading}>
-                        {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-                        {initialData ? t('pages.prep.update', 'Update Preparation') : t('pages.prep.create', 'Create Preparation')}
-                    </Button>
-                </div>
-            </form>
-        </Form>
+                    </div>
+                </form>
+            </Form>
+        </FormLanguageProvider>
     )
 }
+
