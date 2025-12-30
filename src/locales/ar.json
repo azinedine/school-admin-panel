@@ -622,6 +622,7 @@
             "lessonTitlePlaceholder": "مثال: مقدمة في التركيب الضوئي",
             "subject": "المادة",
             "selectSubject": "اختر المادة",
+            "selectLevel": "اختر المستوى",
             "noSubjects": "لم يتم تعيين أي مواد",
             "selectClass": "اختر القسم",
             "domain": "الميدان",
@@ -780,6 +781,9 @@
             },
             "assessment": "التقويم",
             "assessmentPlaceholder": "أدخل ملاحظات التقويم والتقييم",
+            "homeworkPlaceholder": "أدخل ملاحظات التقويم والتقييم",
+            "notesPlaceholder": "أدخل ملاحظات التقويم والتقييم",
+            "notes": "ملاحظات",
             "sections": {
                 "basicInfo": "معلومات أساسية",
                 "structure": "هيكل الدرس",
