@@ -95,13 +95,13 @@ export function PreparationCard({
 
                 <div>
                     <h3 className="font-semibold text-lg line-clamp-2 leading-tight mb-2 group-hover:text-primary transition-colors">
-                        {prep.title}
+                        {prep.lesson_number}
                     </h3>
                     <div className="flex flex-wrap gap-y-1 gap-x-3 text-sm text-muted-foreground">
-                        {prep.class && (
+                        {prep.level && (
                             <div className="flex items-center gap-1.5">
                                 <BookOpen className="h-3.5 w-3.5" />
-                                <span>{prep.class}</span>
+                                <span>{prep.level}</span>
                             </div>
                         )}
 
