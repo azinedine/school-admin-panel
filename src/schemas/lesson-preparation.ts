@@ -41,8 +41,6 @@ const commonFields = {
   duration_minutes: z.number()
     .min(15, V.durationMin)
     .max(480, V.durationMax),
-  description: z.string().max(2000).optional(),
-  assessment_criteria: z.string().max(1000).optional(),
   notes: z.string().max(2000).optional(),
   status: z.enum(['draft', 'ready', 'delivered']),
 }
@@ -102,8 +100,6 @@ export const lessonPreparationApiSchema = z.object({
   level: z.string(),
   date: z.string(),
   duration_minutes: z.number(),
-  description: z.string().optional(),
-  assessment_criteria: z.string().optional(),
   notes: z.string().optional(),
   status: z.enum(['draft', 'ready', 'delivered']),
   domain: z.string(),
@@ -145,12 +141,10 @@ export const defaultFormValues: LessonPreparationFormData = {
   date: new Date().toISOString().split('T')[0],
   duration_minutes: 45,
   learning_objectives: [],
-  description: '',
   key_topics: [],
   teaching_methods: [],
   resources_needed: [],
   assessment_methods: [],
-  assessment_criteria: '',
   notes: '',
   status: 'draft',
   domain: '',
