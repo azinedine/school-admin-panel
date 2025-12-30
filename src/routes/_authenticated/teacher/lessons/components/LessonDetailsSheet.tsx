@@ -91,14 +91,14 @@ export function LessonDetailsSheet({
   // Format date for display (Read-only view)
   const formattedDate = lesson.date
     ? new Date(lesson.date).toLocaleDateString(undefined, {
-        weekday: 'long',
-        year: 'numeric',
-        month: 'long',
-        day: 'numeric',
-      })
+      weekday: 'long',
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric',
+    })
     : t('pages.prep.noDate')
 
-  const timeDisplay = lesson.secondaryTimeSlot 
+  const timeDisplay = lesson.secondaryTimeSlot
     ? `${lesson.timeSlot} & ${lesson.secondaryTimeSlot}`
     : lesson.timeSlot
 
@@ -128,10 +128,10 @@ export function LessonDetailsSheet({
                     <span>{timeDisplay}</span>
                   </div>
                   {lesson.mode === 'groups' && (
-                     <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                        <Users className="h-4 w-4" />
-                        <span>{t('pages.prep.details.groups')}</span>
-                     </div>
+                    <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                      <Users className="h-4 w-4" />
+                      <span>{t('pages.prep.details.groups')}</span>
+                    </div>
                   )}
                 </SheetDescription>
               )}
@@ -148,7 +148,7 @@ export function LessonDetailsSheet({
 
               {editMode ? (
                 <div className="space-y-4 pl-6 rtl:pr-6 rtl:pl-0">
-                  
+
                   {/* Mode Toggle */}
                   <div className="space-y-2">
                     <Label>{t('pages.prep.details.schedulingMode')}</Label>
@@ -169,13 +169,13 @@ export function LessonDetailsSheet({
                   <div className="space-y-4">
                     <div className="space-y-2">
                       <Label>{t('pages.prep.table.date')}</Label>
-                      <Input 
-                        type="date" 
-                        value={date} 
-                        onChange={(e) => setDate(e.target.value)} 
+                      <Input
+                        type="date"
+                        value={date}
+                        onChange={(e) => setDate(e.target.value)}
                       />
                     </div>
-                    
+
                     {mode === 'groups' ? (
                       <div className="grid grid-cols-2 gap-4">
                         <div className="space-y-2">
@@ -195,7 +195,7 @@ export function LessonDetailsSheet({
                           <Label>{secondaryTimeSlotLabel}</Label>
                           <Select value={secondaryTimeSlot} onValueChange={setSecondaryTimeSlot}>
                             <SelectTrigger>
-                               <SelectValue placeholder={t('pages.prep.status.none')} />
+                              <SelectValue placeholder={t('pages.prep.status.none')} />
                             </SelectTrigger>
                             <SelectContent>
                               <SelectItem value="none">{t('pages.prep.status.none')}</SelectItem>
@@ -228,18 +228,18 @@ export function LessonDetailsSheet({
                       <div className="space-y-0.5">
                         <Label>{t('pages.prep.details.practicalWork')}</Label>
                       </div>
-                      <Switch 
-                        checked={practicalWork} 
-                        onCheckedChange={setPracticalWork} 
+                      <Switch
+                        checked={practicalWork}
+                        onCheckedChange={setPracticalWork}
                       />
                     </div>
                     <div className="flex items-center justify-between rounded-lg border p-3">
                       <div className="space-y-0.5">
                         <Label>{t('pages.prep.details.homework')}</Label>
                       </div>
-                      <Switch 
-                        checked={homework} 
-                        onCheckedChange={setHomework} 
+                      <Switch
+                        checked={homework}
+                        onCheckedChange={setHomework}
                       />
                     </div>
                   </div>
@@ -248,38 +248,36 @@ export function LessonDetailsSheet({
                 // Read Only Execution View
                 <div className="space-y-3 pl-6 rtl:pr-6 rtl:pl-0">
                   <div className="grid grid-cols-2 gap-4 text-sm mb-2">
-                     <div className="space-y-1">
+                    <div className="space-y-1">
+                      <span className="text-muted-foreground block text-xs uppercase tracking-wider font-semibold">
+                        {lesson.mode === 'groups' ? t('pages.prep.details.group1Time') : t('pages.prep.details.firstSessionHour')}
+                      </span>
+                      <span className="font-mono">{lesson.timeSlot}</span>
+                    </div>
+                    {lesson.secondaryTimeSlot && (
+                      <div className="space-y-1">
                         <span className="text-muted-foreground block text-xs uppercase tracking-wider font-semibold">
-                          {lesson.mode === 'groups' ? t('pages.prep.details.group1Time') : t('pages.prep.details.firstSessionHour')}
+                          {lesson.mode === 'groups' ? t('pages.prep.details.group2Time') : t('pages.prep.details.secondSessionHour')}
                         </span>
-                        <span className="font-mono">{lesson.timeSlot}</span>
-                     </div>
-                     {lesson.secondaryTimeSlot && (
-                       <div className="space-y-1">
-                          <span className="text-muted-foreground block text-xs uppercase tracking-wider font-semibold">
-                             {lesson.mode === 'groups' ? t('pages.prep.details.group2Time') : t('pages.prep.details.secondSessionHour')}
-                          </span>
-                          <span className="font-mono">{lesson.secondaryTimeSlot}</span>
-                       </div>
-                     )}
+                        <span className="font-mono">{lesson.secondaryTimeSlot}</span>
+                      </div>
+                    )}
                   </div>
 
-                   <div className="flex gap-4">
-                    <div className={`flex items-center gap-2 px-3 py-1.5 rounded-full border text-sm ${
-                      lesson.practicalWork 
-                        ? 'bg-green-50 text-green-700 border-green-200 dark:bg-green-900/20 dark:text-green-300 dark:border-green-800' 
+                  <div className="flex gap-4">
+                    <div className={`flex items-center gap-2 px-3 py-1.5 rounded-full border text-sm ${lesson.practicalWork
+                        ? 'bg-green-50 text-green-700 border-green-200 dark:bg-green-900/20 dark:text-green-300 dark:border-green-800'
                         : 'bg-gray-50 text-gray-500 border-gray-200 dark:bg-gray-800/50 dark:text-gray-400 dark:border-gray-700'
-                    }`}>
+                      }`}>
                       <div className={`w-2 h-2 rounded-full ${lesson.practicalWork ? 'bg-green-500' : 'bg-gray-300'}`} />
                       <span className="font-medium">{t('pages.prep.details.practicalWork')}</span>
                       <span>{lesson.practicalWork ? t('pages.prep.details.yes') : t('pages.prep.details.no')}</span>
                     </div>
 
-                    <div className={`flex items-center gap-2 px-3 py-1.5 rounded-full border text-sm ${
-                      lesson.homework 
-                        ? 'bg-blue-50 text-blue-700 border-blue-200 dark:bg-blue-900/20 dark:text-blue-300 dark:border-blue-800' 
+                    <div className={`flex items-center gap-2 px-3 py-1.5 rounded-full border text-sm ${lesson.homework
+                        ? 'bg-blue-50 text-blue-700 border-blue-200 dark:bg-blue-900/20 dark:text-blue-300 dark:border-blue-800'
                         : 'bg-gray-50 text-gray-500 border-gray-200 dark:bg-gray-800/50 dark:text-gray-400 dark:border-gray-700'
-                    }`}>
+                      }`}>
                       <div className={`w-2 h-2 rounded-full ${lesson.homework ? 'bg-blue-500' : 'bg-gray-300'}`} />
                       <span className="font-medium">{t('pages.prep.details.homework')}</span>
                       <span>{lesson.homework ? t('pages.prep.details.yes') : t('pages.prep.details.no')}</span>
@@ -293,22 +291,22 @@ export function LessonDetailsSheet({
 
             {/* Core Content (Always Read Only) */}
             <div className={`space-y-4 ${editMode ? 'opacity-80' : ''}`}>
-               <h3 className="font-semibold flex items-center gap-2 text-primary">
+              <h3 className="font-semibold flex items-center gap-2 text-primary">
                 <BookOpen className="h-4 w-4" />
                 {t('pages.prep.details.coreContent')}
               </h3>
 
               <div className="space-y-4">
-                 <h4 className="font-medium pl-6 rtl:pr-6 rtl:pl-0">{lesson.lessonTitle}</h4>
-                 
-                 <div className="grid gap-4 pl-6 rtl:pr-6 rtl:pl-0 text-sm">
+                <h4 className="font-medium pl-6 rtl:pr-6 rtl:pl-0">{lesson.lessonNumber}</h4>
+
+                <div className="grid gap-4 pl-6 rtl:pr-6 rtl:pl-0 text-sm">
                   <div className="grid grid-cols-3 gap-2">
                     <span className="text-muted-foreground font-medium">
                       {t('pages.prep.details.field')}
                     </span>
                     <span className="col-span-2">{lesson.field || '-'}</span>
                   </div>
-                  
+
                   <div className="grid grid-cols-3 gap-2">
                     <span className="text-muted-foreground font-medium">
                       {t('pages.prep.details.learningSegment')}
@@ -346,11 +344,11 @@ export function LessonDetailsSheet({
                 </p>
               )}
             </div>
-            
-             <Separator />
 
-             {/* Assessment Description (Read only) */}
-             <div className={`space-y-4 ${editMode ? 'opacity-80' : ''}`}>
+            <Separator />
+
+            {/* Assessment Description (Read only) */}
+            <div className={`space-y-4 ${editMode ? 'opacity-80' : ''}`}>
               <h3 className="font-semibold flex items-center gap-2">
                 <CheckCircle2 className="h-4 w-4" />
                 {t('pages.prep.details.assessment')}
