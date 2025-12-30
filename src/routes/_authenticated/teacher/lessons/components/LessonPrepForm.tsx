@@ -92,15 +92,17 @@ export function LessonPrepForm({
                         <CardContent className="space-y-6 pt-6">
                             <FormField
                                 control={form.control}
-                                name="title"
+                                name="lesson_number"
                                 render={({ field }) => (
                                     <FormItem>
-                                        <FormLabel>{t('pages.prep.lessonTitle', 'Lesson Title')}</FormLabel>
+                                        <FormLabel>{t('pages.prep.lessonNumber', 'Lesson Number')}</FormLabel>
                                         <FormControl>
                                             <Input
-                                                placeholder={t('pages.prep.lessonTitlePlaceholder', '')}
+                                                type="number"
+                                                placeholder={t('pages.prep.lessonNumberPlaceholder', '1, 2, 3...')}
                                                 {...field}
                                                 disabled={isLoading}
+                                                min={1}
                                             />
                                         </FormControl>
                                         <FormMessage />
@@ -146,7 +148,7 @@ export function LessonPrepForm({
 
                                 <FormField
                                     control={form.control}
-                                    name="class"
+                                    name="level"
                                     render={({ field }) => (
                                         <FormItem>
                                             <FormLabel>{t('pages.prep.level', 'Level')}</FormLabel>
