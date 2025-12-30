@@ -158,7 +158,7 @@ export function DailyPlannerTable({ selectedDay }: DailyPlannerTableProps) {
                     </TableCell>
                     <TableCell>
                       <div className="space-y-1">
-                        <p className="font-semibold">{lesson.lessonTitle}</p>
+                        <p className="font-semibold">{lesson.lessonNumber}</p>
                         {lesson.class && (
                           <p className="text-xs text-muted-foreground">
                             {lesson.class}
