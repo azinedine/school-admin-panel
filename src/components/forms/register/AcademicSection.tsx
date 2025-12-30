@@ -1,4 +1,4 @@
-import { useFormContext } from "react-hook-form"
+import { useFormContext, type FieldError } from "react-hook-form"
 import { useTranslation } from "react-i18next"
 import { TextField } from "../TextField"
 import { SelectField } from "../SelectField"
@@ -81,7 +81,7 @@ export function AcademicSection({ role }: AcademicSectionProps) {
           options={getSubjectOptions()}
           value={selectedSubjects}
           onChange={(val) => setValue('subjects', val)}
-          error={errors.subjects as any}
+          error={errors.subjects as FieldError}
           maxSelected={2}
           className="w-full"
           disabled={loadingSubjects}
@@ -93,7 +93,7 @@ export function AcademicSection({ role }: AcademicSectionProps) {
           options={levelOptions}
           value={selectedLevels}
           onChange={(val) => setValue('levels', val)}
-          error={errors.levels as any}
+          error={errors.levels}
           className="w-full"
           disabled={loadingLevels}
         />
@@ -110,7 +110,7 @@ export function AcademicSection({ role }: AcademicSectionProps) {
             onChange={(val) => setValue('class', val)}
             options={classOptions}
             placeholder={t('auth.register.selectClass')}
-            error={errors.class as any}
+            error={errors.class as FieldError}
         />
       </div>
     )
