@@ -4,11 +4,11 @@ import { z } from 'zod'
  * Common field definitions reused across schemas
  */
 const commonFields = {
-  title: z.string()
-    .min(3, 'Title must be at least 3 characters')
-    .max(255, 'Title must be less than 255 characters'),
+  lesson_number: z.string()
+    .min(1, 'Lesson number is required')
+    .max(50, 'Lesson number must be less than 50 characters'),
   subject: z.string().min(1, 'Please select a subject'),
-  class: z.string().min(1, 'Please select a class'),
+  level: z.string().min(1, 'Please select a level'),
   date: z.string().refine((date) => !isNaN(Date.parse(date)), 'Please enter a valid date'),
   duration_minutes: z.number()
     .min(15, 'Duration must be at least 15 minutes')
@@ -107,9 +107,9 @@ export interface LessonPreparation extends LessonPreparationApiPayload {
  * Helpers/Adapters
  */
 export const defaultFormValues: Partial<LessonPreparationFormData> = {
-  title: '',
+  lesson_number: '',
   subject: '',
-  class: '',
+  level: '',
   date: new Date().toISOString().split('T')[0],
   duration_minutes: 45,
   learning_objectives: [{ value: '' }],
