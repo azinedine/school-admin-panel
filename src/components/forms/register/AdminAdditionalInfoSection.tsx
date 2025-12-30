@@ -1,15 +1,10 @@
 import { useTranslation } from "react-i18next"
 import { TextField, TextAreaField } from "../TextField"
 import { DatePicker } from "../DatePicker"
-import { useFormContext } from "react-hook-form"
 
-interface AdminAdditionalInfoSectionProps {
-  // Props if needed in future
-}
 
-export function AdminAdditionalInfoSection({}: AdminAdditionalInfoSectionProps) {
+export function AdminAdditionalInfoSection() {
   const { t } = useTranslation()
-  const {  } = useFormContext()
 
   return (
     <div className="space-y-4">
