@@ -1,4 +1,4 @@
-import { useFormContext } from "react-hook-form"
+import { useFormContext, type FieldError } from "react-hook-form"
 import { useTranslation } from "react-i18next"
 import { SelectField } from "@/components/forms/SelectField" 
 // Hooks
@@ -58,7 +58,7 @@ export function LocationSection() {
             setValue('institution_id', '') 
         }}
         isLoading={loadingWilayas}
-        error={errors.wilaya as any}
+        error={errors.wilaya as FieldError}
         required
       />
 
@@ -73,7 +73,7 @@ export function LocationSection() {
         }}
         isLoading={loadingMunicipalities}
         disabled={!selectedWilaya}
-        error={errors.municipality as any}
+        error={errors.municipality as FieldError | undefined}
         required
       />
 
@@ -89,7 +89,7 @@ export function LocationSection() {
          onChange={(val) => setValue('institution_id', val)}
          isLoading={loadingInstitutions}
          disabled={!selectedMunicipality || noInstitutionsFound}
-         error={errors.institution_id as any}
+         error={errors.institution_id as FieldError}
          required={!noInstitutionsFound}
          className="sm:col-span-2 lg:col-span-1"
       />
