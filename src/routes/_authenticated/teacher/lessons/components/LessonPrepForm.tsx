@@ -124,7 +124,7 @@ export function LessonPrepForm({
                                             >
                                                 <FormControl>
                                                     <SelectTrigger>
-                                                        <SelectValue placeholder={t('pages.prep.selectSubject', 'Select subject')} />
+                                                        <SelectValue placeholder={t('pages.prep.selectSubject')} />
                                                     </SelectTrigger>
                                                 </FormControl>
                                                 <SelectContent>
@@ -136,7 +136,7 @@ export function LessonPrepForm({
                                                         ))
                                                     ) : (
                                                         <SelectItem value="General" disabled>
-                                                            {t('pages.prep.noSubjects', 'No subjects assigned')}
+                                                            {t('pages.prep.noSubjects')}
                                                         </SelectItem>
                                                     )}
                                                 </SelectContent>
@@ -159,7 +159,7 @@ export function LessonPrepForm({
                                             >
                                                 <FormControl>
                                                     <SelectTrigger>
-                                                        <SelectValue placeholder={t('pages.prep.selectLevel', 'Select level')} />
+                                                        <SelectValue placeholder={t('pages.prep.selectLevel')} />
                                                     </SelectTrigger>
                                                 </FormControl>
                                                 <SelectContent>
@@ -252,7 +252,7 @@ export function LessonPrepForm({
                             <div className="p-2 bg-primary/10 rounded-lg">
                                 <FileText className="h-5 w-5 text-primary" />
                             </div>
-                            <CardTitle className="text-lg">{t('pages.prep.legacy.additional', 'Additional Information')}</CardTitle>
+                            <CardTitle className="text-lg">{t('pages.prep.legacy.additional')}</CardTitle>
                         </div>
                     </CardHeader>
                     <CardContent className="space-y-6 pt-6">
@@ -262,7 +262,7 @@ export function LessonPrepForm({
                             name="status"
                             render={({ field }) => (
                                 <FormItem>
-                                    <FormLabel>{t('pages.prep.preparationStatus', 'Preparation Status')}</FormLabel>
+                                    <FormLabel>{t('pages.prep.preparationStatus')}</FormLabel>
                                     <Select
                                         onValueChange={field.onChange}
                                         defaultValue={field.value}
@@ -289,10 +289,10 @@ export function LessonPrepForm({
                             name="notes"
                             render={({ field }) => (
                                 <FormItem>
-                                    <FormLabel>{t('pages.prep.notes', 'Notes')}</FormLabel>
+                                    <FormLabel>{t('pages.prep.notes')}</FormLabel>
                                     <FormControl>
                                         <Textarea
-                                            placeholder={t('pages.prep.notesPlaceholder', 'Any private notes...')}
+                                            placeholder={t('pages.prep.notesPlaceholder')}
                                             className="min-h-[80px]"
                                             {...field}
                                             disabled={isLoading}
