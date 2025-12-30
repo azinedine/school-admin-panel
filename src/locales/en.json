@@ -791,6 +791,9 @@
             "homeworkPlaceholder": "Enter homework notes",
             "notesPlaceholder": "Any private notes...",
             "notes": "Notes / Remarks",
+            "legacy": {
+                "additional": "Additional Information"
+            },
             "sections": {
                 "basicInfo": "Basic Information",
                 "structure": "Lesson Structure",
