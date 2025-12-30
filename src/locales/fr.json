@@ -769,6 +769,9 @@
             "homeworkPlaceholder": "Entrez les notes de devoirs",
             "notesPlaceholder": "Notes privées...",
             "notes": "Notes / Remarques",
+            "legacy": {
+                "additional": "Informations supplémentaires"
+            },
             "sections": {
                 "basicInfo": "Informations de base",
                 "structure": "Structure du cours",
