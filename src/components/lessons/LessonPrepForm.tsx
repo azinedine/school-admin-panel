@@ -41,6 +41,7 @@ interface LessonPrepFormProps {
     onSubmit: (data: LessonPreparationApiPayload) => Promise<void>
     isLoading?: boolean
     classes?: string[]
+    subjects?: string[]
     teachingMethods?: string[]
     assessmentMethods?: string[]
     onCancel?: () => void
@@ -74,6 +75,7 @@ export function LessonPrepForm({
     onSubmit,
     isLoading = false,
     classes = [],
+    subjects = [],
     teachingMethods = defaultTeachingMethods,
     assessmentMethods = defaultAssessmentMethods,
     onCancel,
@@ -180,6 +182,41 @@ export function LessonPrepForm({
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                             <FormField
                                 control={form.control}
+                                name="subject"
+                                render={({ field }) => (
+                                    <FormItem>
+                                        <FormLabel>{t('pages.prep.subject', 'Subject')}</FormLabel>
+                                        <Select
+                                            onValueChange={field.onChange}
+                                            defaultValue={field.value}
+                                            disabled={isLoading}
+                                        >
+                                            <FormControl>
+                                                <SelectTrigger>
+                                                    <SelectValue placeholder={t('pages.prep.selectSubject', 'Select subject')} />
+                                                </SelectTrigger>
+                                            </FormControl>
+                                            <SelectContent>
+                                                {subjects.length > 0 ? (
+                                                    subjects.map((subject) => (
+                                                        <SelectItem key={subject} value={subject}>
+                                                            {subject}
+                                                        </SelectItem>
+                                                    ))
+                                                ) : (
+                                                    <SelectItem value="General" disabled>
+                                                        {t('pages.prep.noSubjects', 'No subjects assigned')}
+                                                    </SelectItem>
+                                                )}
+                                            </SelectContent>
+                                        </Select>
+                                        <FormMessage />
+                                    </FormItem>
+                                )}
+                            />
+
+                            <FormField
+                                control={form.control}
                                 name="class"
                                 render={({ field }) => (
                                     <FormItem>
@@ -219,46 +256,47 @@ export function LessonPrepForm({
                                     </FormItem>
                                 )}
                             />
-
-                            <div className="grid grid-cols-2 gap-3">
-                                <FormField
-                                    control={form.control}
-                                    name="date"
-                                    render={({ field }) => (
-                                        <FormItem>
-                                            <FormLabel>{t('pages.prep.date', 'Date')}</FormLabel>
-                                            <FormControl>
-                                                <Input
-                                                    type="date"
-                                                    {...field}
-                                                    disabled={isLoading}
-                                                />
-                                            </FormControl>
-                                            <FormMessage />
-                                        </FormItem>
-                                    )}
-                                />
-
-                                <FormField
-                                    control={form.control}
-                                    name="duration_minutes"
-                                    render={({ field }) => (
-                                        <FormItem>
-                                            <FormLabel>{t('pages.prep.duration', 'Duration (min)')}</FormLabel>
-                                            <FormControl>
-                                                <Input
-                                                    type="number"
-                                                    {...field}
-                                                    onChange={(e) => field.onChange(parseInt(e.target.value))}
-                                                    disabled={isLoading}
-                                                />
-                                            </FormControl>
-                                            <FormMessage />
-                                        </FormItem>
-                                    )}
-                                />
-                            </div>
                         </div>
+
+                        <div className="grid grid-cols-2 gap-3">
+                            <FormField
+                                control={form.control}
+                                name="date"
+                                render={({ field }) => (
+                                    <FormItem>
+                                        <FormLabel>{t('pages.prep.date', 'Date')}</FormLabel>
+                                        <FormControl>
+                                            <Input
+                                                type="date"
+                                                {...field}
+                                                disabled={isLoading}
+                                            />
+                                        </FormControl>
+                                        <FormMessage />
+                                    </FormItem>
+                                )}
+                            />
+
+                            <FormField
+                                control={form.control}
+                                name="duration_minutes"
+                                render={({ field }) => (
+                                    <FormItem>
+                                        <FormLabel>{t('pages.prep.duration', 'Duration (min)')}</FormLabel>
+                                        <FormControl>
+                                            <Input
+                                                type="number"
+                                                {...field}
+                                                onChange={(e) => field.onChange(parseInt(e.target.value))}
+                                                disabled={isLoading}
+                                            />
+                                        </FormControl>
+                                        <FormMessage />
+                                    </FormItem>
+                                )}
+                            />
+                        </div>
+
 
                         <FormField
                             control={form.control}
@@ -622,6 +660,6 @@ export function LessonPrepForm({
                     </Button>
                 </div>
             </form>
-        </Form>
+        </Form >
     )
 }
