@@ -646,6 +646,7 @@
             "lessonTitlePlaceholder": "e.g., Introduction to Photosynthesis",
             "subject": "Subject",
             "selectSubject": "Select subject",
+            "selectLevel": "Select level",
             "noSubjects": "No subjects assigned",
             "selectClass": "Select class",
             "domain": "Domain",
@@ -787,6 +788,9 @@
             },
             "assessment": "Assessment / Evaluation",
             "assessmentPlaceholder": "Enter assessment and evaluation notes",
+            "homeworkPlaceholder": "Enter homework notes",
+            "notesPlaceholder": "Any private notes...",
+            "notes": "Notes / Remarks",
             "sections": {
                 "basicInfo": "Basic Information",
                 "structure": "Lesson Structure",
