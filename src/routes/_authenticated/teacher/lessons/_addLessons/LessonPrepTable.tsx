@@ -111,7 +111,7 @@ export function LessonPrepTable({
         <Table>
           <TableHeader>
             <TableRow>
-              <TableHead>Title</TableHead>
+              <TableHead>Lesson Number</TableHead>
               <TableHead>Subject</TableHead>
               <TableHead>Class</TableHead>
               <TableHead>Date</TableHead>
