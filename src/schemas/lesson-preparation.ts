@@ -7,6 +7,7 @@ const commonFields = {
   title: z.string()
     .min(3, 'Title must be at least 3 characters')
     .max(255, 'Title must be less than 255 characters'),
+  subject: z.string().min(1, 'Please select a subject'),
   class: z.string().min(1, 'Please select a class'),
   date: z.string().refine((date) => !isNaN(Date.parse(date)), 'Please enter a valid date'),
   duration_minutes: z.number()
@@ -68,6 +69,7 @@ export interface LessonPreparation extends LessonPreparationApiPayload {
  */
 export const defaultFormValues: Partial<LessonPreparationFormData> = {
   title: '',
+  subject: '',
   class: '',
   date: new Date().toISOString().split('T')[0],
   duration_minutes: 45,
