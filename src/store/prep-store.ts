@@ -9,7 +9,7 @@ export interface DailyPlanEntry {
   class: string
   mode: 'fullClass' | 'groups'
   group?: 'first' | 'second'  // Optional, only for 'groups' mode
-  lessonTitle: string
+  lessonNumber: string
   lessonContent: string
   practiceNotes: string
   weekNumber?: number  // Week of term (1, 2, 3...)
@@ -40,7 +40,7 @@ export interface TimetableEntry {
 export interface LessonTemplate {
   id: string
   academicYear: '1st' | '2nd' | '3rd' | '4th'
-  lessonTitle: string
+  lessonNumber: string
   field: string
   learningSegment: string
   knowledgeResource: string
