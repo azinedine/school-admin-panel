@@ -1,6 +1,6 @@
 import { type Control, useFieldArray } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
-import { Plus, X, Target, Users } from 'lucide-react'
+import { Plus, X, Users } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { FormControl, FormField, FormItem, FormMessage } from '@/components/ui/form'
@@ -25,10 +25,7 @@ export function LessonPrepLegacyFields({
     const t = language ? i18n.getFixedT(language) : originalT
     const isCompact = variant === 'compact'
 
-    const { fields: objectiveFields, append: appendObjective, remove: removeObjective } = useFieldArray({
-        control,
-        name: 'learning_objectives',
-    })
+
 
     const { fields: methodFields, append: appendMethod, remove: removeMethod } = useFieldArray({
         control,
@@ -115,20 +112,9 @@ export function LessonPrepLegacyFields({
 
     if (isCompact) {
         return (
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 gap-4">
                 {renderFieldList(
-                    t('pages.prep.learningObjectives', 'Objectives'),
-                    Target,
-                    objectiveFields,
-                    appendObjective,
-                    removeObjective,
-                    'learning_objectives',
-                    t('pages.prep.objectivePlaceholder', 'Objective...'),
-                    t('pages.prep.noObjectives'),
-                    "text-blue-600 hover:text-blue-700 hover:bg-blue-50"
-                )}
-                {renderFieldList(
-                    t('pages.prep.teachingMethods', 'Methods'),
+                    t('pages.prep.teachingMethods', 'Teaching Methods'),
                     Users,
                     methodFields,
                     appendMethod,
@@ -147,29 +133,15 @@ export function LessonPrepLegacyFields({
         <Card className="border-2 shadow-sm overflow-hidden">
             <CardHeader className="bg-muted/30 pb-4 border-b">
                 <div className="flex items-center gap-2">
-                    <div className="p-2 bg-blue-500/10 rounded-lg">
-                        <Target className="h-5 w-5 text-blue-500" />
+                    <div className="p-2 bg-emerald-500/10 rounded-lg">
+                        <Users className="h-5 w-5 text-emerald-500" />
                     </div>
                     <CardTitle className="text-lg">
-                        {t('pages.prep.objectivesAndTopics', 'Objectives & Topics')}
+                        {t('pages.prep.teachingMethods', 'Teaching Methods')}
                     </CardTitle>
                 </div>
             </CardHeader>
             <CardContent className="space-y-6 pt-6">
-                {renderFieldList(
-                    t('pages.prep.learningObjectives', 'Learning Objectives'),
-                    Target,
-                    objectiveFields,
-                    appendObjective,
-                    removeObjective,
-                    'learning_objectives',
-                    t('pages.prep.objectivePlaceholder', 'Enter objective...'),
-                    t('pages.prep.noObjectives', 'No objectives added'),
-                    "text-blue-600 hover:text-blue-700 hover:bg-blue-50"
-                )}
-
-                <div className="h-px bg-border/50" />
-
                 {renderFieldList(
                     t('pages.prep.teachingMethods', 'Teaching Methods'),
                     Users,
