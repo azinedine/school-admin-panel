@@ -828,7 +828,14 @@
                 "topicsMin": "Ajoutez au moins un sujet clé",
                 "methodRequired": "La méthode est requise",
                 "methodsMin": "Sélectionnez au moins une méthode d'enseignement",
-                "resourceRequired": "La ressource est requise"
+                "resourceRequired": "La ressource est requise",
+                "knowledgeRequired": "Veuillez entrer le point de connaissance",
+                "materialRequired": "Veuillez entrer le matériel",
+                "referenceRequired": "Veuillez entrer la référence",
+                "phaseContentRequired": "Le contenu de la phase est requis",
+                "phaseDurationRequired": "La durée est requise",
+                "activityContentRequired": "Le contenu de l'activité est requis",
+                "totalDurationMismatch": "La durée totale des phases dépasse la durée du cours"
             },
             "templateSection": "Charger à partir d'un modèle",
             "selectTemplate": "Sélectionner un modèle...",
