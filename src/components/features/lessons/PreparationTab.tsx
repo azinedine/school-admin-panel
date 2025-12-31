@@ -38,6 +38,7 @@ import { FormLanguageSelector } from '@/components/FormLanguageSelector'
 import type { LessonPreparation, LessonPreparationApiPayload } from '@/schemas/lesson-preparation'
 
 import { useSubjects, useLevels } from '@/hooks/use-subjects'
+import { filterSubjectsByUserAssignment, getSubjectDisplayNames } from '@/utils/subject-utils'
 
 /**
  * PreparationTab - CRUD Management of lesson preparations
@@ -68,11 +69,10 @@ export const PreparationTab = memo(function PreparationTab() {
     const genericUpdateMutation = useGenericUpdateLessonPrep()
     const deleteMutation = useDeleteLessonPrep()
 
-    // Get teacher's subjects - use freshly fetched subjects filtered by user's assigned subject names
+    // Get teacher's subjects using utility function (SRP - Single Responsibility Principle)
     const isRTL = i18n.language === 'ar'
-    const teacherSubjects = subjectsList
-        .filter(s => user?.subjects?.includes(s.name) || user?.subjects?.includes(s.name_ar))
-        .map(s => isRTL ? s.name_ar : s.name)
+    const filteredSubjects = filterSubjectsByUserAssignment(subjectsList, user?.subjects)
+    const teacherSubjects = getSubjectDisplayNames(filteredSubjects, isRTL)
 
     // Get teacher's levels - use user's levels if available, otherwise use all levels
     const teacherLevels = user?.levels?.length
