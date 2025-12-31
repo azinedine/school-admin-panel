@@ -683,6 +683,7 @@
             "references": "References",
             "selectReferences": "Select references...",
             "selectObjectives": "Select learning objectives...",
+            "selectMethods": "Select teaching methods...",
             "knowledgePlaceholder": "Enter knowledge point/skill...",
             "materialPlaceholder": "e.g. Textbook, projector, maps...",
             "referencePlaceholder": "e.g. Page 45, Website url...",
