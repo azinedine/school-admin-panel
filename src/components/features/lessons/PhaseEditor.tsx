@@ -74,7 +74,7 @@ export function PhaseEditor({
                             : "bg-green-50 text-green-700 border-green-200"
                     )}>
                         <Clock className="w-3.5 h-3.5" />
-                        <span>{currentTotalDuration} / {totalDuration} min</span>
+                        <span>{currentTotalDuration} / {totalDuration} {t('common.minutes', 'min')}</span>
                         {isDurationMismatch && (
                             <AlertCircle className="w-3.5 h-3.5 ml-1" />
                         )}
@@ -109,7 +109,7 @@ export function PhaseEditor({
                                                     />
                                                 </div>
                                             </FormControl>
-                                            <span className="text-xs text-muted-foreground">min</span>
+                                            <span className="text-xs text-muted-foreground">{t('common.minutes', 'min')}</span>
                                         </FormItem>
                                     )}
                                 />
