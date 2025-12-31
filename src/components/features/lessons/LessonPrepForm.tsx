@@ -17,9 +17,7 @@ import {
     FormItem,
     FormMessage,
     FormLanguageProvider,
-    FormLabel,
 } from '@/components/ui/form'
-import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
 import {
     type LessonPreparationFormData,
@@ -43,6 +41,7 @@ interface LessonPrepFormProps {
     onCancel?: () => void
     isLoading?: boolean
     language?: string
+    nextLessonNumber?: string
     onSubmit: (data: LessonPreparationApiPayload) => Promise<void>
 }
 
@@ -53,6 +52,7 @@ export function LessonPrepForm({
     onCancel,
     isLoading,
     language,
+    nextLessonNumber,
     onSubmit
 }: LessonPrepFormProps) {
     const { t: originalT, i18n } = useTranslation()
@@ -61,7 +61,7 @@ export function LessonPrepForm({
 
     const form = useForm<LessonPreparationFormData>({
         resolver: zodResolver(lessonPreparationFormSchema),
-        defaultValues: initialData ? toFormData(initialData) : defaultFormValues,
+        defaultValues: initialData ? toFormData(initialData) : { ...defaultFormValues, lesson_number: nextLessonNumber || '' },
     })
 
     const handleSubmit = async (data: LessonPreparationFormData) => {
