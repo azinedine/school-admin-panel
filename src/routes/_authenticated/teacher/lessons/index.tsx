@@ -3,7 +3,7 @@ import { useAuthStore } from '@/store/auth-store'
 import { useTranslation } from 'react-i18next'
 import { ContentPage } from '@/components/layout/content-page'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
-import { LessonsTab, PreparationTab, TimetableTab } from './components'
+import { LessonsTab, PreparationTab, TimetableTab } from '@/components/features/lessons'
 import { BookOpen, FileText, Calendar } from 'lucide-react'
 
 /**
