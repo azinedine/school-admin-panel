@@ -23,11 +23,11 @@ import {
     toApiPayload
 } from '@/schemas/lesson-preparation'
 import { LessonPrepPedagogicalContext } from './LessonPrepPedagogicalContext'
-import { LessonPrepLegacyFields } from './LessonPrepLegacyFields'
+import { LessonPrepObjectives } from './LessonPrepObjectives'
+import { LessonPrepMethods } from './LessonPrepMethods'
 import { LessonPrepElements } from './LessonPrepElements'
 import { LessonSupportMaterial } from './LessonSupportMaterial'
 import { LessonPrepNotes } from './LessonPrepNotes'
-import { LessonPrepObjectives } from './LessonPrepObjectives'
 
 interface LessonPrepFormProps {
     initialData?: LessonPreparation | null
@@ -123,11 +123,10 @@ export function LessonPrepForm({
                                         isLoading={isLoading}
                                         language={language}
                                     />
-                                    <LessonPrepLegacyFields
+                                    <LessonPrepMethods
                                         control={form.control}
                                         isLoading={isLoading}
                                         language={language}
-                                        variant="default"
                                     />
 
                                 </div>
