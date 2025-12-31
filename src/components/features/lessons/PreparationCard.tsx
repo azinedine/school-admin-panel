@@ -156,9 +156,6 @@ export function PreparationCard({ prep, onView, onEdit, onDelete, onStatusChange
                     <Badge variant="secondary" className="px-1.5 py-0 h-5 text-[10px] bg-blue-50 text-blue-700 dark:bg-blue-900/20 dark:text-blue-300 border-blue-100 dark:border-blue-900/30">
                         {prep.learning_objectives?.length || 0} Objectives
                     </Badge>
-                    <Badge variant="secondary" className="px-1.5 py-0 h-5 text-[10px] bg-amber-50 text-amber-700 dark:bg-amber-900/20 dark:text-amber-300 border-amber-100 dark:border-amber-900/30">
-                        {prep.key_topics?.length || 0} Topics
-                    </Badge>
                     <Badge variant="secondary" className="px-1.5 py-0 h-5 text-[10px] bg-emerald-50 text-emerald-700 dark:bg-emerald-900/20 dark:text-emerald-300 border-emerald-100 dark:border-emerald-900/30">
                         {prep.teaching_methods?.length || 0} Methods
                     </Badge>
