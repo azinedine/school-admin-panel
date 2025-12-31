@@ -23,7 +23,7 @@ export function LessonSupportMaterial({
 }: LessonSupportMaterialProps) {
     const { t: originalT, i18n } = useTranslation()
     const t = language ? i18n.getFixedT(language) : originalT
-    const isRTL = i18n.language === 'ar'
+    const isRTL = (language || i18n.language) === 'ar'
 
     // Fetch materials from API
     const { data: materialsList = [], isLoading: loadingMaterials } = useMaterials()
@@ -32,7 +32,7 @@ export function LessonSupportMaterial({
     // Use English name as value to ensure persistence across language changes
     const materialOptions = materialsList.map(m => ({
         value: m.name,
-        label: isRTL ? m.name_ar : m.name,
+        label: isRTL ? (m.name_ar || m.name) : m.name,
     }))
 
     // Fetch references from API
@@ -42,7 +42,7 @@ export function LessonSupportMaterial({
     // Use English name as value to ensure persistence across language changes
     const referenceOptions = referencesList.map(r => ({
         value: r.name,
-        label: isRTL ? r.name_ar : r.name,
+        label: isRTL ? (r.name_ar || r.name) : r.name,
     }))
 
     const { fields: knowledgeFields, append: appendKnowledge, remove: removeKnowledge } = useFieldArray({
