@@ -549,6 +549,8 @@
             "managePreps": "Créez et gérez vos plans de cours et matériels pédagogiques.",
             "editPrep": "Modifier la préparation de cours",
             "createPrep": "Nouvelle préparation de cours",
+            "newDraft": "Création d'une nouvelle préparation",
+            "lastEdited": "Modification d'une préparation existante",
             "noMatchingPreps": "Aucune préparation ne correspond à vos filtres",
             "noPreparations": "Aucune préparation de cours pour le moment",
             "tryAdjusting": "Essayez d'ajuster votre recherche ou vos filtres pour trouver ce que vous cherchez.",
