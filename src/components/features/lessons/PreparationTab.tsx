@@ -257,8 +257,8 @@ export const PreparationTab = memo(function PreparationTab() {
 
             {/* Create/Edit Form Dialog */}
             <Dialog open={formDialogOpen} onOpenChange={setFormDialogOpen}>
-                <DialogContent className="max-w-7xl max-h-[90vh] overflow-y-auto p-0 [&>button]:hidden">
-                    <div className="px-6 py-4 border-b flex justify-between items-center">
+                <DialogContent className="max-w-7xl h-[90vh] flex flex-col p-0 gap-0 [&>button]:hidden">
+                    <div className="px-6 py-4 border-b flex justify-between items-center shrink-0 bg-background">
                         <DialogTitle>
                             {selectedPrep ? t('pages.prep.editPrep', 'Edit Lesson Preparation') : t('pages.prep.createPrep', 'New Lesson Preparation')}
                         </DialogTitle>
@@ -275,7 +275,7 @@ export const PreparationTab = memo(function PreparationTab() {
                             </DialogClose>
                         </div>
                     </div>
-                    <div className="p-6">
+                    <div className="flex-1 min-h-0 overflow-hidden">
                         <LessonPrepForm
                             initialData={selectedPrep}
                             onSubmit={handleFormSubmit}
