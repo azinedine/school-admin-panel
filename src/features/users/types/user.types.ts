@@ -75,4 +75,5 @@ export interface UpdateUserPayload {
     office_location?: string
     date_of_hiring?: string
     years_of_experience?: number
+    subjects?: string[]
 }
