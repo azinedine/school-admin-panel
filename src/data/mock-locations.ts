@@ -36,7 +36,7 @@ export const institutions: Record<string, { id: string; name: string; nameAr: st
   '1604': [{ id: 'inst_1604_1', name: 'Lycée Belouizdad', nameAr: 'ثانوية بلوزداد' }],
   '1605': [{ id: 'inst_1605_1', name: 'CEM Bab El Oued', nameAr: 'متوسطة باب الواد' }],
   '1611': [{ id: 'inst_1611_1', name: 'CEM Bouzareah', nameAr: 'متوسطة بوزريعة' }],
-  
+
   // Oran
   '3101': [{ id: 'inst_3101_1', name: 'Lycée Lotfi', nameAr: 'ثانوية لطفي' }],
   '3102': [{ id: 'inst_3102_1', name: 'Lycée Bir El Djir', nameAr: 'ثانوية بئر الجير' }],
@@ -48,28 +48,6 @@ export const institutions: Record<string, { id: string; name: string; nameAr: st
   '2503': [{ id: 'inst_2503_1', name: 'CEM Ain Smara', nameAr: 'متوسطة عين سمارة' }],
 }
 
-export const subjectsList = [
-  { id: 'math', name: 'Mathematics', nameAr: 'الرياضيات' },
-  { id: 'physics', name: 'Physics', nameAr: 'الفيزياء' },
-  { id: 'science', name: 'Science', nameAr: 'العلوم الطبيعية' },
-  { id: 'arabic', name: 'Arabic', nameAr: 'اللغة العربية' },
-  { id: 'french', name: 'French', nameAr: 'اللغة الفرنسية' },
-  { id: 'english', name: 'English', nameAr: 'اللغة الإنجليزية' },
-  { id: 'history', name: 'History & Geography', nameAr: 'التاريخ والجغرافيا' },
-  { id: 'islamic', name: 'Islamic Education', nameAr: 'التربية الإسلامية' },
-  { id: 'drawing', name: 'Drawing / Art', nameAr: 'التربية التشكيلية' },
-  { id: 'cs', name: 'Computer Science', nameAr: 'الإعلام الآلي' },
-  { id: 'civic', name: 'Civic Education', nameAr: 'التربية المدنية' },
-]
+// subjectsList and classesList have been migrated to the backend
+// Use useSubjects() and useLevels() hooks from @/hooks/use-subjects instead
 
-export const classesList = [
-  // Middle School
-  { id: '1AM', name: '1AM' },
-  { id: '2AM', name: '2AM' },
-  { id: '3AM', name: '3AM' },
-  { id: '4AM', name: '4AM' },
-  // // High School
-  // { id: '1AS', name: '1AS' },
-  // { id: '2AS', name: '2AS' },
-  // { id: '3AS', name: '3AS' },
-]
