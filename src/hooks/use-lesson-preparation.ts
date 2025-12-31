@@ -198,8 +198,9 @@ export function useGenericUpdateLessonPrep() {
   const queryClient = useQueryClient()
 
   return useMutation({
-    mutationFn: ({ id, data }: { id: number; data: Partial<LessonPreparationApiPayload> }) =>
-      updateLessonPrep(id, data),
+    mutationFn: ({ id, data }: { id: number; data: Partial<LessonPreparationApiPayload> }) => {
+      return apiClient.patch<LessonPreparation>(`/v1/lesson-preparations/${id}`, data).then(res => res.data)
+    },
     onSuccess: (updatedPrep) => {
       // Invalidate list queries
       queryClient.invalidateQueries({
