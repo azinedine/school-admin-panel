@@ -646,6 +646,7 @@
             "selectMaterials": "Sélectionner le matériel...",
             "references": "Références",
             "selectReferences": "Sélectionner les références...",
+            "selectObjectives": "Sélectionner des objectifs d'apprentissage...",
             "knowledgePlaceholder": "Entrez le point de connaissance/compétence...",
             "materialPlaceholder": "ex: Manuel, projecteur, cartes...",
             "referencePlaceholder": "ex: Page 45, URL du site web...",
