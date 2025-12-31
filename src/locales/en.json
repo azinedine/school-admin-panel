@@ -573,6 +573,18 @@
             "createPrep": "New Lesson Preparation",
             "newDraft": "Creating new preparation",
             "lastEdited": "Editing existing preparation",
+            "lessonElements": {
+                "title": "Lesson Elements",
+                "addElement": "Add Element",
+                "noElements": "No elements yet",
+                "optional": "Optional: Add lesson elements if needed",
+                "elementPlaceholder": "Enter lesson element content...",
+                "removeElement": "Remove Element"
+            },
+            "notes": "Teacher Notes",
+            "noNotes": "No notes added",
+            "notesOptional": "Optional: Add private notes for yourself",
+            "notesPlaceholder": "Enter note content...",
             "noMatchingPreps": "No preparations match your filters",
             "noPreparations": "No lesson preparations yet",
             "tryAdjusting": "Try adjusting your search or filters to find what you looking for.",
@@ -812,19 +824,9 @@
                 "knowledgeResource": "Knowledge Resource",
                 "knowledgeResourcePlaceholder": "Enter the knowledge resource"
             },
-            "lessonElements": {
-                "title": "Lesson Elements",
-                "addElement": "Add Element",
-                "removeElement": "Remove Element",
-                "elementPlaceholder": "Enter lesson element",
-                "noElements": "No elements yet. Add your first lesson element.",
-                "elementNumber": "Element {{number}}"
-            },
             "assessment": "Assessment / Evaluation",
             "assessmentPlaceholder": "Enter assessment and evaluation notes",
             "homeworkPlaceholder": "Enter homework notes",
-            "notesPlaceholder": "Any private notes...",
-            "notes": "Notes / Remarks",
             "legacy": {
                 "additional": "Additional Information"
             },
