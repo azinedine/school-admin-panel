@@ -37,9 +37,6 @@ import { PreparationCard } from './PreparationCard'
 import { FormLanguageSelector } from '@/components/FormLanguageSelector'
 import type { LessonPreparation, LessonPreparationApiPayload } from '@/schemas/lesson-preparation'
 
-import { useSubjects, useLevels } from '@/hooks/use-subjects'
-import { filterSubjectsByUserAssignment, getSubjectDisplayNames } from '@/utils/subject-utils'
-
 /**
  * PreparationTab - CRUD Management of lesson preparations
  * Part of unified Lesson Management feature
@@ -62,23 +59,17 @@ export const PreparationTab = memo(function PreparationTab() {
 
     // Queries & Mutations
     const { data: allPreps = [], isLoading } = useLessonPreps()
-    const { data: subjectsList = [] } = useSubjects()
-    const { data: levelsList = [] } = useLevels()
     const createMutation = useCreateLessonPrep()
     const updateMutation = useUpdateLessonPrep(selectedPrep?.id || 0)
     const genericUpdateMutation = useGenericUpdateLessonPrep()
     const deleteMutation = useDeleteLessonPrep()
 
-    // Get teacher's subjects using utility function (SRP - Single Responsibility Principle)
-    const isRTL = i18n.language === 'ar'
-    const filteredSubjects = filterSubjectsByUserAssignment(subjectsList, user?.subjects)
-    const teacherSubjects = getSubjectDisplayNames(filteredSubjects, isRTL)
-
-    // Get teacher's levels - use user's levels if available, otherwise use all levels
-    const teacherLevels = user?.levels?.length
-        ? user.levels
-        : levelsList.map(l => l.name)
-
+    // Get teacher's subjects and levels directly from user profile (no API fetch needed)
+    const teacherSubjects = user?.subjects || []
+    const teacherLevels = user?.levels || []
+    console.log('user', user)
+    console.log('teacherSubjects', teacherSubjects)
+    console.log('teacherLevels', teacherLevels)
     // Filter preparations
     const filteredPreps = allPreps.filter((prep) => {
         const matchesStatus = statusFilter === 'all' || prep.status === statusFilter
