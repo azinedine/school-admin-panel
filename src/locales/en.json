@@ -571,6 +571,8 @@
             "managePreps": "Create and manage your lesson plans and teaching materials.",
             "editPrep": "Edit Lesson Preparation",
             "createPrep": "New Lesson Preparation",
+            "newDraft": "Creating new preparation",
+            "lastEdited": "Editing existing preparation",
             "noMatchingPreps": "No preparations match your filters",
             "noPreparations": "No lesson preparations yet",
             "tryAdjusting": "Try adjusting your search or filters to find what you looking for.",
