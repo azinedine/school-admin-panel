@@ -26,6 +26,13 @@ const V = {
   methodRequired: 'pages.prep.validation.methodRequired',
   methodsMin: 'pages.prep.validation.methodsMin',
   resourceRequired: 'pages.prep.validation.resourceRequired',
+  materialRequired: 'pages.prep.validation.materialRequired',
+  referenceRequired: 'pages.prep.validation.referenceRequired',
+  knowledgeRequired: 'pages.prep.validation.knowledgeRequired',
+  phaseContentRequired: 'pages.prep.validation.phaseContentRequired',
+  phaseDurationRequired: 'pages.prep.validation.phaseDurationRequired',
+  activityContentRequired: 'pages.prep.validation.activityContentRequired',
+  totalDurationMismatch: 'pages.prep.validation.totalDurationMismatch',
 }
 
 /**
@@ -64,8 +71,23 @@ export const lessonPreparationFormSchema = z.object({
   learning_unit: z.string().min(1, V.learningUnitRequired),
   knowledge_resource: z.string().min(1, V.knowledgeResourceRequired),
 
-  // Lesson Flow
-  lesson_elements: lessonElementsSchema,
+  // Lesson Flow (Legacy - kept for backward compatibility)
+  lesson_elements: lessonElementsSchema.optional(),
+
+  // Pedagogical V2 Fields (Optional Extension)
+  targeted_knowledge: z.array(z.object({ value: z.string().min(1, V.knowledgeRequired) })).optional(),
+  used_materials: z.array(z.object({ value: z.string().min(1, V.materialRequired) })).optional(),
+  references: z.array(z.object({ value: z.string().min(1, V.referenceRequired) })).optional(),
+
+  phases: z.array(z.object({
+    type: z.enum(['departure', 'presentation', 'consolidation']),
+    content: z.string().min(1, V.phaseContentRequired),
+    duration_minutes: z.number().min(1, V.phaseDurationRequired)
+  })).optional(),
+
+  activities: z.array(z.object({
+    content: z.string().min(1, V.activityContentRequired)
+  })).optional(),
 
   // Evaluation
   evaluation_type: z.enum(['assessment', 'homework']),
@@ -78,6 +100,7 @@ export const lessonPreparationFormSchema = z.object({
   resources_needed: z.array(z.object({ value: z.string().min(1, V.resourceRequired) })),
   assessment_methods: z.array(z.object({ value: z.string().min(1, V.methodRequired) })),
 }).superRefine((data, ctx) => {
+  // Validate Evaluation Content
   if (!data.evaluation_content || data.evaluation_content.length < 3) {
     ctx.addIssue({
       code: z.ZodIssueCode.custom,
@@ -86,6 +109,22 @@ export const lessonPreparationFormSchema = z.object({
         ? V.assessmentDetailsRequired
         : V.homeworkDetailsRequired,
     });
+  }
+
+  // Validate Phase Durations Compatibility (if phases exist)
+  if (data.phases && data.phases.length > 0) {
+    const totalPhaseDuration = data.phases.reduce((sum, phase) => sum + phase.duration_minutes, 0);
+    // Allow a small buffer or exact match? Strictly speaking, they should sum up. 
+    // But let's just warn if it exceeds significantly or is way too low. 
+    // Actually, usually the phases IS the total duration. 
+    // For now, let's just ensure it doesn't EXCEED total duration significantly.
+    if (totalPhaseDuration > data.duration_minutes) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        path: ['phases'], // Mark the phases section
+        message: V.totalDurationMismatch,
+      });
+    }
   }
 })
 
@@ -108,7 +147,21 @@ export const lessonPreparationApiSchema = z.object({
   lesson_elements: z.array(z.object({
     id: z.string().optional(),
     content: z.string()
-  })),
+  })).optional(),
+
+  // New API Fields
+  targeted_knowledge: z.array(z.string()).optional(),
+  used_materials: z.array(z.string()).optional(),
+  references: z.array(z.string()).optional(),
+  phases: z.array(z.object({
+    type: z.enum(['departure', 'presentation', 'consolidation']),
+    content: z.string(),
+    duration_minutes: z.number()
+  })).optional(),
+  activities: z.array(z.object({
+    content: z.string()
+  })).optional(),
+
   evaluation_type: z.enum(['assessment', 'homework']),
   evaluation_content: z.string().optional(),
   learning_objectives: z.array(z.string()),
@@ -151,6 +204,13 @@ export const defaultFormValues: LessonPreparationFormData = {
   learning_unit: '',
   knowledge_resource: '',
   lesson_elements: [{ content: '' }],
+  // New Defaults
+  targeted_knowledge: [],
+  used_materials: [],
+  references: [],
+  phases: [], // Empty implies legacy mode or fresh start
+  activities: [],
+
   evaluation_type: 'assessment',
   evaluation_content: '',
 }
@@ -163,6 +223,14 @@ export const toFormData = (entity: LessonPreparation): LessonPreparationFormData
   teaching_methods: entity.teaching_methods?.map(v => ({ value: v })) ?? [],
   resources_needed: entity.resources_needed?.map(v => ({ value: v })) ?? [],
   assessment_methods: entity.assessment_methods?.map(v => ({ value: v })) ?? [],
+
+  // New Fields Transformation
+  targeted_knowledge: entity.targeted_knowledge?.map(v => ({ value: v })) ?? [],
+  used_materials: entity.used_materials?.map(v => ({ value: v })) ?? [],
+  references: entity.references?.map(v => ({ value: v })) ?? [],
+  phases: entity.phases ?? [],
+  activities: entity.activities ?? [],
+
   domain: entity.domain ?? '',
   learning_unit: entity.learning_unit ?? '',
   knowledge_resource: entity.knowledge_resource ?? '',
@@ -179,4 +247,12 @@ export const toApiPayload = (formData: LessonPreparationFormData): LessonPrepara
   teaching_methods: formData.teaching_methods.map(item => item.value),
   resources_needed: formData.resources_needed.map(item => item.value),
   assessment_methods: formData.assessment_methods.map(item => item.value),
+
+  // New Fields Transformation
+  targeted_knowledge: formData.targeted_knowledge?.map(item => item.value) ?? [],
+  used_materials: formData.used_materials?.map(item => item.value) ?? [],
+  references: formData.references?.map(item => item.value) ?? [],
+  // Phases and Activities are direct arrays of objects, no map needed if structure matches
+  phases: formData.phases ?? [],
+  activities: formData.activities ?? [],
 })
