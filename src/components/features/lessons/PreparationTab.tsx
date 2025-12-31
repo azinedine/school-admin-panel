@@ -284,6 +284,14 @@ export const PreparationTab = memo(function PreparationTab() {
                             subjects={user?.subjects || []}
                             onCancel={() => setFormDialogOpen(false)}
                             language={formLanguage}
+                            nextLessonNumber={selectedPrep ? undefined : (() => {
+                                let num = 1
+                                const existing = new Set(allPreps.map(p => p.lesson_number))
+                                while (existing.has(String(num))) {
+                                    num++
+                                }
+                                return String(num)
+                            })()}
                         />
                     </div>
                 </DialogContent>
