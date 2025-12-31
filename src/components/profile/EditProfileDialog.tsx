@@ -186,6 +186,12 @@ export function EditProfileDialog({ user, isOpen, onClose }: EditProfileDialogPr
   // Submit handler - mutation handles cache update
   const onSubmit = async (values: ProfileFormInputValues) => {
     try {
+      // Convert subject IDs to subject names for backend
+      const subjectNames = values.subjects?.map(id => {
+        const subject = subjectsList?.find(s => s.id.toString() === id)
+        return subject ? (isRTL ? subject.name_ar : subject.name) : id
+      }).filter(Boolean)
+
       const profileValues = {
         ...values,
         date_of_birth: values.date_of_birth ? values.date_of_birth : undefined,
@@ -193,7 +199,7 @@ export function EditProfileDialog({ user, isOpen, onClose }: EditProfileDialogPr
         years_of_experience: values.years_of_experience ? Number(values.years_of_experience) : undefined,
         wilaya: values.wilaya || undefined,
         municipality: values.municipality || undefined,
-        subjects: values.subjects,
+        subjects: subjectNames,
       }
       await updateProfile(profileValues)
       onClose()
