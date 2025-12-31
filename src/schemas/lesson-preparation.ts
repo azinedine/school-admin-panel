@@ -33,6 +33,7 @@ const V = {
   phaseDurationRequired: 'pages.prep.validation.phaseDurationRequired',
   activityContentRequired: 'pages.prep.validation.activityContentRequired',
   totalDurationMismatch: 'pages.prep.validation.totalDurationMismatch',
+  evaluationDurationRequired: 'pages.prep.validation.evaluationDurationRequired',
 }
 
 /**
@@ -92,6 +93,7 @@ export const lessonPreparationFormSchema = z.object({
   // Evaluation
   evaluation_type: z.enum(['assessment', 'homework']),
   evaluation_content: z.string().optional(),
+  evaluation_duration: z.number().min(1, V.evaluationDurationRequired).optional(),
 
   // Legacy fields
   learning_objectives: z.array(z.object({ value: z.string().min(1, V.objectiveRequired) })),
@@ -164,6 +166,7 @@ export const lessonPreparationApiSchema = z.object({
 
   evaluation_type: z.enum(['assessment', 'homework']),
   evaluation_content: z.string().optional(),
+  evaluation_duration: z.number().optional(),
   learning_objectives: z.array(z.string()),
   key_topics: z.array(z.string()),
   teaching_methods: z.array(z.string()),
@@ -213,6 +216,7 @@ export const defaultFormValues: LessonPreparationFormData = {
 
   evaluation_type: 'assessment',
   evaluation_content: '',
+  evaluation_duration: 10,
 }
 
 // Transform API Entity -> Form Data
@@ -237,6 +241,7 @@ export const toFormData = (entity: LessonPreparation): LessonPreparationFormData
   lesson_elements: entity.lesson_elements?.length ? entity.lesson_elements : [{ content: '' }],
   evaluation_type: entity.evaluation_type ?? 'assessment',
   evaluation_content: entity.evaluation_content ?? '',
+  evaluation_duration: entity.evaluation_duration ?? 10,
 })
 
 // Transform Form Data -> API Payload
