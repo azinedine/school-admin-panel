@@ -107,6 +107,11 @@ export function LessonPrepForm({
                             {/* LEFT COLUMN: Context & Objectives (4 cols) */}
                             <div className="lg:col-span-4 space-y-6">
                                 <div className="space-y-4">
+                                    <LessonSupportMaterial
+                                        control={form.control}
+                                        isLoading={isLoading}
+                                        language={language}
+                                    />
                                     <LessonPrepPedagogicalContext
                                         control={form.control}
                                         isLoading={isLoading}
@@ -118,11 +123,7 @@ export function LessonPrepForm({
                                         language={language}
                                         variant="default"
                                     />
-                                    <LessonSupportMaterial
-                                        control={form.control}
-                                        isLoading={isLoading}
-                                        language={language}
-                                    />
+
                                 </div>
                             </div>
 
