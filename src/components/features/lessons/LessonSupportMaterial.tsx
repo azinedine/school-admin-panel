@@ -1,12 +1,13 @@
 import { type Control, useFieldArray, Controller } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
-import { Plus, X, Target, Book, Layers } from 'lucide-react'
+import { Plus, X, Target, Layers } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { FormControl, FormField, FormItem, FormMessage } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
 import { type LessonPreparationFormData } from '@/schemas/lesson-preparation'
 import { useMaterials } from '@/hooks/use-materials'
+import { useReferences } from '@/hooks/use-references'
 import { MultiSelectField } from '@/components/forms/MultiSelectField'
 
 interface LessonSupportMaterialProps {
@@ -33,14 +34,18 @@ export function LessonSupportMaterial({
         label: isRTL ? m.name_ar : m.name,
     }))
 
+    // Fetch references from API
+    const { data: referencesList = [], isLoading: loadingReferences } = useReferences()
+
+    // Transform references to options for MultiSelect
+    const referenceOptions = referencesList.map(r => ({
+        value: isRTL ? r.name_ar : r.name,
+        label: isRTL ? r.name_ar : r.name,
+    }))
+
     const { fields: knowledgeFields, append: appendKnowledge, remove: removeKnowledge } = useFieldArray({
         control,
         name: 'targeted_knowledge',
-    })
-
-    const { fields: referenceFields, append: appendReference, remove: removeReference } = useFieldArray({
-        control,
-        name: 'references',
     })
 
     const renderFieldList = (
@@ -147,17 +152,23 @@ export function LessonSupportMaterial({
 
                 <div className="h-px bg-border/50" />
 
-                {renderFieldList(
-                    t('pages.prep.references', 'References'),
-                    Book,
-                    referenceFields,
-                    appendReference,
-                    removeReference,
-                    'references',
-                    t('pages.prep.referencePlaceholder', 'Enter reference...'),
-                    t('pages.prep.noReferences', 'No references added'),
-                    "text-cyan-600 hover:text-cyan-700 hover:bg-cyan-50"
-                )}
+                {/* References - MultiSelect Dropdown */}
+                <div className="space-y-2">
+                    <Controller
+                        control={control}
+                        name="references"
+                        render={({ field }) => (
+                            <MultiSelectField
+                                label={t('pages.prep.references', 'References')}
+                                placeholder={t('pages.prep.selectReferences', 'Select references...')}
+                                options={referenceOptions}
+                                value={field.value || []}
+                                onChange={field.onChange}
+                                disabled={isLoading || loadingReferences}
+                            />
+                        )}
+                    />
+                </div>
 
                 <div className="h-px bg-border/50" />
 
