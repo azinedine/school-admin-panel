@@ -1,11 +1,13 @@
-import { type Control, useFieldArray } from 'react-hook-form'
+import { type Control, useFieldArray, Controller } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
-import { Plus, X, Target, Box, Book, Layers } from 'lucide-react'
+import { Plus, X, Target, Book, Layers } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { FormControl, FormField, FormItem, FormMessage } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
 import { type LessonPreparationFormData } from '@/schemas/lesson-preparation'
+import { useMaterials } from '@/hooks/use-materials'
+import { MultiSelectField } from '@/components/forms/MultiSelectField'
 
 interface LessonSupportMaterialProps {
     control: Control<LessonPreparationFormData>
@@ -20,15 +22,22 @@ export function LessonSupportMaterial({
 }: LessonSupportMaterialProps) {
     const { t: originalT, i18n } = useTranslation()
     const t = language ? i18n.getFixedT(language) : originalT
+    const isRTL = i18n.language === 'ar'
 
-    const { fields: materialFields, append: appendMaterial, remove: removeMaterial } = useFieldArray({
-        control,
-        name: 'used_materials',
-    })
+    // Fetch materials from API
+    const { data: materialsList = [], isLoading: loadingMaterials } = useMaterials()
+
+    // Transform materials to options for MultiSelect
+    const materialOptions = materialsList.map(m => ({
+        value: isRTL ? m.name_ar : m.name,
+        label: isRTL ? m.name_ar : m.name,
+    }))
+
     const { fields: knowledgeFields, append: appendKnowledge, remove: removeKnowledge } = useFieldArray({
         control,
         name: 'targeted_knowledge',
     })
+
     const { fields: referenceFields, append: appendReference, remove: removeReference } = useFieldArray({
         control,
         name: 'references',
@@ -118,8 +127,25 @@ export function LessonSupportMaterial({
                 </div>
             </CardHeader>
             <CardContent className="space-y-6 pt-6">
+                {/* Used Materials - MultiSelect Dropdown */}
+                <div className="space-y-2">
+                    <Controller
+                        control={control}
+                        name="used_materials"
+                        render={({ field }) => (
+                            <MultiSelectField
+                                label={t('pages.prep.usedMaterials', 'Used Materials')}
+                                placeholder={t('pages.prep.selectMaterials', 'Select materials...')}
+                                options={materialOptions}
+                                value={field.value || []}
+                                onChange={field.onChange}
+                                disabled={isLoading || loadingMaterials}
+                            />
+                        )}
+                    />
+                </div>
 
-
+                <div className="h-px bg-border/50" />
 
                 {renderFieldList(
                     t('pages.prep.references', 'References'),
@@ -132,21 +158,9 @@ export function LessonSupportMaterial({
                     t('pages.prep.noReferences', 'No references added'),
                     "text-cyan-600 hover:text-cyan-700 hover:bg-cyan-50"
                 )}
-                <div className="h-px bg-border/50" />
-
-                {renderFieldList(
-                    t('pages.prep.usedMaterials', 'Used Materials'),
-                    Box,
-                    materialFields,
-                    appendMaterial,
-                    removeMaterial,
-                    'used_materials',
-                    t('pages.prep.materialPlaceholder', 'Enter material...'),
-                    t('pages.prep.noMaterials', 'No materials listed'),
-                    "text-orange-600 hover:text-orange-700 hover:bg-orange-50"
-                )}
 
                 <div className="h-px bg-border/50" />
+
                 {renderFieldList(
                     t('pages.prep.targetedKnowledge', 'Targeted Knowledge'),
                     Target,
@@ -158,7 +172,6 @@ export function LessonSupportMaterial({
                     t('pages.prep.noKnowledge', 'No targeted knowledge added'),
                     "text-purple-600 hover:text-purple-700 hover:bg-purple-50"
                 )}
-
             </CardContent>
         </Card>
     )
