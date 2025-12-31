@@ -1,7 +1,8 @@
 import { useState, memo } from 'react'
 import { useTranslation } from 'react-i18next'
-import { BookOpen, Loader2, Search, Filter, Plus, Trash2, X } from 'lucide-react'
+import { BookOpen, Loader2, Search, Filter, Plus, Trash2, X, Printer } from 'lucide-react'
 import { Card, CardContent } from '@/components/ui/card'
+import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import {
@@ -227,15 +228,27 @@ export const PreparationTab = memo(function PreparationTab() {
 
             {/* View Details Dialog */}
             <Dialog open={viewDialogOpen} onOpenChange={setViewDialogOpen}>
-                <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
-                    <DialogHeader>
-                        <DialogTitle className="flex items-center gap-2">
-                            <span className="text-xl">{selectedPrep?.lesson_number}</span>
+                <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto flex flex-col">
+                    <DialogHeader className="shrink-0 border-b pb-4">
+                        <DialogTitle className="flex items-center gap-2 text-xl">
+                            <span className="font-mono bg-muted px-2 py-0.5 rounded text-base text-muted-foreground">#{selectedPrep?.lesson_number}</span>
+                            <span>{selectedPrep?.knowledge_resource}</span>
+                            {selectedPrep?.subject && (
+                                <Badge variant="outline" className="ml-2 font-normal text-sm text-muted-foreground">
+                                    {selectedPrep.subject}
+                                </Badge>
+                            )}
                         </DialogTitle>
                     </DialogHeader>
-                    <div className="mt-4">
+                    <div className="flex-1 overflow-y-auto py-4">
                         {selectedPrep && <LessonPrepDetails data={selectedPrep} />}
-                        <div className="flex justify-end gap-2 mt-6 pt-4 border-t">
+                    </div>
+                    <div className="flex justify-between items-center gap-2 pt-4 border-t shrink-0">
+                        <Button variant="outline" onClick={() => window.print()} className="gap-2">
+                            <Printer className="h-4 w-4" />
+                            {t('common.print', 'Print')}
+                        </Button>
+                        <div className="flex gap-2">
                             <Button variant="outline" onClick={() => setViewDialogOpen(false)}>
                                 {t('common.close', 'Close')}
                             </Button>
