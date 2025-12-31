@@ -57,7 +57,7 @@ export function MultiSelectField({
   return (
     <div className={cn("space-y-2", className)}>
       {label && <Label>{label}</Label>}
-      <Popover open={open} onOpenChange={setOpen} modal={true}>
+      <Popover open={open} onOpenChange={setOpen}>
         <PopoverTrigger asChild>
           <Button
             variant="outline"
@@ -116,7 +116,7 @@ export function MultiSelectField({
             <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
           </Button>
         </PopoverTrigger>
-        <PopoverContent className="w-full p-0" align="start">
+        <PopoverContent className="w-full p-0 z-[200]" align="start">
           <Command>
             <CommandInput placeholder={t('common.search')} />
             <CommandList className="max-h-[300px] overflow-y-auto">
@@ -127,6 +127,7 @@ export function MultiSelectField({
                   return (
                     <CommandItem
                       key={option.value}
+                      value={option.label}
                       onSelect={() => {
                         if (option.disabled && !isSelected) return;
 
