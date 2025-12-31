@@ -83,6 +83,11 @@ export function LessonDetailDialog({
     knowledgeResource: '',
     lessonElements: [] as string[],
     assessment: '',
+
+    // New Pedagogical Fields
+    targetedKnowledge: '' as string,
+    usedMaterials: '' as string,
+    references: '' as string,
   })
 
   // Get all templates and optionally filter by academic year
@@ -112,6 +117,11 @@ export function LessonDetailDialog({
         knowledgeResource: existingLesson.knowledgeResource || '',
         lessonElements: existingLesson.lessonElements || [],
         assessment: existingLesson.assessment || '',
+
+        // New Fields
+        targetedKnowledge: existingLesson.targetedKnowledge?.join('\n') || '',
+        usedMaterials: existingLesson.usedMaterials?.join(', ') || '',
+        references: existingLesson.references?.join('\n') || '',
       })
       setSelectedTemplate(null)
       // Reset multi-group state (edit mode is single group)
@@ -135,6 +145,11 @@ export function LessonDetailDialog({
         knowledgeResource: initialTemplate.knowledgeResource,
         lessonElements: [...initialTemplate.lessonElements],
         assessment: initialTemplate.assessment,
+
+        // New Fields
+        targetedKnowledge: initialTemplate.targetedKnowledge?.join('\n') || '',
+        usedMaterials: initialTemplate.usedMaterials?.join(', ') || '',
+        references: initialTemplate.references?.join('\n') || '',
       })
       setSelectedTemplate(initialTemplate)
       // Default groups
@@ -158,6 +173,11 @@ export function LessonDetailDialog({
         knowledgeResource: '',
         lessonElements: [],
         assessment: '',
+
+        // New Fields
+        targetedKnowledge: '',
+        usedMaterials: '',
+        references: '',
       })
       setSelectedTemplate(null)
       setActiveGroups(['first'])
@@ -178,7 +198,12 @@ export function LessonDetailDialog({
       learningSegment: template.learningSegment,
       knowledgeResource: template.knowledgeResource,
       lessonElements: [...template.lessonElements],
+
       assessment: template.assessment,
+      // New Fields
+      targetedKnowledge: template.targetedKnowledge,
+      usedMaterials: template.usedMaterials,
+      references: template.references,
       mode: formData.mode,
       group: formData.group,
       status: undefined,
@@ -238,7 +263,12 @@ export function LessonDetailDialog({
       lessonElements: [],
       assessment: '',
       lessonContent: '',
+
       practiceNotes: '',
+      // New Fields
+      targetedKnowledge: '',
+      usedMaterials: '',
+      references: '',
     }))
   }
 
@@ -274,10 +304,19 @@ export function LessonDetailDialog({
       finalGroup = formData.mode === 'groups' ? formData.group : undefined
     }
 
+    // Helper to clean data
+    const getCleanData = () => ({
+      ...formData,
+      targetedKnowledge: formData.targetedKnowledge.split('\n').map(s => s.trim()).filter(Boolean),
+      usedMaterials: formData.usedMaterials.split(',').map(s => s.trim()).filter(Boolean),
+      references: formData.references.split('\n').map(s => s.trim()).filter(Boolean),
+      phases: existingLesson?.phases // Preserve phases if they exist (not editable here)
+    })
+
     if (existingLesson && onUpdate) {
       // Update existing lesson (Single Entry)
       onUpdate(existingLesson.id, {
-        ...formData,
+        ...getCleanData(),
         timeSlot: enableScheduling ? finalTimeSlot : undefined,
         mode: enableScheduling ? finalMode : undefined,
         group: enableScheduling ? finalGroup : undefined,
@@ -293,7 +332,7 @@ export function LessonDetailDialog({
           onSave({
             day: day as DailyPlanEntry['day'],
             timeSlot: entryTimeSlot,
-            ...formData,
+            ...getCleanData(),
             // Override with specific group details
             mode: 'groups',
             group: g,
@@ -304,7 +343,7 @@ export function LessonDetailDialog({
         onSave({
           day: day as DailyPlanEntry['day'],
           timeSlot: finalTimeSlot,
-          ...formData,
+          ...getCleanData(),
           // Ensure explicit values take precedence
           mode: finalMode,
           group: finalGroup,
@@ -314,6 +353,11 @@ export function LessonDetailDialog({
 
     onOpenChange(false)
   }
+
+
+  // Override handleSave logic to use getCleanFormData
+  // But wait, original handleSave constructs the object inline. Let's patch handleSave instead.
+
 
   const toggleGroup = (g: 'first' | 'second') => {
     setActiveGroups(prev =>
@@ -666,8 +710,40 @@ export function LessonDetailDialog({
               <Input
                 id="knowledgeResource"
                 value={formData.knowledgeResource}
-                onChange={(e) => setFormData({ ...formData, knowledgeResource: e.target.value })}
                 placeholder={t('pages.prep.lessonStructure.knowledgeResourcePlaceholder')}
+              />
+            </div>
+
+            {/* New Pedagogical Inputs */}
+            <div className="grid gap-2">
+              <Label htmlFor="targetedKnowledge">{t('pages.prep.targetedKnowledge', 'Targeted Knowledge')}</Label>
+              <Textarea
+                id="targetedKnowledge"
+                value={formData.targetedKnowledge}
+                onChange={(e) => setFormData({ ...formData, targetedKnowledge: e.target.value })}
+                placeholder={t('pages.prep.targetedKnowledgePlaceholder', 'One item per line')}
+                rows={3}
+              />
+            </div>
+            <div className="grid gap-2">
+              <Label htmlFor="usedMaterials">{t('pages.prep.usedMaterials', 'Used Materials')}</Label>
+              <Textarea
+                id="usedMaterials"
+                value={formData.usedMaterials}
+                onChange={(e) => setFormData({ ...formData, usedMaterials: e.target.value })}
+                placeholder={t('pages.prep.materialsPlaceholder', 'Comma separated')}
+                rows={2}
+              />
+            </div>
+
+            <div className="grid gap-2">
+              <Label htmlFor="references">{t('pages.prep.references', 'References')}</Label>
+              <Textarea
+                id="references"
+                value={formData.references}
+                onChange={(e) => setFormData({ ...formData, references: e.target.value })}
+                placeholder={t('pages.prep.referencesPlaceholder', 'One item per line')}
+                rows={2}
               />
             </div>
           </div>
@@ -789,6 +865,6 @@ export function LessonDetailDialog({
           </Button>
         </DialogFooter>
       </DialogContent>
-    </Dialog>
+    </Dialog >
   )
 }
