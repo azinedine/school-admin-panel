@@ -1,6 +1,6 @@
 import { type Control, useFieldArray } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
-import { Plus, X, Target, Lightbulb, Users } from 'lucide-react'
+import { Plus, X, Target, Users } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { FormControl, FormField, FormItem, FormMessage } from '@/components/ui/form'
@@ -28,11 +28,6 @@ export function LessonPrepLegacyFields({
     const { fields: objectiveFields, append: appendObjective, remove: removeObjective } = useFieldArray({
         control,
         name: 'learning_objectives',
-    })
-
-    const { fields: topicFields, append: appendTopic, remove: removeTopic } = useFieldArray({
-        control,
-        name: 'key_topics',
     })
 
     const { fields: methodFields, append: appendMethod, remove: removeMethod } = useFieldArray({
@@ -120,7 +115,7 @@ export function LessonPrepLegacyFields({
 
     if (isCompact) {
         return (
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 {renderFieldList(
                     t('pages.prep.learningObjectives', 'Objectives'),
                     Target,
@@ -131,17 +126,6 @@ export function LessonPrepLegacyFields({
                     t('pages.prep.objectivePlaceholder', 'Objective...'),
                     t('pages.prep.noObjectives'),
                     "text-blue-600 hover:text-blue-700 hover:bg-blue-50"
-                )}
-                {renderFieldList(
-                    t('pages.prep.keyTopics', 'Topics'),
-                    Lightbulb,
-                    topicFields,
-                    appendTopic,
-                    removeTopic,
-                    'key_topics',
-                    t('pages.prep.topicPlaceholder', 'Topic...'),
-                    t('pages.prep.noTopics'),
-                    "text-amber-600 hover:text-amber-700 hover:bg-amber-50"
                 )}
                 {renderFieldList(
                     t('pages.prep.teachingMethods', 'Methods'),
@@ -182,20 +166,6 @@ export function LessonPrepLegacyFields({
                     t('pages.prep.objectivePlaceholder', 'Enter objective...'),
                     t('pages.prep.noObjectives', 'No objectives added'),
                     "text-blue-600 hover:text-blue-700 hover:bg-blue-50"
-                )}
-
-                <div className="h-px bg-border/50" />
-
-                {renderFieldList(
-                    t('pages.prep.keyTopics', 'Key Topics'),
-                    Lightbulb,
-                    topicFields,
-                    appendTopic,
-                    removeTopic,
-                    'key_topics',
-                    t('pages.prep.topicPlaceholder', 'Enter topic...'),
-                    t('pages.prep.noTopics', 'No topics added'),
-                    "text-amber-600 hover:text-amber-700 hover:bg-amber-50"
                 )}
 
                 <div className="h-px bg-border/50" />
