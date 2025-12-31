@@ -21,16 +21,14 @@ export function LessonSupportMaterial({
     const { t: originalT, i18n } = useTranslation()
     const t = language ? i18n.getFixedT(language) : originalT
 
-    const { fields: knowledgeFields, append: appendKnowledge, remove: removeKnowledge } = useFieldArray({
-        control,
-        name: 'targeted_knowledge',
-    })
-
     const { fields: materialFields, append: appendMaterial, remove: removeMaterial } = useFieldArray({
         control,
         name: 'used_materials',
     })
-
+    const { fields: knowledgeFields, append: appendKnowledge, remove: removeKnowledge } = useFieldArray({
+        control,
+        name: 'targeted_knowledge',
+    })
     const { fields: referenceFields, append: appendReference, remove: removeReference } = useFieldArray({
         control,
         name: 'references',
@@ -120,18 +118,20 @@ export function LessonSupportMaterial({
                 </div>
             </CardHeader>
             <CardContent className="space-y-6 pt-6">
-                {renderFieldList(
-                    t('pages.prep.targetedKnowledge', 'Targeted Knowledge'),
-                    Target,
-                    knowledgeFields,
-                    appendKnowledge,
-                    removeKnowledge,
-                    'targeted_knowledge',
-                    t('pages.prep.knowledgePlaceholder', 'Enter knowledge point...'),
-                    t('pages.prep.noKnowledge', 'No targeted knowledge added'),
-                    "text-purple-600 hover:text-purple-700 hover:bg-purple-50"
-                )}
 
+
+
+                {renderFieldList(
+                    t('pages.prep.references', 'References'),
+                    Book,
+                    referenceFields,
+                    appendReference,
+                    removeReference,
+                    'references',
+                    t('pages.prep.referencePlaceholder', 'Enter reference...'),
+                    t('pages.prep.noReferences', 'No references added'),
+                    "text-cyan-600 hover:text-cyan-700 hover:bg-cyan-50"
+                )}
                 <div className="h-px bg-border/50" />
 
                 {renderFieldList(
@@ -147,18 +147,18 @@ export function LessonSupportMaterial({
                 )}
 
                 <div className="h-px bg-border/50" />
-
                 {renderFieldList(
-                    t('pages.prep.references', 'References'),
-                    Book,
-                    referenceFields,
-                    appendReference,
-                    removeReference,
-                    'references',
-                    t('pages.prep.referencePlaceholder', 'Enter reference...'),
-                    t('pages.prep.noReferences', 'No references added'),
-                    "text-cyan-600 hover:text-cyan-700 hover:bg-cyan-50"
+                    t('pages.prep.targetedKnowledge', 'Targeted Knowledge'),
+                    Target,
+                    knowledgeFields,
+                    appendKnowledge,
+                    removeKnowledge,
+                    'targeted_knowledge',
+                    t('pages.prep.knowledgePlaceholder', 'Enter knowledge point...'),
+                    t('pages.prep.noKnowledge', 'No targeted knowledge added'),
+                    "text-purple-600 hover:text-purple-700 hover:bg-purple-50"
                 )}
+
             </CardContent>
         </Card>
     )
