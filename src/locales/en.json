@@ -28,7 +28,8 @@
         "active": "Active",
         "inactive": "Inactive",
         "formErrors": "Please check the form for errors",
-        "errorsIn": "Errors in"
+        "errorsIn": "Errors in",
+        "minutes": "minutes"
     },
     "auth": {
         "login": {
@@ -643,6 +644,8 @@
                 "delivered": "Mark as Delivered"
             },
             "basicInfo": "Basic Information",
+            "id": "No.",
+            "min": "min",
             "basicInfoDesc": "Lesson number, level and date",
             "lessonNumberPlaceholder": "1, 2, 3...",
             "lessonTitlePlaceholder": "e.g., Introduction to Photosynthesis",
