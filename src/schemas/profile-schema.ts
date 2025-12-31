@@ -27,7 +27,7 @@ export const createProfileSchema = (t: (key: string) => string) => {
             .union([z.string(), z.number()])
             .optional()
             .transform((val) => (val === '' ? undefined : Number(val))),
-        subjects: z.string().optional(),
+        subjects: z.array(z.string()).optional(),
     })
 }
 
