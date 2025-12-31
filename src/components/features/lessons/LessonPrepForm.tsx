@@ -5,6 +5,7 @@ import { useTranslation } from 'react-i18next'
 import {
     Loader2
 } from 'lucide-react'
+// import { useSubjects, useLevels } from '@/hooks/use-subjects' // Removed as we only use teacher's subjects
 import { PhaseEditor } from './PhaseEditor'
 import { Button } from '@/components/ui/button'
 import { LessonHeader } from './LessonHeader'
@@ -52,6 +53,10 @@ export function LessonPrepForm({
     // Use fixed language if provided, otherwise default to i18n
     const t = language ? i18n.getFixedT(language) : originalT
 
+    // Use connected user's subjects and levels passed via props
+    const availableSubjects = subjects
+    const availableLevels = levels
+
     const form = useForm<LessonPreparationFormData>({
         resolver: zodResolver(lessonPreparationFormSchema),
         defaultValues: initialData ? toFormData(initialData) : { ...defaultFormValues, lesson_number: nextLessonNumber || '' },
@@ -80,8 +85,8 @@ export function LessonPrepForm({
                         control={form.control}
                         isLoading={isLoading}
                         language={language}
-                        subjects={subjects}
-                        levels={levels}
+                        subjects={availableSubjects}
+                        levels={availableLevels}
                     />
 
                     {/* MAIN CONTENT - Scrollable */}
