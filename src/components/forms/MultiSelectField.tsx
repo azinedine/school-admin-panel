@@ -66,7 +66,7 @@ export function MultiSelectField({
             className={cn(
               "w-full justify-between min-h-10 h-auto",
               !value.length && "text-muted-foreground",
-              error && "border-destructive", 
+              error && "border-destructive",
               disabled && "opacity-50 cursor-not-allowed"
             )}
             disabled={disabled}
@@ -119,9 +119,9 @@ export function MultiSelectField({
         <PopoverContent className="w-full p-0" align="start">
           <Command>
             <CommandInput placeholder={t('common.search')} />
-            <CommandList>
+            <CommandList className="max-h-[300px] overflow-y-auto">
               <CommandEmpty>{t('common.noResults')}</CommandEmpty>
-              <CommandGroup className="max-h-[200px] overflow-auto">
+              <CommandGroup>
                 {options.map((option) => {
                   const isSelected = value.includes(option.value)
                   return (
@@ -129,7 +129,7 @@ export function MultiSelectField({
                       key={option.value}
                       onSelect={() => {
                         if (option.disabled && !isSelected) return;
-                        
+
                         const newValue = isSelected
                           ? value.filter((v) => v !== option.value)
                           : [...value, option.value]
