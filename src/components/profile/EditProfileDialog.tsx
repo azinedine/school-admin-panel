@@ -17,9 +17,10 @@ import {
 import { Form } from '@/components/ui/form'
 import { TextField, SelectField, DatePicker, ActionButton } from '@/components/forms'
 import { MultiSelectField } from '@/components/forms/MultiSelectField'
-import { useWilayas, useMunicipalities, useInstitutionsByLocation, useInstitution } from '@/hooks/use-institutions'
+import { useWilayas, useMunicipalities, useInstitutionsByLocation } from '@/hooks/use-institutions'
 import { useSubjects } from '@/hooks/use-subjects'
 import { useUpdateProfile } from '@/hooks/use-profile-mutation'
+import { mapSubjectNamesToIds, mapSubjectIdsToNames } from '@/utils/subject-utils'
 import type { User } from '@/features/users/types/user.types'
 import { createProfileSchema } from '@/schemas/profile-schema'
 
@@ -96,20 +97,11 @@ export function EditProfileDialog({ user, isOpen, onClose }: EditProfileDialogPr
     { enabled: !!selectedWilaya && !!selectedMunicipality }
   )
 
-  // Get current institution details to pre-fill location if needed
-  const { data: currentInstitution } = useInstitution(
-    user.institution?.id ? user.institution.id : 0,
-  )
-
   // Reset form when user, dialog state, or reference data changes
   useEffect(() => {
-    if (isOpen) {
-      // Find all matching subject IDs for the user's subject names
-      const userSubjectNames = user.subjects || []
-      const currentSubjectIds = userSubjectNames.map(name => {
-        const found = subjectsList?.find(s => s.name === name || s.name_ar === name)
-        return found ? found.id.toString() : null
-      }).filter((id): id is string => id !== null)
+    if (isOpen && subjectsList && subjectsList.length > 0) {
+      // Map user subject names to IDs using utility function (SRP)
+      const currentSubjectIds = mapSubjectNamesToIds(subjectsList, user.subjects)
 
       form.reset({
         name: user.name || '',
@@ -126,7 +118,7 @@ export function EditProfileDialog({ user, isOpen, onClose }: EditProfileDialogPr
         office_location: user.office_location || '',
         date_of_hiring: user.date_of_hiring ? format(new Date(user.date_of_hiring), 'yyyy-MM-dd') : undefined,
         years_of_experience: user.years_of_experience ?? undefined,
-        subjects: currentSubjectIds.length > 0 ? currentSubjectIds : [],
+        subjects: currentSubjectIds,
       })
     }
   }, [user, isOpen, form, subjectsList])
@@ -186,11 +178,8 @@ export function EditProfileDialog({ user, isOpen, onClose }: EditProfileDialogPr
   // Submit handler - mutation handles cache update
   const onSubmit = async (values: ProfileFormInputValues) => {
     try {
-      // Convert subject IDs to subject names for backend
-      const subjectNames = values.subjects?.map(id => {
-        const subject = subjectsList?.find(s => s.id.toString() === id)
-        return subject ? (isRTL ? subject.name_ar : subject.name) : id
-      }).filter(Boolean)
+      // Convert subject IDs to subject names for backend using utility function (SRP)
+      const subjectNames = mapSubjectIdsToNames(subjectsList || [], values.subjects, isRTL)
 
       const profileValues = {
         ...values,
