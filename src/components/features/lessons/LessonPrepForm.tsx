@@ -4,13 +4,9 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { useTranslation } from 'react-i18next'
 import {
     Loader2,
-    FileText,
-    Target,
-    Box,
-    Book
+    FileText
 } from 'lucide-react'
 import { PhaseEditor } from './PhaseEditor'
-import { DynamicList } from './DynamicList'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { LessonHeader } from './LessonHeader'
@@ -35,8 +31,10 @@ import {
     toApiPayload
 } from '@/schemas/lesson-preparation'
 import { LessonPrepPedagogicalContext } from './LessonPrepPedagogicalContext'
+import { LessonPrepLegacyFields } from './LessonPrepLegacyFields'
 import { LessonPrepElements } from './LessonPrepElements'
 import { LessonPrepEvaluation } from './LessonPrepEvaluation'
+import { LessonSupportMaterial } from './LessonSupportMaterial'
 
 interface LessonPrepFormProps {
     initialData?: LessonPreparation | null
@@ -94,36 +92,14 @@ export function LessonPrepForm({
                     />
 
                     {/* MAIN CONTENT - Scrollable */}
-                    <div className="flex-1 overflow-y-auto">
+                    <div className="flex-1 overflow-y-auto p-6">
                         <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
 
                             {/* LEFT COLUMN: Context & Objectives (4 cols) */}
                             <div className="lg:col-span-4 space-y-6">
                                 <div className="space-y-4">
-                                    <div className="flex items-center gap-2 pb-2 border-b">
-                                        <Target className="h-4 w-4 text-primary" />
-                                        <h3 className="font-semibold text-sm">{t('pages.prep.contextObjectives', 'Context & Objectives')}</h3>
-                                    </div>
 
-                                    {/* Duration Field here as it relates to planning */}
-                                    <FormField
-                                        control={form.control}
-                                        name="duration_minutes"
-                                        render={({ field }) => (
-                                            <FormItem>
-                                                <FormLabel>{t('pages.prep.duration', 'Total Duration (min)')}</FormLabel>
-                                                <FormControl>
-                                                    <Input
-                                                        type="number"
-                                                        {...field}
-                                                        onChange={(e) => field.onChange(parseInt(e.target.value))}
-                                                        disabled={isLoading}
-                                                    />
-                                                </FormControl>
-                                                <FormMessage />
-                                            </FormItem>
-                                        )}
-                                    />
+
 
                                     <LessonPrepPedagogicalContext
                                         control={form.control}
@@ -131,45 +107,18 @@ export function LessonPrepForm({
                                         language={language}
                                     />
 
-                                    {/* Legacy Fields (Objectives) are now in Header, so we skip them here to avoid duplication. 
-                                            The user asked to "return to the previous design" but "fix layout". 
-                                            Keeping objectives in header is cleaner, but if they want strict revert, they go here.
-                                            But "fix header" suggests looking at LessonHeader. LessonHeader HAS objectives.
-                                            So we do NOT put them here. */}
-
-                                    <DynamicList
+                                    <LessonPrepLegacyFields
                                         control={form.control}
-                                        name="targeted_knowledge"
-                                        label={t('pages.prep.targetedKnowledge', 'Targeted Knowledge')}
-                                        placeholder={t('pages.prep.knowledgePlaceholder', 'Enter knowledge point...')}
-                                        emptyMessage={t('pages.prep.noKnowledge', 'No targeted knowledge added')}
-                                        icon={Target}
+                                        isLoading={isLoading}
+                                        language={language}
+                                        variant="default"
+                                    />
+
+                                    <LessonSupportMaterial
+                                        control={form.control}
                                         isLoading={isLoading}
                                         language={language}
                                     />
-
-                                    <div className="grid grid-cols-1 gap-4">
-                                        <DynamicList
-                                            control={form.control}
-                                            name="used_materials"
-                                            label={t('pages.prep.usedMaterials', 'Used Materials')}
-                                            placeholder={t('pages.prep.materialPlaceholder', 'Enter material...')}
-                                            emptyMessage={t('pages.prep.noMaterials', 'No materials listed')}
-                                            icon={Box}
-                                            isLoading={isLoading}
-                                            language={language}
-                                        />
-                                        <DynamicList
-                                            control={form.control}
-                                            name="references"
-                                            label={t('pages.prep.references', 'References')}
-                                            placeholder={t('pages.prep.referencePlaceholder', 'Enter reference...')}
-                                            emptyMessage={t('pages.prep.noReferences', 'No references added')}
-                                            icon={Book}
-                                            isLoading={isLoading}
-                                            language={language}
-                                        />
-                                    </div>
                                 </div>
                             </div>
 
