@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next'
 import { Plus, X, Target, Lightbulb, Users } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import { FormControl, FormField, FormItem, FormMessage, FormLabel } from '@/components/ui/form'
+import { FormControl, FormField, FormItem, FormMessage } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
 import { type LessonPreparationFormData } from '@/schemas/lesson-preparation'
 import { cn } from '@/lib/utils'
@@ -42,7 +42,7 @@ export function LessonPrepLegacyFields({
 
     const renderFieldList = (
         title: string,
-        icon: React.ElementType,
+        Icon: React.ElementType,
         fields: any[],
         append: (val: any) => void,
         remove: (index: number) => void,
@@ -54,7 +54,7 @@ export function LessonPrepLegacyFields({
         <div className={cn("space-y-2", isCompact ? "bg-background/50 rounded-md border border-dashed p-3" : "")}>
             <div className="flex items-center justify-between">
                 <h3 className={cn("font-medium flex items-center gap-2 text-muted-foreground", isCompact ? "text-xs uppercase tracking-wide" : "text-sm")}>
-                    <icon className={cn(isCompact ? "h-3 w-3" : "h-4 w-4")} />
+                    <Icon className={cn(isCompact ? "h-3 w-3" : "h-4 w-4")} />
                     {title}
                 </h3>
                 <Button
