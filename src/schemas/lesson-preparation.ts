@@ -78,7 +78,7 @@ export const lessonPreparationFormSchema = z.object({
   // Pedagogical V2 Fields (Optional Extension)
   targeted_knowledge: z.array(z.object({ value: z.string().min(1, V.knowledgeRequired) })).optional(),
   used_materials: z.array(z.string()).optional(), // Array of material names from MultiSelect
-  references: z.array(z.object({ value: z.string().min(1, V.referenceRequired) })).optional(),
+  references: z.array(z.string()).optional(), // Array of reference names from MultiSelect
 
   phases: z.array(z.object({
     type: z.enum(['departure', 'presentation', 'consolidation']),
@@ -234,7 +234,7 @@ export const toFormData = (entity: LessonPreparation): LessonPreparationFormData
   // New Fields Transformation
   targeted_knowledge: entity.targeted_knowledge?.map(v => ({ value: v })) ?? [],
   used_materials: entity.used_materials ?? [], // Direct string array for MultiSelect
-  references: entity.references?.map(v => ({ value: v })) ?? [],
+  references: entity.references ?? [], // Direct string array for MultiSelect
   phases: entity.phases ?? [],
   activities: entity.activities ?? [],
 
@@ -261,7 +261,7 @@ export const toApiPayload = (formData: LessonPreparationFormData): LessonPrepara
   // New Fields Transformation
   targeted_knowledge: formData.targeted_knowledge?.map(item => item.value) ?? [],
   used_materials: formData.used_materials ?? [], // Direct string array from MultiSelect
-  references: formData.references?.map(item => item.value) ?? [],
+  references: formData.references ?? [], // Direct string array from MultiSelect
   lesson_elements: formData.lesson_elements?.filter(e => e.content && e.content.trim().length > 0) ?? [],
   // Phases and Activities are direct arrays of objects, no map needed if structure matches
   phases: formData.phases ?? [],
