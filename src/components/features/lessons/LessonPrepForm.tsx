@@ -27,6 +27,7 @@ import { LessonPrepLegacyFields } from './LessonPrepLegacyFields'
 import { LessonPrepElements } from './LessonPrepElements'
 import { LessonSupportMaterial } from './LessonSupportMaterial'
 import { LessonPrepNotes } from './LessonPrepNotes'
+import { LessonPrepObjectives } from './LessonPrepObjectives'
 
 interface LessonPrepFormProps {
     initialData?: LessonPreparation | null
@@ -113,6 +114,11 @@ export function LessonPrepForm({
                                         language={language}
                                     />
                                     <LessonPrepPedagogicalContext
+                                        control={form.control}
+                                        isLoading={isLoading}
+                                        language={language}
+                                    />
+                                    <LessonPrepObjectives
                                         control={form.control}
                                         isLoading={isLoading}
                                         language={language}
