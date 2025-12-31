@@ -29,8 +29,9 @@ export function LessonSupportMaterial({
     const { data: materialsList = [], isLoading: loadingMaterials } = useMaterials()
 
     // Transform materials to options for MultiSelect
+    // Use English name as value to ensure persistence across language changes
     const materialOptions = materialsList.map(m => ({
-        value: isRTL ? m.name_ar : m.name,
+        value: m.name,
         label: isRTL ? m.name_ar : m.name,
     }))
 
@@ -38,8 +39,9 @@ export function LessonSupportMaterial({
     const { data: referencesList = [], isLoading: loadingReferences } = useReferences()
 
     // Transform references to options for MultiSelect
+    // Use English name as value to ensure persistence across language changes
     const referenceOptions = referencesList.map(r => ({
-        value: isRTL ? r.name_ar : r.name,
+        value: r.name,
         label: isRTL ? r.name_ar : r.name,
     }))
 
