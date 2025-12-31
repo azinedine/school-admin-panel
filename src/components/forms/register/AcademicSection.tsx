@@ -13,7 +13,7 @@ export function AcademicSection({ role }: AcademicSectionProps) {
   const { t, i18n } = useTranslation()
   const isRTL = i18n.dir() === 'rtl'
   const { setValue, watch, formState: { errors } } = useFormContext()
-  
+
   const selectedSubjects: string[] = watch('subjects') || []
   const selectedLevels: string[] = watch('levels') || []
   const selectedClass = watch('class')
@@ -23,21 +23,33 @@ export function AcademicSection({ role }: AcademicSectionProps) {
   const { data: levelsList = [], isLoading: loadingLevels } = useLevels()
 
   const classOptions = levelsList.map(c => ({
-    value: c.id,
+    value: c.id.toString(),
     label: c.name
   }))
 
   // Subject Selection Logic
   const getSubjectOptions = () => {
-    const hasArabic = selectedSubjects.includes('arabic')
-    const hasHistory = selectedSubjects.includes('history')
-    const hasCivic = selectedSubjects.includes('civic')
-    const hasIslamic = selectedSubjects.includes('islamic')
+    // Helper to find ID by partial name match (robust to casing/slight changes)
+    const findIdByName = (namePart: string) =>
+      subjectsList.find(s => s.name.toLowerCase().includes(namePart.toLowerCase()))?.id || -1
+
+    const arabicId = findIdByName('Arabic')
+    const historyId = findIdByName('History')
+    const civicId = findIdByName('Civic')
+    const islamicId = findIdByName('Islamic')
+
+    // Check if selected subjects include these IDs (ensure comparison as strings)
+    const hasArabic = selectedSubjects.includes(arabicId.toString())
+    const hasHistory = selectedSubjects.includes(historyId.toString())
+    const hasCivic = selectedSubjects.includes(civicId.toString())
+    const hasIslamic = selectedSubjects.includes(islamicId.toString())
+
     const count = selectedSubjects.length
 
     return subjectsList.map(s => {
       let disabled = false
-      const isSelected = selectedSubjects.includes(s.id)
+      const sIdStr = s.id.toString()
+      const isSelected = selectedSubjects.includes(sIdStr)
 
       if (!isSelected) {
         if (count >= 2) {
@@ -45,30 +57,30 @@ export function AcademicSection({ role }: AcademicSectionProps) {
         } else if (count === 1) {
           // Strict Pairs Logic
           if (hasArabic) {
-             disabled = s.id !== 'islamic'
+            disabled = s.id !== islamicId
           } else if (hasIslamic) {
-             disabled = s.id !== 'arabic'
+            disabled = s.id !== arabicId
           } else if (hasHistory) {
-             disabled = s.id !== 'civic'
+            disabled = s.id !== civicId
           } else if (hasCivic) {
-             disabled = s.id !== 'history'
+            disabled = s.id !== historyId
           } else {
-             // Any other subject (Math, Science etc) allows NO other subject
-             disabled = true 
+            // Any other subject (Math, Science etc) allows NO other subject
+            disabled = true
           }
         }
       }
 
       return {
-        value: s.id,
-        label: isRTL ? s.nameAr : s.name,
+        value: sIdStr,
+        label: isRTL ? s.name_ar : s.name,
         disabled
       }
     })
   }
 
   const levelOptions = levelsList.map(l => ({
-    value: l.id,
+    value: l.id.toString(),
     label: l.name
   }))
 
@@ -86,7 +98,7 @@ export function AcademicSection({ role }: AcademicSectionProps) {
           className="w-full"
           disabled={loadingSubjects}
         />
-        
+
         <MultiSelectField
           label={t('auth.register.levels')}
           placeholder={t('auth.register.levels')}
@@ -105,12 +117,12 @@ export function AcademicSection({ role }: AcademicSectionProps) {
     return (
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
         <SelectField
-            label={t('auth.register.class')}
-            value={selectedClass}
-            onChange={(val) => setValue('class', val)}
-            options={classOptions}
-            placeholder={t('auth.register.selectClass')}
-            error={errors.class as FieldError}
+          label={t('auth.register.class')}
+          value={selectedClass}
+          onChange={(val) => setValue('class', val)}
+          options={classOptions}
+          placeholder={t('auth.register.selectClass')}
+          error={errors.class as FieldError}
         />
       </div>
     )
