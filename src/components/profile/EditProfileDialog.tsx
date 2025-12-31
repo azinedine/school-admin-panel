@@ -14,6 +14,7 @@ import {
 import { Form } from '@/components/ui/form'
 import { TextField, SelectField, DatePicker, ActionButton } from '@/components/forms'
 import { useWilayas, useMunicipalities, useInstitutionsByLocation, useInstitution } from '@/hooks/use-institutions'
+import { useSubjects } from '@/hooks/use-subjects'
 import { useUpdateProfile } from '@/hooks/use-profile-mutation'
 import type { User } from '@/features/users/types/user.types'
 import { createProfileSchema } from '@/schemas/profile-schema'
@@ -34,6 +35,7 @@ export type ProfileFormInputValues = {
   office_location?: string
   date_of_hiring?: string
   years_of_experience?: number | string
+  subjects?: string
 }
 
 interface EditProfileDialogProps {
@@ -45,7 +47,7 @@ interface EditProfileDialogProps {
 export function EditProfileDialog({ user, isOpen, onClose }: EditProfileDialogProps) {
   const { t, i18n } = useTranslation()
   const isRTL = i18n.dir() === 'rtl'
-  
+
   // Use mutation hook (handles cache update via invalidation)
   const { mutateAsync: updateProfile, isPending } = useUpdateProfile(user.id)
 
@@ -70,6 +72,7 @@ export function EditProfileDialog({ user, isOpen, onClose }: EditProfileDialogPr
       office_location: user.office_location || '',
       date_of_hiring: user.date_of_hiring ? format(new Date(user.date_of_hiring), 'yyyy-MM-dd') : undefined,
       years_of_experience: user.years_of_experience ?? undefined,
+      subjects: user.subjects?.[0] || '',
     },
   })
 
@@ -79,6 +82,7 @@ export function EditProfileDialog({ user, isOpen, onClose }: EditProfileDialogPr
 
   // Fetch data
   const { data: wilayas } = useWilayas()
+  const { data: subjectsList } = useSubjects()
   const { data: municipalities } = useMunicipalities(
     selectedWilaya ? parseInt(selectedWilaya) : undefined
   )
@@ -87,15 +91,22 @@ export function EditProfileDialog({ user, isOpen, onClose }: EditProfileDialogPr
     selectedMunicipality ? parseInt(selectedMunicipality) : undefined,
     { enabled: !!selectedWilaya && !!selectedMunicipality }
   )
-  
+
   // Get current institution details to pre-fill location if needed
   const { data: currentInstitution } = useInstitution(
     user.institution?.id ? user.institution.id : 0,
   )
 
-  // Reset form when user changes or dialog opens
+  // Reset form when user, dialog state, or reference data changes
   useEffect(() => {
     if (isOpen) {
+      // Try to find the subject ID corresponding to the user's assigned subject name
+      // This handles the case where user.subjects contains names but we need IDs for the form/update
+      const currentSubjectName = user.subjects?.[0]
+      const currentSubjectId = subjectsList?.find(
+        s => s.name === currentSubjectName || s.name_ar === currentSubjectName
+      )?.id || currentSubjectName || ''
+
       form.reset({
         name: user.name || '',
         name_ar: user.name_ar || '',
@@ -111,19 +122,20 @@ export function EditProfileDialog({ user, isOpen, onClose }: EditProfileDialogPr
         office_location: user.office_location || '',
         date_of_hiring: user.date_of_hiring ? format(new Date(user.date_of_hiring), 'yyyy-MM-dd') : undefined,
         years_of_experience: user.years_of_experience ?? undefined,
+        subjects: currentSubjectId,
       })
     }
-  }, [user, isOpen, form])
+  }, [user, isOpen, form, subjectsList])
 
   // Pre-fill location based on current institution
   useEffect(() => {
     if (isOpen && currentInstitution && !form.getValues('wilaya')) {
       if (currentInstitution.wilaya_id) {
-         form.setValue('wilaya', currentInstitution.wilaya_id.toString())
+        form.setValue('wilaya', currentInstitution.wilaya_id.toString())
       }
       if (currentInstitution.municipality_id) {
         setTimeout(() => {
-           form.setValue('municipality', currentInstitution.municipality_id.toString())
+          form.setValue('municipality', currentInstitution.municipality_id.toString())
         }, 100)
       }
     }
@@ -144,6 +156,7 @@ export function EditProfileDialog({ user, isOpen, onClose }: EditProfileDialogPr
         years_of_experience: values.years_of_experience ? Number(values.years_of_experience) : undefined,
         wilaya: values.wilaya || undefined,
         municipality: values.municipality || undefined,
+        subjects: values.subjects ? [values.subjects] : undefined,
       }
       await updateProfile(profileValues)
       onClose()
@@ -164,9 +177,9 @@ export function EditProfileDialog({ user, isOpen, onClose }: EditProfileDialogPr
 
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-            
+
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-               <TextField
+              <TextField
                 name="name"
                 label={t('profilePage.fullName')}
                 placeholder="John Doe"
@@ -179,7 +192,7 @@ export function EditProfileDialog({ user, isOpen, onClose }: EditProfileDialogPr
                 dir="rtl"
               />
             </div>
-            
+
             <TextField
               name="email"
               label={t('profilePage.email')}
@@ -194,7 +207,7 @@ export function EditProfileDialog({ user, isOpen, onClose }: EditProfileDialogPr
                 label={t('profilePage.phone')}
                 type="tel"
               />
-              
+
               <Controller
                 control={form.control}
                 name="gender"
@@ -223,7 +236,7 @@ export function EditProfileDialog({ user, isOpen, onClose }: EditProfileDialogPr
               label={t('profilePage.address')}
             />
 
-             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <Controller
                 control={form.control}
                 name="wilaya"
@@ -237,15 +250,15 @@ export function EditProfileDialog({ user, isOpen, onClose }: EditProfileDialogPr
                     })) || []}
                     value={field.value}
                     onChange={(val) => {
-                       field.onChange(val)
-                       form.setValue('municipality', undefined)
-                       form.setValue('institution_id', undefined)
+                      field.onChange(val)
+                      form.setValue('municipality', undefined)
+                      form.setValue('institution_id', undefined)
                     }}
                     error={fieldState.error}
                   />
                 )}
               />
-              
+
               <Controller
                 control={form.control}
                 name="municipality"
@@ -259,8 +272,8 @@ export function EditProfileDialog({ user, isOpen, onClose }: EditProfileDialogPr
                     })) || []}
                     value={field.value}
                     onChange={(val) => {
-                       field.onChange(val)
-                       form.setValue('institution_id', undefined)
+                      field.onChange(val)
+                      form.setValue('institution_id', undefined)
                     }}
                     disabled={!selectedWilaya}
                     error={fieldState.error}
@@ -268,67 +281,90 @@ export function EditProfileDialog({ user, isOpen, onClose }: EditProfileDialogPr
                 )}
               />
             </div>
-            
-             <Controller
-                control={form.control}
-                name="institution_id"
-                render={({ field, fieldState }) => (
-                  <SelectField
-                    label={t('profilePage.institution')}
-                    placeholder={
-                       noInstitutionsFound 
-                       ? t('auth.register.noInstitutions', 'No institutions found')
-                       : t('profilePage.selectInstitution', 'Select Institution')
-                    }
-                    options={institutions.map(i => ({
-                      value: i.id.toString(),
-                      label: isRTL ? (i.name_ar || i.name) : i.name
-                    }))}
-                    value={field.value}
-                    onChange={field.onChange}
-                    disabled={!selectedMunicipality || noInstitutionsFound}
-                    error={fieldState.error}
-                  />
-                )}
-              />
+
+            <Controller
+              control={form.control}
+              name="institution_id"
+              render={({ field, fieldState }) => (
+                <SelectField
+                  label={t('profilePage.institution')}
+                  placeholder={
+                    noInstitutionsFound
+                      ? t('auth.register.noInstitutions', 'No institutions found')
+                      : t('profilePage.selectInstitution', 'Select Institution')
+                  }
+                  options={institutions.map(i => ({
+                    value: i.id.toString(),
+                    label: isRTL ? (i.name_ar || i.name) : i.name
+                  }))}
+                  value={field.value}
+                  onChange={field.onChange}
+                  disabled={!selectedMunicipality || noInstitutionsFound}
+                  error={fieldState.error}
+                />
+              )}
+            />
+
+            {/* Teacher specific fields */}
+            {user.role === 'teacher' && (
+              <div className="grid grid-cols-1 gap-4 border-t pt-4 mt-4">
+                <Controller
+                  control={form.control}
+                  name="subjects"
+                  render={({ field, fieldState }) => (
+                    <SelectField
+                      label={t('profilePage.subject', 'Subject')}
+                      placeholder={t('profilePage.selectSubject', 'Select Subject')}
+                      options={subjectsList?.map(s => ({
+                        value: s.id,
+                        label: isRTL ? s.name_ar : s.name
+                      })) || []}
+                      value={field.value}
+                      onChange={field.onChange}
+                      error={fieldState.error}
+                    />
+                  )}
+                />
+              </div>
+            )}
 
             {/* Admin only fields (if user is admin) */}
             {(user.role === 'admin' || user.role === 'manager' || user.role === 'super_admin') && (
-               <div className="grid grid-cols-1 md:grid-cols-2 gap-4 border-t pt-4 mt-4">
-                  <TextField 
-                    name="work_phone"
-                    label={t('profilePage.workPhone')}
-                    type="tel"
-                  />
-                  <TextField 
-                    name="office_location"
-                    label={t('profilePage.officeLocation')}
-                  />
-                  <DatePicker 
-                    name="date_of_hiring"
-                    label={t('profilePage.dateOfHiring')}
-                  />
-                  <TextField 
-                    name="years_of_experience"
-                    label={t('profilePage.yearsOfExperience')}
-                    type="number"
-                  />
-               </div>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 border-t pt-4 mt-4">
+                <TextField
+                  name="work_phone"
+                  label={t('profilePage.workPhone')}
+                  type="tel"
+                />
+                <TextField
+                  name="office_location"
+                  label={t('profilePage.officeLocation')}
+                />
+                <DatePicker
+                  name="date_of_hiring"
+                  label={t('profilePage.dateOfHiring')}
+                />
+                <TextField
+                  name="years_of_experience"
+                  label={t('profilePage.yearsOfExperience')}
+                  type="number"
+                />
+              </div>
             )}
 
             <div className="flex justify-end gap-2 pt-4">
               <ActionButton
-                 type="button"
-                 variant="outline"
-                 onClick={onClose}
-                 disabled={isPending}
+                type="button"
+                variant="outline"
+                onClick={onClose}
+                disabled={isPending}
               >
                 {t('common.cancel')}
               </ActionButton>
               <ActionButton
-                 type="submit"
-                 isLoading={isPending}
-                 disabled={isPending}
+                type="submit"
+                isLoading={isPending}
+                disabled={isPending}
               >
                 {isPending ? t('common.saving') : t('common.save')}
               </ActionButton>
