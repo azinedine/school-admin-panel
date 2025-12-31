@@ -186,18 +186,15 @@ const FormMessage = React.forwardRef<
     body = t(body)
   }
 
-  if (!body) {
-    return null
-  }
-
+  // Always render to reserve space (min-height should match line-height of error text)
   return (
     <p
       ref={ref}
       id={formMessageId}
-      className={cn("text-[0.8rem] font-medium text-destructive", className)}
+      className={cn("text-[0.8rem] font-medium text-destructive min-h-[1.25rem] transition-all duration-200", className)}
       {...props}
     >
-      {body}
+      {body || <span className="invisible">&nbsp;</span>}
     </p>
   )
 })
