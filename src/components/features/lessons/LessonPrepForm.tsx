@@ -3,22 +3,15 @@ import { toast } from 'sonner'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useTranslation } from 'react-i18next'
 import {
-    Loader2,
-    FileText
+    Loader2
 } from 'lucide-react'
 import { PhaseEditor } from './PhaseEditor'
 import { Button } from '@/components/ui/button'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { LessonHeader } from './LessonHeader'
 import {
     Form,
-    FormControl,
-    FormField,
-    FormItem,
-    FormMessage,
     FormLanguageProvider,
 } from '@/components/ui/form'
-import { Textarea } from '@/components/ui/textarea'
 import {
     type LessonPreparationFormData,
     type LessonPreparationApiPayload,
@@ -32,6 +25,7 @@ import { LessonPrepPedagogicalContext } from './LessonPrepPedagogicalContext'
 import { LessonPrepLegacyFields } from './LessonPrepLegacyFields'
 import { LessonPrepElements } from './LessonPrepElements'
 import { LessonSupportMaterial } from './LessonSupportMaterial'
+import { LessonPrepNotes } from './LessonPrepNotes'
 
 interface LessonPrepFormProps {
     initialData?: LessonPreparation | null
@@ -148,33 +142,11 @@ export function LessonPrepForm({
                                         language={language}
                                     />
 
-                                    <Card className="border shadow-none bg-muted/10">
-                                        <CardHeader className="pb-3">
-                                            <div className="flex items-center gap-2">
-                                                <FileText className="h-4 w-4 text-primary" />
-                                                <CardTitle className="text-base">{t('pages.prep.notes', 'Teacher Notes')}</CardTitle>
-                                            </div>
-                                        </CardHeader>
-                                        <CardContent>
-                                            <FormField
-                                                control={form.control}
-                                                name="notes"
-                                                render={({ field }) => (
-                                                    <FormItem>
-                                                        <FormControl>
-                                                            <Textarea
-                                                                placeholder={t('pages.prep.notesPlaceholder', 'Private notes for yourself...')}
-                                                                className="min-h-[80px]"
-                                                                {...field}
-                                                                disabled={isLoading}
-                                                            />
-                                                        </FormControl>
-                                                        <FormMessage />
-                                                    </FormItem>
-                                                )}
-                                            />
-                                        </CardContent>
-                                    </Card>
+                                    <LessonPrepNotes
+                                        control={form.control}
+                                        isLoading={isLoading}
+                                        language={language}
+                                    />
                                 </div>
                             </div>
                         </div>     {/* Footer Spacing */}
