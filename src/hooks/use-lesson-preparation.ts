@@ -191,6 +191,53 @@ export function useCreateLessonPrep() {
  * }
  * ```
  */
+/**
+ * Hook to update an existing lesson preparation (generic)
+ */
+export function useGenericUpdateLessonPrep() {
+  const queryClient = useQueryClient()
+
+  return useMutation({
+    mutationFn: ({ id, data }: { id: number; data: Partial<LessonPreparationApiPayload> }) =>
+      updateLessonPrep(id, data),
+    onSuccess: (updatedPrep) => {
+      // Invalidate list queries
+      queryClient.invalidateQueries({
+        queryKey: lessonPrepKeys.lists(),
+      })
+
+      // Update the detail cache
+      queryClient.setQueryData(lessonPrepKeys.detail(updatedPrep.id), updatedPrep)
+
+      toast.success('Lesson status updated')
+    },
+    onError: (error) => {
+      toast.error('Failed to update status')
+      console.error('Update status error:', error)
+    },
+  })
+}
+
+/**
+ * Hook to update an existing lesson preparation
+ *
+ * @example
+ * ```tsx
+ * function EditLessonPrepForm({ id, initialData }: { id: number, initialData: LessonPreparation }) {
+ *   const { mutate, isPending } = useUpdateLessonPrep(id)
+ *
+ *   const handleSubmit = (data: LessonPreparationFormData) => {
+ *     mutate(data, {
+ *       onSuccess: () => {
+ *         navigate({ to: '/teacher/lessons/preparation' })
+ *       }
+ *     })
+ *   }
+ *
+ *   return <form onSubmit={handleSubmit}>...</form>
+ * }
+ * ```
+ */
 export function useUpdateLessonPrep(id: number) {
   const queryClient = useQueryClient()
 
