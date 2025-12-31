@@ -2,9 +2,11 @@ import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { apiClient } from '@/lib/api-client'
 import type { User } from '@/store/types'
 import { format } from 'date-fns'
+import { useAuthStore } from '@/store/auth-store'
 
 export function useUpdateProfile(userId: number) {
     const queryClient = useQueryClient()
+    const updateUser = useAuthStore((state) => state.updateUser)
 
     return useMutation({
         mutationFn: async (values: {
@@ -35,6 +37,9 @@ export function useUpdateProfile(userId: number) {
             return response.data.data
         },
         onSuccess: (data) => {
+            // Update auth store for components using useAuthStore (e.g., PreparationTab)
+            updateUser(data)
+
             // Immediate UI update via cache
             queryClient.setQueryData(['user', userId], data)
             // Also update the 'user' key which might be used by useAuth
