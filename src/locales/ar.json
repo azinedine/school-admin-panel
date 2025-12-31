@@ -26,7 +26,9 @@
         "all": "الكل",
         "clear": "مسح",
         "active": "نشط",
-        "inactive": "غير نشط"
+        "inactive": "غير نشط",
+        "formErrors": "يرجى التحقق من الأخطاء في النموذج",
+        "errorsIn": "يوجد أخطاء في"
     },
     "auth": {
         "login": {
@@ -632,13 +634,21 @@
             "evaluationType": "نوع التقويم",
             "homework": "واجب منزلي",
             "evaluationContent": "المحتوى",
-            "duration": "المدة (دقيقة)",
-            "descriptionPlaceholder": "وصف موجز للدرس...",
+            "phases": {
+                "departure": "وضعية الانطلاق",
+                "presentation": "العرض / البناء",
+                "consolidation": "التقويم / الادماج"
+            },
+            "objectivesAndTopics": "الأهداف والمواضيع",
+            "supportMaterial": "السندات والدعائم",
+            "additionalContent": "محتوى إضافي",
             "learningObjectives": "أهداف التعلم",
             "objectivePlaceholder": "هدف",
+            "noObjectives": "لم يتم إضافة أهداف",
             "addObjective": "إضافة هدف",
             "keyTopics": "المواضيع الرئيسية",
             "topicPlaceholder": "موضوع",
+            "noTopics": "لم يتم إضافة مواضيع",
             "addTopic": "إضافة موضوع",
             "teachingMethods": "طرق التدريس",
             "teachingMethodsOptions": {
@@ -651,6 +661,8 @@
                 "brainstorming": "عصف ذهني",
                 "problemBasedLearning": "التعلم القائم على المشكلات"
             },
+            "methodPlaceholder": "أدخل الطريقة...",
+            "noMethods": "لم يتم إضافة طرق",
             "addMethod": "إضافة طريقة",
             "resources": "الموارد",
             "resourcePlaceholder": "مورد",
