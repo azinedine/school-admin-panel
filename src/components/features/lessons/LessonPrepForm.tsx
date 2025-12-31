@@ -57,9 +57,20 @@ export function LessonPrepForm({
     const availableSubjects = subjects
     const availableLevels = levels
 
+    // Auto-select first subject and level for new preparations
+    const defaultSubject = subjects.length > 0 ? subjects[0] : ''
+    const defaultLevel = levels.length > 0 ? levels[0] : ''
+
     const form = useForm<LessonPreparationFormData>({
         resolver: zodResolver(lessonPreparationFormSchema),
-        defaultValues: initialData ? toFormData(initialData) : { ...defaultFormValues, lesson_number: nextLessonNumber || '' },
+        defaultValues: initialData
+            ? toFormData(initialData)
+            : {
+                ...defaultFormValues,
+                lesson_number: nextLessonNumber || '',
+                subject: defaultSubject,
+                level: defaultLevel,
+            },
     })
 
     const handleSubmit = async (data: LessonPreparationFormData) => {
@@ -96,22 +107,17 @@ export function LessonPrepForm({
                             {/* LEFT COLUMN: Context & Objectives (4 cols) */}
                             <div className="lg:col-span-4 space-y-6">
                                 <div className="space-y-4">
-
-
-
                                     <LessonPrepPedagogicalContext
                                         control={form.control}
                                         isLoading={isLoading}
                                         language={language}
                                     />
-
                                     <LessonPrepLegacyFields
                                         control={form.control}
                                         isLoading={isLoading}
                                         language={language}
                                         variant="default"
                                     />
-
                                     <LessonSupportMaterial
                                         control={form.control}
                                         isLoading={isLoading}
