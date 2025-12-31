@@ -634,6 +634,19 @@
             "evaluationType": "نوع التقويم",
             "homework": "واجب منزلي",
             "evaluationContent": "المحتوى",
+            "targetedKnowledge": "المعارف المستهدفة",
+            "usedMaterials": "الوسائل المستعملة",
+            "references": "المراجع",
+            "knowledgePlaceholder": "أدخل معرفة/مهارة...",
+            "materialPlaceholder": "مثال: كتاب مدرسي، جهاز عرض، خرائط...",
+            "referencePlaceholder": "مثال: صفحة 45، رابط موقع...",
+            "phaseContentPlaceholder": "صف الأنشطة، دور الأستاذ ودور المتعلم...",
+            "noKnowledge": "لم يتم إضافة معارف مستهدفة",
+            "noMaterials": "لم يتم إدراج وسائل",
+            "noReferences": "لم يتم إضافة مراجع",
+            "params": {
+                "phases": "مراحل الدرس"
+            },
             "phases": {
                 "departure": "وضعية الانطلاق",
                 "presentation": "العرض / البناء",
