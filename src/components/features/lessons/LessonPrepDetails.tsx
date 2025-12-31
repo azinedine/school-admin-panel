@@ -128,7 +128,7 @@ export function LessonPrepDetails({ data }: LessonPrepDetailsProps) {
           <TabsTrigger value="evaluation" className="py-2.5">
             <span className="flex items-center gap-2">
               <CheckCircle2 className="h-4 w-4" />
-              <span className="hidden sm:inline">Evaluation</span>
+              <span className="hidden sm:inline">{t('pages.prep.evaluation', 'Consolidation / Application')}</span>
             </span>
           </TabsTrigger>
           <TabsTrigger value="notes" className="py-2.5">
@@ -376,7 +376,7 @@ export function LessonPrepDetails({ data }: LessonPrepDetailsProps) {
             <CardHeader>
               <div className="flex items-start justify-between">
                 <div>
-                  <CardTitle>Evaluation Strategy</CardTitle>
+                  <CardTitle>{t('pages.prep.evaluation', 'Consolidation / Application')}</CardTitle>
                   <CardDescription>
                     Type: <span className="font-medium text-primary capitalize">{data.evaluation_type}</span>
                   </CardDescription>
