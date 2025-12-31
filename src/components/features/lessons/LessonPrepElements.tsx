@@ -1,6 +1,6 @@
 import { type Control, useFieldArray } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
-import { Plus, X, List, AlertCircle } from 'lucide-react'
+import { Plus, X, List } from 'lucide-react'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
@@ -54,15 +54,12 @@ export function LessonPrepElements({
             </CardHeader>
             <CardContent className="space-y-4 pt-6">
                 {fields.length === 0 && (
-                    <div className="flex flex-col items-center justify-center text-center py-12 border-2 border-dashed rounded-xl bg-muted/10">
-                        <div className="p-3 bg-muted rounded-full mb-3">
-                            <AlertCircle className="h-6 w-6 text-muted-foreground" />
-                        </div>
+                    <div className="flex flex-col items-center justify-center text-center py-8 border-2 border-dashed rounded-xl bg-muted/10 border-muted">
                         <p className="text-muted-foreground font-medium mb-1">
                             {t('pages.prep.lessonElements.noElements', 'No elements yet')}
                         </p>
-                        <p className="text-sm text-muted-foreground/80">
-                            Add your first lesson element to get started
+                        <p className="text-xs text-muted-foreground/60">
+                            {t('pages.prep.lessonElements.optional', 'Optional: Add lesson elements if needed')}
                         </p>
                     </div>
                 )}
@@ -95,7 +92,7 @@ export function LessonPrepElements({
                                             size="icon"
                                             className="h-8 w-8 text-muted-foreground hover:text-destructive shrink-0 mt-1 opacity-100 sm:opacity-0 sm:group-hover:opacity-100 transition-opacity"
                                             onClick={() => remove(index)}
-                                            disabled={isLoading || fields.length <= 1}
+                                            disabled={isLoading}
                                             title={t('pages.prep.lessonElements.removeElement', 'Remove Element')}
                                         >
                                             <X className="h-4 w-4" />
