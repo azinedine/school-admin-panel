@@ -2,13 +2,13 @@ import { useQuery } from '@tanstack/react-query'
 import { apiClient } from '@/lib/api-client'
 
 export interface Subject {
-  id: string
+  id: number
   name: string
   name_ar: string
 }
 
 export interface Level {
-  id: string
+  id: number
   name: string
 }
 
