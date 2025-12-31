@@ -26,7 +26,9 @@
         "all": "All",
         "clear": "Clear",
         "active": "Active",
-        "inactive": "Inactive"
+        "inactive": "Inactive",
+        "formErrors": "Please check the form for errors",
+        "errorsIn": "Errors in"
     },
     "auth": {
         "login": {
@@ -676,11 +678,16 @@
                 "presentation": "Presentation / Construction",
                 "consolidation": "Consolidation / Application"
             },
+            "objectivesAndTopics": "Objectives & Topics",
+            "supportMaterial": "Support Material",
+            "additionalContent": "Additional Content",
             "learningObjectives": "Learning Objectives",
             "objectivePlaceholder": "Objective",
+            "noObjectives": "No objectives added",
             "addObjective": "Add Objective",
             "keyTopics": "Key Topics",
             "topicPlaceholder": "Topic",
+            "noTopics": "No topics added",
             "addTopic": "Add Topic",
             "teachingMethods": "Teaching Methods",
             "teachingMethodsOptions": {
@@ -693,6 +700,8 @@
                 "brainstorming": "Brainstorming",
                 "problemBasedLearning": "Problem-Based Learning"
             },
+            "methodPlaceholder": "Enter method...",
+            "noMethods": "No methods added",
             "addMethod": "Add method",
             "resources": "Resources",
             "resourcePlaceholder": "Resource",
