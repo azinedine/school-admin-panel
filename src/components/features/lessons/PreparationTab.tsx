@@ -69,10 +69,10 @@ export const PreparationTab = memo(function PreparationTab() {
         const matchesStatus = statusFilter === 'all' || prep.status === statusFilter
         const query = searchQuery.toLowerCase()
         const matchesSearch =
-            prep.lesson_number.toLowerCase().includes(query) ||
+            (prep.lesson_number && prep.lesson_number.toLowerCase().includes(query)) ||
             (prep.level && prep.level.toLowerCase().includes(query)) ||
             (prep.subject && prep.subject.toLowerCase().includes(query))
-        return matchesStatus && matchesSearch
+        return matchesStatus && (searchQuery === '' || matchesSearch)
     })
 
     // Handlers
