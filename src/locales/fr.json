@@ -26,7 +26,9 @@
         "all": "Tous",
         "clear": "Effacer",
         "active": "Actif",
-        "inactive": "Inactif"
+        "inactive": "Inactif",
+        "formErrors": "Veuillez vérifier les erreurs dans le formulaire",
+        "errorsIn": "Erreurs dans"
     },
     "auth": {
         "login": {
@@ -634,14 +636,24 @@
             "evaluationType": "Type d'évaluation",
             "homework": "Devoirs",
             "evaluationContent": "Contenu",
-            "duration": "Durée (min)",
-            "descriptionPlaceholder": "Brève description du cours...",
+            "phases": {
+                "introduction": "Introduction / Éveil",
+                "development": "Développement / Construction",
+                "presentation": "Présentation / Construction",
+                "consolidation": "Consolidation / Application",
+                "departure": "Départ / Évaluation"
+            },
+            "objectivesAndTopics": "Objectifs & Thèmes",
+            "supportMaterial": "Matériel de support",
+            "additionalContent": "Contenu additionnel",
             "learningObjectives": "Objectifs d'apprentissage",
             "objectivePlaceholder": "Objectif",
+            "noObjectives": "Aucun objectif ajouté",
             "addObjective": "Ajouter un objectif",
-            "keyTopics": "Sujets clés",
-            "topicPlaceholder": "Sujet",
-            "addTopic": "Ajouter un sujet",
+            "keyTopics": "Thèmes clés",
+            "topicPlaceholder": "Thème",
+            "noTopics": "Aucun thème ajouté",
+            "addTopic": "Ajouter un thème",
             "teachingMethods": "Méthodes pédagogiques",
             "teachingMethodsOptions": {
                 "lecture": "Cours magistral",
@@ -653,6 +665,8 @@
                 "brainstorming": "Brainstorming",
                 "problemBasedLearning": "Apprentissage par problèmes"
             },
+            "methodPlaceholder": "Entrer une méthode...",
+            "noMethods": "Aucune méthode ajoutée",
             "addMethod": "Ajouter une méthode",
             "resources": "Ressources",
             "resourcePlaceholder": "Ressource",
