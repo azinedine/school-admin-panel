@@ -2,7 +2,7 @@ import { type Control, useFieldArray, useWatch } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
 import { Clock, Layers, AlertCircle, CheckCircle2, Home } from 'lucide-react'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import { FormControl, FormField, FormItem, FormMessage, FormLabel } from '@/components/ui/form'
+import { FormControl, FormField, FormItem, FormMessage } from '@/components/ui/form'
 import { Textarea } from '@/components/ui/textarea'
 import { Input } from '@/components/ui/input'
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs'
@@ -19,9 +19,9 @@ interface PhaseEditorProps {
 }
 
 const PHASE_TYPES = [
-    { type: 'departure', color: 'bg-amber-500/10 text-amber-600 border-amber-200' },
-    { type: 'presentation', color: 'bg-blue-500/10 text-blue-600 border-blue-200' },
-    { type: 'consolidation', color: 'bg-emerald-500/10 text-emerald-600 border-emerald-200' },
+    { type: 'departure', color: 'bg-amber-500/10 text-amber-600' },
+    { type: 'presentation', color: 'bg-blue-500/10 text-blue-600' },
+    { type: 'consolidation', color: 'bg-emerald-500/10 text-emerald-600' },
 ] as const
 
 export function PhaseEditor({
@@ -91,7 +91,7 @@ export function PhaseEditor({
                             <div key={field.id} className="grid gap-4 p-4 rounded-lg border bg-card/50 hover:bg-card hover:shadow-sm transition-all">
                                 <div className="flex flex-col gap-4">
                                     <div className="flex items-center justify-between border-b pb-2">
-                                        <Badge variant="outline" className="uppercase tracking-wider font-bold bg-emerald-500/10 text-emerald-600 border-emerald-200">
+                                        <Badge variant="outline" className="uppercase tracking-wider font-bold bg-emerald-500/10 text-emerald-600 ">
                                             {t('pages.prep.evaluation', 'Consolidation / Application')}
                                         </Badge>
 
