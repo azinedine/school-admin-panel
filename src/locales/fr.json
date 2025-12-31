@@ -711,7 +711,6 @@
                 "field": "Matière",
                 "learningSegment": "Segment d'apprentissage",
                 "knowledgeResource": "Ressource de connaissances",
-                "lessonElements": "Éléments du cours",
                 "assessment": "Évaluation",
                 "practicalWork": "Travaux pratiques",
                 "homework": "Devoirs",
@@ -789,18 +788,20 @@
                 "knowledgeResourcePlaceholder": "Entrez la ressource de connaissance"
             },
             "lessonElements": {
-                "title": "Éléments du cours",
+                "title": "Éléments de la leçon",
                 "addElement": "Ajouter un élément",
-                "removeElement": "Supprimer l'élément",
-                "elementPlaceholder": "Entrez l'élément du cours",
-                "noElements": "Aucun élément. Ajoutez le premier élément du cours.",
-                "elementNumber": "Élément {{number}}"
+                "noElements": "Aucun élément pour le moment",
+                "optional": "Facultatif : Ajoutez des éléments de leçon si nécessaire",
+                "elementPlaceholder": "Entrez le contenu de l'élément de leçon...",
+                "removeElement": "Supprimer l'élément"
             },
             "assessment": "Évaluation",
             "assessmentPlaceholder": "Entrez les notes d'évaluation",
             "homeworkPlaceholder": "Entrez les notes de devoirs",
-            "notesPlaceholder": "Notes privées...",
-            "notes": "Notes / Remarques",
+            "notes": "Notes de l'enseignant",
+            "noNotes": "Aucune note ajoutée",
+            "notesOptional": "Facultatif : Ajoutez des notes privées pour vous-même",
+            "notesPlaceholder": "Entrez le contenu de la note...",
             "legacy": {
                 "additional": "Informations supplémentaires"
             },
