@@ -39,7 +39,7 @@ export function LessonHeader({
 
     return (
         <div className="bg-muted/10 border-b">
-            <div className="p-4 space-y-4 max-w-7xl mx-auto">
+            <div className="p-4 space-y-4">
                 {/* Top Row: Basic Identifier Info */}
                 <div className="grid grid-cols-2 md:grid-cols-12 gap-3 items-start">
 
@@ -71,7 +71,7 @@ export function LessonHeader({
                     </div>
 
                     {/* Subject */}
-                    <div className="md:col-span-4">
+                    <div className="md:col-span-3">
                         <FormField
                             control={control}
                             name="subject"
@@ -149,7 +149,7 @@ export function LessonHeader({
                     </div>
 
                     {/* Status & Duration (Combined or adjacent) */}
-                    <div className="md:col-span-2 flex gap-2">
+                    <div className="md:col-span-3 flex gap-2">
                         <div className="flex-1">
                             <FormField
                                 control={control}
