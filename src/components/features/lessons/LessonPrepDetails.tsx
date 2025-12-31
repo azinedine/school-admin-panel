@@ -2,6 +2,7 @@ import { Badge } from '@/components/ui/badge'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Separator } from '@/components/ui/separator'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
+import { useTranslation } from 'react-i18next'
 import type { LessonPreparation } from '@/schemas/lesson-preparation'
 import {
   BookOpen,
@@ -39,6 +40,7 @@ const statusConfig = {
 } as const
 
 export function LessonPrepDetails({ data }: LessonPrepDetailsProps) {
+  const { t } = useTranslation()
   const formatDate = (dateString: string) => {
     return new Date(dateString).toLocaleDateString('en-US', {
       weekday: 'short',
@@ -187,6 +189,27 @@ export function LessonPrepDetails({ data }: LessonPrepDetailsProps) {
             </div>
           </div>
 
+          {/* 1.5 Targeted Knowledge (New) */}
+          {data.targeted_knowledge && data.targeted_knowledge.length > 0 && (
+            <>
+              <Separator />
+              <div className="space-y-3">
+                <h3 className="flex items-center gap-2 font-semibold text-lg text-foreground/80">
+                  <Lightbulb className="h-5 w-5 text-yellow-600" />
+                  {t('pages.prep.targetedKnowledge', 'Targeted Knowledge')}
+                </h3>
+                <ul className="space-y-2">
+                  {data.targeted_knowledge.map((item, i) => (
+                    <li key={i} className="flex gap-3 bg-yellow-50/50 dark:bg-yellow-900/10 p-3 rounded-lg border border-yellow-100 dark:border-yellow-900/20 text-sm">
+                      <span className="font-bold text-yellow-600/80 font-mono">•</span>
+                      <span className="leading-relaxed">{item}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            </>
+          )}
+
           <Separator />
 
           {/* 2. Methods & Resources Row */}
@@ -231,37 +254,119 @@ export function LessonPrepDetails({ data }: LessonPrepDetailsProps) {
               )}
             </div>
           </div>
+
+          {/* 3. Materials & References (New) */}
+          {((data.used_materials && data.used_materials.length > 0) || (data.references && data.references.length > 0)) && (
+            <>
+              <Separator />
+              <div className="grid md:grid-cols-2 gap-6">
+                {/* Used Materials */}
+                {data.used_materials && data.used_materials.length > 0 && (
+                  <div className="space-y-3">
+                    <h3 className="flex items-center gap-2 font-semibold text-lg text-foreground/80">
+                      <Package className="h-5 w-5 text-orange-500" />
+                      {t('pages.prep.usedMaterials', 'Used Materials')}
+                    </h3>
+                    <div className="flex flex-wrap gap-2">
+                      {data.used_materials.map((mat, i) => (
+                        <div key={i} className="flex items-center gap-2 px-3 py-1.5 rounded-full border bg-orange-50/50 text-orange-800 dark:bg-orange-900/20 dark:text-orange-300">
+                          <span className="text-sm font-medium">{mat}</span>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {/* References */}
+                {data.references && data.references.length > 0 && (
+                  <div className="space-y-3">
+                    <h3 className="flex items-center gap-2 font-semibold text-lg text-foreground/80">
+                      <BookOpen className="h-5 w-5 text-cyan-500" />
+                      {t('pages.prep.references', 'References')}
+                    </h3>
+                    <ul className="space-y-1">
+                      {data.references.map((ref, i) => (
+                        <li key={i} className="text-sm text-muted-foreground flex items-start gap-2">
+                          <span className="text-cyan-500 mt-1">▪</span>
+                          <span>{ref}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
+              </div>
+            </>
+          )}
         </TabsContent>
 
         {/* CONTENT TAB */}
         <TabsContent value="content" className="space-y-6">
           <div className="bg-card rounded-xl border p-6 shadow-sm">
-            <div className="flex items-center justify-between mb-6">
-              <h3 className="font-semibold text-xl">Lesson Plan</h3>
-              <Badge variant="outline">{data.lesson_elements?.length ?? 0} Steps</Badge>
-            </div>
+            {/* Check for Phases first (New Structure) */}
+            {data.phases && data.phases.length > 0 ? (
+              <>
+                <div className="flex items-center justify-between mb-6">
+                  <h3 className="font-semibold text-xl">{t('pages.prep.params.phases', 'Lesson Phases')}</h3>
+                  <Badge variant="outline">{data.phases.length} {t('pages.prep.phases.title', 'Phases')}</Badge>
+                </div>
 
-            <div className="space-y-8 relative pl-6 before:absolute before:left-[11px] before:top-3 before:bottom-3 before:w-[2px] before:bg-border">
-              {data.lesson_elements?.map((element, i) => (
-                <div key={i} className="relative group">
-                  {/* Content */}
-                  <div className="bg-muted/30 p-4 rounded-lg border group-hover:bg-muted/50 transition-colors">
-                    <div className="absolute -left-[31px] top-3 bg-background border-2 border-primary w-6 h-6 rounded-full flex items-center justify-center text-[10px] font-bold z-10">
-                      {i + 1}
+                <div className="space-y-6 relative pl-6 before:absolute before:left-[11px] before:top-3 before:bottom-3 before:w-[2px] before:bg-border">
+                  {data.phases.map((phase, i) => (
+                    <div key={i} className="relative group">
+                      {/* Time Marker */}
+                      <div className="absolute -left-[31px] top-0 bg-background border-2 border-primary w-6 h-6 rounded-full flex items-center justify-center text-[10px] font-bold z-10 text-primary">
+                        {i + 1}
+                      </div>
+
+                      <div className="mb-2 flex items-center gap-2">
+                        <Badge variant="secondary" className="font-semibold uppercase tracking-wider text-[10px]">
+                          {t(`pages.prep.phases.${phase.type}`, phase.type)}
+                        </Badge>
+                        <span className="text-xs text-muted-foreground font-mono bg-muted px-2 py-0.5 rounded">
+                          {phase.duration_minutes} {t('common.minutes', 'min')}
+                        </span>
+                      </div>
+
+                      <div className="bg-muted/30 p-4 rounded-lg border group-hover:bg-muted/50 transition-colors">
+                        <div className="prose prose-sm dark:prose-invert max-w-none whitespace-pre-wrap leading-relaxed">
+                          {phase.content}
+                        </div>
+                      </div>
                     </div>
-                    <div className="prose prose-sm dark:prose-invert max-w-none whitespace-pre-wrap leading-relaxed">
-                      {element.content}
+                  ))}
+                </div>
+              </>
+            ) : (
+              /* Legacy Lesson Elements */
+              <>
+                <div className="flex items-center justify-between mb-6">
+                  <h3 className="font-semibold text-xl">Lesson Plan</h3>
+                  <Badge variant="outline">{data.lesson_elements?.length ?? 0} Steps</Badge>
+                </div>
+
+                <div className="space-y-8 relative pl-6 before:absolute before:left-[11px] before:top-3 before:bottom-3 before:w-[2px] before:bg-border">
+                  {data.lesson_elements?.map((element, i) => (
+                    <div key={i} className="relative group">
+                      {/* Content */}
+                      <div className="bg-muted/30 p-4 rounded-lg border group-hover:bg-muted/50 transition-colors">
+                        <div className="absolute -left-[31px] top-3 bg-background border-2 border-primary w-6 h-6 rounded-full flex items-center justify-center text-[10px] font-bold z-10">
+                          {i + 1}
+                        </div>
+                        <div className="prose prose-sm dark:prose-invert max-w-none whitespace-pre-wrap leading-relaxed">
+                          {element.content}
+                        </div>
+                      </div>
                     </div>
-                  </div>
+                  ))}
+                  {(!data.lesson_elements || data.lesson_elements.length === 0) && (
+                    <div className="text-center py-12 text-muted-foreground">
+                      <FileText className="h-12 w-12 mx-auto mb-3 opacity-20" />
+                      <p>No lesson content added.</p>
+                    </div>
+                  )}
                 </div>
-              ))}
-              {(!data.lesson_elements || data.lesson_elements.length === 0) && (
-                <div className="text-center py-12 text-muted-foreground">
-                  <FileText className="h-12 w-12 mx-auto mb-3 opacity-20" />
-                  <p>No lesson content added.</p>
-                </div>
-              )}
-            </div>
+              </>
+            )}
           </div>
         </TabsContent>
 
@@ -343,6 +448,6 @@ export function LessonPrepDetails({ data }: LessonPrepDetailsProps) {
           </Card>
         </TabsContent>
       </Tabs>
-    </div>
+    </div >
   )
 }
