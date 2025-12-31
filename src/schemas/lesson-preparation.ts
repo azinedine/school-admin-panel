@@ -102,7 +102,7 @@ export const lessonPreparationFormSchema = z.object({
   })).optional(),
 
   // Legacy fields
-  learning_objectives: z.array(z.object({ value: z.string().min(1, V.objectiveRequired) })),
+  learning_objectives: z.array(z.string()),
   teaching_methods: z.array(z.object({ value: z.string().min(1, V.methodRequired) })).min(1, V.methodsMin),
   resources_needed: z.array(z.object({ value: z.string().min(1, V.resourceRequired) })),
   assessment_methods: z.array(z.object({ value: z.string().min(1, V.methodRequired) })),
@@ -226,7 +226,7 @@ export const defaultFormValues: LessonPreparationFormData = {
 // Transform API Entity -> Form Data
 export const toFormData = (entity: LessonPreparation): LessonPreparationFormData => ({
   ...entity,
-  learning_objectives: entity.learning_objectives?.map(v => ({ value: v })) ?? [],
+  learning_objectives: entity.learning_objectives ?? [],
   teaching_methods: entity.teaching_methods?.map(v => ({ value: v })) ?? [],
   resources_needed: entity.resources_needed?.map(v => ({ value: v })) ?? [],
   assessment_methods: entity.assessment_methods?.map(v => ({ value: v })) ?? [],
@@ -253,7 +253,7 @@ export const toFormData = (entity: LessonPreparation): LessonPreparationFormData
 // Transform Form Data -> API Payload
 export const toApiPayload = (formData: LessonPreparationFormData): LessonPreparationApiPayload => ({
   ...formData,
-  learning_objectives: formData.learning_objectives.map(item => item.value),
+  learning_objectives: formData.learning_objectives ?? [],
   teaching_methods: formData.teaching_methods.map(item => item.value),
   resources_needed: formData.resources_needed.map(item => item.value),
   assessment_methods: formData.assessment_methods.map(item => item.value),
