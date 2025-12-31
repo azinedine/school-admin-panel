@@ -16,8 +16,8 @@ import {
     SelectValue,
 } from '@/components/ui/select'
 import { type LessonPreparationFormData } from '@/schemas/lesson-preparation'
-import { LessonPrepLegacyFields } from './LessonPrepLegacyFields'
-import { Calendar, Clock, GraduationCap, Hash, Layout } from 'lucide-react'
+
+import { Calendar, Clock, GraduationCap, Hash, Layout, Activity } from 'lucide-react'
 
 interface LessonHeaderProps {
     control: Control<LessonPreparationFormData>
@@ -156,7 +156,8 @@ export function LessonHeader({
                                 name="status"
                                 render={({ field }) => (
                                     <FormItem className="space-y-1">
-                                        <FormLabel className="text-[10px] uppercase tracking-wider text-muted-foreground font-semibold">
+                                        <FormLabel className="text-[10px] uppercase tracking-wider text-muted-foreground font-semibold flex items-center gap-1">
+                                            <Activity className="h-3 w-3" />
                                             {t('pages.prep.status.label', 'Status')}
                                         </FormLabel>
                                         <Select onValueChange={field.onChange} defaultValue={field.value} disabled={isLoading}>
@@ -204,15 +205,7 @@ export function LessonHeader({
                     </div>
                 </div>
 
-                {/* "Context & Objectives" Section - Visually subordinated/Compact */}
-                <div className="pt-2 border-t border-dashed border-muted-foreground/20">
-                    <LessonPrepLegacyFields
-                        control={control}
-                        isLoading={isLoading}
-                        language={language}
-                        variant="compact"
-                    />
-                </div>
+
             </div>
         </div>
     )
