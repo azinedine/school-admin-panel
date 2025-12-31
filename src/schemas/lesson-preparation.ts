@@ -58,8 +58,8 @@ const commonFields = {
  */
 const lessonElementsSchema = z.array(z.object({
   id: z.string().optional(),
-  content: z.string().min(1, V.lessonElementRequired)
-})).min(1, V.lessonElementsMin)
+  content: z.string()
+}))
 
 /**
  * Form Schema (UI Layer)
@@ -94,6 +94,12 @@ export const lessonPreparationFormSchema = z.object({
   evaluation_type: z.enum(['assessment', 'homework']),
   evaluation_content: z.string().optional(),
   evaluation_duration: z.number().min(1, V.evaluationDurationRequired).optional(),
+
+  // Notes List (UI Helper for Notes)
+  notes_list: z.array(z.object({
+    id: z.string().optional(),
+    content: z.string()
+  })).optional(),
 
   // Legacy fields
   learning_objectives: z.array(z.object({ value: z.string().min(1, V.objectiveRequired) })),
@@ -206,7 +212,7 @@ export const defaultFormValues: LessonPreparationFormData = {
   domain: '',
   learning_unit: '',
   knowledge_resource: '',
-  lesson_elements: [{ content: '' }],
+  lesson_elements: [],
   // New Defaults
   targeted_knowledge: [],
   used_materials: [],
@@ -217,6 +223,7 @@ export const defaultFormValues: LessonPreparationFormData = {
   evaluation_type: 'assessment',
   evaluation_content: '',
   evaluation_duration: 10,
+  notes_list: [],
 }
 
 // Transform API Entity -> Form Data
@@ -238,10 +245,13 @@ export const toFormData = (entity: LessonPreparation): LessonPreparationFormData
   domain: entity.domain ?? '',
   learning_unit: entity.learning_unit ?? '',
   knowledge_resource: entity.knowledge_resource ?? '',
-  lesson_elements: entity.lesson_elements?.length ? entity.lesson_elements : [{ content: '' }],
+  lesson_elements: entity.lesson_elements ?? [],
   evaluation_type: entity.evaluation_type ?? 'assessment',
   evaluation_content: entity.evaluation_content ?? '',
   evaluation_duration: entity.evaluation_duration ?? 10,
+  notes_list: entity.notes
+    ? entity.notes.split('\n\n').filter(n => n.trim().length > 0).map(n => ({ content: n }))
+    : [],
 })
 
 // Transform Form Data -> API Payload
@@ -257,7 +267,16 @@ export const toApiPayload = (formData: LessonPreparationFormData): LessonPrepara
   targeted_knowledge: formData.targeted_knowledge?.map(item => item.value) ?? [],
   used_materials: formData.used_materials?.map(item => item.value) ?? [],
   references: formData.references?.map(item => item.value) ?? [],
+  lesson_elements: formData.lesson_elements?.filter(e => e.content && e.content.trim().length > 0) ?? [],
   // Phases and Activities are direct arrays of objects, no map needed if structure matches
   phases: formData.phases ?? [],
   activities: formData.activities ?? [],
+
+  // Transform Notes List back to String
+  notes: formData.notes_list
+    ? formData.notes_list
+      .filter(n => n.content && n.content.trim().length > 0)
+      .map(n => n.content)
+      .join('\n\n')
+    : formData.notes || '',
 })
