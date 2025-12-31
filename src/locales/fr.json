@@ -636,12 +636,23 @@
             "evaluationType": "Type d'évaluation",
             "homework": "Devoirs",
             "evaluationContent": "Contenu",
+            "targetedKnowledge": "Connaissances ciblées",
+            "usedMaterials": "Matériel utilisé",
+            "references": "Références",
+            "knowledgePlaceholder": "Entrez le point de connaissance/compétence...",
+            "materialPlaceholder": "ex: Manuel, projecteur, cartes...",
+            "referencePlaceholder": "ex: Page 45, URL du site web...",
+            "phaseContentPlaceholder": "Décrivez les activités, le rôle de l'enseignant et le rôle de l'apprenant...",
+            "noKnowledge": "Aucune connaissance ciblée spécifique ajoutée",
+            "noMaterials": "Aucun matériel listé",
+            "noReferences": "Aucune référence ajoutée",
+            "params": {
+                "phases": "Phases du cours"
+            },
             "phases": {
-                "introduction": "Introduction / Éveil",
-                "development": "Développement / Construction",
+                "departure": "Situation de départ",
                 "presentation": "Présentation / Construction",
-                "consolidation": "Consolidation / Application",
-                "departure": "Départ / Évaluation"
+                "consolidation": "Consolidation / Application"
             },
             "objectivesAndTopics": "Objectifs & Thèmes",
             "supportMaterial": "Matériel de support",
