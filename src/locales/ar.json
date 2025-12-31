@@ -703,7 +703,6 @@
                 "field": "الميدان",
                 "learningSegment": "المقطع التعلمي",
                 "knowledgeResource": "المورد المعرفي",
-                "lessonElements": "عناصر الدرس",
                 "assessment": "التقويم",
                 "practicalWork": "عمل تطبيقي",
                 "homework": "واجب منزلي",
@@ -800,16 +799,18 @@
             "lessonElements": {
                 "title": "عناصر الدرس",
                 "addElement": "إضافة عنصر",
-                "removeElement": "حذف العنصر",
-                "elementPlaceholder": "أدخل عنصر الدرس",
-                "noElements": "لا توجد عناصر بعد. أضف عنصر الدرس الأول.",
-                "elementNumber": "عنصر {{number}}"
+                "noElements": "لا توجد عناصر بعد",
+                "optional": "اختياري: أضف عناصر الدرس إذا لزم الأمر",
+                "elementPlaceholder": "أدخل محتوى عنصر الدرس...",
+                "removeElement": "حذف العنصر"
             },
             "assessment": "التقويم",
             "assessmentPlaceholder": "أدخل ملاحظات التقويم والتقييم",
             "homeworkPlaceholder": "أدخل ملاحظات التقويم والتقييم",
-            "notesPlaceholder": "أدخل ملاحظات التقويم والتقييم",
-            "notes": "ملاحظات",
+            "notes": "ملاحظات الأستاذ",
+            "noNotes": "لا توجد ملاحظات",
+            "notesOptional": "اختياري: أضف ملاحظات خاصة لنفسك",
+            "notesPlaceholder": "أدخل محتوى الملاحظة...",
             "legacy": {
                 "additional": "معلومات إضافية"
             },
