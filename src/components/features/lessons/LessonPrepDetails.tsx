@@ -8,7 +8,6 @@ import {
   BookOpen,
   Layers,
   Target,
-  Lightbulb,
   Users,
   Package,
   GraduationCap,
@@ -16,7 +15,8 @@ import {
   CheckCircle2,
   CalendarDays,
   Timer,
-  School
+  School,
+  Lightbulb
 } from 'lucide-react'
 import { cn } from '@/lib/utils'
 
@@ -142,51 +142,26 @@ export function LessonPrepDetails({ data }: LessonPrepDetailsProps) {
         {/* OVERVIEW TAB */}
         <TabsContent value="overview" className="space-y-6 animate-in fade-in-50 slide-in-from-bottom-2">
 
-          {/* 1. Objectives & Topics Row */}
-          <div className="grid md:grid-cols-2 gap-6">
-
-            {/* Objectives */}
-            <div className="space-y-3">
-              <h3 className="flex items-center gap-2 font-semibold text-lg text-foreground/80">
-                <Target className="h-5 w-5 text-blue-500" />
-                Learning Objectives
-              </h3>
-              {data.learning_objectives?.length > 0 ? (
-                <ul className="space-y-2">
-                  {data.learning_objectives.map((obj, i) => (
-                    <li key={i} className="flex gap-3 bg-muted/30 p-3 rounded-lg border text-sm">
-                      <span className="font-bold text-blue-500/80 font-mono">{i + 1}</span>
-                      <span className="leading-relaxed">{obj}</span>
-                    </li>
-                  ))}
-                </ul>
-              ) : (
-                <div className="text-sm text-muted-foreground italic px-4 py-3 bg-muted/20 border border-dashed rounded-lg">
-                  No objectives specified.
-                </div>
-              )}
-            </div>
-
-            {/* Key Topics */}
-            <div className="space-y-3">
-              <h3 className="flex items-center gap-2 font-semibold text-lg text-foreground/80">
-                <Lightbulb className="h-5 w-5 text-amber-500" />
-                Key Topics
-              </h3>
-              {data.key_topics?.length > 0 ? (
-                <div className="flex flex-wrap gap-2">
-                  {data.key_topics.map((topic, i) => (
-                    <Badge key={i} variant="secondary" className="px-3 py-1.5 text-sm font-normal bg-amber-50 text-amber-900 border-amber-200 dark:bg-amber-900/20 dark:text-amber-300 dark:border-amber-800/50">
-                      {topic}
-                    </Badge>
-                  ))}
-                </div>
-              ) : (
-                <div className="text-sm text-muted-foreground italic px-4 py-3 bg-muted/20 border border-dashed rounded-lg">
-                  No topics specified.
-                </div>
-              )}
-            </div>
+          {/* 1. Objectives Row */}
+          <div className="space-y-3">
+            <h3 className="flex items-center gap-2 font-semibold text-lg text-foreground/80">
+              <Target className="h-5 w-5 text-blue-500" />
+              Learning Objectives
+            </h3>
+            {data.learning_objectives?.length > 0 ? (
+              <ul className="space-y-2">
+                {data.learning_objectives.map((obj, i) => (
+                  <li key={i} className="flex gap-3 bg-muted/30 p-3 rounded-lg border text-sm">
+                    <span className="font-bold text-blue-500/80 font-mono">{i + 1}</span>
+                    <span className="leading-relaxed">{obj}</span>
+                  </li>
+                ))}
+              </ul>
+            ) : (
+              <div className="text-sm text-muted-foreground italic px-4 py-3 bg-muted/20 border border-dashed rounded-lg">
+                No objectives specified.
+              </div>
+            )}
           </div>
 
           {/* 1.5 Targeted Knowledge (New) */}
