@@ -37,6 +37,8 @@ import { PreparationCard } from './PreparationCard'
 import { FormLanguageSelector } from '@/components/FormLanguageSelector'
 import type { LessonPreparation, LessonPreparationApiPayload } from '@/schemas/lesson-preparation'
 
+import { useSubjects, useLevels } from '@/hooks/use-subjects'
+
 /**
  * PreparationTab - CRUD Management of lesson preparations
  * Part of unified Lesson Management feature
@@ -59,10 +61,23 @@ export const PreparationTab = memo(function PreparationTab() {
 
     // Queries & Mutations
     const { data: allPreps = [], isLoading } = useLessonPreps()
+    const { data: subjectsList = [] } = useSubjects()
+    const { data: levelsList = [] } = useLevels()
     const createMutation = useCreateLessonPrep()
     const updateMutation = useUpdateLessonPrep(selectedPrep?.id || 0)
     const genericUpdateMutation = useGenericUpdateLessonPrep()
     const deleteMutation = useDeleteLessonPrep()
+
+    // Get teacher's subjects - use freshly fetched subjects filtered by user's assigned subject names
+    const isRTL = i18n.language === 'ar'
+    const teacherSubjects = subjectsList
+        .filter(s => user?.subjects?.includes(s.name) || user?.subjects?.includes(s.name_ar))
+        .map(s => isRTL ? s.name_ar : s.name)
+
+    // Get teacher's levels - use user's levels if available, otherwise use all levels
+    const teacherLevels = user?.levels?.length
+        ? user.levels
+        : levelsList.map(l => l.name)
 
     // Filter preparations
     const filteredPreps = allPreps.filter((prep) => {
@@ -293,8 +308,8 @@ export const PreparationTab = memo(function PreparationTab() {
                             initialData={selectedPrep}
                             onSubmit={handleFormSubmit}
                             isLoading={createMutation.isPending || updateMutation.isPending}
-                            levels={user?.levels || []}
-                            subjects={user?.subjects || []}
+                            levels={teacherLevels}
+                            subjects={teacherSubjects}
                             onCancel={() => setFormDialogOpen(false)}
                             language={formLanguage}
                             nextLessonNumber={selectedPrep ? undefined : (() => {
