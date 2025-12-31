@@ -71,7 +71,7 @@ export function LessonHeader({
                     </div>
 
                     {/* Subject */}
-                    <div className="md:col-span-3">
+                    <div className="md:col-span-4">
                         <FormField
                             control={control}
                             name="subject"
@@ -129,7 +129,7 @@ export function LessonHeader({
                     </div>
 
                     {/* Date */}
-                    <div className="md:col-span-3">
+                    <div className="md:col-span-2">
                         <FormField
                             control={control}
                             name="date"
