@@ -13,23 +13,17 @@ import { PhaseEditor } from './PhaseEditor'
 import { DynamicList } from './DynamicList'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { LessonHeader } from './LessonHeader'
 import {
     Form,
     FormControl,
     FormField,
     FormItem,
-    FormLabel,
     FormMessage,
     FormLanguageProvider,
+    FormLabel,
 } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
-import {
-    Select,
-    SelectContent,
-    SelectItem,
-    SelectTrigger,
-    SelectValue,
-} from '@/components/ui/select'
 import { Textarea } from '@/components/ui/textarea'
 import {
     type LessonPreparationFormData,
@@ -41,7 +35,6 @@ import {
     toApiPayload
 } from '@/schemas/lesson-preparation'
 import { LessonPrepPedagogicalContext } from './LessonPrepPedagogicalContext'
-import { LessonPrepLegacyFields } from './LessonPrepLegacyFields'
 import { LessonPrepElements } from './LessonPrepElements'
 import { LessonPrepEvaluation } from './LessonPrepEvaluation'
 
@@ -89,122 +82,19 @@ export function LessonPrepForm({
     return (
         <FormLanguageProvider language={language}>
             <Form {...form}>
-                <form onSubmit={form.handleSubmit(handleSubmit, onInvalid)} className="flex flex-col h-full" dir={language === 'ar' ? 'rtl' : 'ltr'}>
+                <form onSubmit={form.handleSubmit(handleSubmit, onInvalid)} className="flex flex-col h-full bg-background" dir={language === 'ar' ? 'rtl' : 'ltr'}>
 
-                    {/* 1. Compact Header - Basic Info & Status */}
-                    <div className="grid grid-cols-12 gap-4 p-4 border-b bg-muted/20 items-end">
-                        <div className="col-span-2">
-                            <FormField
-                                control={form.control}
-                                name="lesson_number"
-                                render={({ field }) => (
-                                    <FormItem className="space-y-1">
-                                        <FormLabel className="text-xs text-muted-foreground">{t('pages.prep.lessonNumber', 'Lesson Number')}</FormLabel>
-                                        <FormControl>
-                                            <Input
-                                                type="number"
-                                                className="h-8 bg-background"
-                                                placeholder="#"
-                                                {...field}
-                                                disabled={isLoading}
-                                                min={1}
-                                            />
-                                        </FormControl>
-                                        <FormMessage />
-                                    </FormItem>
-                                )}
-                            />
-                        </div>
-                        <div className="col-span-3">
-                            <FormField
-                                control={form.control}
-                                name="subject"
-                                render={({ field }) => (
-                                    <FormItem className="space-y-1">
-                                        <FormLabel className="text-xs text-muted-foreground">{t('pages.prep.subject', 'Subject')}</FormLabel>
-                                        <Select onValueChange={field.onChange} defaultValue={field.value} disabled={isLoading}>
-                                            <FormControl>
-                                                <SelectTrigger className="h-8 bg-background">
-                                                    <SelectValue placeholder={t('pages.prep.selectSubject')} />
-                                                </SelectTrigger>
-                                            </FormControl>
-                                            <SelectContent>
-                                                {subjects.length > 0 ? (
-                                                    subjects.map((s) => <SelectItem key={s} value={s}>{s}</SelectItem>)
-                                                ) : <SelectItem value="General" disabled>{t('pages.prep.noSubjects')}</SelectItem>}
-                                            </SelectContent>
-                                        </Select>
-                                        <FormMessage />
-                                    </FormItem>
-                                )}
-                            />
-                        </div>
-                        <div className="col-span-3">
-                            <FormField
-                                control={form.control}
-                                name="level"
-                                render={({ field }) => (
-                                    <FormItem className="space-y-1">
-                                        <FormLabel className="text-xs text-muted-foreground">{t('pages.prep.level', 'Level')}</FormLabel>
-                                        <Select onValueChange={field.onChange} defaultValue={field.value} disabled={isLoading}>
-                                            <FormControl>
-                                                <SelectTrigger className="h-8 bg-background">
-                                                    <SelectValue placeholder={t('pages.prep.selectLevel')} />
-                                                </SelectTrigger>
-                                            </FormControl>
-                                            <SelectContent>
-                                                {levels.length > 0 ? (
-                                                    levels.map((l) => <SelectItem key={l} value={l}>{l}</SelectItem>)
-                                                ) : <SelectItem value="none" disabled>{t('pages.prep.noLevels')}</SelectItem>}
-                                            </SelectContent>
-                                        </Select>
-                                        <FormMessage />
-                                    </FormItem>
-                                )}
-                            />
-                        </div>
-                        <div className="col-span-2">
-                            <FormField
-                                control={form.control}
-                                name="date"
-                                render={({ field }) => (
-                                    <FormItem className="space-y-1">
-                                        <FormLabel className="text-xs text-muted-foreground">{t('pages.prep.date', 'Date')}</FormLabel>
-                                        <FormControl>
-                                            <Input type="date" className="h-8 bg-background" {...field} disabled={isLoading} />
-                                        </FormControl>
-                                        <FormMessage />
-                                    </FormItem>
-                                )}
-                            />
-                        </div>
-                        <div className="col-span-2">
-                            <FormField
-                                control={form.control}
-                                name="status"
-                                render={({ field }) => (
-                                    <FormItem className="space-y-1">
-                                        <FormLabel className="text-xs text-muted-foreground">{t('pages.prep.preparationStatus')}</FormLabel>
-                                        <Select onValueChange={field.onChange} defaultValue={field.value} disabled={isLoading}>
-                                            <FormControl>
-                                                <SelectTrigger className="h-8 bg-background border-primary/20">
-                                                    <SelectValue />
-                                                </SelectTrigger>
-                                            </FormControl>
-                                            <SelectContent>
-                                                <SelectItem value="draft">{t('pages.prep.status.draft', 'Draft')}</SelectItem>
-                                                <SelectItem value="ready">{t('pages.prep.status.ready', 'Ready')}</SelectItem>
-                                                <SelectItem value="delivered">{t('pages.prep.status.delivered', 'Delivered')}</SelectItem>
-                                            </SelectContent>
-                                        </Select>
-                                        <FormMessage />
-                                    </FormItem>
-                                )}
-                            />
-                        </div>
-                    </div>
+                    {/* NEW: Lesson Header (Metadata + Objectives) */}
+                    <LessonHeader
+                        control={form.control}
+                        isLoading={isLoading}
+                        language={language}
+                        subjects={subjects}
+                        levels={levels}
+                    />
 
-                    <div className="flex-1 overflow-y-auto p-6">
+                    {/* MAIN CONTENT - Scrollable */}
+                    <div className="flex-1 overflow-y-auto">
                         <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
 
                             {/* LEFT COLUMN: Context & Objectives (4 cols) */}
@@ -241,11 +131,11 @@ export function LessonPrepForm({
                                         language={language}
                                     />
 
-                                    <LessonPrepLegacyFields
-                                        control={form.control}
-                                        isLoading={isLoading}
-                                        language={language}
-                                    />
+                                    {/* Legacy Fields (Objectives) are now in Header, so we skip them here to avoid duplication. 
+                                            The user asked to "return to the previous design" but "fix layout". 
+                                            Keeping objectives in header is cleaner, but if they want strict revert, they go here.
+                                            But "fix header" suggests looking at LessonHeader. LessonHeader HAS objectives.
+                                            So we do NOT put them here. */}
 
                                     <DynamicList
                                         control={form.control}
@@ -345,12 +235,14 @@ export function LessonPrepForm({
                                     </Card>
                                 </div>
                             </div>
-                        </div>
+                        </div>     {/* Footer Spacing */}
+                        <div className="h-10" />
                     </div>
 
+
                     {/* Footer Actions */}
-                    <div className="flex justify-between items-center px-6 py-4 border-t bg-muted/20">
-                        <div className="text-xs text-muted-foreground">
+                    <div className="flex justify-between items-center px-6 py-4 border-t bg-background sticky bottom-0 z-10 shadow-[0_-1px_10px_rgba(0,0,0,0.05)]">
+                        <div className="text-xs text-muted-foreground font-medium">
                             {initialData ? t('pages.prep.lastEdited', 'Editing existing preparation') : t('pages.prep.newDraft', 'Creating new preparation')}
                         </div>
                         <div className="flex gap-3">
@@ -364,7 +256,7 @@ export function LessonPrepForm({
                                     {t('common.cancel', 'Cancel')}
                                 </Button>
                             )}
-                            <Button type="submit" disabled={isLoading}>
+                            <Button type="submit" disabled={isLoading} className="min-w-[150px]">
                                 {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
                                 {initialData ? t('pages.prep.update', 'Update Preparation') : t('pages.prep.create', 'Create Preparation')}
                             </Button>
@@ -372,7 +264,7 @@ export function LessonPrepForm({
                     </div>
                 </form>
             </Form>
-        </FormLanguageProvider>
+        </FormLanguageProvider >
     )
 }
 
