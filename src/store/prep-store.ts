@@ -25,6 +25,11 @@ export interface DailyPlanEntry {
   homework?: boolean  // واجب منزلي - Homework
   practicalWork?: boolean  // عمل تطبيقي - Practical Work
   secondaryTimeSlot?: string // توقيت الحصة الثانية - Secondary Time Slot
+  // New Pedagogical Fields
+  phases?: { type: string, duration: number, content: string }[]
+  targetedKnowledge?: string[]
+  usedMaterials?: string[]
+  references?: string[]
 }
 
 export interface TimetableEntry {
@@ -51,6 +56,11 @@ export interface LessonTemplate {
   secondaryTimeSlot?: string
   lessonContent: string
   practiceNotes: string
+  // New Pedagogical Fields
+  phases?: { type: string, duration: number, content: string }[]
+  targetedKnowledge?: string[]
+  usedMaterials?: string[]
+  references?: string[]
   createdAt: string
 }
 
