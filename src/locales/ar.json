@@ -837,7 +837,14 @@
                 "topicsMin": "أضف موضوعاً رئيسياً واحداً على الأقل",
                 "methodRequired": "الطريقة مطلوبة",
                 "methodsMin": "اختر طريقة تدريس واحدة على الأقل",
-                "resourceRequired": "المورد مطلوب"
+                "resourceRequired": "المورد مطلوب",
+                "knowledgeRequired": "يرجى إدخال النقطة المعرفية",
+                "materialRequired": "يرجى إدخال الوسيلة",
+                "referenceRequired": "يرجى إدخال المرجع",
+                "phaseContentRequired": "محتوى المرحلة مطلوب",
+                "phaseDurationRequired": "المدة مطلوبة",
+                "activityContentRequired": "محتوى النشاط مطلوب",
+                "totalDurationMismatch": "مجموع مدة المراحل يتجاوز مدة الدرس"
             },
             "templateSection": "تحميل من قالب",
             "selectTemplate": "اختر قالبًا...",
