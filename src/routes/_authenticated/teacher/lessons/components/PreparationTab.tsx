@@ -29,7 +29,7 @@ import {
     AlertDialogHeader,
     AlertDialogTitle,
 } from '@/components/ui/alert-dialog'
-import { useLessonPreps, useCreateLessonPrep, useUpdateLessonPrep, useDeleteLessonPrep } from '@/hooks/use-lesson-preparation'
+import { useLessonPreps, useCreateLessonPrep, useUpdateLessonPrep, useDeleteLessonPrep, useGenericUpdateLessonPrep } from '@/hooks/use-lesson-preparation'
 import { LessonPrepDetails } from './LessonPrepDetails'
 import { LessonPrepForm } from './LessonPrepForm'
 import { PreparationCard } from './PreparationCard'
@@ -43,8 +43,6 @@ import type { LessonPreparation, LessonPreparationApiPayload } from '@/schemas/l
 export const PreparationTab = memo(function PreparationTab() {
     const { t, i18n } = useTranslation()
     const user = useAuthStore((state) => state.user)
-
-    console.log(user)
 
     // State
     const [viewDialogOpen, setViewDialogOpen] = useState(false)
@@ -62,6 +60,7 @@ export const PreparationTab = memo(function PreparationTab() {
     const { data: allPreps = [], isLoading } = useLessonPreps()
     const createMutation = useCreateLessonPrep()
     const updateMutation = useUpdateLessonPrep(selectedPrep?.id || 0)
+    const genericUpdateMutation = useGenericUpdateLessonPrep()
     const deleteMutation = useDeleteLessonPrep()
 
     // Filter preparations
@@ -94,6 +93,13 @@ export const PreparationTab = memo(function PreparationTab() {
     const handleDeleteClick = (prep: LessonPreparation) => {
         setPrepToDelete(prep)
         setDeleteDialogOpen(true)
+    }
+
+    const handleStatusChange = async (prep: LessonPreparation, status: 'draft' | 'ready' | 'delivered') => {
+        await genericUpdateMutation.mutateAsync({
+            id: prep.id,
+            data: { status }
+        })
     }
 
     const confirmDelete = async () => {
@@ -213,6 +219,7 @@ export const PreparationTab = memo(function PreparationTab() {
                             onView={handleView}
                             onEdit={handleEdit}
                             onDelete={handleDeleteClick}
+                            onStatusChange={handleStatusChange}
                         />
                     ))}
                 </div>
