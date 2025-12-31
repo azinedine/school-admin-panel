@@ -22,6 +22,7 @@ export function useUpdateProfile(userId: number) {
             office_location?: string;
             date_of_hiring?: string;
             years_of_experience?: number;
+            subjects?: string[];
         }) => {
             // Format payload logic extracted from component
             const payload = {
