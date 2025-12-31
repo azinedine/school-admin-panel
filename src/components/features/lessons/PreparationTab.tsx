@@ -279,7 +279,10 @@ export const PreparationTab = memo(function PreparationTab() {
                 <DialogContent className="max-w-7xl h-[90vh] flex flex-col p-0 gap-0 [&>button]:hidden">
                     <div className="px-6 py-4 border-b flex justify-between items-center shrink-0 bg-background">
                         <DialogTitle>
-                            {selectedPrep ? t('pages.prep.editPrep', 'Edit Lesson Preparation') : t('pages.prep.createPrep', 'New Lesson Preparation')}
+                            {selectedPrep
+                                ? (formLanguage ? i18n.getFixedT(formLanguage)('pages.prep.editPrep') : t('pages.prep.editPrep'))
+                                : (formLanguage ? i18n.getFixedT(formLanguage)('pages.prep.createPrep') : t('pages.prep.createPrep'))
+                            }
                         </DialogTitle>
                         <div className="flex items-center gap-2">
                             <FormLanguageSelector
