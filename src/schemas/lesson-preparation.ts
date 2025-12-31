@@ -103,7 +103,7 @@ export const lessonPreparationFormSchema = z.object({
 
   // Legacy fields
   learning_objectives: z.array(z.string()),
-  teaching_methods: z.array(z.object({ value: z.string().min(1, V.methodRequired) })).min(1, V.methodsMin),
+  teaching_methods: z.array(z.string()).min(1, V.methodsMin),
   resources_needed: z.array(z.object({ value: z.string().min(1, V.resourceRequired) })),
   assessment_methods: z.array(z.object({ value: z.string().min(1, V.methodRequired) })),
 }).superRefine((data, ctx) => {
@@ -227,7 +227,7 @@ export const defaultFormValues: LessonPreparationFormData = {
 export const toFormData = (entity: LessonPreparation): LessonPreparationFormData => ({
   ...entity,
   learning_objectives: entity.learning_objectives ?? [],
-  teaching_methods: entity.teaching_methods?.map(v => ({ value: v })) ?? [],
+  teaching_methods: entity.teaching_methods ?? [],
   resources_needed: entity.resources_needed?.map(v => ({ value: v })) ?? [],
   assessment_methods: entity.assessment_methods?.map(v => ({ value: v })) ?? [],
 
@@ -254,7 +254,7 @@ export const toFormData = (entity: LessonPreparation): LessonPreparationFormData
 export const toApiPayload = (formData: LessonPreparationFormData): LessonPreparationApiPayload => ({
   ...formData,
   learning_objectives: formData.learning_objectives ?? [],
-  teaching_methods: formData.teaching_methods.map(item => item.value),
+  teaching_methods: formData.teaching_methods ?? [],
   resources_needed: formData.resources_needed.map(item => item.value),
   assessment_methods: formData.assessment_methods.map(item => item.value),
 
