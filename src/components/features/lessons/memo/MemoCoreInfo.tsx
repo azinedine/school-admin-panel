@@ -5,10 +5,9 @@ import { MemoSection } from './MemoSection'
 
 interface MemoCoreInfoProps {
     lesson: LessonPreparation
-    language: string
 }
 
-export function MemoCoreInfo({ lesson, language }: MemoCoreInfoProps) {
+export function MemoCoreInfo({ lesson }: MemoCoreInfoProps) {
     const { t } = useTranslation()
 
     // Helper for fixed translations
@@ -47,19 +46,19 @@ export function MemoCoreInfo({ lesson, language }: MemoCoreInfoProps) {
             title={tFixed('pages.prep.coreInfo', 'Core Information')}
             className="mb-8"
         >
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-y-6 gap-x-12">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 {coreFields.map((field, i) => (
-                    <div key={i} className={field.fullWidth ? "md:col-span-2" : ""}>
-                        <div className="flex items-start gap-3">
-                            <div className="mt-1 h-8 w-8 rounded-full bg-primary/10 flex items-center justify-center shrink-0">
-                                <field.icon className="h-4 w-4 text-primary" />
+                    <div key={i} className={`${field.fullWidth ? "md:col-span-2" : ""} group`}>
+                        <div className="flex items-start gap-4 p-4 rounded-lg border border-transparent hover:border-slate-100 hover:bg-slate-50 transition-colors">
+                            <div className="mt-1 h-10 w-10 rounded-lg bg-blue-50 text-blue-600 flex items-center justify-center shrink-0 border border-blue-100 shadow-sm group-hover:bg-blue-600 group-hover:text-white transition-colors duration-300">
+                                <field.icon className="h-5 w-5" />
                             </div>
-                            <div className="space-y-1">
-                                <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">
+                            <div className="space-y-1.5 flex-1">
+                                <p className="text-xs font-bold text-slate-400 uppercase tracking-widest">
                                     {field.label}
                                 </p>
-                                <p className="text-sm md:text-base font-medium text-foreground leading-normal">
-                                    {field.value || <span className="text-muted-foreground/40 italic">-</span>}
+                                <p className="text-base md:text-lg font-medium text-slate-900 leading-snug">
+                                    {field.value || <span className="text-slate-300 italic">-</span>}
                                 </p>
                             </div>
                         </div>
@@ -69,12 +68,15 @@ export function MemoCoreInfo({ lesson, language }: MemoCoreInfoProps) {
 
             {/* Targeted Knowledge Tags (Visual) */}
             {lesson.targeted_knowledge && lesson.targeted_knowledge.length > 0 && (
-                <div className="mt-6 pt-4 border-t border-border/40">
+                <div className="mt-8 pt-6 border-t border-slate-100">
+                    <p className="text-xs font-bold text-slate-400 uppercase tracking-widest mb-3">
+                        {tFixed('pages.prep.keywords', 'Keywords & Topics')}
+                    </p>
                     <div className="flex flex-wrap gap-2">
                         {lesson.targeted_knowledge.map((topic, i) => (
                             <span
                                 key={i}
-                                className="px-2.5 py-1 rounded-md bg-secondary/50 text-secondary-foreground text-sm font-medium border border-secondary"
+                                className="px-3 py-1.5 rounded-full bg-slate-100 text-slate-700 text-sm font-medium border border-slate-200 shadow-sm"
                             >
                                 # {topic}
                             </span>
