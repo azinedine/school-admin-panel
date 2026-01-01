@@ -5,7 +5,6 @@ import { useAuthStore } from '@/store/auth-store'
 import { AlertCircle, ChevronLeft, Printer } from 'lucide-react'
 import { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { useNavigate } from '@tanstack/react-router'
 import { MemoContext } from './MemoContext'
 import { MemoCoreInfo } from './MemoCoreInfo'
 import { MemoEvaluation } from './MemoEvaluation'
@@ -19,7 +18,6 @@ interface LessonMemoViewProps {
 
 export function LessonMemoView({ lessonId }: LessonMemoViewProps) {
     const { t, i18n } = useTranslation()
-    const navigate = useNavigate()
     const { data: lesson, isLoading, error } = useLessonPrepDetail(lessonId)
     const { user } = useAuthStore() // Correct auth usage
     const [language, setLanguage] = useState(i18n.language || 'fr')
@@ -61,13 +59,13 @@ export function LessonMemoView({ lessonId }: LessonMemoViewProps) {
     const teacherName = user ? user.name : 'Unknown Teacher'
 
     return (
-        <div className="min-h-screen bg-muted/10 pb-20 print:bg-white print:pb-0">
+        <div className="min-h-screen bg-muted/30 dark:bg-background pb-20 print:bg-white print:pb-0">
             {/* Navigation Overlay (Hidden in Print) */}
             <div className="fixed top-24 left-6 z-40 print:hidden hidden xl:block">
                 <Button
                     variant="outline"
                     size="icon"
-                    className="rounded-full shadow-md bg-background hover:bg-accent"
+                    className="rounded-full shadow-sm bg-background/80 backdrop-blur hover:bg-background border"
                     onClick={() => window.history.back()}
                     title={t('common.back', 'Go Back')}
                 >
@@ -76,7 +74,9 @@ export function LessonMemoView({ lessonId }: LessonMemoViewProps) {
             </div>
 
             {/* Memo Container */}
-            <div className="container mx-auto max-w-5xl bg-white shadow-xl min-h-screen border-x border-border/40 print:shadow-none print:border-none print:w-full print:max-w-none">
+            <div className="container mx-auto max-w-4xl bg-card shadow-xl my-8 rounded-lg border print:my-0 print:shadow-none print:border-none print:rounded-none print:w-full print:max-w-none">
+                {/* Decorative Top Border */}
+                <div className="h-1.5 bg-gradient-to-r from-primary via-primary/80 to-primary w-full rounded-t-lg print:hidden" />
 
                 {/* Header */}
                 <MemoHeader
@@ -86,48 +86,47 @@ export function LessonMemoView({ lessonId }: LessonMemoViewProps) {
                     teacherName={teacherName}
                 />
 
-                <div className="p-8 md:p-12 space-y-10 print:p-0 print:pt-4">
+                <div className="px-6 md:px-10 py-8 space-y-8 print:p-6">
                     {/* Core Info Section */}
-                    <MemoCoreInfo lesson={lesson} language={language} />
+                    <MemoCoreInfo lesson={lesson} />
 
                     {/* Context & Objectives */}
                     <MemoContext lesson={lesson} language={language} />
 
-                    <hr className="border-border/50" />
+                    <hr className="border-border" />
 
                     {/* Phases Section */}
                     <MemoPhases lesson={lesson} language={language} />
 
-                    <hr className="border-border/50" />
+                    <hr className="border-border" />
 
                     {/* Resources Section */}
                     <MemoResources lesson={lesson} language={language} />
 
-                    <hr className="border-border/50" />
+                    <hr className="border-border" />
 
                     {/* Evaluation Section */}
                     <MemoEvaluation lesson={lesson} language={language} />
 
                     {/* Footer / Signature (Print Only) */}
-                    <div className="hidden print:flex justify-between mt-20 pt-8 border-t border-black/20">
+                    <div className="hidden print:flex justify-between mt-16 pt-6 border-t">
                         <div className="text-sm">
-                            <p className="font-semibold text-gray-900">Visa du Directeur / Inspecteur :</p>
-                            <div className="h-20 w-48 border-b border-dashed border-gray-300 mt-2"></div>
+                            <p className="font-semibold mb-6">Visa du Directeur / Inspecteur :</p>
+                            <div className="text-xs text-muted-foreground italic">Date et Signature</div>
                         </div>
-                        <div className="text-sm">
-                            <p className="font-semibold text-gray-900">Signature de l'enseignant :</p>
-                            <div className="h-20 w-48 border-b border-dashed border-gray-300 mt-2"></div>
+                        <div className="text-sm text-right">
+                            <p className="font-semibold mb-6">Signature de l'enseignant :</p>
+                            <div className="text-xs text-muted-foreground italic">Date et Signature</div>
                         </div>
                     </div>
                 </div>
+            </div>
 
-                {/* Print Fab (Mobile/Bottom) */}
-                <div className="fixed bottom-6 right-6 z-50 md:hidden print:hidden">
-                    <Button size="lg" className="rounded-full shadow-xl" onClick={handlePrint}>
-                        <Printer className="h-5 w-5 mr-2" />
-                        Print
-                    </Button>
-                </div>
+            {/* Print Fab (Mobile/Bottom) */}
+            <div className="fixed bottom-8 right-8 z-50 md:hidden print:hidden">
+                <Button size="lg" className="rounded-full shadow-xl h-14 w-14 p-0" onClick={handlePrint}>
+                    <Printer className="h-6 w-6" />
+                </Button>
             </div>
         </div>
     )
