@@ -35,6 +35,7 @@ import { cn } from '@/lib/utils'
 interface PreparationCardProps {
     prep: LessonPreparation
     onView: (prep: LessonPreparation) => void
+    onViewMemo?: (prep: LessonPreparation) => void
     onEdit?: (prep: LessonPreparation) => void
     onDelete?: (prep: LessonPreparation) => void
     onStatusChange?: (prep: LessonPreparation, status: 'draft' | 'ready' | 'delivered') => void
@@ -59,7 +60,7 @@ const statusConfig = {
     },
 } as const
 
-export function PreparationCard({ prep, onView, onEdit, onDelete, onStatusChange }: PreparationCardProps) {
+export function PreparationCard({ prep, onView, onViewMemo, onEdit, onDelete, onStatusChange }: PreparationCardProps) {
     const status = statusConfig[prep.status]
     const StatusIcon = status.icon
 
@@ -99,6 +100,11 @@ export function PreparationCard({ prep, onView, onEdit, onDelete, onStatusChange
                                 <DropdownMenuItem onClick={() => onView(prep)}>
                                     <FileText className="mr-2 h-4 w-4" /> View Details
                                 </DropdownMenuItem>
+                                {onViewMemo && (
+                                    <DropdownMenuItem onClick={() => onViewMemo(prep)}>
+                                        <BookOpen className="mr-2 h-4 w-4" /> View Memo
+                                    </DropdownMenuItem>
+                                )}
                                 {onEdit && (
                                     <DropdownMenuItem onClick={() => onEdit(prep)}>
                                         <Pencil className="mr-2 h-4 w-4" /> Edit
