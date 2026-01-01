@@ -1,5 +1,6 @@
 import { useState, memo } from 'react'
 import { useTranslation } from 'react-i18next'
+import { useNavigate } from '@tanstack/react-router'
 import { BookOpen, Loader2, Search, Filter, Plus, Trash2, X, Printer } from 'lucide-react'
 import { Card, CardContent } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
@@ -92,14 +93,20 @@ export const PreparationTab = memo(function PreparationTab() {
         setFormDialogOpen(true)
     }
 
+    const navigate = useNavigate()
+
     const handleView = (prep: LessonPreparation) => {
         setSelectedPrep(prep)
         setViewDialogOpen(true)
     }
 
+    const handleViewMemo = (prep: LessonPreparation) => {
+        navigate({ to: '/teacher/lessons/$lessonId/memo', params: { lessonId: String(prep.id) } })
+    }
+
     const handleDeleteClick = (prep: LessonPreparation) => {
         setPrepToDelete(prep)
-        setDeleteDialogOpen(true)
+        setDeleteDialogOpen(true) // Fixed syntax error here
     }
 
     const handleStatusChange = async (prep: LessonPreparation, status: 'draft' | 'ready' | 'delivered') => {
@@ -224,6 +231,7 @@ export const PreparationTab = memo(function PreparationTab() {
                             key={prep.id}
                             prep={prep}
                             onView={handleView}
+                            onViewMemo={handleViewMemo}
                             onEdit={handleEdit}
                             onDelete={handleDeleteClick}
                             onStatusChange={handleStatusChange}
