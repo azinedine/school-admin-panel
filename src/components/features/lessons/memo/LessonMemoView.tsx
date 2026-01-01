@@ -1,5 +1,4 @@
 import { Button } from '@/components/ui/button'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Skeleton } from '@/components/ui/skeleton'
 import { useLessonPrepDetail } from '@/hooks/use-lesson-preparation'
 import { useAuthStore } from '@/store/auth-store'
@@ -58,7 +57,7 @@ export function LessonMemoView({ lessonId }: LessonMemoViewProps) {
     const teacherName = user ? user.name : 'Unknown Teacher'
 
     return (
-        <div className="min-h-screen bg-background print:bg-white">
+        <div className="h-full overflow-auto bg-background print:bg-white print:overflow-visible">
             {/* Top Navigation Bar */}
             <div className="sticky top-0 z-50 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 border-b print:hidden">
                 <div className="container max-w-5xl mx-auto px-4 h-14 flex items-center justify-between">
@@ -74,8 +73,8 @@ export function LessonMemoView({ lessonId }: LessonMemoViewProps) {
                                     key={lang}
                                     onClick={() => handleLanguageChange(lang)}
                                     className={`px-3 py-1.5 text-xs font-medium transition-colors ${language === lang
-                                            ? 'bg-primary text-primary-foreground'
-                                            : 'bg-muted hover:bg-muted/80 text-muted-foreground'
+                                        ? 'bg-primary text-primary-foreground'
+                                        : 'bg-muted hover:bg-muted/80 text-muted-foreground'
                                         }`}
                                 >
                                     {lang.toUpperCase()}
