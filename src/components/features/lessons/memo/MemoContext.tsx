@@ -1,66 +1,64 @@
-import { Badge } from '@/components/ui/badge'
-import { Card, CardContent } from '@/components/ui/card'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import type { LessonPreparation } from '@/schemas/lesson-preparation'
 import { BookOpen, Target } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
-import { MemoSection } from './MemoSection'
 
 interface MemoContextProps {
     lesson: LessonPreparation
     language: string
 }
 
-export function MemoContext({ lesson, language }: MemoContextProps) {
+export function MemoContext({ lesson }: MemoContextProps) {
     const { t } = useTranslation()
-    const isRTL = language === 'ar'
-
-    // Helper for fixed translations
-    const tFixed = (key: string, defaultValue: string) => {
-        return t(key, defaultValue) as string
-    }
 
     return (
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 break-inside-avoid">
-            {/* Pedagogical Context / Notes */}
-            <MemoSection
-                title={tFixed('pages.prep.context', 'Pedagogical Context')}
-                icon={BookOpen}
-                className="h-full"
-            >
-                <div className="space-y-4">
-                    <div className="prose prose-sm max-w-none text-muted-foreground">
-                        {lesson.notes ? (
-                            <p className="whitespace-pre-wrap leading-relaxed">{lesson.notes}</p>
-                        ) : (
-                            <p className="italic opacity-60">{tFixed('common.noData', 'No context provided')}</p>
-                        )}
-                    </div>
-                </div>
-            </MemoSection>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            {/* Pedagogical Context */}
+            <Card>
+                <CardHeader className="pb-3">
+                    <CardTitle className="text-sm flex items-center gap-2">
+                        <BookOpen className="h-4 w-4" />
+                        {t('pages.prep.context', 'Pedagogical Context')}
+                    </CardTitle>
+                </CardHeader>
+                <CardContent>
+                    {lesson.notes ? (
+                        <p className="text-sm text-muted-foreground whitespace-pre-wrap leading-relaxed">
+                            {lesson.notes}
+                        </p>
+                    ) : (
+                        <p className="text-sm text-muted-foreground italic">
+                            {t('common.noData', 'No context provided')}
+                        </p>
+                    )}
+                </CardContent>
+            </Card>
 
             {/* Learning Objectives */}
-            <MemoSection
-                title={tFixed('pages.prep.objectives', 'Learning Objectives')}
-                icon={Target}
-                className="h-full"
-            >
-                <div className="space-y-3">
+            <Card>
+                <CardHeader className="pb-3">
+                    <CardTitle className="text-sm flex items-center gap-2">
+                        <Target className="h-4 w-4" />
+                        {t('pages.prep.objectives', 'Learning Objectives')}
+                    </CardTitle>
+                </CardHeader>
+                <CardContent>
                     {lesson.learning_objectives && lesson.learning_objectives.length > 0 ? (
                         <ul className="space-y-2">
                             {lesson.learning_objectives.map((obj, i) => (
-                                <li key={i} className="flex items-start gap-2.5 text-sm text-foreground/90">
+                                <li key={i} className="flex items-start gap-2 text-sm">
                                     <span className="mt-1.5 h-1.5 w-1.5 rounded-full bg-primary shrink-0" />
-                                    <span className="leading-relaxed">{obj}</span>
+                                    <span className="text-muted-foreground">{obj}</span>
                                 </li>
                             ))}
                         </ul>
                     ) : (
-                        <p className="text-sm text-muted-foreground italic opacity-70">
-                            {tFixed('common.noData', 'No objectives defined')}
+                        <p className="text-sm text-muted-foreground italic">
+                            {t('common.noData', 'No objectives defined')}
                         </p>
                     )}
-                </div>
-            </MemoSection>
+                </CardContent>
+            </Card>
         </div>
     )
 }
