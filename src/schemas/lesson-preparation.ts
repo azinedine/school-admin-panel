@@ -188,7 +188,7 @@ export const defaultFormValues: LessonPreparationFormData = {
   subject: '',
   level: '',
   date: new Date().toISOString().split('T')[0],
-  duration_minutes: 45,
+  duration_minutes: 60,
   learning_objectives: [],
   teaching_methods: [],
   resources_needed: [],
