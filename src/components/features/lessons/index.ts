@@ -21,6 +21,6 @@ export { LessonPrepEvaluation } from './LessonPrepEvaluation.tsx'
 // Utilities
 export { ClassContextDisplay } from './ClassContextDisplay.tsx'
 export { LessonDetailDialog } from './lesson-detail-dialog/index.ts'
-export { LessonPrepByClass } from './LessonPrepByClass.tsx'
+export { LessonPrepByClass } from './lesson-prep-by-class/index.ts'
 export { LessonSelector } from './LessonSelector.tsx'
 export { LessonDetailsSheet } from './LessonDetailsSheet.tsx'
