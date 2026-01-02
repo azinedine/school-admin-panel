@@ -665,7 +665,7 @@ export function GradeSheetTable({ classId: selectedClassId, term: selectedTerm, 
       })
   }, [students, records, selectedClassId, getStudentAbsenceCount, getStudentTardinessCount, selectedYear, selectedTerm])
 
-  const handleCellEdit = useCallback(async (id: string, field: keyof StudentGrade, value: string) => {
+  const handleCellEdit = useCallback(async (id: string, field: keyof StudentGrade, value: string, keepOpen: boolean = false) => {
     const numValue = Number(value)
     if (isNaN(numValue) || numValue < 0 || numValue > 20) return
 
@@ -679,7 +679,9 @@ export function GradeSheetTable({ classId: selectedClassId, term: selectedTerm, 
     } catch (error) {
       toast.error(t('common.error'))
     }
-    setEditingCell(null)
+    if (!keepOpen) {
+      setEditingCell(null)
+    }
   }, [updateGradeMutation, selectedTerm, t])
 
   const handleRecordAttendance = useCallback(() => {
@@ -907,10 +909,10 @@ export function GradeSheetTable({ classId: selectedClassId, term: selectedTerm, 
     const isEditing = editingCell?.id === student.id && editingCell?.field === field
     const config = FIELD_CONFIG[field] || { min: 0, max: 20, step: 0.5, labelKey: field }
 
-    const handleValidatedEdit = (newValue: string) => {
+    const handleValidatedEdit = (newValue: string, keepOpen: boolean = false) => {
       const numValue = parseFloat(newValue)
       if (isNaN(numValue)) {
-        setEditingCell(null)
+        if (!keepOpen) setEditingCell(null)
         return
       }
 
@@ -930,7 +932,7 @@ export function GradeSheetTable({ classId: selectedClassId, term: selectedTerm, 
         }))
       }
 
-      handleCellEdit(student.id, field, clampedValue.toString())
+      handleCellEdit(student.id, field, clampedValue.toString(), keepOpen)
     }
 
     return (
@@ -950,9 +952,10 @@ export function GradeSheetTable({ classId: selectedClassId, term: selectedTerm, 
                   onFocus={(e) => e.target.select()}
                   onChange={(e) => {
                     // Save when using spinner buttons (onChange fires on each click)
+                    // Keep cell open so user can continue adjusting
                     const newValue = e.target.value.trim()
                     if (newValue !== '' && newValue !== String(value)) {
-                      handleValidatedEdit(newValue)
+                      handleValidatedEdit(newValue, true)
                     }
                   }}
                   onBlur={(e) => {
