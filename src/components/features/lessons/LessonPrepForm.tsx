@@ -96,7 +96,7 @@ export function LessonPrepForm({
     })
 
     // Auto-save to localStorage with debounce
-    const saveTimeoutRef = useRef<NodeJS.Timeout | null>(null)
+    const saveTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null)
 
     useEffect(() => {
         if (initialData) return // Don't auto-save when editing existing
