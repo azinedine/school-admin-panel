@@ -107,17 +107,6 @@ export const lessonPreparationFormSchema = z.object({
   resources_needed: z.array(z.object({ value: z.string().min(1, V.resourceRequired) })),
   assessment_methods: z.array(z.object({ value: z.string().min(1, V.methodRequired) })),
 }).superRefine((data, ctx) => {
-  // Validate Evaluation Content
-  if (!data.evaluation_content || data.evaluation_content.length < 3) {
-    ctx.addIssue({
-      code: z.ZodIssueCode.custom,
-      path: ['evaluation_content'],
-      message: data.evaluation_type === 'assessment'
-        ? V.assessmentDetailsRequired
-        : V.homeworkDetailsRequired,
-    });
-  }
-
   // Validate Phase Durations Compatibility (if phases exist)
   if (data.phases && data.phases.length > 0) {
     const totalPhaseDuration = data.phases.reduce((sum, phase) => sum + phase.duration_minutes, 0);
