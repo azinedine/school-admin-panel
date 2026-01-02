@@ -47,24 +47,30 @@ export function PhaseEditor({
     const hasInitialized = useRef(false)
 
     // Auto-initialize phases only if truly empty and not already initialized
+    // Use a small delay to allow form.reset() from localStorage to complete first
     useEffect(() => {
         // Skip if already initialized
         if (hasInitialized.current) return
 
-        // Check if phases have any content (restored from localStorage)
-        const hasContent = phases && phases.length > 0 && phases.some(p => p.content && p.content.trim().length > 0)
+        // Delay initialization to allow localStorage restoration
+        const timeout = setTimeout(() => {
+            // Check if phases have any content (restored from localStorage)
+            const hasContent = phases && phases.length > 0 && phases.some(p => p.content && p.content.trim().length > 0)
 
-        // Only initialize if truly empty (no fields and no content)
-        if (fields.length === 0 && !hasContent) {
-            replace([
-                { type: 'departure', content: '', duration_minutes: 5 },
-                { type: 'presentation', content: '', duration_minutes: 30 },
-                { type: 'consolidation', content: '', duration_minutes: 10 },
-            ])
-        }
+            // Only initialize if truly empty (no fields and no content)
+            if (fields.length === 0 && !hasContent) {
+                replace([
+                    { type: 'departure', content: '', duration_minutes: 5 },
+                    { type: 'presentation', content: '', duration_minutes: 30 },
+                    { type: 'consolidation', content: '', duration_minutes: 10 },
+                ])
+            }
 
-        // Mark as initialized after first check
-        hasInitialized.current = true
+            // Mark as initialized after first check
+            hasInitialized.current = true
+        }, 150) // Small delay to allow form reset from localStorage
+
+        return () => clearTimeout(timeout)
     }, [fields.length, phases, replace])
 
     const currentTotalDuration = phases?.reduce((acc, curr) => acc + (Number(curr.duration_minutes) || 0), 0) || 0
