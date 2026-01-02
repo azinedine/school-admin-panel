@@ -1,6 +1,6 @@
 // Tabs
 export { LessonsTab } from './LessonsTab.tsx'
-export { PreparationTab } from './PreparationTab.tsx'
+export { PreparationTab } from './preparation-tab/index.ts'
 export { TimetableTab } from './TimetableTab.tsx'
 
 // Lesson Card Module (SOLID refactored)
