@@ -3,16 +3,13 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Textarea } from '@/components/ui/textarea'
-import type { LessonDetailFormData } from './dialog-config.ts'
+import type { LessonDetailFormData } from '../dialog-config.ts'
 import type { TFunction } from 'i18next'
 
 interface ElementsSectionProps {
     t: TFunction
     formData: LessonDetailFormData
-    updateFormField: <K extends keyof LessonDetailFormData>(
-        field: K,
-        value: LessonDetailFormData[K]
-    ) => void
+    updateFormField: (field: keyof LessonDetailFormData, value: unknown) => void
     addLessonElement: () => void
     updateLessonElement: (index: number, value: string) => void
     removeLessonElement: (index: number) => void
