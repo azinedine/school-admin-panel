@@ -8,17 +8,14 @@ import {
     SelectTrigger,
     SelectValue,
 } from '@/components/ui/select'
-import type { LessonDetailFormData, GroupTimesType, ActiveGroupsType } from './dialog-config.ts'
+import type { LessonDetailFormData, GroupTimesType, ActiveGroupsType } from '../dialog-config.ts'
 import type { DailyPlanEntry } from '@/store/prep-store'
 import type { TFunction } from 'i18next'
 
 interface SchedulingSectionProps {
     t: TFunction
     formData: LessonDetailFormData
-    updateFormField: <K extends keyof LessonDetailFormData>(
-        field: K,
-        value: LessonDetailFormData[K]
-    ) => void
+    updateFormField: (field: keyof LessonDetailFormData, value: unknown) => void
     activeGroups: ActiveGroupsType
     groupTimes: GroupTimesType
     toggleGroup: (g: 'first' | 'second') => void
