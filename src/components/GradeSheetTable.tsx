@@ -1,7 +1,6 @@
-import { useMemo, useCallback, useState, useEffect } from "react"
-import { ArrowUpDown, Search, Users, TrendingUp, CheckCircle, XCircle, UserMinus, Clock, History, Trash2, GripVertical, Star, MoreVertical, Move, UserX, UserPlus, Info } from "lucide-react"
+import { useMemo, useCallback, useState } from "react"
+import { ArrowUpDown, Search, Users, TrendingUp, CheckCircle, XCircle, UserMinus, Clock, History, Trash2, GripVertical, Star, MoreVertical, Move, UserX, UserPlus, Info, Loader2 } from "lucide-react"
 import { useTranslation } from "react-i18next"
-import { useLocation } from "@tanstack/react-router"
 import {
   DndContext,
   closestCenter,
@@ -58,8 +57,33 @@ import {
 } from "@/components/ui/sheet"
 import { useDirection } from "@/hooks/use-direction"
 import { useAttendanceStore } from "@/store/attendance-store"
-import { useGradesStore, type StudentGrade } from "@/store/grades-store"
 import { toast } from "sonner"
+import {
+  useGradeStudents,
+  useCreateStudent,
+  useUpdateStudent,
+  useDeleteStudent,
+  useMoveStudent,
+  useReorderStudents,
+  useUpdateGrade,
+  type GradeClass,
+  type GradeStudent,
+} from "@/features/grades"
+
+// Local StudentGrade type for compatibility
+interface StudentGrade {
+  id: string
+  classId: string
+  lastName: string
+  firstName: string
+  dateOfBirth: string
+  behavior: number
+  applications: number
+  notebook: number
+  assignment: number
+  exam: number
+  specialCase?: string
+}
 
 // Calculated student grade with computed fields
 interface CalculatedStudentGrade extends StudentGrade {
@@ -68,6 +92,14 @@ interface CalculatedStudentGrade extends StudentGrade {
   activityAverage: number
   finalAverage: number
   remarks: string
+}
+
+// Props for GradeSheetTable
+interface GradeSheetTableProps {
+  classId: string | null
+  term: 1 | 2 | 3
+  classes: GradeClass[]
+  onClassSelect: (classId: string) => void
 }
 
 type SortField = keyof CalculatedStudentGrade
@@ -96,11 +128,11 @@ function calculateContinuousAssessment(
   const behaviorScore = Math.min(5, Math.max(0, behavior))
   const participationScore = Math.min(5, Math.max(0, participation))
   const notebookScore = Math.min(5, Math.max(0, notebook))
-  
+
   // Tardiness and Absences start at 5, deduct 1 per record (min 0)
   const tardinessScore = Math.max(0, 5 - tardinessCount)
   const absenceScore = Math.max(0, 5 - absenceCount)
-  
+
   // Total out of 25, scaled to 20
   const total = behaviorScore + participationScore + notebookScore + tardinessScore + absenceScore
   return Number((total * 20 / 25).toFixed(2))
@@ -179,18 +211,18 @@ function SortableStudentRow({
   const hasSpecialCase = !!student.specialCase
 
   return (
-    <TableRow 
+    <TableRow
       ref={setNodeRef}
       style={style}
       className={`
         ${!hasSpecialCase ? getRowColor(student.finalAverage) : ''} 
         ${index % 2 === 0 ? 'bg-opacity-50' : ''}
-        ${student.specialCase === 'autism' 
-          ? 'border-s-4 border-s-blue-500 dark:border-s-blue-400 bg-blue-50/40 dark:bg-blue-950/30 hover:bg-blue-100/50 dark:hover:bg-blue-950/40' 
-          : student.specialCase === 'diabetes' 
-            ? 'border-s-4 border-s-orange-500 dark:border-s-orange-400 bg-orange-50/40 dark:bg-orange-950/30 hover:bg-orange-100/50 dark:hover:bg-orange-950/40' 
-            : hasSpecialCase 
-              ? 'border-s-4 border-s-purple-500 dark:border-s-purple-400 bg-purple-50/40 dark:bg-purple-950/30 hover:bg-purple-100/50 dark:hover:bg-purple-950/40' 
+        ${student.specialCase === 'autism'
+          ? 'border-s-4 border-s-blue-500 dark:border-s-blue-400 bg-blue-50/40 dark:bg-blue-950/30 hover:bg-blue-100/50 dark:hover:bg-blue-950/40'
+          : student.specialCase === 'diabetes'
+            ? 'border-s-4 border-s-orange-500 dark:border-s-orange-400 bg-orange-50/40 dark:bg-orange-950/30 hover:bg-orange-100/50 dark:hover:bg-orange-950/40'
+            : hasSpecialCase
+              ? 'border-s-4 border-s-purple-500 dark:border-s-purple-400 bg-purple-50/40 dark:bg-purple-950/30 hover:bg-purple-100/50 dark:hover:bg-purple-950/40'
               : ''}
       `}
     >
@@ -207,7 +239,7 @@ function SortableStudentRow({
       <TableCell className="text-center">
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <button 
+            <button
               className="inline-flex items-center justify-center p-1 rounded hover:bg-muted opacity-60 hover:opacity-100 transition-opacity"
               onClick={(e) => e.stopPropagation()}
               aria-label={t('pages.grades.studentManagement.menu')}
@@ -224,7 +256,7 @@ function SortableStudentRow({
               <Move className="h-4 w-4 ltr:mr-2 rtl:ml-2" />
               {t('pages.grades.studentManagement.moveToClass')}
             </DropdownMenuItem>
-            <DropdownMenuItem 
+            <DropdownMenuItem
               onClick={() => onRemoveStudent(student)}
               className="text-destructive focus:text-destructive"
             >
@@ -254,38 +286,36 @@ function SortableStudentRow({
               <Tooltip>
                 <DropdownMenuTrigger asChild>
                   <TooltipTrigger asChild>
-                    <button 
+                    <button
                       className={`shrink-0 p-0.5 rounded hover:bg-muted ${hasSpecialCase ? '' : 'opacity-40 hover:opacity-100'}`}
                     >
-                      <Star className={`h-3 w-3 ${
-                        student.specialCase === 'longAbsence' 
-                          ? 'text-red-500 fill-red-500' 
-                          : student.specialCase === 'exemption' 
-                            ? 'text-blue-500 fill-blue-500' 
-                            : student.specialCase === 'medical'
-                              ? 'text-orange-500 fill-orange-500'
-                              : student.specialCase === 'transfer'
-                                ? 'text-green-500 fill-green-500'
-                                : hasSpecialCase 
-                                  ? 'text-purple-500 fill-purple-500' 
-                                  : 'text-muted-foreground'
-                      }`} />
+                      <Star className={`h-3 w-3 ${student.specialCase === 'longAbsence'
+                        ? 'text-red-500 fill-red-500'
+                        : student.specialCase === 'exemption'
+                          ? 'text-blue-500 fill-blue-500'
+                          : student.specialCase === 'medical'
+                            ? 'text-orange-500 fill-orange-500'
+                            : student.specialCase === 'transfer'
+                              ? 'text-green-500 fill-green-500'
+                              : hasSpecialCase
+                                ? 'text-purple-500 fill-purple-500'
+                                : 'text-muted-foreground'
+                        }`} />
                     </button>
                   </TooltipTrigger>
                 </DropdownMenuTrigger>
                 {hasSpecialCase && (
-                  <TooltipContent side="top" sideOffset={5} className={`text-xs font-medium ${
-                    student.specialCase === 'longAbsence' 
-                      ? 'bg-red-50 dark:bg-red-950 text-red-700 dark:text-red-300 border-red-200' 
-                      : student.specialCase === 'exemption' 
-                        ? 'bg-blue-50 dark:bg-blue-950 text-blue-700 dark:text-blue-300 border-blue-200' 
-                        : student.specialCase === 'medical'
-                          ? 'bg-orange-50 dark:bg-orange-950 text-orange-700 dark:text-orange-300 border-orange-200'
-                          : student.specialCase === 'transfer'
-                            ? 'bg-green-50 dark:bg-green-950 text-green-700 dark:text-green-300 border-green-200'
-                            : 'bg-purple-50 dark:bg-purple-950 text-purple-700 dark:text-purple-300 border-purple-200'
-                  }`}>
-                    {['longAbsence', 'exemption', 'medical', 'transfer'].includes(student.specialCase || '') 
+                  <TooltipContent side="top" sideOffset={5} className={`text-xs font-medium ${student.specialCase === 'longAbsence'
+                    ? 'bg-red-50 dark:bg-red-950 text-red-700 dark:text-red-300 border-red-200'
+                    : student.specialCase === 'exemption'
+                      ? 'bg-blue-50 dark:bg-blue-950 text-blue-700 dark:text-blue-300 border-blue-200'
+                      : student.specialCase === 'medical'
+                        ? 'bg-orange-50 dark:bg-orange-950 text-orange-700 dark:text-orange-300 border-orange-200'
+                        : student.specialCase === 'transfer'
+                          ? 'bg-green-50 dark:bg-green-950 text-green-700 dark:text-green-300 border-green-200'
+                          : 'bg-purple-50 dark:bg-purple-950 text-purple-700 dark:text-purple-300 border-purple-200'
+                    }`}>
+                    {['longAbsence', 'exemption', 'medical', 'transfer'].includes(student.specialCase || '')
                       ? t(`pages.grades.specialCase.${student.specialCase}`)
                       : student.specialCase
                     }
@@ -294,35 +324,35 @@ function SortableStudentRow({
               </Tooltip>
             </TooltipProvider>
             <DropdownMenuContent align="start">
-              <DropdownMenuItem 
+              <DropdownMenuItem
                 onClick={() => updateStudent(student.id, { specialCase: 'longAbsence' })}
                 className={student.specialCase === 'longAbsence' ? 'bg-red-50 dark:bg-red-950' : ''}
               >
                 <span className="w-2 h-2 rounded-full bg-red-500 ltr:mr-2 rtl:ml-2" />
                 {t('pages.grades.specialCase.longAbsence')}
               </DropdownMenuItem>
-              <DropdownMenuItem 
+              <DropdownMenuItem
                 onClick={() => updateStudent(student.id, { specialCase: 'exemption' })}
                 className={student.specialCase === 'exemption' ? 'bg-blue-50 dark:bg-blue-950' : ''}
               >
                 <span className="w-2 h-2 rounded-full bg-blue-500 ltr:mr-2 rtl:ml-2" />
                 {t('pages.grades.specialCase.exemption')}
               </DropdownMenuItem>
-              <DropdownMenuItem 
+              <DropdownMenuItem
                 onClick={() => updateStudent(student.id, { specialCase: 'medical' })}
                 className={student.specialCase === 'medical' ? 'bg-orange-50 dark:bg-orange-950' : ''}
               >
                 <span className="w-2 h-2 rounded-full bg-orange-500 ltr:mr-2 rtl:ml-2" />
                 {t('pages.grades.specialCase.medical')}
               </DropdownMenuItem>
-              <DropdownMenuItem 
+              <DropdownMenuItem
                 onClick={() => updateStudent(student.id, { specialCase: 'transfer' })}
                 className={student.specialCase === 'transfer' ? 'bg-green-50 dark:bg-green-950' : ''}
               >
                 <span className="w-2 h-2 rounded-full bg-green-500 ltr:mr-2 rtl:ml-2" />
                 {t('pages.grades.specialCase.transfer')}
               </DropdownMenuItem>
-              <DropdownMenuItem 
+              <DropdownMenuItem
                 onClick={() => {
                   const customName = prompt(t('pages.grades.specialCase.enterCustom'))
                   if (customName && customName.trim()) {
@@ -336,7 +366,7 @@ function SortableStudentRow({
               </DropdownMenuItem>
               {hasSpecialCase && (
                 <>
-                  <DropdownMenuItem 
+                  <DropdownMenuItem
                     onClick={() => updateStudent(student.id, { specialCase: undefined })}
                     className="text-muted-foreground"
                   >
@@ -354,7 +384,7 @@ function SortableStudentRow({
       <EditableCell student={student} field="notebook" value={student.notebook} />
       <AttendanceCell student={student} type="lateness" count={student.lateness} />
       <AttendanceCell student={student} type="absences" count={student.absences} />
-      <TableCell 
+      <TableCell
         className="text-center font-semibold bg-primary/5 dark:bg-primary/10 text-primary cursor-not-allowed"
         onClick={() => toast.info(t('pages.grades.validation.caAutoCalculated'))}
       >
@@ -476,45 +506,58 @@ function SortableStudentRow({
   )
 }
 
-export function GradeSheetTable() {
+export function GradeSheetTable({ classId: selectedClassId, term: selectedTerm, classes, onClassSelect }: GradeSheetTableProps) {
   const { t } = useTranslation()
   const { isRTL } = useDirection()
-  const location = useLocation()
-  
-  // Persistent stores
-  const students = useGradesStore((state) => state.students)
-  const classes = useGradesStore((state) => state.classes)
-  const selectedClassId = useGradesStore((state) => state.selectedClassId)
-  const setSelectedClass = useGradesStore((state) => state.setSelectedClass)
-  const updateStudentField = useGradesStore((state) => state.updateStudentField)
-  const updateStudent = useGradesStore((state) => state.updateStudent)
-  const reorderStudents = useGradesStore((state) => state.reorderStudents)
-  const moveStudentToClass = useGradesStore((state) => state.moveStudentToClass)
-  const removeStudentFromClass = useGradesStore((state) => state.removeStudentFromClass)
-  const addStudentToClass = useGradesStore((state) => state.addStudentToClass)
-  const selectedYear = useGradesStore((state) => state.selectedYear)
-  const selectedTerm = useGradesStore((state) => state.selectedTerm)
+
+  // Calculate academic year (same logic as GradesPage)
+  const selectedYear = useMemo(() => {
+    const now = new Date()
+    const month = now.getMonth()
+    const year = now.getFullYear()
+    const startYear = month >= 8 ? year : year - 1
+    return `${startYear}-${startYear + 1}`
+  }, [])
+
+  // API hooks
+  const { data: studentsRaw = [], isLoading: isLoadingStudents, refetch: refetchStudents } = useGradeStudents(selectedClassId || '', selectedTerm)
+  const createStudentMutation = useCreateStudent()
+  const updateStudentMutation = useUpdateStudent()
+  const deleteStudentMutation = useDeleteStudent()
+  const moveStudentMutation = useMoveStudent()
+  const reorderStudentsMutation = useReorderStudents()
+  const updateGradeMutation = useUpdateGrade()
+
+  // Convert API students to local format with classId
+  const students: StudentGrade[] = useMemo(() => {
+    return studentsRaw.map(s => ({
+      id: s.id,
+      classId: selectedClassId || '',
+      lastName: s.last_name,
+      firstName: s.first_name,
+      dateOfBirth: s.date_of_birth || '',
+      behavior: s.behavior,
+      applications: s.applications,
+      notebook: s.notebook,
+      assignment: s.assignment,
+      exam: s.exam,
+      specialCase: s.special_case || undefined,
+    }))
+  }, [studentsRaw, selectedClassId])
+
   const { addRecord, removeRecord, getStudentRecords, getStudentAbsenceCount, getStudentTardinessCount, records } = useAttendanceStore()
 
-  // Handle class selection - updates URL and store stays in sync via GradesPage URL effect
-  const handleClassSelect = useCallback((classId: string) => {
-    // Update store immediately for instant UI feedback
-    setSelectedClass(classId)
-    // Update URL to keep sidebar in sync - use current pathname since grades route is role-specific
-    window.history.replaceState(null, '', `${location.pathname}?class=${classId}`)
-  }, [setSelectedClass, location.pathname])
-  
-  // Get student count for a class
-  const getClassStudentCount = useCallback((classId: string) => {
-    return students.filter(s => s.classId === classId).length
-  }, [students])
+  // Handle class selection - updates URL
+  const handleClassSelect = useCallback((classIdToSelect: string) => {
+    onClassSelect(classIdToSelect)
+    window.history.replaceState(null, '', `${window.location.pathname}?class=${classIdToSelect}`)
+  }, [onClassSelect])
 
-  // Auto-select first class when classes exist but none selected
-  useEffect(() => {
-    if (classes.length > 0 && !selectedClassId) {
-      setSelectedClass(classes[0].id)
-    }
-  }, [classes, selectedClassId, setSelectedClass])
+  // Get student count for a class
+  const getClassStudentCount = useCallback((classIdToCheck: string) => {
+    const cls = classes.find(c => c.id === classIdToCheck)
+    return cls?.students?.length ?? 0
+  }, [classes])
 
   // Local UI state
   const [searchQuery, setSearchQuery] = useState("")
@@ -523,7 +566,7 @@ export function GradeSheetTable() {
   const [editingCell, setEditingCell] = useState<{ id: string; field: string } | null>(null)
   const [showGroups, setShowGroups] = useState(false)
   const [showSpecialCasesOnly, setShowSpecialCasesOnly] = useState(false)
-  
+
   // Attendance dialog state
   const [attendanceDialog, setAttendanceDialog] = useState<{
     open: boolean
@@ -532,7 +575,7 @@ export function GradeSheetTable() {
   }>({ open: false, student: null, type: 'absence' })
   const [attendanceDate, setAttendanceDate] = useState(new Date().toISOString().split('T')[0])
   const [attendanceTime, setAttendanceTime] = useState(new Date().toTimeString().slice(0, 5))
-  
+
   // History dialog state
   const [historyDialog, setHistoryDialog] = useState<{
     open: boolean
@@ -591,7 +634,7 @@ export function GradeSheetTable() {
       .map(student => {
         const absenceCount = getStudentAbsenceCount(student.id, selectedYear, selectedTerm)
         const tardinessCount = getStudentTardinessCount(student.id, selectedYear, selectedTerm)
-        
+
         const activityAverage = calculateContinuousAssessment(
           student.behavior,
           student.applications,
@@ -599,9 +642,9 @@ export function GradeSheetTable() {
           tardinessCount,
           absenceCount
         )
-        
+
         const finalAverage = calculateFinalAverage(activityAverage, student.assignment, student.exam)
-        
+
         return {
           ...student,
           lateness: tardinessCount,
@@ -613,21 +656,29 @@ export function GradeSheetTable() {
       })
   }, [students, records, selectedClassId, getStudentAbsenceCount, getStudentTardinessCount, selectedYear, selectedTerm])
 
-  const handleCellEdit = useCallback((id: string, field: keyof StudentGrade, value: string) => {
+  const handleCellEdit = useCallback(async (id: string, field: keyof StudentGrade, value: string) => {
     const numValue = Number(value)
     if (isNaN(numValue) || numValue < 0 || numValue > 20) return
-    
-    // Update in persistent store immediately
-    updateStudentField(id, field, numValue)
+
+    // Update via API
+    try {
+      await updateGradeMutation.mutateAsync({
+        studentId: id,
+        term: selectedTerm,
+        [field]: numValue,
+      })
+    } catch (error) {
+      toast.error(t('common.error'))
+    }
     setEditingCell(null)
-  }, [updateStudentField])
+  }, [updateGradeMutation, selectedTerm, t])
 
   const handleRecordAttendance = useCallback(() => {
     if (!attendanceDialog.student) return
-    
+
     const student = attendanceDialog.student
     const studentName = `${student.firstName} ${student.lastName}`
-    
+
     // Add to persistent store - triggers immediate recalculation
     addRecord({
       studentId: student.id,
@@ -639,11 +690,11 @@ export function GradeSheetTable() {
       term: selectedTerm,
       type: attendanceDialog.type
     })
-    
-    const messageKey = attendanceDialog.type === 'absence' 
-      ? 'pages.grades.attendance.absenceRecorded' 
+
+    const messageKey = attendanceDialog.type === 'absence'
+      ? 'pages.grades.attendance.absenceRecorded'
       : 'pages.grades.attendance.tardinessRecorded'
-    
+
     toast.success(t(messageKey, { name: studentName }))
     setAttendanceDialog({ open: false, student: null, type: 'absence' })
   }, [attendanceDialog, attendanceDate, attendanceTime, addRecord, t, selectedYear, selectedTerm])
@@ -664,23 +715,31 @@ export function GradeSheetTable() {
     setRecordToDelete(null)
   }, [removeRecord, t])
 
-  const handleMoveStudent = useCallback((studentId: string, newClassId: string) => {
-    moveStudentToClass(studentId, newClassId)
-    toast.success(t('pages.grades.studentManagement.moved'))
-    setMoveStudentDialog({ open: false, student: null })
-    // Switch to the new class if it's different from current
-    if (newClassId !== selectedClassId) {
-      handleClassSelect(newClassId)
+  const handleMoveStudent = useCallback(async (studentId: string, newClassId: string) => {
+    try {
+      await moveStudentMutation.mutateAsync({ studentId, grade_class_id: newClassId })
+      toast.success(t('pages.grades.studentManagement.moved'))
+      setMoveStudentDialog({ open: false, student: null })
+      // Switch to the new class if it's different from current
+      if (newClassId !== selectedClassId) {
+        handleClassSelect(newClassId)
+      }
+    } catch (error) {
+      toast.error(t('common.error'))
     }
-  }, [moveStudentToClass, t, selectedClassId, handleClassSelect])
+  }, [moveStudentMutation, t, selectedClassId, handleClassSelect])
 
-  const handleRemoveStudent = useCallback((studentId: string) => {
-    removeStudentFromClass(studentId)
-    toast.success(t('pages.grades.studentManagement.removed'))
-    setRemoveStudentDialog({ open: false, student: null })
-  }, [removeStudentFromClass, t])
+  const handleRemoveStudent = useCallback(async (studentId: string) => {
+    try {
+      await deleteStudentMutation.mutateAsync(studentId)
+      toast.success(t('pages.grades.studentManagement.removed'))
+      setRemoveStudentDialog({ open: false, student: null })
+    } catch (error) {
+      toast.error(t('common.error'))
+    }
+  }, [deleteStudentMutation, t])
 
-  const handleAddStudent = useCallback(() => {
+  const handleAddStudent = useCallback(async () => {
     if (!selectedClassId) {
       toast.error(t('pages.grades.addStudent.noClassSelected'))
       return
@@ -692,37 +751,39 @@ export function GradeSheetTable() {
       return
     }
 
-    // Check for duplicate ID if provided
-    if (newStudent.id.trim()) {
-      const existingStudent = students.find(s => s.id === newStudent.id.trim())
-      if (existingStudent) {
-        toast.error(t('pages.grades.addStudent.duplicateId'))
-        return
-      }
+    try {
+      await createStudentMutation.mutateAsync({
+        classId: selectedClassId,
+        student_number: newStudent.id.trim() || undefined,
+        last_name: newStudent.lastName.trim(),
+        first_name: newStudent.firstName.trim(),
+        date_of_birth: newStudent.dateOfBirth,
+      })
+
+      toast.success(t('pages.grades.addStudent.success'))
+      setAddStudentDialog(false)
+      setNewStudent({
+        id: '',
+        lastName: '',
+        firstName: '',
+        dateOfBirth: '2013-01-01',
+      })
+    } catch (error) {
+      toast.error(t('common.error'))
     }
+  }, [selectedClassId, newStudent, createStudentMutation, t])
 
-    // Add student to class
-    addStudentToClass(selectedClassId, {
-      id: newStudent.id.trim() || undefined,
-      lastName: newStudent.lastName.trim(),
-      firstName: newStudent.firstName.trim(),
-      dateOfBirth: newStudent.dateOfBirth,
-      behavior: 5,
-      applications: 5,
-      notebook: 5,
-      assignment: 0,
-      exam: 0,
-    })
-
-    toast.success(t('pages.grades.addStudent.success'))
-    setAddStudentDialog(false)
-    setNewStudent({
-      id: '',
-      lastName: '',
-      firstName: '',
-      dateOfBirth: '2013-01-01',
-    })
-  }, [selectedClassId, newStudent, students, addStudentToClass, t])
+  // Handler for updating student special case (used by SortableStudentRow)
+  const updateStudent = useCallback(async (studentId: string, updates: { specialCase?: string }) => {
+    try {
+      await updateStudentMutation.mutateAsync({
+        studentId,
+        special_case: updates.specialCase || null,
+      })
+    } catch (error) {
+      toast.error(t('common.error'))
+    }
+  }, [updateStudentMutation, t])
 
   const studentRecords = useMemo(() => {
     if (!historyDialog.student) return []
@@ -733,68 +794,75 @@ export function GradeSheetTable() {
 
   const filteredAndSortedStudents = useMemo(() => {
     let result = [...calculatedStudents]
-    
+
     // Filter by special cases if toggle is on
     if (showSpecialCasesOnly) {
       result = result.filter(student => student.specialCase !== undefined && student.specialCase !== '')
     }
-    
+
     if (searchQuery) {
       result = result.filter(student =>
         student.lastName.includes(searchQuery) ||
         student.firstName.includes(searchQuery)
       )
     }
-    
+
     if (sortField && sortDirection) {
       result.sort((a, b) => {
         const aVal = a[sortField]
         const bVal = b[sortField]
-        
+
         if (typeof aVal === 'string' && typeof bVal === 'string') {
-          return sortDirection === 'asc' 
-            ? aVal.localeCompare(bVal, 'ar') 
+          return sortDirection === 'asc'
+            ? aVal.localeCompare(bVal, 'ar')
             : bVal.localeCompare(aVal, 'ar')
         }
-        
+
         if (typeof aVal === 'number' && typeof bVal === 'number') {
           return sortDirection === 'asc' ? aVal - bVal : bVal - aVal
         }
-        
+
         return 0
       })
     }
-    
+
     return result
   }, [calculatedStudents, searchQuery, sortField, sortDirection, showSpecialCasesOnly])
 
   // Handle drag end - reorder students and persist
-  const handleDragEnd = useCallback((event: DragEndEvent) => {
+  const handleDragEnd = useCallback(async (event: DragEndEvent) => {
     const { active, over } = event
-    
+
     if (!over || active.id === over.id || !selectedClassId) return
-    
+
     const oldIndex = filteredAndSortedStudents.findIndex(s => s.id === active.id)
     const newIndex = filteredAndSortedStudents.findIndex(s => s.id === over.id)
-    
+
     if (oldIndex !== -1 && newIndex !== -1) {
       const reordered = arrayMove(filteredAndSortedStudents, oldIndex, newIndex)
-      reorderStudents(selectedClassId, reordered.map(s => s.id))
+      try {
+        await reorderStudentsMutation.mutateAsync({
+          classId: selectedClassId,
+          order: reordered.map(s => s.id)
+        })
+      } catch (error) {
+        toast.error(t('common.error'))
+      }
     }
-  }, [filteredAndSortedStudents, selectedClassId, reorderStudents])
+  }, [filteredAndSortedStudents, selectedClassId, reorderStudentsMutation, t])
 
   const statistics = useMemo(() => {
     // Exclude special cases from statistics
     const normalStudents = calculatedStudents.filter(s => !s.specialCase || s.specialCase === '')
     const total = normalStudents.length
     const specialCaseCount = calculatedStudents.length - total
-    
+
     if (total === 0) return { total: 0, specialCaseCount, classAverage: '0', passRate: '0', failRate: '0' }
-    
+
     const classAverage = normalStudents.reduce((sum, s) => sum + s.finalAverage, 0) / total
     const passCount = normalStudents.filter(s => s.finalAverage >= 10).length
     const failCount = total - passCount
-    
+
     return {
       total,
       specialCaseCount,
@@ -818,41 +886,41 @@ export function GradeSheetTable() {
     </TableHead>
   ), [handleSort])
 
-  const EditableCell = useCallback(({ 
-    student, 
-    field, 
-    value 
-  }: { 
-    student: CalculatedStudentGrade; 
-    field: keyof StudentGrade; 
-    value: number 
+  const EditableCell = useCallback(({
+    student,
+    field,
+    value
+  }: {
+    student: CalculatedStudentGrade;
+    field: keyof StudentGrade;
+    value: number
   }) => {
     const isEditing = editingCell?.id === student.id && editingCell?.field === field
     const config = FIELD_CONFIG[field] || { min: 0, max: 20, step: 0.5, labelKey: field }
-    
+
     const handleValidatedEdit = (newValue: string) => {
       const numValue = parseFloat(newValue)
       if (isNaN(numValue)) {
         setEditingCell(null)
         return
       }
-      
+
       // Clamp value to valid range
       const clampedValue = Math.min(config.max, Math.max(config.min, numValue))
-      
+
       // Show warning if value was clamped
       if (numValue > config.max) {
-        toast.warning(t('pages.grades.validation.maxReached', { 
-          field: t(config.labelKey), 
-          max: config.max 
+        toast.warning(t('pages.grades.validation.maxReached', {
+          field: t(config.labelKey),
+          max: config.max
         }))
       } else if (numValue < config.min) {
-        toast.warning(t('pages.grades.validation.minReached', { 
-          field: t(config.labelKey), 
-          min: config.min 
+        toast.warning(t('pages.grades.validation.minReached', {
+          field: t(config.labelKey),
+          min: config.min
         }))
       }
-      
+
       handleCellEdit(student.id, field, clampedValue.toString())
     }
 
@@ -860,7 +928,7 @@ export function GradeSheetTable() {
       <TooltipProvider>
         <Tooltip>
           <TooltipTrigger asChild>
-            <TableCell 
+            <TableCell
               className="text-center cursor-pointer hover:bg-muted/50"
               onClick={() => setEditingCell({ id: student.id, field })}
             >
@@ -912,21 +980,21 @@ export function GradeSheetTable() {
     )
   }, [editingCell, handleCellEdit, t])
 
-  const AttendanceCell = useCallback(({ 
-    student, 
+  const AttendanceCell = useCallback(({
+    student,
     type,
-    count 
-  }: { 
+    count
+  }: {
     student: CalculatedStudentGrade
     type: 'absences' | 'lateness'
-    count: number 
+    count: number
   }) => (
     <TableCell className="text-center">
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
-          <Button 
-            variant="ghost" 
-            size="sm" 
+          <Button
+            variant="ghost"
+            size="sm"
             className={`h-7 px-2 ${count > 0 ? 'text-red-600 font-bold' : ''}`}
           >
             {count}
@@ -970,13 +1038,13 @@ export function GradeSheetTable() {
         {/* Gradient scroll indicators */}
         <div className="pointer-events-none absolute left-0 top-0 bottom-0 w-6 bg-gradient-to-r from-background to-transparent z-10" />
         <div className="pointer-events-none absolute right-0 top-0 bottom-0 w-6 bg-gradient-to-l from-background to-transparent z-10" />
-        
+
         {/* Scrollable class pills - hidden scrollbar */}
         <div className="flex gap-2 overflow-x-auto [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden">
           {classes.map((cls) => {
             const isActive = cls.id === selectedClassId
             const studentCount = getClassStudentCount(cls.id)
-            
+
             return (
               <button
                 key={cls.id}
@@ -984,8 +1052,8 @@ export function GradeSheetTable() {
                 className={`
                   flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium
                   whitespace-nowrap transition-all duration-150 ease-out cursor-pointer select-none
-                  ${isActive 
-                    ? 'bg-white dark:bg-zinc-800 text-foreground shadow-sm border border-border' 
+                  ${isActive
+                    ? 'bg-white dark:bg-zinc-800 text-foreground shadow-sm border border-border'
                     : 'text-muted-foreground hover:text-foreground hover:bg-muted/50'
                   }
                 `}
@@ -993,8 +1061,8 @@ export function GradeSheetTable() {
                 <span>{cls.name}</span>
                 <span className={`
                   px-1.5 py-0.5 text-xs rounded-md
-                  ${isActive 
-                    ? 'bg-muted text-muted-foreground font-medium' 
+                  ${isActive
+                    ? 'bg-muted text-muted-foreground font-medium'
                     : 'text-muted-foreground/70'
                   }
                 `}>
@@ -1008,634 +1076,634 @@ export function GradeSheetTable() {
 
       {/* Scrollable Content Area */}
       <div className="flex-1 flex flex-col min-h-0 space-y-4">
-      <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 p-4 rounded-lg border bg-muted/30">
-        {/* Statistics */}
-        <div className="flex flex-wrap items-center gap-6">
-          <div className="flex items-center gap-2">
-            <div className="p-2 rounded-lg bg-primary/10">
-              <Users className="h-4 w-4 text-primary" />
-            </div>
-            <div>
-              <p className="text-xs text-muted-foreground">{t('pages.grades.stats.totalStudents')}</p>
-              <p className="text-lg font-bold">{statistics.total}</p>
-            </div>
-          </div>
-          
-          <div className="flex items-center gap-2">
-            <div className="p-2 rounded-lg bg-blue-500/10">
-              <TrendingUp className="h-4 w-4 text-blue-500" />
-            </div>
-            <div>
-              <p className="text-xs text-muted-foreground">{t('pages.grades.stats.classAverage')}</p>
-              <p className="text-lg font-bold">{statistics.classAverage}</p>
-            </div>
-          </div>
-          
-          <div className="flex items-center gap-2">
-            <div className="p-2 rounded-lg bg-green-500/10">
-              <CheckCircle className="h-4 w-4 text-green-500" />
-            </div>
-            <div>
-              <p className="text-xs text-muted-foreground">{t('pages.grades.stats.successRate')}</p>
-              <p className="text-lg font-bold text-green-600">{statistics.passRate}%</p>
-            </div>
-          </div>
-          
-          <div className="flex items-center gap-2">
-            <div className="p-2 rounded-lg bg-red-500/10">
-              <XCircle className="h-4 w-4 text-red-500" />
-            </div>
-            <div>
-              <p className="text-xs text-muted-foreground">{t('pages.grades.stats.failureRate')}</p>
-              <p className="text-lg font-bold text-red-600">{statistics.failRate}%</p>
-            </div>
-          </div>
-        </div>
-
-        {/* Search and Controls */}
-        <div className="flex items-center gap-2 w-full md:w-auto">
-          <div className="flex-1 md:flex-none md:min-w-[280px]">
-            <div className="relative">
-              <Search className="absolute h-4 w-4 top-1/2 -translate-y-1/2 text-muted-foreground ltr:left-3 rtl:right-3" />
-              <Input
-                placeholder={t('pages.grades.search.placeholder')}
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                className="ltr:pl-9 rtl:pr-9"
-              />
-            </div>
-          </div>
-
-          {/* Add Student Button */}
-          {selectedClassId && (
-            <TooltipProvider>
-              <Tooltip>
-                <TooltipTrigger asChild>
-                  <Button
-                    variant="outline"
-                    size="icon"
-                    onClick={() => setAddStudentDialog(true)}
-                    className="h-8 w-8"
-                    aria-label={t('pages.grades.addStudent.button')}
-                  >
-                    <UserPlus className="h-4 w-4" />
-                  </Button>
-                </TooltipTrigger>
-                <TooltipContent side="bottom">
-                  <p>{t('pages.grades.addStudent.button')}</p>
-                </TooltipContent>
-              </Tooltip>
-            </TooltipProvider>
-          )}
-
-          {/* Compact Controls */}
-          <div className="flex items-center gap-1.5 shrink-0">
-          {/* Group Split Toggle */}
-          <TooltipProvider>
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <Button
-                  variant={showGroups ? "default" : "outline"}
-                  size="icon"
-                  onClick={() => setShowGroups(!showGroups)}
-                  className="h-8 w-8"
-                  aria-label={showGroups ? t('pages.grades.groups.hideGroups') : t('pages.grades.groups.showGroups')}
-                >
-                  <Users className="h-4 w-4" />
-                </Button>
-              </TooltipTrigger>
-              <TooltipContent side="bottom">
-                <p>{showGroups ? t('pages.grades.groups.hideGroups') : t('pages.grades.groups.showGroups')}</p>
-              </TooltipContent>
-            </Tooltip>
-          </TooltipProvider>
-
-          {/* Special Cases Filter */}
-          {statistics.specialCaseCount > 0 && (
-            <TooltipProvider>
-              <Tooltip>
-                <TooltipTrigger asChild>
-                  <Button
-                    variant={showSpecialCasesOnly ? "default" : "outline"}
-                    size="icon"
-                    onClick={() => setShowSpecialCasesOnly(!showSpecialCasesOnly)}
-                    className="h-8 w-8 relative"
-                    aria-label={t('pages.grades.specialCase.showOnly')}
-                  >
-                    <Star className="h-4 w-4" />
-                    {statistics.specialCaseCount > 0 && (
-                      <span className="absolute -top-1 -right-1 h-4 min-w-4 px-1 flex items-center justify-center text-[10px] font-bold rounded-full bg-primary text-primary-foreground border-2 border-background">
-                        {statistics.specialCaseCount}
-                      </span>
-                    )}
-                  </Button>
-                </TooltipTrigger>
-                <TooltipContent side="bottom">
-                  <p>{t('pages.grades.specialCase.showOnly')}</p>
-                </TooltipContent>
-              </Tooltip>
-            </TooltipProvider>
-          )}
-          </div>
-        </div>
-      </div>
-
-      {/* Hints */}
-      <div className="text-sm text-muted-foreground">
-        <p>* {t('pages.grades.hints.clickToEdit')}</p>
-        <p>* {t('pages.grades.hints.autoCalculate')}</p>
-      </div>
-
-      {/* Table */}
-      <div className="rounded-md border overflow-x-auto">
-        <DndContext
-          sensors={sensors}
-          collisionDetection={closestCenter}
-          onDragEnd={handleDragEnd}
-        >
-          <Table>
-            <TableHeader className="sticky top-0 bg-background z-10">
-              <TableRow>
-                <TableHead className="w-10"></TableHead>
-                <TableHead className="w-12 text-center">#</TableHead>
-                {showGroups && <TableHead className="w-20 text-center">{t('pages.grades.table.group')}</TableHead>}
-                <TableHead className="w-10"></TableHead>
-                <SortableHeader field="id">{t('pages.grades.table.id')}</SortableHeader>
-                <SortableHeader field="lastName">{t('pages.grades.table.lastName')}</SortableHeader>
-                <SortableHeader field="firstName">{t('pages.grades.table.firstName')}</SortableHeader>
-                <SortableHeader field="dateOfBirth">{t('pages.grades.table.dateOfBirth')}</SortableHeader>
-                <SortableHeader field="behavior">{t('pages.grades.table.behavior')}</SortableHeader>
-                <SortableHeader field="applications">{t('pages.grades.table.applications')}</SortableHeader>
-                <SortableHeader field="notebook">{t('pages.grades.table.notebook')}</SortableHeader>
-                <SortableHeader field="lateness">{t('pages.grades.table.lateness')}</SortableHeader>
-                <SortableHeader field="absences">{t('pages.grades.table.absences')}</SortableHeader>
-                <SortableHeader field="activityAverage" highlight>{t('pages.grades.table.activityAverage')}</SortableHeader>
-                <SortableHeader field="assignment" highlight>{t('pages.grades.table.assignment')}</SortableHeader>
-                <SortableHeader field="exam" highlight>{t('pages.grades.table.exam')}</SortableHeader>
-                <SortableHeader field="finalAverage" highlight>{t('pages.grades.table.finalAverage')}</SortableHeader>
-                <SortableHeader field="remarks">{t('pages.grades.table.remarks')}</SortableHeader>
-              </TableRow>
-            </TableHeader>
-            <SortableContext
-              items={filteredAndSortedStudents.map(s => s.id)}
-              strategy={verticalListSortingStrategy}
-            >
-              <TableBody>
-                {filteredAndSortedStudents.map((student, index) => {
-                  const studentNumber = index + 1
-                  const totalStudents = filteredAndSortedStudents.length
-                  const midpoint = Math.ceil(totalStudents / 2)
-                  const groupNumber = studentNumber <= midpoint ? 1 : 2
-                  
-                  return (
-                    <SortableStudentRow
-                      key={student.id}
-                      student={student}
-                      index={index}
-                      studentNumber={studentNumber}
-                      groupNumber={groupNumber}
-                      showGroups={showGroups}
-                      editingCell={editingCell}
-                      setEditingCell={setEditingCell}
-                      handleCellEdit={handleCellEdit}
-                      updateStudent={updateStudent}
-                      EditableCell={EditableCell}
-                      AttendanceCell={AttendanceCell}
-                      onMoveStudent={(s) => setMoveStudentDialog({ open: true, student: s })}
-                      onRemoveStudent={(s) => setRemoveStudentDialog({ open: true, student: s })}
-                      onViewStudentInfo={(s) => setStudentInfoSidebar({ open: true, student: s })}
-                      t={t}
-                    />
-                  )
-                })}
-              </TableBody>
-            </SortableContext>
-          </Table>
-        </DndContext>
-      </div>
-
-      {/* Attendance Dialog */}
-      <Dialog open={attendanceDialog.open} onOpenChange={(open) => setAttendanceDialog(prev => ({ ...prev, open }))}>
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle>
-              {attendanceDialog.type === 'absence' 
-                ? t('pages.grades.attendance.recordAbsence') 
-                : t('pages.grades.attendance.recordTardiness')}
-            </DialogTitle>
-          </DialogHeader>
-          
-          {attendanceDialog.student && (
-            <div className="space-y-4 py-4">
-              <p className="font-medium">
-                {attendanceDialog.student.firstName} {attendanceDialog.student.lastName}
-              </p>
-              
-              <div className="grid grid-cols-2 gap-4">
-                <div className="space-y-2">
-                  <Label htmlFor="date">{t('pages.grades.attendance.date')}</Label>
-                  <Input
-                    id="date"
-                    type="date"
-                    value={attendanceDate}
-                    onChange={(e) => setAttendanceDate(e.target.value)}
-                  />
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="time">{t('pages.grades.attendance.time')}</Label>
-                  <Input
-                    id="time"
-                    type="time"
-                    value={attendanceTime}
-                    onChange={(e) => setAttendanceTime(e.target.value)}
-                  />
-                </div>
+        <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 p-4 rounded-lg border bg-muted/30">
+          {/* Statistics */}
+          <div className="flex flex-wrap items-center gap-6">
+            <div className="flex items-center gap-2">
+              <div className="p-2 rounded-lg bg-primary/10">
+                <Users className="h-4 w-4 text-primary" />
+              </div>
+              <div>
+                <p className="text-xs text-muted-foreground">{t('pages.grades.stats.totalStudents')}</p>
+                <p className="text-lg font-bold">{statistics.total}</p>
               </div>
             </div>
-          )}
-          
-          <DialogFooter>
-            <Button variant="outline" onClick={() => setAttendanceDialog({ open: false, student: null, type: 'absence' })}>
-              {t('common.cancel')}
-            </Button>
-            <Button onClick={handleRecordAttendance}>
-              {t('pages.grades.attendance.confirm')}
-            </Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
 
-      {/* History Dialog */}
-      <Dialog open={historyDialog.open} onOpenChange={(open) => setHistoryDialog(prev => ({ ...prev, open }))}>
-        <DialogContent className="max-w-md">
-          <DialogHeader>
-            <DialogTitle>
-              {t('pages.grades.attendance.history')}
-              {historyDialog.student && ` - ${historyDialog.student.firstName} ${historyDialog.student.lastName}`}
-            </DialogTitle>
-          </DialogHeader>
-          
-          <div className="space-y-2 max-h-[300px] overflow-y-auto py-4">
-            {studentRecords.length === 0 ? (
-              <p className="text-muted-foreground text-center py-4">
-                {t('pages.grades.attendance.noRecords')}
-              </p>
-            ) : (
-              studentRecords.map((record) => (
-                <div 
-                  key={record.id} 
-                  className="flex items-center justify-between p-3 rounded-lg border bg-muted/30"
-                >
-                  <div className="flex items-center gap-3">
-                    {record.type === 'absence' ? (
-                      <UserMinus className="h-4 w-4 text-red-500" />
-                    ) : (
-                      <Clock className="h-4 w-4 text-orange-500" />
-                    )}
-                    <div>
-                      <p className="font-medium text-sm">
-                        {t(`pages.grades.attendance.${record.type}`)}
-                      </p>
-                      <p className="text-xs text-muted-foreground">
-                        {record.date} • {record.time}
-                      </p>
-                    </div>
-                  </div>
-                  
-                  {recordToDelete === record.id ? (
-                    <div className="flex items-center gap-2">
-                      <Button 
-                        variant="destructive" 
-                        size="sm"
-                        onClick={() => handleDeleteRecord(record.id)}
-                      >
-                        {t('pages.grades.attendance.confirm')}
-                      </Button>
-                      <Button 
-                        variant="outline" 
-                        size="sm"
-                        onClick={() => setRecordToDelete(null)}
-                      >
-                        {t('common.cancel')}
-                      </Button>
-                    </div>
-                  ) : (
-                    <Button 
-                      variant="ghost" 
-                      size="sm"
-                      className="text-destructive hover:text-destructive"
-                      onClick={() => setRecordToDelete(record.id)}
-                    >
-                      <Trash2 className="h-4 w-4" />
-                    </Button>
-                  )}
-                </div>
-              ))
-            )}
-          </div>
-          
-          <DialogFooter>
-            <Button variant="outline" onClick={() => setHistoryDialog({ open: false, student: null })}>
-              {t('common.cancel')}
-            </Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
-
-      {/* Move Student Dialog */}
-      <Dialog open={moveStudentDialog.open} onOpenChange={(open) => setMoveStudentDialog({ open, student: open ? moveStudentDialog.student : null })}>
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle>{t('pages.grades.studentManagement.moveToClass')}</DialogTitle>
-          </DialogHeader>
-          
-          {moveStudentDialog.student && (
-            <div className="space-y-4 py-4">
-              <p className="text-sm text-muted-foreground">
-                {t('pages.grades.studentManagement.moveStudentDescription', { 
-                  name: `${moveStudentDialog.student.firstName} ${moveStudentDialog.student.lastName}` 
-                })}
-              </p>
-              
-              <div className="space-y-2">
-                <Label htmlFor="targetClass">{t('pages.grades.studentManagement.selectClass')}</Label>
-                <div className="grid gap-2">
-                  {classes.filter(c => c.id !== moveStudentDialog.student?.classId).map((cls) => (
-                    <Button
-                      key={cls.id}
-                      variant="outline"
-                      className="justify-start"
-                      onClick={() => handleMoveStudent(moveStudentDialog.student!.id, cls.id)}
-                    >
-                      <Move className="h-4 w-4 ltr:mr-2 rtl:ml-2" />
-                      {cls.name}
-                    </Button>
-                  ))}
-                  {classes.filter(c => c.id !== moveStudentDialog.student?.classId).length === 0 && (
-                    <p className="text-sm text-muted-foreground text-center py-4">
-                      {t('pages.grades.studentManagement.noOtherClasses')}
-                    </p>
-                  )}
-                </div>
+            <div className="flex items-center gap-2">
+              <div className="p-2 rounded-lg bg-blue-500/10">
+                <TrendingUp className="h-4 w-4 text-blue-500" />
+              </div>
+              <div>
+                <p className="text-xs text-muted-foreground">{t('pages.grades.stats.classAverage')}</p>
+                <p className="text-lg font-bold">{statistics.classAverage}</p>
               </div>
             </div>
-          )}
-          
-          <DialogFooter>
-            <Button variant="outline" onClick={() => setMoveStudentDialog({ open: false, student: null })}>
-              {t('common.cancel')}
-            </Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
 
-      {/* Remove Student Dialog */}
-      <Dialog open={removeStudentDialog.open} onOpenChange={(open) => setRemoveStudentDialog({ open, student: open ? removeStudentDialog.student : null })}>
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle>{t('pages.grades.studentManagement.removeFromClass')}</DialogTitle>
-          </DialogHeader>
-          
-          {removeStudentDialog.student && (
-            <div className="space-y-4 py-4">
-              <p className="text-sm text-muted-foreground">
-                {t('pages.grades.studentManagement.removeStudentDescription', { 
-                  name: `${removeStudentDialog.student.firstName} ${removeStudentDialog.student.lastName}` 
-                })}
-              </p>
-              <p className="text-sm font-medium text-destructive">
-                {t('pages.grades.studentManagement.removeWarning')}
-              </p>
+            <div className="flex items-center gap-2">
+              <div className="p-2 rounded-lg bg-green-500/10">
+                <CheckCircle className="h-4 w-4 text-green-500" />
+              </div>
+              <div>
+                <p className="text-xs text-muted-foreground">{t('pages.grades.stats.successRate')}</p>
+                <p className="text-lg font-bold text-green-600">{statistics.passRate}%</p>
+              </div>
             </div>
-          )}
-          
-          <DialogFooter>
-            <Button variant="outline" onClick={() => setRemoveStudentDialog({ open: false, student: null })}>
-              {t('common.cancel')}
-            </Button>
-            <Button 
-              variant="destructive" 
-              onClick={() => removeStudentDialog.student && handleRemoveStudent(removeStudentDialog.student.id)}
-            >
-              {t('pages.grades.studentManagement.confirmRemove')}
-            </Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
 
-      {/* Add Student Dialog */}
-      <Dialog open={addStudentDialog} onOpenChange={setAddStudentDialog}>
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle>{t('pages.grades.addStudent.title')}</DialogTitle>
-          </DialogHeader>
-          
-          <div className="space-y-4 py-4">
-            <div className="grid gap-4">
-              <div className="grid gap-2">
-                <Label htmlFor="studentId">{t('pages.grades.addStudent.id')}</Label>
+            <div className="flex items-center gap-2">
+              <div className="p-2 rounded-lg bg-red-500/10">
+                <XCircle className="h-4 w-4 text-red-500" />
+              </div>
+              <div>
+                <p className="text-xs text-muted-foreground">{t('pages.grades.stats.failureRate')}</p>
+                <p className="text-lg font-bold text-red-600">{statistics.failRate}%</p>
+              </div>
+            </div>
+          </div>
+
+          {/* Search and Controls */}
+          <div className="flex items-center gap-2 w-full md:w-auto">
+            <div className="flex-1 md:flex-none md:min-w-[280px]">
+              <div className="relative">
+                <Search className="absolute h-4 w-4 top-1/2 -translate-y-1/2 text-muted-foreground ltr:left-3 rtl:right-3" />
                 <Input
-                  id="studentId"
-                  placeholder={t('pages.grades.addStudent.idPlaceholder')}
-                  value={newStudent.id}
-                  onChange={(e) => setNewStudent({ ...newStudent, id: e.target.value })}
+                  placeholder={t('pages.grades.search.placeholder')}
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  className="ltr:pl-9 rtl:pr-9"
                 />
-                <p className="text-xs text-muted-foreground">
-                  {t('pages.grades.addStudent.idOptional')}
+              </div>
+            </div>
+
+            {/* Add Student Button */}
+            {selectedClassId && (
+              <TooltipProvider>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <Button
+                      variant="outline"
+                      size="icon"
+                      onClick={() => setAddStudentDialog(true)}
+                      className="h-8 w-8"
+                      aria-label={t('pages.grades.addStudent.button')}
+                    >
+                      <UserPlus className="h-4 w-4" />
+                    </Button>
+                  </TooltipTrigger>
+                  <TooltipContent side="bottom">
+                    <p>{t('pages.grades.addStudent.button')}</p>
+                  </TooltipContent>
+                </Tooltip>
+              </TooltipProvider>
+            )}
+
+            {/* Compact Controls */}
+            <div className="flex items-center gap-1.5 shrink-0">
+              {/* Group Split Toggle */}
+              <TooltipProvider>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <Button
+                      variant={showGroups ? "default" : "outline"}
+                      size="icon"
+                      onClick={() => setShowGroups(!showGroups)}
+                      className="h-8 w-8"
+                      aria-label={showGroups ? t('pages.grades.groups.hideGroups') : t('pages.grades.groups.showGroups')}
+                    >
+                      <Users className="h-4 w-4" />
+                    </Button>
+                  </TooltipTrigger>
+                  <TooltipContent side="bottom">
+                    <p>{showGroups ? t('pages.grades.groups.hideGroups') : t('pages.grades.groups.showGroups')}</p>
+                  </TooltipContent>
+                </Tooltip>
+              </TooltipProvider>
+
+              {/* Special Cases Filter */}
+              {statistics.specialCaseCount > 0 && (
+                <TooltipProvider>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <Button
+                        variant={showSpecialCasesOnly ? "default" : "outline"}
+                        size="icon"
+                        onClick={() => setShowSpecialCasesOnly(!showSpecialCasesOnly)}
+                        className="h-8 w-8 relative"
+                        aria-label={t('pages.grades.specialCase.showOnly')}
+                      >
+                        <Star className="h-4 w-4" />
+                        {statistics.specialCaseCount > 0 && (
+                          <span className="absolute -top-1 -right-1 h-4 min-w-4 px-1 flex items-center justify-center text-[10px] font-bold rounded-full bg-primary text-primary-foreground border-2 border-background">
+                            {statistics.specialCaseCount}
+                          </span>
+                        )}
+                      </Button>
+                    </TooltipTrigger>
+                    <TooltipContent side="bottom">
+                      <p>{t('pages.grades.specialCase.showOnly')}</p>
+                    </TooltipContent>
+                  </Tooltip>
+                </TooltipProvider>
+              )}
+            </div>
+          </div>
+        </div>
+
+        {/* Hints */}
+        <div className="text-sm text-muted-foreground">
+          <p>* {t('pages.grades.hints.clickToEdit')}</p>
+          <p>* {t('pages.grades.hints.autoCalculate')}</p>
+        </div>
+
+        {/* Table */}
+        <div className="rounded-md border overflow-x-auto">
+          <DndContext
+            sensors={sensors}
+            collisionDetection={closestCenter}
+            onDragEnd={handleDragEnd}
+          >
+            <Table>
+              <TableHeader className="sticky top-0 bg-background z-10">
+                <TableRow>
+                  <TableHead className="w-10"></TableHead>
+                  <TableHead className="w-12 text-center">#</TableHead>
+                  {showGroups && <TableHead className="w-20 text-center">{t('pages.grades.table.group')}</TableHead>}
+                  <TableHead className="w-10"></TableHead>
+                  <SortableHeader field="id">{t('pages.grades.table.id')}</SortableHeader>
+                  <SortableHeader field="lastName">{t('pages.grades.table.lastName')}</SortableHeader>
+                  <SortableHeader field="firstName">{t('pages.grades.table.firstName')}</SortableHeader>
+                  <SortableHeader field="dateOfBirth">{t('pages.grades.table.dateOfBirth')}</SortableHeader>
+                  <SortableHeader field="behavior">{t('pages.grades.table.behavior')}</SortableHeader>
+                  <SortableHeader field="applications">{t('pages.grades.table.applications')}</SortableHeader>
+                  <SortableHeader field="notebook">{t('pages.grades.table.notebook')}</SortableHeader>
+                  <SortableHeader field="lateness">{t('pages.grades.table.lateness')}</SortableHeader>
+                  <SortableHeader field="absences">{t('pages.grades.table.absences')}</SortableHeader>
+                  <SortableHeader field="activityAverage" highlight>{t('pages.grades.table.activityAverage')}</SortableHeader>
+                  <SortableHeader field="assignment" highlight>{t('pages.grades.table.assignment')}</SortableHeader>
+                  <SortableHeader field="exam" highlight>{t('pages.grades.table.exam')}</SortableHeader>
+                  <SortableHeader field="finalAverage" highlight>{t('pages.grades.table.finalAverage')}</SortableHeader>
+                  <SortableHeader field="remarks">{t('pages.grades.table.remarks')}</SortableHeader>
+                </TableRow>
+              </TableHeader>
+              <SortableContext
+                items={filteredAndSortedStudents.map(s => s.id)}
+                strategy={verticalListSortingStrategy}
+              >
+                <TableBody>
+                  {filteredAndSortedStudents.map((student, index) => {
+                    const studentNumber = index + 1
+                    const totalStudents = filteredAndSortedStudents.length
+                    const midpoint = Math.ceil(totalStudents / 2)
+                    const groupNumber = studentNumber <= midpoint ? 1 : 2
+
+                    return (
+                      <SortableStudentRow
+                        key={student.id}
+                        student={student}
+                        index={index}
+                        studentNumber={studentNumber}
+                        groupNumber={groupNumber}
+                        showGroups={showGroups}
+                        editingCell={editingCell}
+                        setEditingCell={setEditingCell}
+                        handleCellEdit={handleCellEdit}
+                        updateStudent={updateStudent}
+                        EditableCell={EditableCell}
+                        AttendanceCell={AttendanceCell}
+                        onMoveStudent={(s) => setMoveStudentDialog({ open: true, student: s })}
+                        onRemoveStudent={(s) => setRemoveStudentDialog({ open: true, student: s })}
+                        onViewStudentInfo={(s) => setStudentInfoSidebar({ open: true, student: s })}
+                        t={t}
+                      />
+                    )
+                  })}
+                </TableBody>
+              </SortableContext>
+            </Table>
+          </DndContext>
+        </div>
+
+        {/* Attendance Dialog */}
+        <Dialog open={attendanceDialog.open} onOpenChange={(open) => setAttendanceDialog(prev => ({ ...prev, open }))}>
+          <DialogContent>
+            <DialogHeader>
+              <DialogTitle>
+                {attendanceDialog.type === 'absence'
+                  ? t('pages.grades.attendance.recordAbsence')
+                  : t('pages.grades.attendance.recordTardiness')}
+              </DialogTitle>
+            </DialogHeader>
+
+            {attendanceDialog.student && (
+              <div className="space-y-4 py-4">
+                <p className="font-medium">
+                  {attendanceDialog.student.firstName} {attendanceDialog.student.lastName}
+                </p>
+
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="space-y-2">
+                    <Label htmlFor="date">{t('pages.grades.attendance.date')}</Label>
+                    <Input
+                      id="date"
+                      type="date"
+                      value={attendanceDate}
+                      onChange={(e) => setAttendanceDate(e.target.value)}
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="time">{t('pages.grades.attendance.time')}</Label>
+                    <Input
+                      id="time"
+                      type="time"
+                      value={attendanceTime}
+                      onChange={(e) => setAttendanceTime(e.target.value)}
+                    />
+                  </div>
+                </div>
+              </div>
+            )}
+
+            <DialogFooter>
+              <Button variant="outline" onClick={() => setAttendanceDialog({ open: false, student: null, type: 'absence' })}>
+                {t('common.cancel')}
+              </Button>
+              <Button onClick={handleRecordAttendance}>
+                {t('pages.grades.attendance.confirm')}
+              </Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
+
+        {/* History Dialog */}
+        <Dialog open={historyDialog.open} onOpenChange={(open) => setHistoryDialog(prev => ({ ...prev, open }))}>
+          <DialogContent className="max-w-md">
+            <DialogHeader>
+              <DialogTitle>
+                {t('pages.grades.attendance.history')}
+                {historyDialog.student && ` - ${historyDialog.student.firstName} ${historyDialog.student.lastName}`}
+              </DialogTitle>
+            </DialogHeader>
+
+            <div className="space-y-2 max-h-[300px] overflow-y-auto py-4">
+              {studentRecords.length === 0 ? (
+                <p className="text-muted-foreground text-center py-4">
+                  {t('pages.grades.attendance.noRecords')}
+                </p>
+              ) : (
+                studentRecords.map((record) => (
+                  <div
+                    key={record.id}
+                    className="flex items-center justify-between p-3 rounded-lg border bg-muted/30"
+                  >
+                    <div className="flex items-center gap-3">
+                      {record.type === 'absence' ? (
+                        <UserMinus className="h-4 w-4 text-red-500" />
+                      ) : (
+                        <Clock className="h-4 w-4 text-orange-500" />
+                      )}
+                      <div>
+                        <p className="font-medium text-sm">
+                          {t(`pages.grades.attendance.${record.type}`)}
+                        </p>
+                        <p className="text-xs text-muted-foreground">
+                          {record.date} • {record.time}
+                        </p>
+                      </div>
+                    </div>
+
+                    {recordToDelete === record.id ? (
+                      <div className="flex items-center gap-2">
+                        <Button
+                          variant="destructive"
+                          size="sm"
+                          onClick={() => handleDeleteRecord(record.id)}
+                        >
+                          {t('pages.grades.attendance.confirm')}
+                        </Button>
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={() => setRecordToDelete(null)}
+                        >
+                          {t('common.cancel')}
+                        </Button>
+                      </div>
+                    ) : (
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        className="text-destructive hover:text-destructive"
+                        onClick={() => setRecordToDelete(record.id)}
+                      >
+                        <Trash2 className="h-4 w-4" />
+                      </Button>
+                    )}
+                  </div>
+                ))
+              )}
+            </div>
+
+            <DialogFooter>
+              <Button variant="outline" onClick={() => setHistoryDialog({ open: false, student: null })}>
+                {t('common.cancel')}
+              </Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
+
+        {/* Move Student Dialog */}
+        <Dialog open={moveStudentDialog.open} onOpenChange={(open) => setMoveStudentDialog({ open, student: open ? moveStudentDialog.student : null })}>
+          <DialogContent>
+            <DialogHeader>
+              <DialogTitle>{t('pages.grades.studentManagement.moveToClass')}</DialogTitle>
+            </DialogHeader>
+
+            {moveStudentDialog.student && (
+              <div className="space-y-4 py-4">
+                <p className="text-sm text-muted-foreground">
+                  {t('pages.grades.studentManagement.moveStudentDescription', {
+                    name: `${moveStudentDialog.student.firstName} ${moveStudentDialog.student.lastName}`
+                  })}
+                </p>
+
+                <div className="space-y-2">
+                  <Label htmlFor="targetClass">{t('pages.grades.studentManagement.selectClass')}</Label>
+                  <div className="grid gap-2">
+                    {classes.filter(c => c.id !== moveStudentDialog.student?.classId).map((cls) => (
+                      <Button
+                        key={cls.id}
+                        variant="outline"
+                        className="justify-start"
+                        onClick={() => handleMoveStudent(moveStudentDialog.student!.id, cls.id)}
+                      >
+                        <Move className="h-4 w-4 ltr:mr-2 rtl:ml-2" />
+                        {cls.name}
+                      </Button>
+                    ))}
+                    {classes.filter(c => c.id !== moveStudentDialog.student?.classId).length === 0 && (
+                      <p className="text-sm text-muted-foreground text-center py-4">
+                        {t('pages.grades.studentManagement.noOtherClasses')}
+                      </p>
+                    )}
+                  </div>
+                </div>
+              </div>
+            )}
+
+            <DialogFooter>
+              <Button variant="outline" onClick={() => setMoveStudentDialog({ open: false, student: null })}>
+                {t('common.cancel')}
+              </Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
+
+        {/* Remove Student Dialog */}
+        <Dialog open={removeStudentDialog.open} onOpenChange={(open) => setRemoveStudentDialog({ open, student: open ? removeStudentDialog.student : null })}>
+          <DialogContent>
+            <DialogHeader>
+              <DialogTitle>{t('pages.grades.studentManagement.removeFromClass')}</DialogTitle>
+            </DialogHeader>
+
+            {removeStudentDialog.student && (
+              <div className="space-y-4 py-4">
+                <p className="text-sm text-muted-foreground">
+                  {t('pages.grades.studentManagement.removeStudentDescription', {
+                    name: `${removeStudentDialog.student.firstName} ${removeStudentDialog.student.lastName}`
+                  })}
+                </p>
+                <p className="text-sm font-medium text-destructive">
+                  {t('pages.grades.studentManagement.removeWarning')}
                 </p>
               </div>
+            )}
 
-              <div className="grid gap-2">
-                <Label htmlFor="lastName">{t('pages.grades.addStudent.lastName')} *</Label>
-                <Input
-                  id="lastName"
-                  placeholder={t('pages.grades.addStudent.lastNamePlaceholder')}
-                  value={newStudent.lastName}
-                  onChange={(e) => setNewStudent({ ...newStudent, lastName: e.target.value })}
-                  required
-                />
-              </div>
+            <DialogFooter>
+              <Button variant="outline" onClick={() => setRemoveStudentDialog({ open: false, student: null })}>
+                {t('common.cancel')}
+              </Button>
+              <Button
+                variant="destructive"
+                onClick={() => removeStudentDialog.student && handleRemoveStudent(removeStudentDialog.student.id)}
+              >
+                {t('pages.grades.studentManagement.confirmRemove')}
+              </Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
 
-              <div className="grid gap-2">
-                <Label htmlFor="firstName">{t('pages.grades.addStudent.firstName')} *</Label>
-                <Input
-                  id="firstName"
-                  placeholder={t('pages.grades.addStudent.firstNamePlaceholder')}
-                  value={newStudent.firstName}
-                  onChange={(e) => setNewStudent({ ...newStudent, firstName: e.target.value })}
-                  required
-                />
-              </div>
+        {/* Add Student Dialog */}
+        <Dialog open={addStudentDialog} onOpenChange={setAddStudentDialog}>
+          <DialogContent>
+            <DialogHeader>
+              <DialogTitle>{t('pages.grades.addStudent.title')}</DialogTitle>
+            </DialogHeader>
 
-              <div className="grid gap-2">
-                <Label htmlFor="dateOfBirth">{t('pages.grades.addStudent.dateOfBirth')}</Label>
-                <Input
-                  id="dateOfBirth"
-                  type="date"
-                  value={newStudent.dateOfBirth}
-                  onChange={(e) => setNewStudent({ ...newStudent, dateOfBirth: e.target.value })}
-                />
+            <div className="space-y-4 py-4">
+              <div className="grid gap-4">
+                <div className="grid gap-2">
+                  <Label htmlFor="studentId">{t('pages.grades.addStudent.id')}</Label>
+                  <Input
+                    id="studentId"
+                    placeholder={t('pages.grades.addStudent.idPlaceholder')}
+                    value={newStudent.id}
+                    onChange={(e) => setNewStudent({ ...newStudent, id: e.target.value })}
+                  />
+                  <p className="text-xs text-muted-foreground">
+                    {t('pages.grades.addStudent.idOptional')}
+                  </p>
+                </div>
+
+                <div className="grid gap-2">
+                  <Label htmlFor="lastName">{t('pages.grades.addStudent.lastName')} *</Label>
+                  <Input
+                    id="lastName"
+                    placeholder={t('pages.grades.addStudent.lastNamePlaceholder')}
+                    value={newStudent.lastName}
+                    onChange={(e) => setNewStudent({ ...newStudent, lastName: e.target.value })}
+                    required
+                  />
+                </div>
+
+                <div className="grid gap-2">
+                  <Label htmlFor="firstName">{t('pages.grades.addStudent.firstName')} *</Label>
+                  <Input
+                    id="firstName"
+                    placeholder={t('pages.grades.addStudent.firstNamePlaceholder')}
+                    value={newStudent.firstName}
+                    onChange={(e) => setNewStudent({ ...newStudent, firstName: e.target.value })}
+                    required
+                  />
+                </div>
+
+                <div className="grid gap-2">
+                  <Label htmlFor="dateOfBirth">{t('pages.grades.addStudent.dateOfBirth')}</Label>
+                  <Input
+                    id="dateOfBirth"
+                    type="date"
+                    value={newStudent.dateOfBirth}
+                    onChange={(e) => setNewStudent({ ...newStudent, dateOfBirth: e.target.value })}
+                  />
+                </div>
               </div>
             </div>
-          </div>
-          
-          <DialogFooter>
-            <Button variant="outline" onClick={() => {
-              setAddStudentDialog(false)
-              setNewStudent({
-                id: '',
-                lastName: '',
-                firstName: '',
-                dateOfBirth: '2013-01-01',
-              })
-            }}>
-              {t('common.cancel')}
-            </Button>
-            <Button onClick={handleAddStudent} disabled={!newStudent.lastName.trim() || !newStudent.firstName.trim()}>
-              {t('pages.grades.addStudent.add')}
-            </Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
 
-      {/* Student Info Sidebar */}
-      <Sheet 
-        open={studentInfoSidebar.open} 
-        onOpenChange={(open) => setStudentInfoSidebar({ open, student: open ? studentInfoSidebar.student : null })}
-      >
-        <SheetContent 
-          side={isRTL ? 'left' : 'right'}
-          className="w-full sm:max-w-md overflow-y-auto"
+            <DialogFooter>
+              <Button variant="outline" onClick={() => {
+                setAddStudentDialog(false)
+                setNewStudent({
+                  id: '',
+                  lastName: '',
+                  firstName: '',
+                  dateOfBirth: '2013-01-01',
+                })
+              }}>
+                {t('common.cancel')}
+              </Button>
+              <Button onClick={handleAddStudent} disabled={!newStudent.lastName.trim() || !newStudent.firstName.trim()}>
+                {t('pages.grades.addStudent.add')}
+              </Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
+
+        {/* Student Info Sidebar */}
+        <Sheet
+          open={studentInfoSidebar.open}
+          onOpenChange={(open) => setStudentInfoSidebar({ open, student: open ? studentInfoSidebar.student : null })}
         >
-          {studentInfoSidebar.student && (
-            <>
-              <SheetHeader>
-                <SheetTitle>
-                  {studentInfoSidebar.student.firstName} {studentInfoSidebar.student.lastName}
-                </SheetTitle>
-                <SheetDescription>
-                  {t('pages.grades.studentInfo.description')}
-                </SheetDescription>
-              </SheetHeader>
-              
-              <div className="mt-6 space-y-6">
-                {/* Basic Information */}
-                <div className="space-y-3">
-                  <h3 className="text-sm font-semibold text-foreground">
-                    {t('pages.grades.studentInfo.basicInfo')}
-                  </h3>
-                  <div className="space-y-2 text-sm">
-                    <div className="flex justify-between">
-                      <span className="text-muted-foreground">{t('pages.grades.studentInfo.id')}</span>
-                      <span className="font-mono font-medium">{studentInfoSidebar.student.id}</span>
-                    </div>
-                    <div className="flex justify-between">
-                      <span className="text-muted-foreground">{t('pages.grades.studentInfo.dateOfBirth')}</span>
-                      <span className="font-medium">{studentInfoSidebar.student.dateOfBirth}</span>
-                    </div>
-                    {studentInfoSidebar.student.specialCase && (
+          <SheetContent
+            side={isRTL ? 'left' : 'right'}
+            className="w-full sm:max-w-md overflow-y-auto"
+          >
+            {studentInfoSidebar.student && (
+              <>
+                <SheetHeader>
+                  <SheetTitle>
+                    {studentInfoSidebar.student.firstName} {studentInfoSidebar.student.lastName}
+                  </SheetTitle>
+                  <SheetDescription>
+                    {t('pages.grades.studentInfo.description')}
+                  </SheetDescription>
+                </SheetHeader>
+
+                <div className="mt-6 space-y-6">
+                  {/* Basic Information */}
+                  <div className="space-y-3">
+                    <h3 className="text-sm font-semibold text-foreground">
+                      {t('pages.grades.studentInfo.basicInfo')}
+                    </h3>
+                    <div className="space-y-2 text-sm">
                       <div className="flex justify-between">
-                        <span className="text-muted-foreground">{t('pages.grades.studentInfo.specialCase')}</span>
-                        <span className="font-medium">
-                          {['longAbsence', 'exemption', 'medical', 'transfer'].includes(studentInfoSidebar.student.specialCase)
-                            ? t(`pages.grades.specialCase.${studentInfoSidebar.student.specialCase}`)
-                            : studentInfoSidebar.student.specialCase}
-                        </span>
+                        <span className="text-muted-foreground">{t('pages.grades.studentInfo.id')}</span>
+                        <span className="font-mono font-medium">{studentInfoSidebar.student.id}</span>
                       </div>
-                    )}
-                  </div>
-                </div>
-
-                {/* Grades */}
-                <div className="space-y-3">
-                  <h3 className="text-sm font-semibold text-foreground">
-                    {t('pages.grades.studentInfo.grades')}
-                  </h3>
-                  <div className="space-y-2 text-sm">
-                    <div className="flex justify-between">
-                      <span className="text-muted-foreground">{t('pages.grades.table.behavior')}</span>
-                      <span className="font-medium">{studentInfoSidebar.student.behavior}</span>
-                    </div>
-                    <div className="flex justify-between">
-                      <span className="text-muted-foreground">{t('pages.grades.table.applications')}</span>
-                      <span className="font-medium">{studentInfoSidebar.student.applications}</span>
-                    </div>
-                    <div className="flex justify-between">
-                      <span className="text-muted-foreground">{t('pages.grades.table.notebook')}</span>
-                      <span className="font-medium">{studentInfoSidebar.student.notebook}</span>
-                    </div>
-                    <div className="flex justify-between">
-                      <span className="text-muted-foreground">{t('pages.grades.table.assignment')}</span>
-                      <span className="font-medium">{studentInfoSidebar.student.assignment}</span>
-                    </div>
-                    <div className="flex justify-between">
-                      <span className="text-muted-foreground">{t('pages.grades.table.exam')}</span>
-                      <span className="font-medium">{studentInfoSidebar.student.exam}</span>
+                      <div className="flex justify-between">
+                        <span className="text-muted-foreground">{t('pages.grades.studentInfo.dateOfBirth')}</span>
+                        <span className="font-medium">{studentInfoSidebar.student.dateOfBirth}</span>
+                      </div>
+                      {studentInfoSidebar.student.specialCase && (
+                        <div className="flex justify-between">
+                          <span className="text-muted-foreground">{t('pages.grades.studentInfo.specialCase')}</span>
+                          <span className="font-medium">
+                            {['longAbsence', 'exemption', 'medical', 'transfer'].includes(studentInfoSidebar.student.specialCase)
+                              ? t(`pages.grades.specialCase.${studentInfoSidebar.student.specialCase}`)
+                              : studentInfoSidebar.student.specialCase}
+                          </span>
+                        </div>
+                      )}
                     </div>
                   </div>
-                </div>
 
-                {/* Attendance */}
-                <div className="space-y-3">
-                  <h3 className="text-sm font-semibold text-foreground">
-                    {t('pages.grades.studentInfo.attendance')}
-                  </h3>
-                  <div className="space-y-2 text-sm">
-                    <div className="flex justify-between">
-                      <span className="text-muted-foreground">{t('pages.grades.table.lateness')}</span>
-                      <span className="font-medium">{studentInfoSidebar.student.lateness}</span>
+                  {/* Grades */}
+                  <div className="space-y-3">
+                    <h3 className="text-sm font-semibold text-foreground">
+                      {t('pages.grades.studentInfo.grades')}
+                    </h3>
+                    <div className="space-y-2 text-sm">
+                      <div className="flex justify-between">
+                        <span className="text-muted-foreground">{t('pages.grades.table.behavior')}</span>
+                        <span className="font-medium">{studentInfoSidebar.student.behavior}</span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span className="text-muted-foreground">{t('pages.grades.table.applications')}</span>
+                        <span className="font-medium">{studentInfoSidebar.student.applications}</span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span className="text-muted-foreground">{t('pages.grades.table.notebook')}</span>
+                        <span className="font-medium">{studentInfoSidebar.student.notebook}</span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span className="text-muted-foreground">{t('pages.grades.table.assignment')}</span>
+                        <span className="font-medium">{studentInfoSidebar.student.assignment}</span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span className="text-muted-foreground">{t('pages.grades.table.exam')}</span>
+                        <span className="font-medium">{studentInfoSidebar.student.exam}</span>
+                      </div>
                     </div>
-                    <div className="flex justify-between">
-                      <span className="text-muted-foreground">{t('pages.grades.table.absences')}</span>
-                      <span className="font-medium">{studentInfoSidebar.student.absences}</span>
+                  </div>
+
+                  {/* Attendance */}
+                  <div className="space-y-3">
+                    <h3 className="text-sm font-semibold text-foreground">
+                      {t('pages.grades.studentInfo.attendance')}
+                    </h3>
+                    <div className="space-y-2 text-sm">
+                      <div className="flex justify-between">
+                        <span className="text-muted-foreground">{t('pages.grades.table.lateness')}</span>
+                        <span className="font-medium">{studentInfoSidebar.student.lateness}</span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span className="text-muted-foreground">{t('pages.grades.table.absences')}</span>
+                        <span className="font-medium">{studentInfoSidebar.student.absences}</span>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Averages */}
+                  <div className="space-y-3">
+                    <h3 className="text-sm font-semibold text-foreground">
+                      {t('pages.grades.studentInfo.averages')}
+                    </h3>
+                    <div className="space-y-2 text-sm">
+                      <div className="flex justify-between">
+                        <span className="text-muted-foreground">{t('pages.grades.table.activityAverage')}</span>
+                        <span className="font-medium text-primary">{studentInfoSidebar.student.activityAverage.toFixed(2)}</span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span className="text-muted-foreground">{t('pages.grades.table.finalAverage')}</span>
+                        <span className="font-bold text-lg text-primary">{studentInfoSidebar.student.finalAverage.toFixed(2)}</span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span className="text-muted-foreground">{t('pages.grades.table.remarks')}</span>
+                        <span className="font-medium">{t(`pages.grades.remarks.${studentInfoSidebar.student.remarks}`)}</span>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Academic Context */}
+                  <div className="space-y-3">
+                    <h3 className="text-sm font-semibold text-foreground">
+                      {t('pages.grades.studentInfo.academicContext')}
+                    </h3>
+                    <div className="space-y-2 text-sm">
+                      <div className="flex justify-between">
+                        <span className="text-muted-foreground">{t('pages.grades.studentInfo.year')}</span>
+                        <span className="font-medium">{selectedYear}</span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span className="text-muted-foreground">{t('pages.grades.studentInfo.term')}</span>
+                        <span className="font-medium">{t(`pages.grades.term${selectedTerm}`)}</span>
+                      </div>
                     </div>
                   </div>
                 </div>
+              </>
+            )}
+          </SheetContent>
+        </Sheet>
 
-                {/* Averages */}
-                <div className="space-y-3">
-                  <h3 className="text-sm font-semibold text-foreground">
-                    {t('pages.grades.studentInfo.averages')}
-                  </h3>
-                  <div className="space-y-2 text-sm">
-                    <div className="flex justify-between">
-                      <span className="text-muted-foreground">{t('pages.grades.table.activityAverage')}</span>
-                      <span className="font-medium text-primary">{studentInfoSidebar.student.activityAverage.toFixed(2)}</span>
-                    </div>
-                    <div className="flex justify-between">
-                      <span className="text-muted-foreground">{t('pages.grades.table.finalAverage')}</span>
-                      <span className="font-bold text-lg text-primary">{studentInfoSidebar.student.finalAverage.toFixed(2)}</span>
-                    </div>
-                    <div className="flex justify-between">
-                      <span className="text-muted-foreground">{t('pages.grades.table.remarks')}</span>
-                      <span className="font-medium">{t(`pages.grades.remarks.${studentInfoSidebar.student.remarks}`)}</span>
-                    </div>
-                  </div>
-                </div>
-
-                {/* Academic Context */}
-                <div className="space-y-3">
-                  <h3 className="text-sm font-semibold text-foreground">
-                    {t('pages.grades.studentInfo.academicContext')}
-                  </h3>
-                  <div className="space-y-2 text-sm">
-                    <div className="flex justify-between">
-                      <span className="text-muted-foreground">{t('pages.grades.studentInfo.year')}</span>
-                      <span className="font-medium">{selectedYear}</span>
-                    </div>
-                    <div className="flex justify-between">
-                      <span className="text-muted-foreground">{t('pages.grades.studentInfo.term')}</span>
-                      <span className="font-medium">{t(`pages.grades.term${selectedTerm}`)}</span>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </>
-          )}
-        </SheetContent>
-      </Sheet>
-
-      {/* End of Scrollable Content Area */}
+        {/* End of Scrollable Content Area */}
       </div>
     </div>
   )
