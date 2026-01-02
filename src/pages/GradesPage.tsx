@@ -1,18 +1,16 @@
 import { useRef, useState, useCallback, useEffect } from "react"
-import { Upload, Plus, Trash2, MoreVertical, Calendar, ChevronDown, CheckCircle, BookOpen } from "lucide-react"
+import { Upload, Plus, Trash2, MoreVertical, Calendar, ChevronDown, BookOpen, Loader2, Download } from "lucide-react"
 import { useTranslation } from "react-i18next"
 import { useLocation } from "@tanstack/react-router"
 import { GradeSheetTable } from "@/components/GradeSheetTable"
 import { ContentPage } from "@/components/layout/content-page"
 import { useDirection } from "@/hooks/use-direction"
-import { useGradesStore, type StudentGrade, type Term } from "@/store/grades-store"
 import { Button } from "@/components/ui/button"
 import {
   Dialog,
   DialogContent,
   DialogHeader,
   DialogTitle,
-  DialogDescription,
   DialogFooter,
 } from "@/components/ui/dialog"
 import { Input } from "@/components/ui/input"
@@ -27,44 +25,41 @@ import {
 } from "@/components/ui/dropdown-menu"
 import { toast } from "sonner"
 import * as XLSX from "xlsx"
+import {
+  useGradeClasses,
+  useCreateGradeClass,
+  useDeleteGradeClass,
+  useBatchCreateStudents,
+} from "@/features/grades"
+import type { CreateStudentRequest } from "@/features/grades"
+
+// Term type
+type Term = 1 | 2 | 3
 
 export default function GradesPage() {
   const { t } = useTranslation()
   const { isRTL } = useDirection()
   const location = useLocation()
 
-  // Store actions
-  const classes = useGradesStore((state) => state.classes)
-  const students = useGradesStore((state) => state.students)
-  const selectedClassId = useGradesStore((state) => state.selectedClassId)
-  const setSelectedClass = useGradesStore((state) => state.setSelectedClass)
-  const addClass = useGradesStore((state) => state.addClass)
-  const addStudentsToClass = useGradesStore((state) => state.addStudentsToClass)
-
-  const removeClass = useGradesStore((state) => state.removeClass)
-  const clearAllData = useGradesStore((state) => state.clearAllData)
-  const selectedYear = useGradesStore((state) => state.selectedYear)
-  const selectedTerm = useGradesStore((state) => state.selectedTerm)
-  const setYear = useGradesStore((state) => state.setYear)
-  const setTerm = useGradesStore((state) => state.setTerm)
-
-  const isYearInitialized = useGradesStore((state) => state.isYearInitialized)
-  const initializeYear = useGradesStore((state) => state.initializeYear)
-
-  // Calculate academic years (current and previous)
-  const getAcademicYearData = useCallback(() => {
+  // Calculate current academic year
+  const getAcademicYear = useCallback(() => {
     const now = new Date()
-    const month = now.getMonth() // 0-11
+    const month = now.getMonth()
     const year = now.getFullYear()
     const startYear = month >= 8 ? year : year - 1
-    return {
-      current: `${startYear}-${startYear + 1}`,
-      previous: `${startYear - 1}-${startYear}`
-    }
+    return `${startYear}-${startYear + 1}`
   }, [])
 
-  const academicYears = useState(getAcademicYearData())[0]
-  const [initYear, setInitYear] = useState(academicYears.current)
+  // State
+  const [selectedYear] = useState(getAcademicYear())
+  const [selectedTerm, setSelectedTerm] = useState<Term>(1)
+  const [selectedClassId, setSelectedClassId] = useState<string | null>(null)
+
+  // API hooks
+  const { data: classes = [], isLoading: isLoadingClasses } = useGradeClasses(selectedYear)
+  const createClassMutation = useCreateGradeClass()
+  const deleteClassMutation = useDeleteGradeClass()
+  const batchCreateStudentsMutation = useBatchCreateStudents()
 
   // File input ref
   const fileInputRef = useRef<HTMLInputElement>(null)
@@ -78,33 +73,32 @@ export default function GradesPage() {
     open: false,
     classId: null,
   })
-  const [clearAllDialog, setClearAllDialog] = useState(false)
 
-  // Sync URL class param with selected class
+  // Auto-select first class or sync from URL
   useEffect(() => {
     const params = new URLSearchParams(location.search)
     const classParam = params.get('class')
 
     if (classParam && classes.some(c => c.id === classParam)) {
-      // URL has valid class param - select it
-      if (classParam !== selectedClassId) {
-        setSelectedClass(classParam)
-      }
+      setSelectedClassId(classParam)
+    } else if (classes.length > 0 && !selectedClassId) {
+      setSelectedClassId(classes[0].id)
     }
-  }, [location.search, classes, selectedClassId, setSelectedClass])
+  }, [location.search, classes, selectedClassId])
 
   // Get student count for a class
   const getClassStudentCount = useCallback((classId: string) => {
-    return students.filter(s => s.classId === classId).length
-  }, [students])
+    const cls = classes.find(c => c.id === classId)
+    return cls?.students?.length ?? 0
+  }, [classes])
 
-  // Handle Excel file upload - each sheet becomes a class
-  const handleExcelUpload = useCallback((event: React.ChangeEvent<HTMLInputElement>) => {
+  // Handle Excel file upload
+  const handleExcelUpload = useCallback(async (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0]
     if (!file) return
 
     const reader = new FileReader()
-    reader.onload = (e) => {
+    reader.onload = async (e) => {
       try {
         const data = e.target?.result
         const workbook = XLSX.read(data, { type: 'binary' })
@@ -112,12 +106,12 @@ export default function GradesPage() {
         let totalStudents = 0
         let totalClasses = 0
 
-        workbook.SheetNames.forEach((sheetName) => {
+        for (const sheetName of workbook.SheetNames) {
           const worksheet = workbook.Sheets[sheetName]
           const rawData = XLSX.utils.sheet_to_json(worksheet, { header: 1 }) as (string | number | boolean | null | undefined)[][]
-          if (!rawData || rawData.length < 2) return
+          if (!rawData || rawData.length < 2) continue
 
-          // Find header row - first row with multiple non-empty string cells
+          // Find header row
           let headerRowIndex = 0
           for (let i = 0; i < Math.min(10, rawData.length); i++) {
             const row = rawData[i]
@@ -130,9 +124,9 @@ export default function GradesPage() {
           }
 
           const headers = rawData[headerRowIndex]
-          if (!headers) return
+          if (!headers) continue
 
-          // Column finder with exact then partial matching
+          // Column finder
           const findCol = (exactPatterns: string[], partialPatterns: string[]): number => {
             const idx = headers.findIndex(h => {
               if (typeof h !== 'string') return false
@@ -148,7 +142,6 @@ export default function GradesPage() {
             })
           }
 
-          // Map columns
           const lastNameIdx = findCol(
             ['اللقب', 'Nom', 'LastName', 'Last Name', 'Surname', 'Family Name'],
             ['lقب', 'last', 'family', 'surname']
@@ -170,7 +163,7 @@ export default function GradesPage() {
           const idIdx = findCol(['ID', 'Matricule', 'Code'], ['id', 'matricule', 'code', 'ref'])
           const dobIdx = findCol(['تاريخ الميلاد', 'Date'], ['birth', 'naissance', 'تاريخ'])
 
-          const sheetStudents: (Omit<StudentGrade, 'id' | 'classId'> & { id?: string })[] = []
+          const sheetStudents: CreateStudentRequest[] = []
 
           for (let i = headerRowIndex + 1; i < rawData.length; i++) {
             const row = rawData[i]
@@ -181,45 +174,45 @@ export default function GradesPage() {
 
             const lastName = lastNameIdx !== -1 ? String(row[lastNameIdx] || '') : ''
             const firstName = firstNameIdx !== -1 ? String(row[firstNameIdx] || '') : ''
-            const studentId = idIdx !== -1 ? String(row[idIdx] || '') : undefined
-            const dob = dobIdx !== -1 ? String(row[dobIdx] || '2013-01-01') : '2013-01-01'
+            const studentNumber = idIdx !== -1 ? String(row[idIdx] || '') : undefined
+            const dob = dobIdx !== -1 ? String(row[dobIdx] || '') : undefined
 
             if (!lastName && !firstName) continue
             const combinedNames = (lastName + firstName).toLowerCase()
             if (combinedNames.includes('name') || combinedNames.includes('nom') || combinedNames.includes('اسم')) continue
 
             sheetStudents.push({
-              id: studentId || undefined,
-              lastName: lastName || 'Unknown',
-              firstName: firstName || 'Unknown',
-              dateOfBirth: dob,
-              // Default CA scores to 5/5 (good starting point)
-              behavior: 5,
-              applications: 5,
-              notebook: 5,
-              assignment: 0,
-              exam: 0,
+              student_number: studentNumber,
+              last_name: lastName || 'Unknown',
+              first_name: firstName || 'Unknown',
+              date_of_birth: dob,
             })
           }
 
           if (sheetStudents.length > 0) {
-            const classId = addClass({
+            // Create class first
+            const newClass = await createClassMutation.mutateAsync({
               name: sheetName,
               subject: 'Mathematics',
-              grade: sheetName,
+              grade_level: sheetName,
+              academic_year: selectedYear,
             })
             totalClasses++
-            addStudentsToClass(classId, sheetStudents)
+
+            // Then add students
+            await batchCreateStudentsMutation.mutateAsync({
+              classId: newClass.id,
+              students: sheetStudents,
+            })
             totalStudents += sheetStudents.length
           }
-        })
+        }
 
         if (totalClasses > 0) {
           toast.success(t('pages.grades.excel.multiSuccess', { classes: totalClasses, students: totalStudents }))
         } else {
           toast.error(t('pages.grades.excel.noData'))
         }
-
       } catch (error) {
         console.error('Error parsing Excel:', error)
         toast.error(t('pages.grades.excel.parseError'))
@@ -230,42 +223,106 @@ export default function GradesPage() {
     if (fileInputRef.current) {
       fileInputRef.current.value = ''
     }
-  }, [addClass, addStudentsToClass, t])
+  }, [createClassMutation, batchCreateStudentsMutation, selectedYear, t])
 
   // Handle manual class creation
-  const handleCreateClass = useCallback(() => {
+  const handleCreateClass = useCallback(async () => {
     if (!newClassName.trim()) return
 
-    addClass({
-      name: newClassName,
-      subject: newClassSubject || 'Mathematics',
-      grade: newClassGrade || newClassName,
-    })
+    try {
+      const newClass = await createClassMutation.mutateAsync({
+        name: newClassName,
+        subject: newClassSubject || 'Mathematics',
+        grade_level: newClassGrade || newClassName,
+        academic_year: selectedYear,
+      })
 
-    toast.success(t('pages.grades.addClass.success'))
-    setAddClassDialog(false)
-    setNewClassName('')
-    setNewClassSubject('')
-    setNewClassGrade('')
-  }, [addClass, newClassName, newClassSubject, newClassGrade, t])
+      toast.success(t('pages.grades.addClass.success'))
+      setAddClassDialog(false)
+      setNewClassName('')
+      setNewClassSubject('')
+      setNewClassGrade('')
+      setSelectedClassId(newClass.id)
+    } catch (error) {
+      toast.error(t('common.error'))
+    }
+  }, [createClassMutation, newClassName, newClassSubject, newClassGrade, selectedYear, t])
 
   // Handle delete class
-  const handleDeleteClass = useCallback(() => {
+  const handleDeleteClass = useCallback(async () => {
     if (!deleteClassDialog.classId) return
 
-    removeClass(deleteClassDialog.classId)
-    toast.success(t('pages.grades.deleteClass.success'))
-    setDeleteClassDialog({ open: false, classId: null })
-  }, [deleteClassDialog.classId, removeClass, t])
+    try {
+      await deleteClassMutation.mutateAsync(deleteClassDialog.classId)
+      toast.success(t('pages.grades.deleteClass.success'))
+      setDeleteClassDialog({ open: false, classId: null })
 
-  // Handle clear all classes
-  const handleClearAll = useCallback(() => {
-    clearAllData()
-    toast.success(t('pages.grades.deleteClass.success'))
-    setClearAllDialog(false)
-  }, [clearAllData, t])
+      // Select another class if available
+      const remainingClasses = classes.filter(c => c.id !== deleteClassDialog.classId)
+      setSelectedClassId(remainingClasses[0]?.id || null)
+    } catch (error) {
+      toast.error(t('common.error'))
+    }
+  }, [deleteClassDialog.classId, deleteClassMutation, classes, t])
 
-  // Header actions - consolidated into dropdown menu
+  // Handle Excel export
+  const handleExcelExport = useCallback(() => {
+    const selectedClass = classes.find(c => c.id === selectedClassId)
+    if (!selectedClass || !selectedClass.students || selectedClass.students.length === 0) {
+      toast.error(t('pages.grades.export.noData', 'No data to export'))
+      return
+    }
+
+    // Create worksheet data with headers
+    const headers = [
+      t('pages.grades.table.id', '#'),
+      t('pages.grades.table.lastName', 'Last Name'),
+      t('pages.grades.table.firstName', 'First Name'),
+      t('pages.grades.table.behavior', 'Behavior'),
+      t('pages.grades.table.applications', 'Applications'),
+      t('pages.grades.table.notebook', 'Notebook'),
+      t('pages.grades.table.assignment', 'Assignment'),
+      t('pages.grades.table.exam', 'Exam'),
+    ]
+
+    const data = selectedClass.students.map((student, index) => [
+      index + 1,
+      student.last_name,
+      student.first_name,
+      student.behavior ?? 5,
+      student.applications ?? 5,
+      student.notebook ?? 5,
+      student.assignment ?? 0,
+      student.exam ?? 0,
+    ])
+
+    // Create workbook and worksheet
+    const ws = XLSX.utils.aoa_to_array([headers, ...data])
+    const wb = XLSX.utils.book_new()
+    const worksheet = XLSX.utils.aoa_to_sheet([headers, ...data])
+
+    // Set column widths
+    worksheet['!cols'] = [
+      { wch: 5 },  // #
+      { wch: 20 }, // Last Name
+      { wch: 20 }, // First Name
+      { wch: 10 }, // Behavior
+      { wch: 12 }, // Applications
+      { wch: 10 }, // Notebook
+      { wch: 12 }, // Assignment
+      { wch: 10 }, // Exam
+    ]
+
+    XLSX.utils.book_append_sheet(wb, worksheet, selectedClass.name)
+
+    // Generate filename with class name and term
+    const filename = `${selectedClass.name}_Term${selectedTerm}_${selectedYear}.xlsx`
+    XLSX.writeFile(wb, filename)
+
+    toast.success(t('pages.grades.export.success', 'Grades exported successfully'))
+  }, [classes, selectedClassId, selectedTerm, selectedYear, t])
+
+  // Header actions
   const headerActions = (
     <div className="flex items-center gap-2">
       <div className="flex items-center gap-2 ltr:mr-2 rtl:ml-2">
@@ -285,7 +342,7 @@ export default function GradesPage() {
               classes.map((cls) => (
                 <DropdownMenuItem
                   key={cls.id}
-                  onClick={() => setSelectedClass(cls.id)}
+                  onClick={() => setSelectedClassId(cls.id)}
                   className={selectedClassId === cls.id ? "bg-accent" : ""}
                 >
                   {cls.name}
@@ -309,46 +366,17 @@ export default function GradesPage() {
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end">
-            {/* Generate year list: 2 years back + current year */}
-            {(() => {
-              const now = new Date()
-              const month = now.getMonth()
-              const currentYear = now.getFullYear()
-              const currentStartYear = month >= 8 ? currentYear : currentYear - 1
-              const currentAcademicYear = `${currentStartYear}-${currentStartYear + 1}`
-
-              const years = [
-                `${currentStartYear - 2}-${currentStartYear - 1}`,
-                `${currentStartYear - 1}-${currentStartYear}`,
-                currentAcademicYear
-              ]
-
-              return years.map((year) => {
-                const isCurrent = year === currentAcademicYear
-                const isPast = !isCurrent
-
-                return (
-                  <DropdownMenuItem
-                    key={year}
-                    onClick={() => isCurrent && setYear(year)}
-                    disabled={isPast}
-                    className={isPast ? 'opacity-50 cursor-not-allowed' : ''}
-                  >
-                    {year}
-                    {isCurrent && (
-                      <span className="ltr:ml-2 rtl:mr-2 text-xs text-muted-foreground">
-                        ({t('pages.grades.yearSelector.current')})
-                      </span>
-                    )}
-                  </DropdownMenuItem>
-                )
-              })
-            })()}
+            <DropdownMenuItem className="font-bold">
+              {selectedYear}
+              <span className="ltr:ml-2 rtl:mr-2 text-xs text-muted-foreground">
+                ({t('pages.grades.yearSelector.current')})
+              </span>
+            </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
 
         {/* Term Selector */}
-        <Tabs value={String(selectedTerm)} onValueChange={(v) => setTerm(Number(v) as Term)} className="w-auto">
+        <Tabs value={String(selectedTerm)} onValueChange={(v) => setSelectedTerm(Number(v) as Term)} className="w-auto">
           <TabsList className="h-9">
             <TabsTrigger value="1" className="text-xs px-3">{t('pages.grades.term1')}</TabsTrigger>
             <TabsTrigger value="2" className="text-xs px-3">{t('pages.grades.term2')}</TabsTrigger>
@@ -384,31 +412,36 @@ export default function GradesPage() {
           {selectedClassId && (
             <>
               <DropdownMenuSeparator />
-              <DropdownMenuItem
-                onClick={() => setDeleteClassDialog({ open: true, classId: selectedClassId })}
-                className="text-destructive focus:text-destructive"
-              >
-                <Trash2 className="h-4 w-4 ltr:mr-2 rtl:ml-2" />
-                {t('pages.grades.deleteClass.title')}
+              <DropdownMenuItem onClick={handleExcelExport}>
+                <Download className="h-4 w-4 ltr:mr-2 rtl:ml-2" />
+                {t('pages.grades.export.button', 'Export to Excel')}
               </DropdownMenuItem>
-            </>
+              <>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem
+                  onClick={() => setDeleteClassDialog({ open: true, classId: selectedClassId })}
+                  className="text-destructive focus:text-destructive"
+                >
+                  <Trash2 className="h-4 w-4 ltr:mr-2 rtl:ml-2" />
+                  {t('pages.grades.deleteClass.title')}
+                </DropdownMenuItem>
+              </>
           )}
-          {classes.length > 1 && (
-            <>
-              <DropdownMenuSeparator />
-              <DropdownMenuItem
-                onClick={() => setClearAllDialog(true)}
-                className="text-destructive focus:text-destructive"
-              >
-                <Trash2 className="h-4 w-4 ltr:mr-2 rtl:ml-2" />
-                {t('pages.grades.deleteClass.clearAll')}
-              </DropdownMenuItem>
-            </>
-          )}
-        </DropdownMenuContent>
+            </DropdownMenuContent>
       </DropdownMenu>
     </div>
   )
+
+  // Loading state
+  if (isLoadingClasses) {
+    return (
+      <ContentPage title={t('pages.grades.title')} description={t('pages.grades.description')} rtl={isRTL}>
+        <div className="flex items-center justify-center py-16">
+          <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
+        </div>
+      </ContentPage>
+    )
+  }
 
   return (
     <>
@@ -439,7 +472,12 @@ export default function GradesPage() {
             </div>
           </div>
         ) : (
-          <GradeSheetTable />
+          <GradeSheetTable
+            classId={selectedClassId}
+            term={selectedTerm}
+            classes={classes}
+            onClassSelect={setSelectedClassId}
+          />
         )}
       </ContentPage>
 
@@ -484,7 +522,11 @@ export default function GradesPage() {
             <Button variant="outline" onClick={() => setAddClassDialog(false)}>
               {t('common.cancel')}
             </Button>
-            <Button onClick={handleCreateClass} disabled={!newClassName.trim()}>
+            <Button
+              onClick={handleCreateClass}
+              disabled={!newClassName.trim() || createClassMutation.isPending}
+            >
+              {createClassMutation.isPending && <Loader2 className="h-4 w-4 mr-2 animate-spin" />}
               {t('common.add')}
             </Button>
           </DialogFooter>
@@ -511,78 +553,13 @@ export default function GradesPage() {
             <Button variant="outline" onClick={() => setDeleteClassDialog({ open: false, classId: null })}>
               {t('common.cancel')}
             </Button>
-            <Button variant="destructive" onClick={handleDeleteClass}>
+            <Button
+              variant="destructive"
+              onClick={handleDeleteClass}
+              disabled={deleteClassMutation.isPending}
+            >
+              {deleteClassMutation.isPending && <Loader2 className="h-4 w-4 mr-2 animate-spin" />}
               {t('common.delete')}
-            </Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
-
-      <Dialog open={clearAllDialog} onOpenChange={setClearAllDialog}>
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle>{t('pages.grades.deleteClass.clearAll')}</DialogTitle>
-          </DialogHeader>
-
-          <div className="py-4">
-            <p className="text-muted-foreground">
-              {t('pages.grades.deleteClass.clearAllConfirm')}
-            </p>
-          </div>
-
-          <DialogFooter>
-            <Button variant="outline" onClick={() => setClearAllDialog(false)}>
-              {t('common.cancel')}
-            </Button>
-            <Button variant="destructive" onClick={handleClearAll}>
-              {t('common.delete')}
-            </Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
-
-      {/* Initialization Dialog */}
-      <Dialog open={!isYearInitialized} onOpenChange={() => { }}>
-        <DialogContent className="sm:max-w-md" onInteractOutside={e => e.preventDefault()} onEscapeKeyDown={e => e.preventDefault()}>
-          <DialogHeader>
-            <DialogTitle>{t('pages.grades.initYear.title')}</DialogTitle>
-            <DialogDescription>{t('pages.grades.initYear.description')}</DialogDescription>
-          </DialogHeader>
-          <div className="flex items-center justify-center py-6">
-            <div className="w-full max-w-[240px]">
-              <Label htmlFor="initYearSelect" className="sr-only">
-                {t('pages.grades.initYear.label')}
-              </Label>
-              <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                  <Button
-                    id="initYearSelect"
-                    variant="outline"
-                    className="w-full justify-between font-bold text-xl h-14"
-                  >
-                    {initYear}
-                    <ChevronDown className="h-4 w-4 opacity-50" />
-                  </Button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent className="w-[240px]" align="center">
-                  <DropdownMenuItem disabled className="justify-between">
-                    {academicYears.previous}
-                    <span className="text-muted-foreground text-xs opacity-70">({new Date().getFullYear() - 1})</span>
-                  </DropdownMenuItem>
-                  <DropdownMenuItem
-                    onClick={() => setInitYear(academicYears.current)}
-                    className="justify-between font-bold bg-secondary/20"
-                  >
-                    {academicYears.current}
-                    <CheckCircle className="h-4 w-4 text-green-600" />
-                  </DropdownMenuItem>
-                </DropdownMenuContent>
-              </DropdownMenu>
-            </div>
-          </div>
-          <DialogFooter className="sm:justify-center">
-            <Button type="button" size="lg" onClick={() => initializeYear(initYear)} className="w-full sm:w-auto">
-              {t('common.save')}
             </Button>
           </DialogFooter>
         </DialogContent>
