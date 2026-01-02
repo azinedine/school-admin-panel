@@ -266,7 +266,16 @@ function SortableStudentRow({
           </DropdownMenuContent>
         </DropdownMenu>
       </TableCell>
-      <TableCell className="font-mono text-xs">{student.id}</TableCell>
+      <TooltipProvider>
+        <Tooltip>
+          <TooltipTrigger asChild>
+            <TableCell className="font-mono text-xs max-w-[60px] truncate cursor-help">{student.id.slice(0, 8)}...</TableCell>
+          </TooltipTrigger>
+          <TooltipContent side="top">
+            <p className="font-mono text-xs">{student.id}</p>
+          </TooltipContent>
+        </Tooltip>
+      </TooltipProvider>
       <TooltipProvider>
         <Tooltip>
           <TooltipTrigger asChild>
