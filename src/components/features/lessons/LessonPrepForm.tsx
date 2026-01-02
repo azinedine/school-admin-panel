@@ -110,7 +110,7 @@ export function LessonPrepForm({
     useEffect(() => {
         if (initialData) return // Don't auto-save when editing existing
 
-        const subscription = form.watch((formData) => {
+        const subscription = form.watch(() => {
             // Clear previous timeout
             if (saveTimeoutRef.current) {
                 clearTimeout(saveTimeoutRef.current)
@@ -119,7 +119,10 @@ export function LessonPrepForm({
             // Debounce save - wait 2 seconds after last change
             saveTimeoutRef.current = setTimeout(() => {
                 try {
-                    localStorage.setItem(STORAGE_KEY, JSON.stringify(formData))
+                    // Use getValues() to get the complete form state
+                    const allFormData = form.getValues()
+                    localStorage.setItem(STORAGE_KEY, JSON.stringify(allFormData))
+                    console.log('Draft saved to localStorage:', Object.keys(allFormData))
                 } catch (e) {
                     console.warn('Failed to save draft to localStorage:', e)
                 }
