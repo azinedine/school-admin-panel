@@ -1,4 +1,5 @@
 import { useForm, type FieldErrors } from 'react-hook-form'
+import { useEffect, useRef, useCallback } from 'react'
 import { toast } from 'sonner'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useTranslation } from 'react-i18next'
@@ -28,6 +29,8 @@ import { LessonPrepMethods } from './LessonPrepMethods'
 import { LessonPrepElements } from './LessonPrepElements'
 import { LessonSupportMaterial } from './LessonSupportMaterial'
 import { LessonPrepNotes } from './LessonPrepNotes'
+
+const STORAGE_KEY = 'lesson_prep_draft'
 
 interface LessonPrepFormProps {
     initialData?: LessonPreparation | null
@@ -62,21 +65,79 @@ export function LessonPrepForm({
     const defaultSubject = subjects.length > 0 ? subjects[0] : ''
     const defaultLevel = levels.length > 0 ? levels[0] : ''
 
+    // Load saved draft from localStorage (only for new preparations)
+    const getSavedDraft = useCallback((): Partial<LessonPreparationFormData> | null => {
+        if (initialData) return null // Don't load draft if editing existing
+        try {
+            const saved = localStorage.getItem(STORAGE_KEY)
+            if (saved) {
+                return JSON.parse(saved)
+            }
+        } catch (e) {
+            console.warn('Failed to load draft from localStorage:', e)
+        }
+        return null
+    }, [initialData])
+
+    const savedDraft = getSavedDraft()
+
     const form = useForm<LessonPreparationFormData>({
         resolver: zodResolver(lessonPreparationFormSchema),
         defaultValues: initialData
             ? toFormData(initialData)
-            : {
-                ...defaultFormValues,
-                lesson_number: nextLessonNumber || '',
-                subject: defaultSubject,
-                level: defaultLevel,
-            },
+            : savedDraft
+                ? { ...defaultFormValues, ...savedDraft, lesson_number: nextLessonNumber || savedDraft.lesson_number || '' }
+                : {
+                    ...defaultFormValues,
+                    lesson_number: nextLessonNumber || '',
+                    subject: defaultSubject,
+                    level: defaultLevel,
+                },
     })
+
+    // Auto-save to localStorage with debounce
+    const saveTimeoutRef = useRef<NodeJS.Timeout | null>(null)
+
+    useEffect(() => {
+        if (initialData) return // Don't auto-save when editing existing
+
+        const subscription = form.watch((formData) => {
+            // Clear previous timeout
+            if (saveTimeoutRef.current) {
+                clearTimeout(saveTimeoutRef.current)
+            }
+
+            // Debounce save - wait 2 seconds after last change
+            saveTimeoutRef.current = setTimeout(() => {
+                try {
+                    localStorage.setItem(STORAGE_KEY, JSON.stringify(formData))
+                } catch (e) {
+                    console.warn('Failed to save draft to localStorage:', e)
+                }
+            }, 2000)
+        })
+
+        return () => {
+            subscription.unsubscribe()
+            if (saveTimeoutRef.current) {
+                clearTimeout(saveTimeoutRef.current)
+            }
+        }
+    }, [form, initialData])
+
+    // Clear localStorage on successful submit
+    const clearDraft = useCallback(() => {
+        try {
+            localStorage.removeItem(STORAGE_KEY)
+        } catch (e) {
+            console.warn('Failed to clear draft from localStorage:', e)
+        }
+    }, [])
 
     const handleSubmit = async (data: LessonPreparationFormData) => {
         const payload = toApiPayload(data)
         await onSubmit(payload)
+        clearDraft() // Clear draft after successful submission
     }
 
     const onInvalid = (errors: FieldErrors<LessonPreparationFormData>) => {
