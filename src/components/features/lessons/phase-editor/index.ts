@@ -4,11 +4,11 @@
 // Interface Segregation: Props are minimal and focused
 // Dependency Inversion: Logic in hooks, presentation in components
 
-export { PhaseEditor } from './PhaseEditor'
-export { PhaseCard } from './PhaseCard'
-export { ConsolidationPhaseCard } from './ConsolidationPhaseCard'
-export { DurationInput } from './DurationInput'
-export { usePhaseEditor } from './use-phase-editor'
+export { PhaseEditor } from './PhaseEditor.tsx'
+export { PhaseCard } from './PhaseCard.tsx'
+export { ConsolidationPhaseCard } from './ConsolidationPhaseCard.tsx'
+export { DurationInput } from './DurationInput.tsx'
+export { usePhaseEditor } from './use-phase-editor.ts'
 export {
     PHASE_CONFIGS,
     getPhaseConfig,
