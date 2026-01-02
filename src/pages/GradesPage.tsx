@@ -32,7 +32,7 @@ export default function GradesPage() {
   const { t } = useTranslation()
   const { isRTL } = useDirection()
   const location = useLocation()
-  
+
   // Store actions
   const classes = useGradesStore((state) => state.classes)
   const students = useGradesStore((state) => state.students)
@@ -50,7 +50,7 @@ export default function GradesPage() {
 
   const isYearInitialized = useGradesStore((state) => state.isYearInitialized)
   const initializeYear = useGradesStore((state) => state.initializeYear)
-  
+
   // Calculate academic years (current and previous)
   const getAcademicYearData = useCallback(() => {
     const now = new Date()
@@ -65,10 +65,10 @@ export default function GradesPage() {
 
   const academicYears = useState(getAcademicYearData())[0]
   const [initYear, setInitYear] = useState(academicYears.current)
-  
+
   // File input ref
   const fileInputRef = useRef<HTMLInputElement>(null)
-  
+
   // Dialog states
   const [addClassDialog, setAddClassDialog] = useState(false)
   const [newClassName, setNewClassName] = useState('')
@@ -84,7 +84,7 @@ export default function GradesPage() {
   useEffect(() => {
     const params = new URLSearchParams(location.search)
     const classParam = params.get('class')
-    
+
     if (classParam && classes.some(c => c.id === classParam)) {
       // URL has valid class param - select it
       if (classParam !== selectedClassId) {
@@ -108,7 +108,7 @@ export default function GradesPage() {
       try {
         const data = e.target?.result
         const workbook = XLSX.read(data, { type: 'binary' })
-        
+
         let totalStudents = 0
         let totalClasses = 0
 
@@ -140,7 +140,7 @@ export default function GradesPage() {
               return exactPatterns.some(p => hClean === p.toLowerCase())
             })
             if (idx !== -1) return idx
-            
+
             return headers.findIndex(h => {
               if (typeof h !== 'string') return false
               const hClean = h.trim().toLowerCase()
@@ -171,11 +171,11 @@ export default function GradesPage() {
           const dobIdx = findCol(['تاريخ الميلاد', 'Date'], ['birth', 'naissance', 'تاريخ'])
 
           const sheetStudents: (Omit<StudentGrade, 'id' | 'classId'> & { id?: string })[] = []
-          
+
           for (let i = headerRowIndex + 1; i < rawData.length; i++) {
             const row = rawData[i]
             if (!row || row.length === 0) continue
-            
+
             const nonEmptyCells = row.filter(cell => cell !== undefined && cell !== null && cell !== '').length
             if (nonEmptyCells < 2) continue
 
@@ -217,7 +217,7 @@ export default function GradesPage() {
         if (totalClasses > 0) {
           toast.success(t('pages.grades.excel.multiSuccess', { classes: totalClasses, students: totalStudents }))
         } else {
-            toast.error(t('pages.grades.excel.noData'))
+          toast.error(t('pages.grades.excel.noData'))
         }
 
       } catch (error) {
@@ -226,7 +226,7 @@ export default function GradesPage() {
       }
     }
     reader.readAsBinaryString(file)
-    
+
     if (fileInputRef.current) {
       fileInputRef.current.value = ''
     }
@@ -252,7 +252,7 @@ export default function GradesPage() {
   // Handle delete class
   const handleDeleteClass = useCallback(() => {
     if (!deleteClassDialog.classId) return
-    
+
     removeClass(deleteClassDialog.classId)
     toast.success(t('pages.grades.deleteClass.success'))
     setDeleteClassDialog({ open: false, classId: null })
@@ -269,92 +269,92 @@ export default function GradesPage() {
   const headerActions = (
     <div className="flex items-center gap-2">
       <div className="flex items-center gap-2 ltr:mr-2 rtl:ml-2">
-          {/* Class Selector */}
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button variant="outline" size="sm" className="gap-2 h-9">
-                 <BookOpen className="h-4 w-4" />
-                 <span className="ltr:mr-1 rtl:ml-1 max-w-[100px] truncate">
-                    {classes.find(c => c.id === selectedClassId)?.name || t('common.selectClass')}
-                 </span>
-                 <ChevronDown className="h-3 w-3 opacity-50" />
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="end">
-                {classes.length > 0 ? (
-                    classes.map((cls) => (
-                        <DropdownMenuItem 
-                            key={cls.id} 
-                            onClick={() => setSelectedClass(cls.id)}
-                            className={selectedClassId === cls.id ? "bg-accent" : ""}
-                        >
-                            {cls.name}
-                        </DropdownMenuItem>
-                    ))
-                ) : (
-                    <DropdownMenuItem disabled>
-                        {t('common.noClasses')}
-                    </DropdownMenuItem>
-                )}
-            </DropdownMenuContent>
-          </DropdownMenu>
+        {/* Class Selector */}
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button variant="outline" size="sm" className="gap-2 h-9">
+              <BookOpen className="h-4 w-4" />
+              <span className="ltr:mr-1 rtl:ml-1 max-w-[100px] truncate">
+                {classes.find(c => c.id === selectedClassId)?.name || t('common.selectClass')}
+              </span>
+              <ChevronDown className="h-3 w-3 opacity-50" />
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="end">
+            {classes.length > 0 ? (
+              classes.map((cls) => (
+                <DropdownMenuItem
+                  key={cls.id}
+                  onClick={() => setSelectedClass(cls.id)}
+                  className={selectedClassId === cls.id ? "bg-accent" : ""}
+                >
+                  {cls.name}
+                </DropdownMenuItem>
+              ))
+            ) : (
+              <DropdownMenuItem disabled>
+                {t('common.noClasses')}
+              </DropdownMenuItem>
+            )}
+          </DropdownMenuContent>
+        </DropdownMenu>
 
-          {/* Year Selector */}
-         <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button variant="outline" size="sm" className="gap-2 h-9">
-                <Calendar className="h-4 w-4" />
-                <span className="ltr:mr-1 rtl:ml-1">{selectedYear}</span>
-                <ChevronDown className="h-3 w-3 opacity-50" />
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="end">
-              {/* Generate year list: 2 years back + current year */}
-              {(() => {
-                const now = new Date()
-                const month = now.getMonth()
-                const currentYear = now.getFullYear()
-                const currentStartYear = month >= 8 ? currentYear : currentYear - 1
-                const currentAcademicYear = `${currentStartYear}-${currentStartYear + 1}`
-                
-                const years = [
-                  `${currentStartYear - 2}-${currentStartYear - 1}`,
-                  `${currentStartYear - 1}-${currentStartYear}`,
-                  currentAcademicYear
-                ]
-                
-                return years.map((year) => {
-                  const isCurrent = year === currentAcademicYear
-                  const isPast = !isCurrent
-                  
-                  return (
-                    <DropdownMenuItem 
-                      key={year}
-                      onClick={() => isCurrent && setYear(year)}
-                      disabled={isPast}
-                      className={isPast ? 'opacity-50 cursor-not-allowed' : ''}
-                    >
-                      {year}
-                      {isCurrent && (
-                        <span className="ltr:ml-2 rtl:mr-2 text-xs text-muted-foreground">
-                          ({t('pages.grades.yearSelector.current')})
-                        </span>
-                      )}
-                    </DropdownMenuItem>
-                  )
-                })
-              })()}
-            </DropdownMenuContent>
-         </DropdownMenu>
+        {/* Year Selector */}
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button variant="outline" size="sm" className="gap-2 h-9">
+              <Calendar className="h-4 w-4" />
+              <span className="ltr:mr-1 rtl:ml-1">{selectedYear}</span>
+              <ChevronDown className="h-3 w-3 opacity-50" />
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="end">
+            {/* Generate year list: 2 years back + current year */}
+            {(() => {
+              const now = new Date()
+              const month = now.getMonth()
+              const currentYear = now.getFullYear()
+              const currentStartYear = month >= 8 ? currentYear : currentYear - 1
+              const currentAcademicYear = `${currentStartYear}-${currentStartYear + 1}`
 
-         {/* Term Selector */}
-         <Tabs value={String(selectedTerm)} onValueChange={(v) => setTerm(Number(v) as Term)} className="w-auto">
-           <TabsList className="h-9">
-               <TabsTrigger value="1" className="text-xs px-3">{t('pages.grades.term1')}</TabsTrigger>
-               <TabsTrigger value="2" className="text-xs px-3">{t('pages.grades.term2')}</TabsTrigger>
-               <TabsTrigger value="3" className="text-xs px-3">{t('pages.grades.term3')}</TabsTrigger>
-           </TabsList>
-         </Tabs>
+              const years = [
+                `${currentStartYear - 2}-${currentStartYear - 1}`,
+                `${currentStartYear - 1}-${currentStartYear}`,
+                currentAcademicYear
+              ]
+
+              return years.map((year) => {
+                const isCurrent = year === currentAcademicYear
+                const isPast = !isCurrent
+
+                return (
+                  <DropdownMenuItem
+                    key={year}
+                    onClick={() => isCurrent && setYear(year)}
+                    disabled={isPast}
+                    className={isPast ? 'opacity-50 cursor-not-allowed' : ''}
+                  >
+                    {year}
+                    {isCurrent && (
+                      <span className="ltr:ml-2 rtl:mr-2 text-xs text-muted-foreground">
+                        ({t('pages.grades.yearSelector.current')})
+                      </span>
+                    )}
+                  </DropdownMenuItem>
+                )
+              })
+            })()}
+          </DropdownMenuContent>
+        </DropdownMenu>
+
+        {/* Term Selector */}
+        <Tabs value={String(selectedTerm)} onValueChange={(v) => setTerm(Number(v) as Term)} className="w-auto">
+          <TabsList className="h-9">
+            <TabsTrigger value="1" className="text-xs px-3">{t('pages.grades.term1')}</TabsTrigger>
+            <TabsTrigger value="2" className="text-xs px-3">{t('pages.grades.term2')}</TabsTrigger>
+            <TabsTrigger value="3" className="text-xs px-3">{t('pages.grades.term3')}</TabsTrigger>
+          </TabsList>
+        </Tabs>
       </div>
 
       {/* Hidden file input */}
@@ -365,7 +365,7 @@ export default function GradesPage() {
         className="hidden"
         onChange={handleExcelUpload}
       />
-      
+
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
           <Button variant="outline" size="sm">
@@ -384,7 +384,7 @@ export default function GradesPage() {
           {selectedClassId && (
             <>
               <DropdownMenuSeparator />
-              <DropdownMenuItem 
+              <DropdownMenuItem
                 onClick={() => setDeleteClassDialog({ open: true, classId: selectedClassId })}
                 className="text-destructive focus:text-destructive"
               >
@@ -396,7 +396,7 @@ export default function GradesPage() {
           {classes.length > 1 && (
             <>
               <DropdownMenuSeparator />
-              <DropdownMenuItem 
+              <DropdownMenuItem
                 onClick={() => setClearAllDialog(true)}
                 className="text-destructive focus:text-destructive"
               >
@@ -409,16 +409,38 @@ export default function GradesPage() {
       </DropdownMenu>
     </div>
   )
-  
+
   return (
     <>
-      <ContentPage 
-        title={t('pages.grades.title')} 
+      <ContentPage
+        title={t('pages.grades.title')}
         description={t('pages.grades.description')}
         rtl={isRTL}
         headerActions={headerActions}
       >
-        <GradeSheetTable />
+        {classes.length === 0 ? (
+          <div className="flex flex-col items-center justify-center py-16 px-4">
+            <div className="w-16 h-16 rounded-full bg-muted flex items-center justify-center mb-6">
+              <BookOpen className="h-8 w-8 text-muted-foreground" />
+            </div>
+            <h3 className="text-xl font-semibold mb-2">{t('pages.grades.empty.noClasses', 'No Classes Yet')}</h3>
+            <p className="text-muted-foreground text-center max-w-md mb-6">
+              {t('pages.grades.empty.noClassesDescription', 'Create your first class to start managing student grades and attendance.')}
+            </p>
+            <div className="flex flex-col sm:flex-row gap-3">
+              <Button onClick={() => setAddClassDialog(true)}>
+                <Plus className="h-4 w-4 mr-2" />
+                {t('pages.grades.empty.createManually', 'Create Class')}
+              </Button>
+              <Button variant="outline" onClick={() => fileInputRef.current?.click()}>
+                <Upload className="h-4 w-4 mr-2" />
+                {t('pages.grades.empty.uploadExcel', 'Import from Excel')}
+              </Button>
+            </div>
+          </div>
+        ) : (
+          <GradeSheetTable />
+        )}
       </ContentPage>
 
       {/* Add Class Dialog */}
@@ -427,7 +449,7 @@ export default function GradesPage() {
           <DialogHeader>
             <DialogTitle>{t('pages.grades.addClass.title')}</DialogTitle>
           </DialogHeader>
-          
+
           <div className="space-y-4 py-4">
             <div className="space-y-2">
               <Label htmlFor="className">{t('pages.grades.addClass.name')}</Label>
@@ -457,7 +479,7 @@ export default function GradesPage() {
               />
             </div>
           </div>
-          
+
           <DialogFooter>
             <Button variant="outline" onClick={() => setAddClassDialog(false)}>
               {t('common.cancel')}
@@ -475,7 +497,7 @@ export default function GradesPage() {
           <DialogHeader>
             <DialogTitle>{t('pages.grades.deleteClass.title')}</DialogTitle>
           </DialogHeader>
-          
+
           <div className="py-4">
             <p className="text-muted-foreground">
               {deleteClassDialog.classId && getClassStudentCount(deleteClassDialog.classId) > 0
@@ -484,7 +506,7 @@ export default function GradesPage() {
               }
             </p>
           </div>
-          
+
           <DialogFooter>
             <Button variant="outline" onClick={() => setDeleteClassDialog({ open: false, classId: null })}>
               {t('common.cancel')}
@@ -501,13 +523,13 @@ export default function GradesPage() {
           <DialogHeader>
             <DialogTitle>{t('pages.grades.deleteClass.clearAll')}</DialogTitle>
           </DialogHeader>
-          
+
           <div className="py-4">
             <p className="text-muted-foreground">
               {t('pages.grades.deleteClass.clearAllConfirm')}
             </p>
           </div>
-          
+
           <DialogFooter>
             <Button variant="outline" onClick={() => setClearAllDialog(false)}>
               {t('common.cancel')}
@@ -520,7 +542,7 @@ export default function GradesPage() {
       </Dialog>
 
       {/* Initialization Dialog */}
-      <Dialog open={!isYearInitialized} onOpenChange={() => {}}>
+      <Dialog open={!isYearInitialized} onOpenChange={() => { }}>
         <DialogContent className="sm:max-w-md" onInteractOutside={e => e.preventDefault()} onEscapeKeyDown={e => e.preventDefault()}>
           <DialogHeader>
             <DialogTitle>{t('pages.grades.initYear.title')}</DialogTitle>
@@ -533,9 +555,9 @@ export default function GradesPage() {
               </Label>
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
-                  <Button 
+                  <Button
                     id="initYearSelect"
-                    variant="outline" 
+                    variant="outline"
                     className="w-full justify-between font-bold text-xl h-14"
                   >
                     {initYear}
@@ -547,7 +569,7 @@ export default function GradesPage() {
                     {academicYears.previous}
                     <span className="text-muted-foreground text-xs opacity-70">({new Date().getFullYear() - 1})</span>
                   </DropdownMenuItem>
-                  <DropdownMenuItem 
+                  <DropdownMenuItem
                     onClick={() => setInitYear(academicYears.current)}
                     className="justify-between font-bold bg-secondary/20"
                   >
