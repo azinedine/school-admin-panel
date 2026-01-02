@@ -9,7 +9,7 @@ import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { Badge } from '@/components/ui/badge'
 import { cn } from '@/lib/utils'
 import { type LessonPreparationFormData } from '@/schemas/lesson-preparation'
-import { useEffect } from 'react'
+import { useEffect, useRef } from 'react'
 
 interface PhaseEditorProps {
     control: Control<LessonPreparationFormData>
@@ -43,16 +43,29 @@ export function PhaseEditor({
         name: 'phases',
     })
 
-    // Auto-initialize phases if empty
+    // Track if we've already initialized to avoid overwriting restored data
+    const hasInitialized = useRef(false)
+
+    // Auto-initialize phases only if truly empty and not already initialized
     useEffect(() => {
-        if (fields.length === 0) {
+        // Skip if already initialized
+        if (hasInitialized.current) return
+
+        // Check if phases have any content (restored from localStorage)
+        const hasContent = phases && phases.length > 0 && phases.some(p => p.content && p.content.trim().length > 0)
+
+        // Only initialize if truly empty (no fields and no content)
+        if (fields.length === 0 && !hasContent) {
             replace([
                 { type: 'departure', content: '', duration_minutes: 5 },
                 { type: 'presentation', content: '', duration_minutes: 30 },
                 { type: 'consolidation', content: '', duration_minutes: 10 },
             ])
         }
-    }, [fields.length, replace])
+
+        // Mark as initialized after first check
+        hasInitialized.current = true
+    }, [fields.length, phases, replace])
 
     const currentTotalDuration = phases?.reduce((acc, curr) => acc + (Number(curr.duration_minutes) || 0), 0) || 0
     const isDurationMismatch = currentTotalDuration !== totalDuration
