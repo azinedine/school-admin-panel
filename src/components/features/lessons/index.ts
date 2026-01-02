@@ -10,7 +10,7 @@ export { LessonCard, LessonCardGrid } from './lesson-card/index.ts'
 export { LessonForm } from './LessonForm.tsx'
 export { LessonViewDialog } from './LessonViewDialog.tsx'
 export { LessonPrepForm } from './LessonPrepForm.tsx'
-export { LessonPrepDetails } from './LessonPrepDetails.tsx'
+export { LessonPrepDetails } from './lesson-prep-details/index.ts'
 export { PreparationCard } from './PreparationCard.tsx'
 
 // Form Sub-components
