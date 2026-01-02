@@ -112,7 +112,7 @@ export function useLessonDetailForm({
     }, [existingLesson, prefilledClass, open, initialTemplate])
 
     const updateFormField = useCallback(
-        <K extends keyof LessonDetailFormData>(field: K, value: LessonDetailFormData[K]) => {
+        (field: keyof LessonDetailFormData, value: unknown) => {
             setFormData((prev) => ({ ...prev, [field]: value }))
         },
         []
