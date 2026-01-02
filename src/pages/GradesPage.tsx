@@ -297,7 +297,6 @@ export default function GradesPage() {
     ])
 
     // Create workbook and worksheet
-    const ws = XLSX.utils.aoa_to_array([headers, ...data])
     const wb = XLSX.utils.book_new()
     const worksheet = XLSX.utils.aoa_to_sheet([headers, ...data])
 
@@ -416,18 +415,17 @@ export default function GradesPage() {
                 <Download className="h-4 w-4 ltr:mr-2 rtl:ml-2" />
                 {t('pages.grades.export.button', 'Export to Excel')}
               </DropdownMenuItem>
-              <>
-                <DropdownMenuSeparator />
-                <DropdownMenuItem
-                  onClick={() => setDeleteClassDialog({ open: true, classId: selectedClassId })}
-                  className="text-destructive focus:text-destructive"
-                >
-                  <Trash2 className="h-4 w-4 ltr:mr-2 rtl:ml-2" />
-                  {t('pages.grades.deleteClass.title')}
-                </DropdownMenuItem>
-              </>
+              <DropdownMenuSeparator />
+              <DropdownMenuItem
+                onClick={() => setDeleteClassDialog({ open: true, classId: selectedClassId })}
+                className="text-destructive focus:text-destructive"
+              >
+                <Trash2 className="h-4 w-4 ltr:mr-2 rtl:ml-2" />
+                {t('pages.grades.deleteClass.title')}
+              </DropdownMenuItem>
+            </>
           )}
-            </DropdownMenuContent>
+        </DropdownMenuContent>
       </DropdownMenu>
     </div>
   )
