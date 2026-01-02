@@ -60,9 +60,9 @@ export function PhaseEditor({
             // Only initialize if truly empty (no fields and no content)
             if (fields.length === 0 && !hasContent) {
                 replace([
-                    { type: 'departure', content: '', duration_minutes: 5 },
-                    { type: 'presentation', content: '', duration_minutes: 30 },
-                    { type: 'consolidation', content: '', duration_minutes: 10 },
+                    { type: 'departure', content: '', duration_minutes: 10 },
+                    { type: 'presentation', content: '', duration_minutes: 35 },
+                    { type: 'consolidation', content: '', duration_minutes: 15 },
                 ])
             }
 
