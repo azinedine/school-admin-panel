@@ -948,6 +948,13 @@ export function GradeSheetTable({ classId: selectedClassId, term: selectedTerm, 
                   autoFocus
                   className="w-16 h-8 text-center"
                   onFocus={(e) => e.target.select()}
+                  onChange={(e) => {
+                    // Save when using spinner buttons (onChange fires on each click)
+                    const newValue = e.target.value.trim()
+                    if (newValue !== '' && newValue !== String(value)) {
+                      handleValidatedEdit(newValue)
+                    }
+                  }}
                   onBlur={(e) => {
                     const newValue = e.target.value.trim()
                     // If empty, revert to original value
