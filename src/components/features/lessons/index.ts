@@ -1,24 +1,26 @@
 // Tabs
-export { LessonsTab } from './LessonsTab'
-export { PreparationTab } from './PreparationTab'
-export { TimetableTab } from './TimetableTab'
+export { LessonsTab } from './LessonsTab.tsx'
+export { PreparationTab } from './PreparationTab.tsx'
+export { TimetableTab } from './TimetableTab.tsx'
+
+// Lesson Card Module (SOLID refactored)
+export { LessonCard, LessonCardGrid } from './lesson-card/index.ts'
 
 // Lesson Components
-export { LessonForm } from './LessonForm'
-export { LessonCard, LessonCardGrid } from './LessonCard'
-export { LessonViewDialog } from './LessonViewDialog'
-export { LessonPrepForm } from './LessonPrepForm'
-export { LessonPrepDetails } from './LessonPrepDetails'
-export { PreparationCard } from './PreparationCard'
+export { LessonForm } from './LessonForm.tsx'
+export { LessonViewDialog } from './LessonViewDialog.tsx'
+export { LessonPrepForm } from './LessonPrepForm.tsx'
+export { LessonPrepDetails } from './LessonPrepDetails.tsx'
+export { PreparationCard } from './PreparationCard.tsx'
 
 // Form Sub-components
-export { LessonPrepPedagogicalContext } from './LessonPrepPedagogicalContext'
-export { LessonPrepElements } from './LessonPrepElements'
-export { LessonPrepEvaluation } from './LessonPrepEvaluation'
+export { LessonPrepPedagogicalContext } from './LessonPrepPedagogicalContext.tsx'
+export { LessonPrepElements } from './LessonPrepElements.tsx'
+export { LessonPrepEvaluation } from './LessonPrepEvaluation.tsx'
 
 // Utilities
-export { ClassContextDisplay } from './ClassContextDisplay'
-export { LessonDetailDialog } from './LessonDetailDialog'
-export { LessonPrepByClass } from './LessonPrepByClass'
-export { LessonSelector } from './LessonSelector'
-export { LessonDetailsSheet } from './LessonDetailsSheet'
+export { ClassContextDisplay } from './ClassContextDisplay.tsx'
+export { LessonDetailDialog } from './LessonDetailDialog.tsx'
+export { LessonPrepByClass } from './LessonPrepByClass.tsx'
+export { LessonSelector } from './LessonSelector.tsx'
+export { LessonDetailsSheet } from './LessonDetailsSheet.tsx'
