@@ -29,7 +29,8 @@
         "inactive": "Inactif",
         "formErrors": "Veuillez vérifier les erreurs dans le formulaire",
         "errorsIn": "Erreurs dans",
-        "minutes": "minutes"
+        "minutes": "minutes",
+        "selectLevel": "Sélectionner le niveau"
     },
     "auth": {
         "login": {
@@ -413,7 +414,8 @@
                 "grade": "Niveau",
                 "gradePlaceholder": "ex: 4ème année",
                 "success": "Classe créée avec succès",
-                "uploadSuccess": "{{count}} élèves importés avec succès"
+                "uploadSuccess": "{{count}} élèves importés avec succès",
+                "duplicate": "Une classe avec ce nom existe déjà"
             },
             "deleteClass": {
                 "title": "Supprimer la classe",
@@ -501,6 +503,23 @@
                 "academicContext": "Contexte académique",
                 "year": "Année académique",
                 "term": "Trimestre"
+            },
+            "levelMissing": {
+                "title": "Définir le niveau d'abord",
+                "description": "Vous devez définir le niveau de cette classe avant de gérer les notes. Cela aide à organiser les cours et les évaluations correctement.",
+                "action": "Définir le niveau maintenant"
+            },
+            "editLevel": {
+                "title": "Modifier le niveau de la classe",
+                "description": "Définir le niveau pour",
+                "success": "Niveau mis à jour"
+            },
+            "deleteAll": {
+                "title": "Supprimer toutes les classes",
+                "confirm": "Êtes-vous sûr de vouloir supprimer TOUTES les classes ? Cela supprimera définitivement {{count}} classes et tous leurs élèves.",
+                "warning": "Cette action est irréversible !",
+                "action": "Supprimer tout",
+                "success": "Toutes les classes supprimées"
             }
         },
         "addLesson": {
