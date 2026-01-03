@@ -240,6 +240,15 @@ export default function GradesPage() {
   const handleCreateClass = useCallback(async () => {
     if (!newClassName.trim()) return
 
+    // Check for duplicate class name
+    const isDuplicate = classes.some(
+      c => c.name.toLowerCase().trim() === newClassName.toLowerCase().trim()
+    )
+    if (isDuplicate) {
+      toast.error(t('pages.grades.addClass.duplicate', 'A class with this name already exists'))
+      return
+    }
+
     try {
       const newClass = await createClassMutation.mutateAsync({
         name: newClassName,
