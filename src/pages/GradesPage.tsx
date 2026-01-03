@@ -30,6 +30,7 @@ import {
   useCreateGradeClass,
   useUpdateGradeClass,
   useDeleteGradeClass,
+  useDeleteAllGradeClasses,
   useBatchCreateStudents,
 } from "@/features/grades"
 import type { CreateStudentRequest, GradeClass } from "@/features/grades"
@@ -61,6 +62,7 @@ export default function GradesPage() {
   const createClassMutation = useCreateGradeClass()
   const updateClassMutation = useUpdateGradeClass()
   const deleteClassMutation = useDeleteGradeClass()
+  const deleteAllClassesMutation = useDeleteAllGradeClasses()
   const batchCreateStudentsMutation = useBatchCreateStudents()
 
   // File input ref
