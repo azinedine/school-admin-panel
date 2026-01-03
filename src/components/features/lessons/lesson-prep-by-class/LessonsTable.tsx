@@ -132,11 +132,13 @@ export function LessonsTable({
                                                 )}
                                             </p>
 
-                                            {/* Learning Segment */}
-                                            {lesson.learningSegment && (
-                                                <Badge variant="outline" className="text-[10px] px-1.5 py-0 w-fit">
-                                                    {lesson.learningSegment}
-                                                </Badge>
+                                            {/* Domain & Learning Unit */}
+                                            {(lesson.field || lesson.learningSegment) && (
+                                                <p className="text-xs text-muted-foreground">
+                                                    {lesson.field && <span>{lesson.field}</span>}
+                                                    {lesson.field && lesson.learningSegment && <span> • </span>}
+                                                    {lesson.learningSegment && <span>{lesson.learningSegment}</span>}
+                                                </p>
                                             )}
 
                                             {/* Lesson Content Preview */}
