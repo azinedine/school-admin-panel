@@ -306,26 +306,19 @@ export default function GradesPage() {
 
   // Handle delete all classes
   const [deleteAllDialog, setDeleteAllDialog] = useState(false)
-  const [isDeletingAll, setIsDeletingAll] = useState(false)
 
   const handleDeleteAllClasses = useCallback(async () => {
     if (classes.length === 0) return
 
-    setIsDeletingAll(true)
     try {
-      // Delete all classes one by one
-      for (const cls of classes) {
-        await deleteClassMutation.mutateAsync(cls.id)
-      }
+      await deleteAllClassesMutation.mutateAsync()
       toast.success(t('pages.grades.deleteAll.success', 'All classes deleted'))
       setDeleteAllDialog(false)
       setSelectedClassId(null)
     } catch (error) {
       toast.error(t('common.error'))
-    } finally {
-      setIsDeletingAll(false)
     }
-  }, [classes, deleteClassMutation, t])
+  }, [classes.length, deleteAllClassesMutation, t])
 
   // Open edit level dialog
   const openEditLevel = useCallback((cls: GradeClass) => {
@@ -744,9 +737,9 @@ export default function GradesPage() {
             <Button
               variant="destructive"
               onClick={handleDeleteAllClasses}
-              disabled={isDeletingAll}
+              disabled={deleteAllClassesMutation.isPending}
             >
-              {isDeletingAll && <Loader2 className="h-4 w-4 mr-2 animate-spin" />}
+              {deleteAllClassesMutation.isPending && <Loader2 className="h-4 w-4 mr-2 animate-spin" />}
               {t('pages.grades.deleteAll.action', 'Delete All')}
             </Button>
           </DialogFooter>
