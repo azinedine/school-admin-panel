@@ -120,15 +120,48 @@ export function LessonsTable({
                                         </div>
                                     </TableCell>
                                     <TableCell>
-                                        <div className="space-y-1">
+                                        <div className="space-y-1.5">
+                                            {/* Lesson Number - clickable */}
                                             <p
                                                 className="font-semibold cursor-pointer hover:underline text-primary"
                                                 onClick={() => onView(lesson)}
                                             >
                                                 {lesson.lessonNumber}
                                             </p>
+
+                                            {/* Knowledge Resource / Main Topic */}
+                                            {lesson.knowledgeResource && (
+                                                <p className="text-sm font-medium text-foreground/80">
+                                                    {lesson.knowledgeResource}
+                                                </p>
+                                            )}
+
+                                            {/* Field & Learning Segment */}
+                                            {(lesson.field || lesson.learningSegment) && (
+                                                <div className="flex flex-wrap gap-1.5">
+                                                    {lesson.field && (
+                                                        <Badge variant="secondary" className="text-[10px] px-1.5 py-0">
+                                                            {lesson.field}
+                                                        </Badge>
+                                                    )}
+                                                    {lesson.learningSegment && (
+                                                        <Badge variant="outline" className="text-[10px] px-1.5 py-0">
+                                                            {lesson.learningSegment}
+                                                        </Badge>
+                                                    )}
+                                                </div>
+                                            )}
+
+                                            {/* Lesson Content Preview */}
+                                            {lesson.lessonContent && (
+                                                <p className="text-xs text-muted-foreground line-clamp-2">
+                                                    {lesson.lessonContent}
+                                                </p>
+                                            )}
+
+                                            {/* Status Note */}
                                             {lesson.statusNote && (
-                                                <p className="text-xs text-muted-foreground italic">
+                                                <p className="text-xs text-muted-foreground italic border-l-2 border-amber-400 pl-2">
                                                     {lesson.statusNote}
                                                 </p>
                                             )}
