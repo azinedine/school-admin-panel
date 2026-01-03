@@ -7,7 +7,7 @@ import { Card } from '@/components/ui/card'
 import { TimetableEmptyState } from '@/components/TimetableEmptyState'
 import { TimetableSetupDialog } from '@/components/TimetableSetupDialog'
 import { TermSetupDialog } from '@/components/TermSetupDialog'
-import { LessonPrepByClass } from './LessonPrepByClass'
+import { LessonPrepByClass } from './lesson-prep-by-class/index.ts'
 import { usePrepStore } from '@/store/prep-store'
 
 /**
