@@ -28,10 +28,11 @@ import * as XLSX from "xlsx"
 import {
   useGradeClasses,
   useCreateGradeClass,
+  useUpdateGradeClass,
   useDeleteGradeClass,
   useBatchCreateStudents,
 } from "@/features/grades"
-import type { CreateStudentRequest } from "@/features/grades"
+import type { CreateStudentRequest, GradeClass } from "@/features/grades"
 
 // Term type
 type Term = 1 | 2 | 3
@@ -58,6 +59,7 @@ export default function GradesPage() {
   // API hooks
   const { data: classes = [], isLoading: isLoadingClasses } = useGradeClasses(selectedYear)
   const createClassMutation = useCreateGradeClass()
+  const updateClassMutation = useUpdateGradeClass()
   const deleteClassMutation = useDeleteGradeClass()
   const batchCreateStudentsMutation = useBatchCreateStudents()
 
@@ -73,6 +75,11 @@ export default function GradesPage() {
     open: false,
     classId: null,
   })
+  const [editLevelDialog, setEditLevelDialog] = useState<{ open: boolean; classData: GradeClass | null }>({
+    open: false,
+    classData: null,
+  })
+  const [editingLevel, setEditingLevel] = useState('')
 
   // Auto-select first class or sync from URL
   useEffect(() => {
@@ -265,6 +272,29 @@ export default function GradesPage() {
     }
   }, [deleteClassDialog.classId, deleteClassMutation, classes, t])
 
+  // Handle update class level
+  const handleUpdateLevel = useCallback(async () => {
+    if (!editLevelDialog.classData) return
+
+    try {
+      await updateClassMutation.mutateAsync({
+        id: editLevelDialog.classData.id,
+        grade_level: editingLevel,
+      })
+      toast.success(t('pages.grades.editLevel.success', 'Level updated'))
+      setEditLevelDialog({ open: false, classData: null })
+      setEditingLevel('')
+    } catch (error) {
+      toast.error(t('common.error'))
+    }
+  }, [editLevelDialog.classData, editingLevel, updateClassMutation, t])
+
+  // Open edit level dialog
+  const openEditLevel = useCallback((cls: GradeClass) => {
+    setEditLevelDialog({ open: true, classData: cls })
+    setEditingLevel(cls.grade_level || '')
+  }, [])
+
   // Handle Excel export
   const handleExcelExport = useCallback(() => {
     const selectedClass = classes.find(c => c.id === selectedClassId)
@@ -341,10 +371,26 @@ export default function GradesPage() {
               classes.map((cls) => (
                 <DropdownMenuItem
                   key={cls.id}
-                  onClick={() => setSelectedClassId(cls.id)}
-                  className={selectedClassId === cls.id ? "bg-accent" : ""}
+                  className={`flex justify-between gap-4 ${selectedClassId === cls.id ? "bg-accent" : ""}`}
                 >
-                  {cls.name}
+                  <span
+                    className="flex-1 cursor-pointer"
+                    onClick={() => setSelectedClassId(cls.id)}
+                  >
+                    {cls.name}
+                    {cls.grade_level && (
+                      <span className="text-xs text-muted-foreground ml-2">({cls.grade_level})</span>
+                    )}
+                  </span>
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation()
+                      openEditLevel(cls)
+                    }}
+                    className="text-xs text-primary hover:underline px-1"
+                  >
+                    {t('common.edit', 'Edit')}
+                  </button>
                 </DropdownMenuItem>
               ))
             ) : (
@@ -558,6 +604,50 @@ export default function GradesPage() {
             >
               {deleteClassMutation.isPending && <Loader2 className="h-4 w-4 mr-2 animate-spin" />}
               {t('common.delete')}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* Edit Class Level Dialog */}
+      <Dialog open={editLevelDialog.open} onOpenChange={(open) => setEditLevelDialog(prev => ({ ...prev, open }))}>
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle>{t('pages.grades.editLevel.title', 'Edit Class Level')}</DialogTitle>
+          </DialogHeader>
+
+          <div className="space-y-4 py-4">
+            <p className="text-sm text-muted-foreground">
+              {t('pages.grades.editLevel.description', 'Set the grade level for')} <strong>{editLevelDialog.classData?.name}</strong>
+            </p>
+            <div className="space-y-2">
+              <Label htmlFor="editLevel">{t('pages.grades.addClass.grade', 'Grade Level')}</Label>
+              <select
+                id="editLevel"
+                value={editingLevel}
+                onChange={(e) => setEditingLevel(e.target.value)}
+                className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+              >
+                <option value="">{t('common.selectLevel', 'Select Level')}</option>
+                <option value="1AP">1AP - 1ère Année Primaire</option>
+                <option value="2AP">2AP - 2ème Année Primaire</option>
+                <option value="3AP">3AP - 3ème Année Primaire</option>
+                <option value="4AP">4AP - 4ème Année Primaire</option>
+                <option value="5AP">5AP - 5ème Année Primaire</option>
+              </select>
+            </div>
+          </div>
+
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setEditLevelDialog({ open: false, classData: null })}>
+              {t('common.cancel')}
+            </Button>
+            <Button
+              onClick={handleUpdateLevel}
+              disabled={updateClassMutation.isPending || !editingLevel}
+            >
+              {updateClassMutation.isPending && <Loader2 className="h-4 w-4 mr-2 animate-spin" />}
+              {t('common.save')}
             </Button>
           </DialogFooter>
         </DialogContent>
