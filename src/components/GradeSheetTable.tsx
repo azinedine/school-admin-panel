@@ -42,6 +42,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import { Label } from "@/components/ui/label"
+import { Badge } from "@/components/ui/badge"
 import {
   Tooltip,
   TooltipContent,
@@ -1055,6 +1056,8 @@ export function GradeSheetTable({ classId: selectedClassId, term: selectedTerm, 
           {classes.map((cls) => {
             const isActive = cls.id === selectedClassId
             const studentCount = getClassStudentCount(cls.id)
+            const validLevels = ['1AP', '2AP', '3AP', '4AP', '5AP']
+            const hasValidLevel = cls.grade_level && validLevels.includes(cls.grade_level)
 
             return (
               <button
@@ -1079,6 +1082,21 @@ export function GradeSheetTable({ classId: selectedClassId, term: selectedTerm, 
                 `}>
                   {studentCount}
                 </span>
+                {isActive ? (
+                  hasValidLevel ? (
+                    <Badge variant="secondary" className="text-xs font-normal">
+                      {cls.grade_level}
+                    </Badge>
+                  ) : (
+                    <Badge variant="outline" className="text-xs font-normal text-amber-600 border-amber-400">
+                      !
+                    </Badge>
+                  )
+                ) : (
+                  !hasValidLevel && (
+                    <span className="text-xs text-amber-500">!</span>
+                  )
+                )}
               </button>
             )
           })}
