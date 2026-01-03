@@ -94,6 +94,20 @@ export function useDeleteGradeClass() {
     })
 }
 
+export function useDeleteAllGradeClasses() {
+    const queryClient = useQueryClient()
+
+    return useMutation({
+        mutationFn: async () => {
+            const { data } = await apiClient.delete<{ deleted_count: number }>('/v1/grade-classes')
+            return data.deleted_count
+        },
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: gradeKeys.all })
+        },
+    })
+}
+
 // ============ Grade Students ============
 
 export function useGradeStudents(classId: string, term: number) {
