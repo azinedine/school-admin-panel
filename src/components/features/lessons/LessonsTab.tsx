@@ -13,7 +13,7 @@ import {
 } from '@/components/ui/dialog'
 import { useLessonPreps } from '@/hooks/use-lesson-preparation'
 // import { PreparationCard } from '@/components/lessons_compponents/PreparationCard'
-import { LessonPrepDetails } from './LessonPrepDetails'
+import { LessonPrepDetails } from './lesson-prep-details/index.ts'
 import type { LessonPreparation } from '@/schemas/lesson-preparation'
 import { PreparationCard } from './PreparationCard'
 
