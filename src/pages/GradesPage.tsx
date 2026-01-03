@@ -16,6 +16,7 @@ import {
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import { Badge } from "@/components/ui/badge"
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -406,12 +407,18 @@ export default function GradesPage() {
                   className={`flex justify-between gap-4 ${selectedClassId === cls.id ? "bg-accent" : ""}`}
                 >
                   <span
-                    className="flex-1 cursor-pointer"
+                    className="flex-1 cursor-pointer flex items-center gap-2"
                     onClick={() => setSelectedClassId(cls.id)}
                   >
                     {cls.name}
-                    {cls.grade_level && (
-                      <span className="text-xs text-muted-foreground ml-2">({cls.grade_level})</span>
+                    {cls.grade_level && validLevels.includes(cls.grade_level) ? (
+                      <Badge variant="secondary" className="text-xs font-normal">
+                        {cls.grade_level}
+                      </Badge>
+                    ) : (
+                      <Badge variant="outline" className="text-xs font-normal text-amber-600 border-amber-400">
+                        {t('pages.grades.levelMissing.action', 'Set Level')}
+                      </Badge>
                     )}
                   </span>
                   <button
