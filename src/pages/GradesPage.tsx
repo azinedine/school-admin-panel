@@ -95,9 +95,10 @@ export default function GradesPage() {
     }
   }, [location.search, classes, selectedClassId])
 
-  // Check if selected class has level set
+  // Check if selected class has level set (must be one of the valid levels)
   const selectedClass = classes.find(c => c.id === selectedClassId)
-  const classLevelMissing = selectedClass && !selectedClass.grade_level
+  const validLevels = ['1AP', '2AP', '3AP', '4AP', '5AP']
+  const classLevelMissing = selectedClass && (!selectedClass.grade_level || !validLevels.includes(selectedClass.grade_level))
 
   // Get student count for a class
   const getClassStudentCount = useCallback((classId: string) => {
