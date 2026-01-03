@@ -132,20 +132,11 @@ export function LessonsTable({
                                                 )}
                                             </p>
 
-                                            {/* Field & Learning Segment */}
-                                            {(lesson.field || lesson.learningSegment) && (
-                                                <div className="flex flex-wrap gap-1.5">
-                                                    {lesson.field && (
-                                                        <Badge variant="secondary" className="text-[10px] px-1.5 py-0">
-                                                            {lesson.field}
-                                                        </Badge>
-                                                    )}
-                                                    {lesson.learningSegment && (
-                                                        <Badge variant="outline" className="text-[10px] px-1.5 py-0">
-                                                            {lesson.learningSegment}
-                                                        </Badge>
-                                                    )}
-                                                </div>
+                                            {/* Learning Segment */}
+                                            {lesson.learningSegment && (
+                                                <Badge variant="outline" className="text-[10px] px-1.5 py-0 w-fit">
+                                                    {lesson.learningSegment}
+                                                </Badge>
                                             )}
 
                                             {/* Lesson Content Preview */}
