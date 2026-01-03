@@ -93,6 +93,10 @@ export default function GradesPage() {
     }
   }, [location.search, classes, selectedClassId])
 
+  // Check if selected class has level set
+  const selectedClass = classes.find(c => c.id === selectedClassId)
+  const classLevelMissing = selectedClass && !selectedClass.grade_level
+
   // Get student count for a class
   const getClassStudentCount = useCallback((classId: string) => {
     const cls = classes.find(c => c.id === classId)
@@ -514,6 +518,22 @@ export default function GradesPage() {
                 {t('pages.grades.empty.uploadExcel', 'Import from Excel')}
               </Button>
             </div>
+          </div>
+        ) : classLevelMissing ? (
+          /* Warning: Level not set */
+          <div className="flex flex-col items-center justify-center py-16 px-4">
+            <div className="w-16 h-16 rounded-full bg-amber-100 dark:bg-amber-900/30 flex items-center justify-center mb-6">
+              <BookOpen className="h-8 w-8 text-amber-600 dark:text-amber-400" />
+            </div>
+            <h3 className="text-xl font-semibold mb-2">
+              {t('pages.grades.levelMissing.title', 'Set Class Level First')}
+            </h3>
+            <p className="text-muted-foreground text-center max-w-md mb-6">
+              {t('pages.grades.levelMissing.description', 'You need to set the grade level for this class before managing grades. This helps organize lessons and assessments correctly.')}
+            </p>
+            <Button onClick={() => selectedClass && openEditLevel(selectedClass)}>
+              {t('pages.grades.levelMissing.action', 'Set Level Now')}
+            </Button>
           </div>
         ) : (
           <GradeSheetTable
