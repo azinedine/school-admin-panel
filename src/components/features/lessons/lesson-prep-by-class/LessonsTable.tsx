@@ -121,20 +121,16 @@ export function LessonsTable({
                                     </TableCell>
                                     <TableCell>
                                         <div className="space-y-1.5">
-                                            {/* Lesson Number - clickable */}
+                                            {/* Lesson Number & Knowledge Resource - same line */}
                                             <p
-                                                className="font-semibold cursor-pointer hover:underline text-primary"
+                                                className="cursor-pointer hover:underline"
                                                 onClick={() => onView(lesson)}
                                             >
-                                                {lesson.lessonNumber}
+                                                <span className="font-semibold text-primary">{lesson.lessonNumber}</span>
+                                                {lesson.knowledgeResource && (
+                                                    <span className="text-foreground/80"> - {lesson.knowledgeResource}</span>
+                                                )}
                                             </p>
-
-                                            {/* Knowledge Resource / Main Topic */}
-                                            {lesson.knowledgeResource && (
-                                                <p className="text-sm font-medium text-foreground/80">
-                                                    {lesson.knowledgeResource}
-                                                </p>
-                                            )}
 
                                             {/* Field & Learning Segment */}
                                             {(lesson.field || lesson.learningSegment) && (
