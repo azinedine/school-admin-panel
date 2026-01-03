@@ -302,6 +302,29 @@ export default function GradesPage() {
     }
   }, [editLevelDialog.classData, editingLevel, updateClassMutation, t])
 
+  // Handle delete all classes
+  const [deleteAllDialog, setDeleteAllDialog] = useState(false)
+  const [isDeletingAll, setIsDeletingAll] = useState(false)
+
+  const handleDeleteAllClasses = useCallback(async () => {
+    if (classes.length === 0) return
+
+    setIsDeletingAll(true)
+    try {
+      // Delete all classes one by one
+      for (const cls of classes) {
+        await deleteClassMutation.mutateAsync(cls.id)
+      }
+      toast.success(t('pages.grades.deleteAll.success', 'All classes deleted'))
+      setDeleteAllDialog(false)
+      setSelectedClassId(null)
+    } catch (error) {
+      toast.error(t('common.error'))
+    } finally {
+      setIsDeletingAll(false)
+    }
+  }, [classes, deleteClassMutation, t])
+
   // Open edit level dialog
   const openEditLevel = useCallback((cls: GradeClass) => {
     setEditLevelDialog({ open: true, classData: cls })
@@ -481,6 +504,18 @@ export default function GradesPage() {
               >
                 <Trash2 className="h-4 w-4 ltr:mr-2 rtl:ml-2" />
                 {t('pages.grades.deleteClass.title')}
+              </DropdownMenuItem>
+            </>
+          )}
+          {classes.length > 0 && (
+            <>
+              <DropdownMenuSeparator />
+              <DropdownMenuItem
+                onClick={() => setDeleteAllDialog(true)}
+                className="text-destructive focus:text-destructive"
+              >
+                <Trash2 className="h-4 w-4 ltr:mr-2 rtl:ml-2" />
+                {t('pages.grades.deleteAll.title', 'Delete All Classes')}
               </DropdownMenuItem>
             </>
           )}
@@ -677,6 +712,40 @@ export default function GradesPage() {
             >
               {updateClassMutation.isPending && <Loader2 className="h-4 w-4 mr-2 animate-spin" />}
               {t('common.save')}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* Delete All Classes Dialog */}
+      <Dialog open={deleteAllDialog} onOpenChange={setDeleteAllDialog}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle className="text-destructive">
+              {t('pages.grades.deleteAll.title', 'Delete All Classes')}
+            </DialogTitle>
+          </DialogHeader>
+
+          <div className="py-4">
+            <p className="text-muted-foreground">
+              {t('pages.grades.deleteAll.confirm', 'Are you sure you want to delete ALL classes? This will permanently remove {{count}} classes and all their students.', { count: classes.length })}
+            </p>
+            <p className="text-destructive font-medium mt-2">
+              {t('pages.grades.deleteAll.warning', 'This action cannot be undone!')}
+            </p>
+          </div>
+
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setDeleteAllDialog(false)}>
+              {t('common.cancel')}
+            </Button>
+            <Button
+              variant="destructive"
+              onClick={handleDeleteAllClasses}
+              disabled={isDeletingAll}
+            >
+              {isDeletingAll && <Loader2 className="h-4 w-4 mr-2 animate-spin" />}
+              {t('pages.grades.deleteAll.action', 'Delete All')}
             </Button>
           </DialogFooter>
         </DialogContent>
