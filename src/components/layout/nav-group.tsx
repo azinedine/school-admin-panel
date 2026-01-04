@@ -34,7 +34,7 @@ export const NavGroup = ({ title, items }: NavGroupType) => {
   const { state } = useSidebar()
   const href = useLocation({ select: (location) => location.href })
   const { t } = useTranslation()
-  
+
   return (
     <SidebarGroup>
       <SidebarGroupLabel>{t(title)}</SidebarGroupLabel>
@@ -139,6 +139,7 @@ const SidebarMenuCollapsedDropdown = ({
 }) => {
   const { t } = useTranslation()
   const { isRTL } = useDirection()
+  const { setOpenMobile } = useSidebar()
   const Chevron = isRTL ? ChevronLeft : ChevronRight
   return (
     <SidebarMenuItem>
@@ -163,6 +164,7 @@ const SidebarMenuCollapsedDropdown = ({
             <DropdownMenuItem key={`${sub.title}-${sub.url}`} asChild>
               <Link
                 to={sub.url}
+                onClick={() => setOpenMobile(false)}
                 className={`${checkIsActive(href, sub) ? 'bg-secondary' : ''}`}
               >
                 {sub.icon && <sub.icon />}
@@ -183,10 +185,10 @@ function checkIsActive(href: string, item: NavItem, mainNav = false) {
   // For items with query params (like /grades?class=xxx), do full URL comparison
   if (item.url?.includes('?')) {
     // Compare full URLs for query param based routing
-    return href === item.url || 
-           decodeURIComponent(href) === decodeURIComponent(item.url)
+    return href === item.url ||
+      decodeURIComponent(href) === decodeURIComponent(item.url)
   }
-  
+
   return (
     href === item.url || // /endpoint?search=param
     href.split('?')[0] === item.url || // endpoint
