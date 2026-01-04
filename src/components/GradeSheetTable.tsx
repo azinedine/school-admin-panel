@@ -1045,14 +1045,14 @@ export function GradeSheetTable({ classId: selectedClassId, term: selectedTerm, 
 
   return (
     <div className="flex flex-col h-full" dir={isRTL ? 'rtl' : 'ltr'}>
-      {/* Class Navigation - Modern Pill Switcher */}
-      <div className="flex-shrink-0 mb-4 relative">
+      {/* Class Navigation - Modern Glass Morphism Tabs */}
+      <div className="flex-shrink-0 mb-6 relative">
         {/* Gradient scroll indicators */}
-        <div className="pointer-events-none absolute left-0 top-0 bottom-0 w-6 bg-gradient-to-r from-background to-transparent z-10" />
-        <div className="pointer-events-none absolute right-0 top-0 bottom-0 w-6 bg-gradient-to-l from-background to-transparent z-10" />
+        <div className="pointer-events-none absolute left-0 top-0 bottom-0 w-8 bg-gradient-to-r from-background to-transparent z-10" />
+        <div className="pointer-events-none absolute right-0 top-0 bottom-0 w-8 bg-gradient-to-l from-background to-transparent z-10" />
 
-        {/* Scrollable class pills - hidden scrollbar */}
-        <div className="flex gap-2 overflow-x-auto [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden">
+        {/* Scrollable class tabs - modern style */}
+        <div className="flex gap-3 overflow-x-auto pb-1 [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden">
           {classes.map((cls) => {
             const isActive = cls.id === selectedClassId
             const studentCount = getClassStudentCount(cls.id)
@@ -1064,37 +1064,48 @@ export function GradeSheetTable({ classId: selectedClassId, term: selectedTerm, 
                 key={cls.id}
                 onClick={() => handleClassSelect(cls.id)}
                 className={`
-                  flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium
-                  whitespace-nowrap transition-all duration-150 ease-out cursor-pointer select-none
+                  group relative flex items-center gap-2.5 px-5 py-2.5 rounded-xl text-sm font-medium
+                  whitespace-nowrap transition-all duration-200 ease-out cursor-pointer select-none
                   ${isActive
-                    ? 'bg-white dark:bg-zinc-800 text-foreground shadow-sm border border-border'
-                    : 'text-muted-foreground hover:text-foreground hover:bg-muted/50'
+                    ? 'bg-gradient-to-r from-primary/90 to-primary text-primary-foreground shadow-lg shadow-primary/25 scale-[1.02]'
+                    : 'bg-muted/40 hover:bg-muted/70 text-muted-foreground hover:text-foreground hover:scale-[1.01]'
                   }
                 `}
               >
-                <span>{cls.name}</span>
+                {/* Active indicator glow */}
+                {isActive && (
+                  <div className="absolute inset-0 rounded-xl bg-gradient-to-r from-primary/20 to-primary/10 blur-lg -z-10" />
+                )}
+
+                <span className="font-semibold">{cls.name}</span>
+
+                {/* Student count badge */}
                 <span className={`
-                  px-1.5 py-0.5 text-xs rounded-md
+                  inline-flex items-center justify-center min-w-[1.5rem] h-5 px-1.5 text-xs font-bold rounded-full
                   ${isActive
-                    ? 'bg-muted text-muted-foreground font-medium'
-                    : 'text-muted-foreground/70'
+                    ? 'bg-white/20 text-primary-foreground'
+                    : 'bg-background/60 text-muted-foreground group-hover:bg-background/80'
                   }
                 `}>
                   {studentCount}
                 </span>
+
+                {/* Level badge */}
                 {isActive ? (
                   hasValidLevel ? (
-                    <Badge variant="secondary" className="text-xs font-normal">
+                    <Badge className="bg-white/20 text-primary-foreground border-0 text-xs font-semibold hover:bg-white/30">
                       {cls.grade_level}
                     </Badge>
                   ) : (
-                    <Badge variant="outline" className="text-xs font-normal text-amber-600 border-amber-400">
+                    <Badge variant="outline" className="text-xs font-semibold bg-amber-500/20 text-amber-100 border-amber-400/50 animate-pulse">
                       !
                     </Badge>
                   )
                 ) : (
-                  !hasValidLevel && (
-                    <span className="text-xs text-amber-500">!</span>
+                  hasValidLevel ? (
+                    <span className="text-xs text-muted-foreground/60">{cls.grade_level}</span>
+                  ) : (
+                    <span className="text-xs text-amber-500 font-bold">!</span>
                   )
                 )}
               </button>
