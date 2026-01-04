@@ -16,13 +16,13 @@ export function ClassNavigationTabs({
     getClassStudentCount,
 }: ClassNavigationTabsProps) {
     return (
-        <div className="flex-shrink-0 mb-6 relative">
+        <div className="flex-shrink-0 mb-4 sm:mb-6 relative">
             {/* Gradient scroll indicators */}
-            <div className="pointer-events-none absolute left-0 top-0 bottom-0 w-8 bg-gradient-to-r from-background to-transparent z-10" />
-            <div className="pointer-events-none absolute right-0 top-0 bottom-0 w-8 bg-gradient-to-l from-background to-transparent z-10" />
+            <div className="pointer-events-none absolute left-0 top-0 bottom-0 w-4 sm:w-8 bg-gradient-to-r from-background to-transparent z-10" />
+            <div className="pointer-events-none absolute right-0 top-0 bottom-0 w-4 sm:w-8 bg-gradient-to-l from-background to-transparent z-10" />
 
-            {/* Scrollable class tabs - modern style */}
-            <div className="flex gap-3 overflow-x-auto pb-1 [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden">
+            {/* Scrollable class tabs - responsive */}
+            <div className="flex gap-1.5 sm:gap-3 overflow-x-auto pb-1 px-1 [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden">
                 {classes.map((cls) => {
                     const isActive = cls.id === selectedClassId
                     const studentCount = getClassStudentCount(cls.id)
@@ -33,19 +33,19 @@ export function ClassNavigationTabs({
                             key={cls.id}
                             onClick={() => onClassSelect(cls.id)}
                             className={`
-                group relative flex items-center gap-2.5 px-5 py-2.5 rounded-xl text-sm font-medium
-                whitespace-nowrap transition-all duration-200 ease-out cursor-pointer select-none
+                group relative flex items-center gap-1.5 sm:gap-2.5 px-2.5 sm:px-5 py-2 sm:py-2.5 rounded-lg sm:rounded-xl text-xs sm:text-sm font-medium
+                whitespace-nowrap transition-all duration-200 ease-out cursor-pointer select-none min-w-0 flex-shrink-0
                 ${isActive
                                     ? 'bg-gradient-to-r from-primary/90 to-primary text-primary-foreground'
                                     : 'bg-muted/40 hover:bg-muted/70 text-muted-foreground hover:text-foreground'
                                 }
               `}
                         >
-                            <span className="font-semibold">{cls.name}</span>
+                            <span className="font-semibold truncate max-w-[80px] sm:max-w-none">{cls.name}</span>
 
                             {/* Student count badge */}
                             <span className={`
-                inline-flex items-center justify-center min-w-[1.5rem] h-5 px-1.5 text-xs font-bold rounded-full
+                inline-flex items-center justify-center min-w-[1.25rem] sm:min-w-[1.5rem] h-4 sm:h-5 px-1 sm:px-1.5 text-[10px] sm:text-xs font-bold rounded-full
                 ${isActive
                                     ? 'bg-white/20 text-primary-foreground'
                                     : 'bg-background/60 text-muted-foreground group-hover:bg-background/80'
@@ -54,24 +54,33 @@ export function ClassNavigationTabs({
                                 {studentCount}
                             </span>
 
-                            {/* Level badge */}
-                            {isActive ? (
-                                hasValidLevel ? (
-                                    <Badge className="bg-white/20 text-primary-foreground border-0 text-xs font-semibold hover:bg-white/30">
-                                        {cls.grade_level}
-                                    </Badge>
+                            {/* Level badge - hidden on very small screens, visible on sm+ */}
+                            <span className="hidden sm:inline-flex">
+                                {isActive ? (
+                                    hasValidLevel ? (
+                                        <Badge className="bg-white/20 text-primary-foreground border-0 text-xs font-semibold hover:bg-white/30">
+                                            {cls.grade_level}
+                                        </Badge>
+                                    ) : (
+                                        <Badge variant="outline" className="text-xs font-semibold bg-amber-500/20 text-amber-100 border-amber-400/50 animate-pulse">
+                                            !
+                                        </Badge>
+                                    )
                                 ) : (
-                                    <Badge variant="outline" className="text-xs font-semibold bg-amber-500/20 text-amber-100 border-amber-400/50 animate-pulse">
-                                        !
-                                    </Badge>
-                                )
-                            ) : (
-                                hasValidLevel ? (
-                                    <span className="text-xs text-muted-foreground/60">{cls.grade_level}</span>
-                                ) : (
-                                    <span className="text-xs text-amber-500 font-bold">!</span>
-                                )
-                            )}
+                                    hasValidLevel ? (
+                                        <span className="text-xs text-muted-foreground/60">{cls.grade_level}</span>
+                                    ) : (
+                                        <span className="text-xs text-amber-500 font-bold">!</span>
+                                    )
+                                )}
+                            </span>
+
+                            {/* Compact warning indicator on mobile only */}
+                            <span className="sm:hidden">
+                                {!hasValidLevel && (
+                                    <span className="text-[10px] text-amber-500 font-bold">!</span>
+                                )}
+                            </span>
                         </button>
                     )
                 })}
@@ -79,3 +88,4 @@ export function ClassNavigationTabs({
         </div>
     )
 }
+
