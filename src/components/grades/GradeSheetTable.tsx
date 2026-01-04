@@ -1249,499 +1249,497 @@ export function GradeSheetTable({ classId: selectedClassId, term: selectedTerm, 
           <p>* {t('pages.grades.hints.autoCalculate')}</p>
         </div>
 
-        {/* Table - with horizontal scroll on mobile */}
-        <div className="rounded-md border overflow-x-auto -mx-4 sm:mx-0">
-          <div className="min-w-[900px] sm:min-w-0">
-            <DndContext
-              sensors={sensors}
-              collisionDetection={closestCenter}
-              onDragEnd={handleDragEnd}
-            >
-              <Table>
-                <TableHeader className="sticky top-0 bg-background z-10">
-                  <TableRow>
-                    <TableHead className="w-10"></TableHead>
-                    <TableHead className="w-12 text-center">#</TableHead>
-                    {showGroups && <TableHead className="w-20 text-center">{t('pages.grades.table.group')}</TableHead>}
-                    <TableHead className="w-10"></TableHead>
-                    <SortableHeader field="id">{t('pages.grades.table.id')}</SortableHeader>
-                    <SortableHeader field="lastName">{t('pages.grades.table.lastName')}</SortableHeader>
-                    <SortableHeader field="firstName">{t('pages.grades.table.firstName')}</SortableHeader>
-                    <SortableHeader field="dateOfBirth">{t('pages.grades.table.dateOfBirth')}</SortableHeader>
-                    <SortableHeader field="behavior">{t('pages.grades.table.behavior')}</SortableHeader>
-                    <SortableHeader field="applications">{t('pages.grades.table.applications')}</SortableHeader>
-                    <SortableHeader field="notebook">{t('pages.grades.table.notebook')}</SortableHeader>
-                    <SortableHeader field="lateness">{t('pages.grades.table.lateness')}</SortableHeader>
-                    <SortableHeader field="absences">{t('pages.grades.table.absences')}</SortableHeader>
-                    <SortableHeader field="activityAverage" highlight>{t('pages.grades.table.activityAverage')}</SortableHeader>
-                    <SortableHeader field="assignment" highlight>{t('pages.grades.table.assignment')}</SortableHeader>
-                    <SortableHeader field="exam" highlight>{t('pages.grades.table.exam')}</SortableHeader>
-                    <SortableHeader field="finalAverage" highlight>{t('pages.grades.table.finalAverage')}</SortableHeader>
-                    <SortableHeader field="remarks">{t('pages.grades.table.remarks')}</SortableHeader>
-                  </TableRow>
-                </TableHeader>
-                <SortableContext
-                  items={filteredAndSortedStudents.map(s => s.id)}
-                  strategy={verticalListSortingStrategy}
-                >
-                  <TableBody>
-                    {filteredAndSortedStudents.map((student, index) => {
-                      const studentNumber = index + 1
-                      const totalStudents = filteredAndSortedStudents.length
-                      const midpoint = Math.ceil(totalStudents / 2)
-                      const groupNumber = studentNumber <= midpoint ? 1 : 2
-
-                      return (
-                        <SortableStudentRow
-                          key={student.id}
-                          student={student}
-                          index={index}
-                          studentNumber={studentNumber}
-                          groupNumber={groupNumber}
-                          showGroups={showGroups}
-                          editingCell={editingCell}
-                          setEditingCell={setEditingCell}
-                          handleCellEdit={handleCellEdit}
-                          updateStudent={updateStudent}
-                          EditableCell={EditableCell}
-                          AttendanceCell={AttendanceCell}
-                          onMoveStudent={(s) => setMoveStudentDialog({ open: true, student: s })}
-                          onRemoveStudent={(s) => setRemoveStudentDialog({ open: true, student: s })}
-                          onViewStudentInfo={(s) => setStudentInfoSidebar({ open: true, student: s })}
-                          t={t}
-                        />
-                      )
-                    })}
-                  </TableBody>
-                </SortableContext>
-              </Table>
-            </DndContext>
-          </div>
-        </div>
-
-        {/* Attendance Dialog */}
-        <Dialog open={attendanceDialog.open} onOpenChange={(open) => setAttendanceDialog(prev => ({ ...prev, open }))}>
-          <DialogContent>
-            <DialogHeader>
-              <DialogTitle>
-                {attendanceDialog.type === 'absence'
-                  ? t('pages.grades.attendance.recordAbsence')
-                  : t('pages.grades.attendance.recordTardiness')}
-              </DialogTitle>
-            </DialogHeader>
-
-            {attendanceDialog.student && (
-              <div className="space-y-4 py-4">
-                <p className="font-medium">
-                  {attendanceDialog.student.firstName} {attendanceDialog.student.lastName}
-                </p>
-
-                <div className="grid grid-cols-2 gap-4">
-                  <div className="space-y-2">
-                    <Label htmlFor="date">{t('pages.grades.attendance.date')}</Label>
-                    <Input
-                      id="date"
-                      type="date"
-                      value={attendanceDate}
-                      onChange={(e) => setAttendanceDate(e.target.value)}
-                    />
-                  </div>
-                  <div className="space-y-2">
-                    <Label htmlFor="time">{t('pages.grades.attendance.time')}</Label>
-                    <Input
-                      id="time"
-                      type="time"
-                      value={attendanceTime}
-                      onChange={(e) => setAttendanceTime(e.target.value)}
-                    />
-                  </div>
-                </div>
-              </div>
-            )}
-
-            <DialogFooter>
-              <Button variant="outline" onClick={() => setAttendanceDialog({ open: false, student: null, type: 'absence' })}>
-                {t('common.cancel')}
-              </Button>
-              <Button onClick={handleRecordAttendance}>
-                {t('pages.grades.attendance.confirm')}
-              </Button>
-            </DialogFooter>
-          </DialogContent>
-        </Dialog>
-
-        {/* History Dialog */}
-        <Dialog open={historyDialog.open} onOpenChange={(open) => setHistoryDialog(prev => ({ ...prev, open }))}>
-          <DialogContent className="max-w-md">
-            <DialogHeader>
-              <DialogTitle>
-                {t('pages.grades.attendance.history')}
-                {historyDialog.student && ` - ${historyDialog.student.firstName} ${historyDialog.student.lastName}`}
-              </DialogTitle>
-            </DialogHeader>
-
-            <div className="space-y-2 max-h-[300px] overflow-y-auto py-4">
-              {studentRecords.length === 0 ? (
-                <p className="text-muted-foreground text-center py-4">
-                  {t('pages.grades.attendance.noRecords')}
-                </p>
-              ) : (
-                studentRecords.map((record) => (
-                  <div
-                    key={record.id}
-                    className="flex items-center justify-between p-3 rounded-lg border bg-muted/30"
-                  >
-                    <div className="flex items-center gap-3">
-                      {record.type === 'absence' ? (
-                        <UserMinus className="h-4 w-4 text-red-500" />
-                      ) : (
-                        <Clock className="h-4 w-4 text-orange-500" />
-                      )}
-                      <div>
-                        <p className="font-medium text-sm">
-                          {t(`pages.grades.attendance.${record.type}`)}
-                        </p>
-                        <p className="text-xs text-muted-foreground">
-                          {record.date} • {record.time}
-                        </p>
-                      </div>
-                    </div>
-
-                    {recordToDelete === record.id ? (
-                      <div className="flex items-center gap-2">
-                        <Button
-                          variant="destructive"
-                          size="sm"
-                          onClick={() => handleDeleteRecord(record.id)}
-                        >
-                          {t('pages.grades.attendance.confirm')}
-                        </Button>
-                        <Button
-                          variant="outline"
-                          size="sm"
-                          onClick={() => setRecordToDelete(null)}
-                        >
-                          {t('common.cancel')}
-                        </Button>
-                      </div>
-                    ) : (
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        className="text-destructive hover:text-destructive"
-                        onClick={() => setRecordToDelete(record.id)}
-                      >
-                        <Trash2 className="h-4 w-4" />
-                      </Button>
-                    )}
-                  </div>
-                ))
-              )}
-            </div>
-
-            <DialogFooter>
-              <Button variant="outline" onClick={() => setHistoryDialog({ open: false, student: null })}>
-                {t('common.cancel')}
-              </Button>
-            </DialogFooter>
-          </DialogContent>
-        </Dialog>
-
-        {/* Move Student Dialog */}
-        <Dialog open={moveStudentDialog.open} onOpenChange={(open) => setMoveStudentDialog({ open, student: open ? moveStudentDialog.student : null })}>
-          <DialogContent>
-            <DialogHeader>
-              <DialogTitle>{t('pages.grades.studentManagement.moveToClass')}</DialogTitle>
-            </DialogHeader>
-
-            {moveStudentDialog.student && (
-              <div className="space-y-4 py-4">
-                <p className="text-sm text-muted-foreground">
-                  {t('pages.grades.studentManagement.moveStudentDescription', {
-                    name: `${moveStudentDialog.student.firstName} ${moveStudentDialog.student.lastName}`
-                  })}
-                </p>
-
-                <div className="space-y-2">
-                  <Label htmlFor="targetClass">{t('pages.grades.studentManagement.selectClass')}</Label>
-                  <div className="grid gap-2">
-                    {classes.filter(c => c.id !== moveStudentDialog.student?.classId).map((cls) => (
-                      <Button
-                        key={cls.id}
-                        variant="outline"
-                        className="justify-start"
-                        onClick={() => handleMoveStudent(moveStudentDialog.student!.id, cls.id)}
-                      >
-                        <Move className="h-4 w-4 ltr:mr-2 rtl:ml-2" />
-                        {cls.name}
-                      </Button>
-                    ))}
-                    {classes.filter(c => c.id !== moveStudentDialog.student?.classId).length === 0 && (
-                      <p className="text-sm text-muted-foreground text-center py-4">
-                        {t('pages.grades.studentManagement.noOtherClasses')}
-                      </p>
-                    )}
-                  </div>
-                </div>
-              </div>
-            )}
-
-            <DialogFooter>
-              <Button variant="outline" onClick={() => setMoveStudentDialog({ open: false, student: null })}>
-                {t('common.cancel')}
-              </Button>
-            </DialogFooter>
-          </DialogContent>
-        </Dialog>
-
-        {/* Remove Student Dialog */}
-        <Dialog open={removeStudentDialog.open} onOpenChange={(open) => setRemoveStudentDialog({ open, student: open ? removeStudentDialog.student : null })}>
-          <DialogContent>
-            <DialogHeader>
-              <DialogTitle>{t('pages.grades.studentManagement.removeFromClass')}</DialogTitle>
-            </DialogHeader>
-
-            {removeStudentDialog.student && (
-              <div className="space-y-4 py-4">
-                <p className="text-sm text-muted-foreground">
-                  {t('pages.grades.studentManagement.removeStudentDescription', {
-                    name: `${removeStudentDialog.student.firstName} ${removeStudentDialog.student.lastName}`
-                  })}
-                </p>
-                <p className="text-sm font-medium text-destructive">
-                  {t('pages.grades.studentManagement.removeWarning')}
-                </p>
-              </div>
-            )}
-
-            <DialogFooter>
-              <Button variant="outline" onClick={() => setRemoveStudentDialog({ open: false, student: null })}>
-                {t('common.cancel')}
-              </Button>
-              <Button
-                variant="destructive"
-                onClick={() => removeStudentDialog.student && handleRemoveStudent(removeStudentDialog.student.id)}
-              >
-                {t('pages.grades.studentManagement.confirmRemove')}
-              </Button>
-            </DialogFooter>
-          </DialogContent>
-        </Dialog>
-
-        {/* Add Student Dialog */}
-        <Dialog open={addStudentDialog} onOpenChange={setAddStudentDialog}>
-          <DialogContent>
-            <DialogHeader>
-              <DialogTitle>{t('pages.grades.addStudent.title')}</DialogTitle>
-            </DialogHeader>
-
-            <div className="space-y-4 py-4">
-              <div className="grid gap-4">
-                <div className="grid gap-2">
-                  <Label htmlFor="studentId">{t('pages.grades.addStudent.id')}</Label>
-                  <Input
-                    id="studentId"
-                    placeholder={t('pages.grades.addStudent.idPlaceholder')}
-                    value={newStudent.id}
-                    onChange={(e) => setNewStudent({ ...newStudent, id: e.target.value })}
-                  />
-                  <p className="text-xs text-muted-foreground">
-                    {t('pages.grades.addStudent.idOptional')}
-                  </p>
-                </div>
-
-                <div className="grid gap-2">
-                  <Label htmlFor="lastName">{t('pages.grades.addStudent.lastName')} *</Label>
-                  <Input
-                    id="lastName"
-                    placeholder={t('pages.grades.addStudent.lastNamePlaceholder')}
-                    value={newStudent.lastName}
-                    onChange={(e) => setNewStudent({ ...newStudent, lastName: e.target.value })}
-                    required
-                  />
-                </div>
-
-                <div className="grid gap-2">
-                  <Label htmlFor="firstName">{t('pages.grades.addStudent.firstName')} *</Label>
-                  <Input
-                    id="firstName"
-                    placeholder={t('pages.grades.addStudent.firstNamePlaceholder')}
-                    value={newStudent.firstName}
-                    onChange={(e) => setNewStudent({ ...newStudent, firstName: e.target.value })}
-                    required
-                  />
-                </div>
-
-                <div className="grid gap-2">
-                  <Label htmlFor="dateOfBirth">{t('pages.grades.addStudent.dateOfBirth')}</Label>
-                  <Input
-                    id="dateOfBirth"
-                    type="date"
-                    value={newStudent.dateOfBirth}
-                    onChange={(e) => setNewStudent({ ...newStudent, dateOfBirth: e.target.value })}
-                  />
-                </div>
-              </div>
-            </div>
-
-            <DialogFooter>
-              <Button variant="outline" onClick={() => {
-                setAddStudentDialog(false)
-                setNewStudent({
-                  id: '',
-                  lastName: '',
-                  firstName: '',
-                  dateOfBirth: '2013-01-01',
-                })
-              }}>
-                {t('common.cancel')}
-              </Button>
-              <Button onClick={handleAddStudent} disabled={!newStudent.lastName.trim() || !newStudent.firstName.trim()}>
-                {t('pages.grades.addStudent.add')}
-              </Button>
-            </DialogFooter>
-          </DialogContent>
-        </Dialog>
-
-        {/* Student Info Sidebar */}
-        <Sheet
-          open={studentInfoSidebar.open}
-          onOpenChange={(open) => setStudentInfoSidebar({ open, student: open ? studentInfoSidebar.student : null })}
-        >
-          <SheetContent
-            side={isRTL ? 'left' : 'right'}
-            className="w-full sm:max-w-md overflow-y-auto"
+        {/* Table - scrollable container */}
+        <div className="rounded-md border overflow-auto">
+          <DndContext
+            sensors={sensors}
+            collisionDetection={closestCenter}
+            onDragEnd={handleDragEnd}
           >
-            {studentInfoSidebar.student && (
-              <>
-                <SheetHeader>
-                  <SheetTitle>
-                    {studentInfoSidebar.student.firstName} {studentInfoSidebar.student.lastName}
-                  </SheetTitle>
-                  <SheetDescription>
-                    {t('pages.grades.studentInfo.description')}
-                  </SheetDescription>
-                </SheetHeader>
+            <Table className="min-w-[800px]">
+              <TableHeader className="sticky top-0 bg-background z-10">
+                <TableRow>
+                  <TableHead className="w-10"></TableHead>
+                  <TableHead className="w-12 text-center">#</TableHead>
+                  {showGroups && <TableHead className="w-20 text-center">{t('pages.grades.table.group')}</TableHead>}
+                  <TableHead className="w-10"></TableHead>
+                  <SortableHeader field="id">{t('pages.grades.table.id')}</SortableHeader>
+                  <SortableHeader field="lastName">{t('pages.grades.table.lastName')}</SortableHeader>
+                  <SortableHeader field="firstName">{t('pages.grades.table.firstName')}</SortableHeader>
+                  <SortableHeader field="dateOfBirth">{t('pages.grades.table.dateOfBirth')}</SortableHeader>
+                  <SortableHeader field="behavior">{t('pages.grades.table.behavior')}</SortableHeader>
+                  <SortableHeader field="applications">{t('pages.grades.table.applications')}</SortableHeader>
+                  <SortableHeader field="notebook">{t('pages.grades.table.notebook')}</SortableHeader>
+                  <SortableHeader field="lateness">{t('pages.grades.table.lateness')}</SortableHeader>
+                  <SortableHeader field="absences">{t('pages.grades.table.absences')}</SortableHeader>
+                  <SortableHeader field="activityAverage" highlight>{t('pages.grades.table.activityAverage')}</SortableHeader>
+                  <SortableHeader field="assignment" highlight>{t('pages.grades.table.assignment')}</SortableHeader>
+                  <SortableHeader field="exam" highlight>{t('pages.grades.table.exam')}</SortableHeader>
+                  <SortableHeader field="finalAverage" highlight>{t('pages.grades.table.finalAverage')}</SortableHeader>
+                  <SortableHeader field="remarks">{t('pages.grades.table.remarks')}</SortableHeader>
+                </TableRow>
+              </TableHeader>
+              <SortableContext
+                items={filteredAndSortedStudents.map(s => s.id)}
+                strategy={verticalListSortingStrategy}
+              >
+                <TableBody>
+                  {filteredAndSortedStudents.map((student, index) => {
+                    const studentNumber = index + 1
+                    const totalStudents = filteredAndSortedStudents.length
+                    const midpoint = Math.ceil(totalStudents / 2)
+                    const groupNumber = studentNumber <= midpoint ? 1 : 2
 
-                <div className="mt-6 space-y-6">
-                  {/* Basic Information */}
-                  <div className="space-y-3">
-                    <h3 className="text-sm font-semibold text-foreground">
-                      {t('pages.grades.studentInfo.basicInfo')}
-                    </h3>
-                    <div className="space-y-2 text-sm">
-                      <div className="flex justify-between">
-                        <span className="text-muted-foreground">{t('pages.grades.studentInfo.id')}</span>
-                        <span className="font-mono font-medium">{studentInfoSidebar.student.id}</span>
-                      </div>
-                      <div className="flex justify-between">
-                        <span className="text-muted-foreground">{t('pages.grades.studentInfo.dateOfBirth')}</span>
-                        <span className="font-medium">{studentInfoSidebar.student.dateOfBirth}</span>
-                      </div>
-                      {studentInfoSidebar.student.specialCase && (
-                        <div className="flex justify-between">
-                          <span className="text-muted-foreground">{t('pages.grades.studentInfo.specialCase')}</span>
-                          <span className="font-medium">
-                            {['longAbsence', 'exemption', 'medical', 'transfer'].includes(studentInfoSidebar.student.specialCase)
-                              ? t(`pages.grades.specialCase.${studentInfoSidebar.student.specialCase}`)
-                              : studentInfoSidebar.student.specialCase}
-                          </span>
-                        </div>
-                      )}
+                    return (
+                      <SortableStudentRow
+                        key={student.id}
+                        student={student}
+                        index={index}
+                        studentNumber={studentNumber}
+                        groupNumber={groupNumber}
+                        showGroups={showGroups}
+                        editingCell={editingCell}
+                        setEditingCell={setEditingCell}
+                        handleCellEdit={handleCellEdit}
+                        updateStudent={updateStudent}
+                        EditableCell={EditableCell}
+                        AttendanceCell={AttendanceCell}
+                        onMoveStudent={(s) => setMoveStudentDialog({ open: true, student: s })}
+                        onRemoveStudent={(s) => setRemoveStudentDialog({ open: true, student: s })}
+                        onViewStudentInfo={(s) => setStudentInfoSidebar({ open: true, student: s })}
+                        t={t}
+                      />
+                    )
+                  })}
+                </TableBody>
+              </SortableContext>
+            </Table>
+          </DndContext>
+        </div>
+      </div>
+
+      {/* Attendance Dialog */}
+      <Dialog open={attendanceDialog.open} onOpenChange={(open) => setAttendanceDialog(prev => ({ ...prev, open }))}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>
+              {attendanceDialog.type === 'absence'
+                ? t('pages.grades.attendance.recordAbsence')
+                : t('pages.grades.attendance.recordTardiness')}
+            </DialogTitle>
+          </DialogHeader>
+
+          {attendanceDialog.student && (
+            <div className="space-y-4 py-4">
+              <p className="font-medium">
+                {attendanceDialog.student.firstName} {attendanceDialog.student.lastName}
+              </p>
+
+              <div className="grid grid-cols-2 gap-4">
+                <div className="space-y-2">
+                  <Label htmlFor="date">{t('pages.grades.attendance.date')}</Label>
+                  <Input
+                    id="date"
+                    type="date"
+                    value={attendanceDate}
+                    onChange={(e) => setAttendanceDate(e.target.value)}
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="time">{t('pages.grades.attendance.time')}</Label>
+                  <Input
+                    id="time"
+                    type="time"
+                    value={attendanceTime}
+                    onChange={(e) => setAttendanceTime(e.target.value)}
+                  />
+                </div>
+              </div>
+            </div>
+          )}
+
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setAttendanceDialog({ open: false, student: null, type: 'absence' })}>
+              {t('common.cancel')}
+            </Button>
+            <Button onClick={handleRecordAttendance}>
+              {t('pages.grades.attendance.confirm')}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* History Dialog */}
+      <Dialog open={historyDialog.open} onOpenChange={(open) => setHistoryDialog(prev => ({ ...prev, open }))}>
+        <DialogContent className="max-w-md">
+          <DialogHeader>
+            <DialogTitle>
+              {t('pages.grades.attendance.history')}
+              {historyDialog.student && ` - ${historyDialog.student.firstName} ${historyDialog.student.lastName}`}
+            </DialogTitle>
+          </DialogHeader>
+
+          <div className="space-y-2 max-h-[300px] overflow-y-auto py-4">
+            {studentRecords.length === 0 ? (
+              <p className="text-muted-foreground text-center py-4">
+                {t('pages.grades.attendance.noRecords')}
+              </p>
+            ) : (
+              studentRecords.map((record) => (
+                <div
+                  key={record.id}
+                  className="flex items-center justify-between p-3 rounded-lg border bg-muted/30"
+                >
+                  <div className="flex items-center gap-3">
+                    {record.type === 'absence' ? (
+                      <UserMinus className="h-4 w-4 text-red-500" />
+                    ) : (
+                      <Clock className="h-4 w-4 text-orange-500" />
+                    )}
+                    <div>
+                      <p className="font-medium text-sm">
+                        {t(`pages.grades.attendance.${record.type}`)}
+                      </p>
+                      <p className="text-xs text-muted-foreground">
+                        {record.date} • {record.time}
+                      </p>
                     </div>
                   </div>
 
-                  {/* Grades */}
-                  <div className="space-y-3">
-                    <h3 className="text-sm font-semibold text-foreground">
-                      {t('pages.grades.studentInfo.grades')}
-                    </h3>
-                    <div className="space-y-2 text-sm">
-                      <div className="flex justify-between">
-                        <span className="text-muted-foreground">{t('pages.grades.table.behavior')}</span>
-                        <span className="font-medium">{studentInfoSidebar.student.behavior}</span>
-                      </div>
-                      <div className="flex justify-between">
-                        <span className="text-muted-foreground">{t('pages.grades.table.applications')}</span>
-                        <span className="font-medium">{studentInfoSidebar.student.applications}</span>
-                      </div>
-                      <div className="flex justify-between">
-                        <span className="text-muted-foreground">{t('pages.grades.table.notebook')}</span>
-                        <span className="font-medium">{studentInfoSidebar.student.notebook}</span>
-                      </div>
-                      <div className="flex justify-between">
-                        <span className="text-muted-foreground">{t('pages.grades.table.assignment')}</span>
-                        <span className="font-medium">{studentInfoSidebar.student.assignment}</span>
-                      </div>
-                      <div className="flex justify-between">
-                        <span className="text-muted-foreground">{t('pages.grades.table.exam')}</span>
-                        <span className="font-medium">{studentInfoSidebar.student.exam}</span>
-                      </div>
+                  {recordToDelete === record.id ? (
+                    <div className="flex items-center gap-2">
+                      <Button
+                        variant="destructive"
+                        size="sm"
+                        onClick={() => handleDeleteRecord(record.id)}
+                      >
+                        {t('pages.grades.attendance.confirm')}
+                      </Button>
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => setRecordToDelete(null)}
+                      >
+                        {t('common.cancel')}
+                      </Button>
                     </div>
-                  </div>
+                  ) : (
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      className="text-destructive hover:text-destructive"
+                      onClick={() => setRecordToDelete(record.id)}
+                    >
+                      <Trash2 className="h-4 w-4" />
+                    </Button>
+                  )}
+                </div>
+              ))
+            )}
+          </div>
 
-                  {/* Attendance */}
-                  <div className="space-y-3">
-                    <h3 className="text-sm font-semibold text-foreground">
-                      {t('pages.grades.studentInfo.attendance')}
-                    </h3>
-                    <div className="space-y-2 text-sm">
-                      <div className="flex justify-between">
-                        <span className="text-muted-foreground">{t('pages.grades.table.lateness')}</span>
-                        <span className="font-medium">{studentInfoSidebar.student.lateness}</span>
-                      </div>
-                      <div className="flex justify-between">
-                        <span className="text-muted-foreground">{t('pages.grades.table.absences')}</span>
-                        <span className="font-medium">{studentInfoSidebar.student.absences}</span>
-                      </div>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setHistoryDialog({ open: false, student: null })}>
+              {t('common.cancel')}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* Move Student Dialog */}
+      <Dialog open={moveStudentDialog.open} onOpenChange={(open) => setMoveStudentDialog({ open, student: open ? moveStudentDialog.student : null })}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>{t('pages.grades.studentManagement.moveToClass')}</DialogTitle>
+          </DialogHeader>
+
+          {moveStudentDialog.student && (
+            <div className="space-y-4 py-4">
+              <p className="text-sm text-muted-foreground">
+                {t('pages.grades.studentManagement.moveStudentDescription', {
+                  name: `${moveStudentDialog.student.firstName} ${moveStudentDialog.student.lastName}`
+                })}
+              </p>
+
+              <div className="space-y-2">
+                <Label htmlFor="targetClass">{t('pages.grades.studentManagement.selectClass')}</Label>
+                <div className="grid gap-2">
+                  {classes.filter(c => c.id !== moveStudentDialog.student?.classId).map((cls) => (
+                    <Button
+                      key={cls.id}
+                      variant="outline"
+                      className="justify-start"
+                      onClick={() => handleMoveStudent(moveStudentDialog.student!.id, cls.id)}
+                    >
+                      <Move className="h-4 w-4 ltr:mr-2 rtl:ml-2" />
+                      {cls.name}
+                    </Button>
+                  ))}
+                  {classes.filter(c => c.id !== moveStudentDialog.student?.classId).length === 0 && (
+                    <p className="text-sm text-muted-foreground text-center py-4">
+                      {t('pages.grades.studentManagement.noOtherClasses')}
+                    </p>
+                  )}
+                </div>
+              </div>
+            </div>
+          )}
+
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setMoveStudentDialog({ open: false, student: null })}>
+              {t('common.cancel')}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* Remove Student Dialog */}
+      <Dialog open={removeStudentDialog.open} onOpenChange={(open) => setRemoveStudentDialog({ open, student: open ? removeStudentDialog.student : null })}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>{t('pages.grades.studentManagement.removeFromClass')}</DialogTitle>
+          </DialogHeader>
+
+          {removeStudentDialog.student && (
+            <div className="space-y-4 py-4">
+              <p className="text-sm text-muted-foreground">
+                {t('pages.grades.studentManagement.removeStudentDescription', {
+                  name: `${removeStudentDialog.student.firstName} ${removeStudentDialog.student.lastName}`
+                })}
+              </p>
+              <p className="text-sm font-medium text-destructive">
+                {t('pages.grades.studentManagement.removeWarning')}
+              </p>
+            </div>
+          )}
+
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setRemoveStudentDialog({ open: false, student: null })}>
+              {t('common.cancel')}
+            </Button>
+            <Button
+              variant="destructive"
+              onClick={() => removeStudentDialog.student && handleRemoveStudent(removeStudentDialog.student.id)}
+            >
+              {t('pages.grades.studentManagement.confirmRemove')}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* Add Student Dialog */}
+      <Dialog open={addStudentDialog} onOpenChange={setAddStudentDialog}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>{t('pages.grades.addStudent.title')}</DialogTitle>
+          </DialogHeader>
+
+          <div className="space-y-4 py-4">
+            <div className="grid gap-4">
+              <div className="grid gap-2">
+                <Label htmlFor="studentId">{t('pages.grades.addStudent.id')}</Label>
+                <Input
+                  id="studentId"
+                  placeholder={t('pages.grades.addStudent.idPlaceholder')}
+                  value={newStudent.id}
+                  onChange={(e) => setNewStudent({ ...newStudent, id: e.target.value })}
+                />
+                <p className="text-xs text-muted-foreground">
+                  {t('pages.grades.addStudent.idOptional')}
+                </p>
+              </div>
+
+              <div className="grid gap-2">
+                <Label htmlFor="lastName">{t('pages.grades.addStudent.lastName')} *</Label>
+                <Input
+                  id="lastName"
+                  placeholder={t('pages.grades.addStudent.lastNamePlaceholder')}
+                  value={newStudent.lastName}
+                  onChange={(e) => setNewStudent({ ...newStudent, lastName: e.target.value })}
+                  required
+                />
+              </div>
+
+              <div className="grid gap-2">
+                <Label htmlFor="firstName">{t('pages.grades.addStudent.firstName')} *</Label>
+                <Input
+                  id="firstName"
+                  placeholder={t('pages.grades.addStudent.firstNamePlaceholder')}
+                  value={newStudent.firstName}
+                  onChange={(e) => setNewStudent({ ...newStudent, firstName: e.target.value })}
+                  required
+                />
+              </div>
+
+              <div className="grid gap-2">
+                <Label htmlFor="dateOfBirth">{t('pages.grades.addStudent.dateOfBirth')}</Label>
+                <Input
+                  id="dateOfBirth"
+                  type="date"
+                  value={newStudent.dateOfBirth}
+                  onChange={(e) => setNewStudent({ ...newStudent, dateOfBirth: e.target.value })}
+                />
+              </div>
+            </div>
+          </div>
+
+          <DialogFooter>
+            <Button variant="outline" onClick={() => {
+              setAddStudentDialog(false)
+              setNewStudent({
+                id: '',
+                lastName: '',
+                firstName: '',
+                dateOfBirth: '2013-01-01',
+              })
+            }}>
+              {t('common.cancel')}
+            </Button>
+            <Button onClick={handleAddStudent} disabled={!newStudent.lastName.trim() || !newStudent.firstName.trim()}>
+              {t('pages.grades.addStudent.add')}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* Student Info Sidebar */}
+      <Sheet
+        open={studentInfoSidebar.open}
+        onOpenChange={(open) => setStudentInfoSidebar({ open, student: open ? studentInfoSidebar.student : null })}
+      >
+        <SheetContent
+          side={isRTL ? 'left' : 'right'}
+          className="w-full sm:max-w-md overflow-y-auto"
+        >
+          {studentInfoSidebar.student && (
+            <>
+              <SheetHeader>
+                <SheetTitle>
+                  {studentInfoSidebar.student.firstName} {studentInfoSidebar.student.lastName}
+                </SheetTitle>
+                <SheetDescription>
+                  {t('pages.grades.studentInfo.description')}
+                </SheetDescription>
+              </SheetHeader>
+
+              <div className="mt-6 space-y-6">
+                {/* Basic Information */}
+                <div className="space-y-3">
+                  <h3 className="text-sm font-semibold text-foreground">
+                    {t('pages.grades.studentInfo.basicInfo')}
+                  </h3>
+                  <div className="space-y-2 text-sm">
+                    <div className="flex justify-between">
+                      <span className="text-muted-foreground">{t('pages.grades.studentInfo.id')}</span>
+                      <span className="font-mono font-medium">{studentInfoSidebar.student.id}</span>
                     </div>
-                  </div>
-
-                  {/* Averages */}
-                  <div className="space-y-3">
-                    <h3 className="text-sm font-semibold text-foreground">
-                      {t('pages.grades.studentInfo.averages')}
-                    </h3>
-                    <div className="space-y-2 text-sm">
-                      <div className="flex justify-between">
-                        <span className="text-muted-foreground">{t('pages.grades.table.activityAverage')}</span>
-                        <span className="font-medium text-primary">{studentInfoSidebar.student.activityAverage.toFixed(2)}</span>
-                      </div>
-                      <div className="flex justify-between">
-                        <span className="text-muted-foreground">{t('pages.grades.table.finalAverage')}</span>
-                        <span className="font-bold text-lg text-primary">{studentInfoSidebar.student.finalAverage.toFixed(2)}</span>
-                      </div>
-                      <div className="flex justify-between">
-                        <span className="text-muted-foreground">{t('pages.grades.table.remarks')}</span>
-                        <span className="font-medium">{t(`pages.grades.remarks.${studentInfoSidebar.student.remarks}`)}</span>
-                      </div>
+                    <div className="flex justify-between">
+                      <span className="text-muted-foreground">{t('pages.grades.studentInfo.dateOfBirth')}</span>
+                      <span className="font-medium">{studentInfoSidebar.student.dateOfBirth}</span>
                     </div>
+                    {studentInfoSidebar.student.specialCase && (
+                      <div className="flex justify-between">
+                        <span className="text-muted-foreground">{t('pages.grades.studentInfo.specialCase')}</span>
+                        <span className="font-medium">
+                          {['longAbsence', 'exemption', 'medical', 'transfer'].includes(studentInfoSidebar.student.specialCase)
+                            ? t(`pages.grades.specialCase.${studentInfoSidebar.student.specialCase}`)
+                            : studentInfoSidebar.student.specialCase}
+                        </span>
+                      </div>
+                    )}
                   </div>
+                </div>
 
-                  {/* Academic Context */}
-                  <div className="space-y-3">
-                    <h3 className="text-sm font-semibold text-foreground">
-                      {t('pages.grades.studentInfo.academicContext')}
-                    </h3>
-                    <div className="space-y-2 text-sm">
-                      <div className="flex justify-between">
-                        <span className="text-muted-foreground">{t('pages.grades.studentInfo.year')}</span>
-                        <span className="font-medium">{selectedYear}</span>
-                      </div>
-                      <div className="flex justify-between">
-                        <span className="text-muted-foreground">{t('pages.grades.studentInfo.term')}</span>
-                        <span className="font-medium">{t(`pages.grades.term${selectedTerm}`)}</span>
-                      </div>
+                {/* Grades */}
+                <div className="space-y-3">
+                  <h3 className="text-sm font-semibold text-foreground">
+                    {t('pages.grades.studentInfo.grades')}
+                  </h3>
+                  <div className="space-y-2 text-sm">
+                    <div className="flex justify-between">
+                      <span className="text-muted-foreground">{t('pages.grades.table.behavior')}</span>
+                      <span className="font-medium">{studentInfoSidebar.student.behavior}</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-muted-foreground">{t('pages.grades.table.applications')}</span>
+                      <span className="font-medium">{studentInfoSidebar.student.applications}</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-muted-foreground">{t('pages.grades.table.notebook')}</span>
+                      <span className="font-medium">{studentInfoSidebar.student.notebook}</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-muted-foreground">{t('pages.grades.table.assignment')}</span>
+                      <span className="font-medium">{studentInfoSidebar.student.assignment}</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-muted-foreground">{t('pages.grades.table.exam')}</span>
+                      <span className="font-medium">{studentInfoSidebar.student.exam}</span>
                     </div>
                   </div>
                 </div>
-              </>
-            )}
-          </SheetContent>
-        </Sheet>
 
-        {/* End of Scrollable Content Area */}
-      </div>
+                {/* Attendance */}
+                <div className="space-y-3">
+                  <h3 className="text-sm font-semibold text-foreground">
+                    {t('pages.grades.studentInfo.attendance')}
+                  </h3>
+                  <div className="space-y-2 text-sm">
+                    <div className="flex justify-between">
+                      <span className="text-muted-foreground">{t('pages.grades.table.lateness')}</span>
+                      <span className="font-medium">{studentInfoSidebar.student.lateness}</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-muted-foreground">{t('pages.grades.table.absences')}</span>
+                      <span className="font-medium">{studentInfoSidebar.student.absences}</span>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Averages */}
+                <div className="space-y-3">
+                  <h3 className="text-sm font-semibold text-foreground">
+                    {t('pages.grades.studentInfo.averages')}
+                  </h3>
+                  <div className="space-y-2 text-sm">
+                    <div className="flex justify-between">
+                      <span className="text-muted-foreground">{t('pages.grades.table.activityAverage')}</span>
+                      <span className="font-medium text-primary">{studentInfoSidebar.student.activityAverage.toFixed(2)}</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-muted-foreground">{t('pages.grades.table.finalAverage')}</span>
+                      <span className="font-bold text-lg text-primary">{studentInfoSidebar.student.finalAverage.toFixed(2)}</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-muted-foreground">{t('pages.grades.table.remarks')}</span>
+                      <span className="font-medium">{t(`pages.grades.remarks.${studentInfoSidebar.student.remarks}`)}</span>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Academic Context */}
+                <div className="space-y-3">
+                  <h3 className="text-sm font-semibold text-foreground">
+                    {t('pages.grades.studentInfo.academicContext')}
+                  </h3>
+                  <div className="space-y-2 text-sm">
+                    <div className="flex justify-between">
+                      <span className="text-muted-foreground">{t('pages.grades.studentInfo.year')}</span>
+                      <span className="font-medium">{selectedYear}</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-muted-foreground">{t('pages.grades.studentInfo.term')}</span>
+                      <span className="font-medium">{t(`pages.grades.term${selectedTerm}`)}</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </>
+          )}
+        </SheetContent>
+      </Sheet>
+
+      {/* End of Scrollable Content Area */}
     </div>
   )
 }
