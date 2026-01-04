@@ -1112,45 +1112,45 @@ export function GradeSheetTable({ classId: selectedClassId, term: selectedTerm, 
       {/* Scrollable Content Area */}
       <div className="flex-1 flex flex-col min-h-0 space-y-2 sm:space-y-4">
         <div className="flex flex-col gap-3 sm:gap-4 p-2 sm:p-4 rounded-lg border bg-muted/30">
-          {/* Statistics - grid on mobile, flex on desktop */}
-          <div className="grid grid-cols-2 sm:flex sm:flex-wrap items-center gap-3 sm:gap-6">
-            <div className="flex items-center gap-2">
-              <div className="p-2 rounded-lg bg-primary/10">
-                <Users className="h-4 w-4 text-primary" />
+          {/* Statistics - compact horizontal scroll on mobile */}
+          <div className="flex gap-4 sm:gap-6 overflow-x-auto pb-1 sm:pb-0 [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden">
+            <div className="flex items-center gap-1.5 sm:gap-2 flex-shrink-0">
+              <div className="p-1.5 sm:p-2 rounded-lg bg-primary/10">
+                <Users className="h-3 w-3 sm:h-4 sm:w-4 text-primary" />
               </div>
               <div>
-                <p className="text-xs text-muted-foreground">{t('pages.grades.stats.totalStudents')}</p>
-                <p className="text-lg font-bold">{statistics.total}</p>
+                <p className="text-[10px] sm:text-xs text-muted-foreground whitespace-nowrap">{t('pages.grades.stats.totalStudents')}</p>
+                <p className="text-sm sm:text-lg font-bold">{statistics.total}</p>
               </div>
             </div>
 
-            <div className="flex items-center gap-2">
-              <div className="p-2 rounded-lg bg-blue-500/10">
-                <TrendingUp className="h-4 w-4 text-blue-500" />
+            <div className="flex items-center gap-1.5 sm:gap-2 flex-shrink-0">
+              <div className="p-1.5 sm:p-2 rounded-lg bg-blue-500/10">
+                <TrendingUp className="h-3 w-3 sm:h-4 sm:w-4 text-blue-500" />
               </div>
               <div>
-                <p className="text-xs text-muted-foreground">{t('pages.grades.stats.classAverage')}</p>
-                <p className="text-lg font-bold">{statistics.classAverage}</p>
+                <p className="text-[10px] sm:text-xs text-muted-foreground whitespace-nowrap">{t('pages.grades.stats.classAverage')}</p>
+                <p className="text-sm sm:text-lg font-bold">{statistics.classAverage}</p>
               </div>
             </div>
 
-            <div className="flex items-center gap-2">
-              <div className="p-2 rounded-lg bg-green-500/10">
-                <CheckCircle className="h-4 w-4 text-green-500" />
+            <div className="flex items-center gap-1.5 sm:gap-2 flex-shrink-0">
+              <div className="p-1.5 sm:p-2 rounded-lg bg-green-500/10">
+                <CheckCircle className="h-3 w-3 sm:h-4 sm:w-4 text-green-500" />
               </div>
               <div>
-                <p className="text-xs text-muted-foreground">{t('pages.grades.stats.successRate')}</p>
-                <p className="text-lg font-bold text-green-600">{statistics.passRate}%</p>
+                <p className="text-[10px] sm:text-xs text-muted-foreground whitespace-nowrap">{t('pages.grades.stats.successRate')}</p>
+                <p className="text-sm sm:text-lg font-bold text-green-600">{statistics.passRate}%</p>
               </div>
             </div>
 
-            <div className="flex items-center gap-2">
-              <div className="p-2 rounded-lg bg-red-500/10">
-                <XCircle className="h-4 w-4 text-red-500" />
+            <div className="flex items-center gap-1.5 sm:gap-2 flex-shrink-0">
+              <div className="p-1.5 sm:p-2 rounded-lg bg-red-500/10">
+                <XCircle className="h-3 w-3 sm:h-4 sm:w-4 text-red-500" />
               </div>
               <div>
-                <p className="text-xs text-muted-foreground">{t('pages.grades.stats.failureRate')}</p>
-                <p className="text-lg font-bold text-red-600">{statistics.failRate}%</p>
+                <p className="text-[10px] sm:text-xs text-muted-foreground whitespace-nowrap">{t('pages.grades.stats.failureRate')}</p>
+                <p className="text-sm sm:text-lg font-bold text-red-600">{statistics.failRate}%</p>
               </div>
             </div>
           </div>
