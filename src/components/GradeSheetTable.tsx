@@ -1067,15 +1067,11 @@ export function GradeSheetTable({ classId: selectedClassId, term: selectedTerm, 
                   group relative flex items-center gap-2.5 px-5 py-2.5 rounded-xl text-sm font-medium
                   whitespace-nowrap transition-all duration-200 ease-out cursor-pointer select-none
                   ${isActive
-                    ? 'bg-gradient-to-r from-primary/90 to-primary text-primary-foreground shadow-lg shadow-primary/25 scale-[1.02]'
-                    : 'bg-muted/40 hover:bg-muted/70 text-muted-foreground hover:text-foreground hover:scale-[1.01]'
+                    ? 'bg-gradient-to-r from-primary/90 to-primary text-primary-foreground'
+                    : 'bg-muted/40 hover:bg-muted/70 text-muted-foreground hover:text-foreground'
                   }
                 `}
               >
-                {/* Active indicator glow */}
-                {isActive && (
-                  <div className="absolute inset-0 rounded-xl bg-gradient-to-r from-primary/20 to-primary/10 blur-lg -z-10" />
-                )}
 
                 <span className="font-semibold">{cls.name}</span>
 
