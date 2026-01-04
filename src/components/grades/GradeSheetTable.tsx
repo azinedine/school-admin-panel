@@ -1043,7 +1043,7 @@ export function GradeSheetTable({ classId: selectedClassId, term: selectedTerm, 
 
 
   return (
-    <div className="flex flex-col h-full" dir={isRTL ? 'rtl' : 'ltr'}>
+    <div className="flex flex-col min-h-0 overflow-auto" dir={isRTL ? 'rtl' : 'ltr'}>
       {/* Class Navigation - Modern Glass Morphism Tabs */}
       <div className="flex-shrink-0 mb-6 relative">
         {/* Gradient scroll indicators */}
@@ -1110,10 +1110,10 @@ export function GradeSheetTable({ classId: selectedClassId, term: selectedTerm, 
       </div>
 
       {/* Scrollable Content Area */}
-      <div className="flex-1 flex flex-col min-h-0 space-y-4">
-        <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 p-4 rounded-lg border bg-muted/30">
-          {/* Statistics */}
-          <div className="flex flex-wrap items-center gap-6">
+      <div className="flex-1 flex flex-col min-h-0 space-y-2 sm:space-y-4">
+        <div className="flex flex-col gap-3 sm:gap-4 p-2 sm:p-4 rounded-lg border bg-muted/30">
+          {/* Statistics - grid on mobile, flex on desktop */}
+          <div className="grid grid-cols-2 sm:flex sm:flex-wrap items-center gap-3 sm:gap-6">
             <div className="flex items-center gap-2">
               <div className="p-2 rounded-lg bg-primary/10">
                 <Users className="h-4 w-4 text-primary" />
@@ -1243,78 +1243,80 @@ export function GradeSheetTable({ classId: selectedClassId, term: selectedTerm, 
           </div>
         </div>
 
-        {/* Hints */}
-        <div className="text-sm text-muted-foreground">
+        {/* Hints - hidden on mobile */}
+        <div className="hidden sm:block text-sm text-muted-foreground">
           <p>* {t('pages.grades.hints.clickToEdit')}</p>
           <p>* {t('pages.grades.hints.autoCalculate')}</p>
         </div>
 
-        {/* Table */}
-        <div className="rounded-md border overflow-x-auto">
-          <DndContext
-            sensors={sensors}
-            collisionDetection={closestCenter}
-            onDragEnd={handleDragEnd}
-          >
-            <Table>
-              <TableHeader className="sticky top-0 bg-background z-10">
-                <TableRow>
-                  <TableHead className="w-10"></TableHead>
-                  <TableHead className="w-12 text-center">#</TableHead>
-                  {showGroups && <TableHead className="w-20 text-center">{t('pages.grades.table.group')}</TableHead>}
-                  <TableHead className="w-10"></TableHead>
-                  <SortableHeader field="id">{t('pages.grades.table.id')}</SortableHeader>
-                  <SortableHeader field="lastName">{t('pages.grades.table.lastName')}</SortableHeader>
-                  <SortableHeader field="firstName">{t('pages.grades.table.firstName')}</SortableHeader>
-                  <SortableHeader field="dateOfBirth">{t('pages.grades.table.dateOfBirth')}</SortableHeader>
-                  <SortableHeader field="behavior">{t('pages.grades.table.behavior')}</SortableHeader>
-                  <SortableHeader field="applications">{t('pages.grades.table.applications')}</SortableHeader>
-                  <SortableHeader field="notebook">{t('pages.grades.table.notebook')}</SortableHeader>
-                  <SortableHeader field="lateness">{t('pages.grades.table.lateness')}</SortableHeader>
-                  <SortableHeader field="absences">{t('pages.grades.table.absences')}</SortableHeader>
-                  <SortableHeader field="activityAverage" highlight>{t('pages.grades.table.activityAverage')}</SortableHeader>
-                  <SortableHeader field="assignment" highlight>{t('pages.grades.table.assignment')}</SortableHeader>
-                  <SortableHeader field="exam" highlight>{t('pages.grades.table.exam')}</SortableHeader>
-                  <SortableHeader field="finalAverage" highlight>{t('pages.grades.table.finalAverage')}</SortableHeader>
-                  <SortableHeader field="remarks">{t('pages.grades.table.remarks')}</SortableHeader>
-                </TableRow>
-              </TableHeader>
-              <SortableContext
-                items={filteredAndSortedStudents.map(s => s.id)}
-                strategy={verticalListSortingStrategy}
-              >
-                <TableBody>
-                  {filteredAndSortedStudents.map((student, index) => {
-                    const studentNumber = index + 1
-                    const totalStudents = filteredAndSortedStudents.length
-                    const midpoint = Math.ceil(totalStudents / 2)
-                    const groupNumber = studentNumber <= midpoint ? 1 : 2
+        {/* Table - with horizontal scroll on mobile */}
+        <div className="rounded-md border overflow-x-auto -mx-4 sm:mx-0">
+          <div className="min-w-[900px] sm:min-w-0">
+            <DndContext
+              sensors={sensors}
+              collisionDetection={closestCenter}
+              onDragEnd={handleDragEnd}
+            >
+              <Table>
+                <TableHeader className="sticky top-0 bg-background z-10">
+                  <TableRow>
+                    <TableHead className="w-10"></TableHead>
+                    <TableHead className="w-12 text-center">#</TableHead>
+                    {showGroups && <TableHead className="w-20 text-center">{t('pages.grades.table.group')}</TableHead>}
+                    <TableHead className="w-10"></TableHead>
+                    <SortableHeader field="id">{t('pages.grades.table.id')}</SortableHeader>
+                    <SortableHeader field="lastName">{t('pages.grades.table.lastName')}</SortableHeader>
+                    <SortableHeader field="firstName">{t('pages.grades.table.firstName')}</SortableHeader>
+                    <SortableHeader field="dateOfBirth">{t('pages.grades.table.dateOfBirth')}</SortableHeader>
+                    <SortableHeader field="behavior">{t('pages.grades.table.behavior')}</SortableHeader>
+                    <SortableHeader field="applications">{t('pages.grades.table.applications')}</SortableHeader>
+                    <SortableHeader field="notebook">{t('pages.grades.table.notebook')}</SortableHeader>
+                    <SortableHeader field="lateness">{t('pages.grades.table.lateness')}</SortableHeader>
+                    <SortableHeader field="absences">{t('pages.grades.table.absences')}</SortableHeader>
+                    <SortableHeader field="activityAverage" highlight>{t('pages.grades.table.activityAverage')}</SortableHeader>
+                    <SortableHeader field="assignment" highlight>{t('pages.grades.table.assignment')}</SortableHeader>
+                    <SortableHeader field="exam" highlight>{t('pages.grades.table.exam')}</SortableHeader>
+                    <SortableHeader field="finalAverage" highlight>{t('pages.grades.table.finalAverage')}</SortableHeader>
+                    <SortableHeader field="remarks">{t('pages.grades.table.remarks')}</SortableHeader>
+                  </TableRow>
+                </TableHeader>
+                <SortableContext
+                  items={filteredAndSortedStudents.map(s => s.id)}
+                  strategy={verticalListSortingStrategy}
+                >
+                  <TableBody>
+                    {filteredAndSortedStudents.map((student, index) => {
+                      const studentNumber = index + 1
+                      const totalStudents = filteredAndSortedStudents.length
+                      const midpoint = Math.ceil(totalStudents / 2)
+                      const groupNumber = studentNumber <= midpoint ? 1 : 2
 
-                    return (
-                      <SortableStudentRow
-                        key={student.id}
-                        student={student}
-                        index={index}
-                        studentNumber={studentNumber}
-                        groupNumber={groupNumber}
-                        showGroups={showGroups}
-                        editingCell={editingCell}
-                        setEditingCell={setEditingCell}
-                        handleCellEdit={handleCellEdit}
-                        updateStudent={updateStudent}
-                        EditableCell={EditableCell}
-                        AttendanceCell={AttendanceCell}
-                        onMoveStudent={(s) => setMoveStudentDialog({ open: true, student: s })}
-                        onRemoveStudent={(s) => setRemoveStudentDialog({ open: true, student: s })}
-                        onViewStudentInfo={(s) => setStudentInfoSidebar({ open: true, student: s })}
-                        t={t}
-                      />
-                    )
-                  })}
-                </TableBody>
-              </SortableContext>
-            </Table>
-          </DndContext>
+                      return (
+                        <SortableStudentRow
+                          key={student.id}
+                          student={student}
+                          index={index}
+                          studentNumber={studentNumber}
+                          groupNumber={groupNumber}
+                          showGroups={showGroups}
+                          editingCell={editingCell}
+                          setEditingCell={setEditingCell}
+                          handleCellEdit={handleCellEdit}
+                          updateStudent={updateStudent}
+                          EditableCell={EditableCell}
+                          AttendanceCell={AttendanceCell}
+                          onMoveStudent={(s) => setMoveStudentDialog({ open: true, student: s })}
+                          onRemoveStudent={(s) => setRemoveStudentDialog({ open: true, student: s })}
+                          onViewStudentInfo={(s) => setStudentInfoSidebar({ open: true, student: s })}
+                          t={t}
+                        />
+                      )
+                    })}
+                  </TableBody>
+                </SortableContext>
+              </Table>
+            </DndContext>
+          </div>
         </div>
 
         {/* Attendance Dialog */}
