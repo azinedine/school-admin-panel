@@ -3,6 +3,9 @@ export { LessonsTab } from './LessonsTab.tsx'
 export { PreparationTab } from './preparation-tab/index.ts'
 export { TimetableTab } from './TimetableTab.tsx'
 
+// Reusable Components
+export { DynamicList } from './dynamic-list/index.ts'
+
 // Lesson Card Module (SOLID refactored)
 export { LessonCard, LessonCardGrid } from './lesson-card/index.ts'
 
