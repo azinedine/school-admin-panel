@@ -25,7 +25,7 @@ export { LessonPrepByClass } from './lesson-prep-by-class/index.ts'
 export { LessonSelector } from './LessonSelector.tsx'
 
 // Legacy: Edit sheet for DailyPlanEntry (zustand store)
-export { LessonPlanEntrySheet } from './LessonPlanEntrySheet.tsx'
+export { LessonPlanEntrySheet } from './lesson-plan-entry-sheet/index.ts'
 
 // New: Read-only lesson details memo (LessonPreparation API type)
 export { LessonDetailsSheet } from './lesson-details/index.ts'
