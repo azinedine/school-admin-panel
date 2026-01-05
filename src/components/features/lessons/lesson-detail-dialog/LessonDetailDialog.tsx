@@ -7,7 +7,7 @@ import {
 } from '@/components/ui/dialog'
 import { Button } from '@/components/ui/button'
 import { type DailyPlanEntry, type LessonTemplate } from '@/store/prep-store'
-import { LessonSelector } from '../LessonSelector.tsx'
+import { LessonSelector } from '../lesson-selector/index.ts'
 import { useLessonDetailForm } from './use-lesson-detail-form.ts'
 import { TemplateSelectorButton } from './TemplateSelectorButton.tsx'
 import {
