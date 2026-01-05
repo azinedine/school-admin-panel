@@ -19,7 +19,7 @@ export { LessonPrepElements } from './lesson-prep-elements/index.ts'
 export { LessonPrepEvaluation } from './lesson-prep-evaluation/index.ts'
 
 // Utilities
-export { ClassContextDisplay } from './ClassContextDisplay.tsx'
+export { ClassContextDisplay } from './class-context-display/index.ts'
 export { LessonDetailDialog } from './lesson-detail-dialog/index.ts'
 export { LessonPrepByClass } from './lesson-prep-by-class/index.ts'
 export { LessonSelector } from './LessonSelector.tsx'
