@@ -15,7 +15,7 @@ export { PreparationCard } from './PreparationCard.tsx'
 
 // Form Sub-components
 export { LessonPrepPedagogicalContext } from './lesson-prep-context/index.ts'
-export { LessonPrepElements } from './LessonPrepElements.tsx'
+export { LessonPrepElements } from './lesson-prep-elements/index.ts'
 export { LessonPrepEvaluation } from './LessonPrepEvaluation.tsx'
 
 // Utilities
