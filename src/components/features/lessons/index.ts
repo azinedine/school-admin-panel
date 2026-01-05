@@ -1,7 +1,7 @@
 // Tabs
 export { LessonsTab } from './lessons-tab/index.ts'
 export { PreparationTab } from './preparation-tab/index.ts'
-export { TimetableTab } from './TimetableTab.tsx'
+export { TimetableTab } from './timetable-tab/index.ts'
 
 // Reusable Components
 export { DynamicList } from './dynamic-list/index.ts'
