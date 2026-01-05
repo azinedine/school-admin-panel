@@ -1,7 +1,7 @@
 import { Card } from '@/components/ui/card'
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs'
-import { LessonSelector } from '../LessonSelector.tsx'
-import { LessonDetailsSheet } from '../LessonDetailsSheet.tsx'
+import { LessonSelector } from '../lesson-selector/index.ts'
+import { LessonPlanEntrySheet } from '../lesson-plan-entry-sheet/index.ts'
 import { useLessonPrepByClass } from './use-lesson-prep-by-class.ts'
 import { LessonsTable } from './LessonsTable.tsx'
 import { StatusNoteDialog } from './StatusNoteDialog.tsx'
@@ -104,7 +104,7 @@ export function LessonPrepByClass() {
             />
 
             {/* Lesson Details Sheet */}
-            <LessonDetailsSheet
+            <LessonPlanEntrySheet
                 open={detailsOpen}
                 onOpenChange={setDetailsOpen}
                 lesson={detailsLesson}

@@ -1,7 +1,7 @@
 import { Loader2, BookOpen, Plus } from 'lucide-react'
 import { Card, CardContent } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
-import { PreparationCard } from '../PreparationCard.tsx'
+import { PreparationCard } from '../preparation-card/index.ts'
 import type { LessonPreparation } from '@/schemas/lesson-preparation'
 import type { TFunction } from 'i18next'
 
