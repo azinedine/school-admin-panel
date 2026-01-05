@@ -1,6 +1,6 @@
 import { type Control } from 'react-hook-form'
 import type { LessonPreparationFormData } from '@/schemas/lesson-preparation'
-import { LessonSupportMaterial } from '../LessonSupportMaterial'
+import { LessonSupportMaterial } from '../lesson-support-material'
 import { LessonPrepPedagogicalContext } from '../LessonPrepPedagogicalContext'
 import { LessonPrepObjectives } from '../LessonPrepObjectives'
 import { LessonPrepMethods } from '../LessonPrepMethods'
