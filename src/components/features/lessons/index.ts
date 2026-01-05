@@ -22,7 +22,7 @@ export { LessonPrepEvaluation } from './lesson-prep-evaluation/index.ts'
 export { ClassContextDisplay } from './class-context-display/index.ts'
 export { LessonDetailDialog } from './lesson-detail-dialog/index.ts'
 export { LessonPrepByClass } from './lesson-prep-by-class/index.ts'
-export { LessonSelector } from './LessonSelector.tsx'
+export { LessonSelector } from './lesson-selector/index.ts'
 
 // Legacy: Edit sheet for DailyPlanEntry (zustand store)
 export { LessonPlanEntrySheet } from './lesson-plan-entry-sheet/index.ts'
