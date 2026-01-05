@@ -21,7 +21,7 @@ import {
     DropdownMenuSubContent,
 } from '@/components/ui/dropdown-menu'
 import type { LessonPreparation } from '@/schemas/lesson-preparation'
-import { statusConfig } from './CardStatusBadge'
+import { statusConfig } from './statusConfig'
 
 interface CardDropdownMenuProps {
     prep: LessonPreparation
