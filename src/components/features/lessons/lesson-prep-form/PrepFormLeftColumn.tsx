@@ -3,7 +3,7 @@ import type { LessonPreparationFormData } from '@/schemas/lesson-preparation'
 import { LessonSupportMaterial } from '../lesson-support-material'
 import { LessonPrepPedagogicalContext } from '../lesson-prep-context'
 import { LessonPrepObjectives } from '../lesson-prep-objectives'
-import { LessonPrepMethods } from '../LessonPrepMethods'
+import { LessonPrepMethods } from '../lesson-prep-methods'
 
 interface PrepFormLeftColumnProps {
     control: Control<LessonPreparationFormData>
