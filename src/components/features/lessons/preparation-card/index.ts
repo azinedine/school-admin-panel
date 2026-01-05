@@ -1,5 +1,6 @@
 export { PreparationCard } from './PreparationCard'
-export { CardStatusBadge, statusConfig } from './CardStatusBadge'
+export { CardStatusBadge } from './CardStatusBadge'
+export { statusConfig } from './statusConfig'
 export { CardDropdownMenu } from './CardDropdownMenu'
 export { CardMetaGrid } from './CardMetaGrid'
 export { CardCountBadges } from './CardCountBadges'
