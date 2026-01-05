@@ -1,5 +1,5 @@
 // Tabs
-export { LessonsTab } from './LessonsTab.tsx'
+export { LessonsTab } from './lessons-tab/index.ts'
 export { PreparationTab } from './preparation-tab/index.ts'
 export { TimetableTab } from './TimetableTab.tsx'
 
