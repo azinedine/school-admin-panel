@@ -2,7 +2,7 @@ import { type Control, type UseFormWatch } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
 import type { LessonPreparationFormData } from '@/schemas/lesson-preparation'
 import { PhaseEditor } from '../PhaseEditor'
-import { LessonPrepElements } from '../LessonPrepElements'
+import { LessonPrepElements } from '../lesson-prep-elements'
 import { LessonPrepNotes } from '../LessonPrepNotes'
 
 interface PrepFormRightColumnProps {
