@@ -7,7 +7,7 @@ export { TimetableTab } from './TimetableTab.tsx'
 export { LessonCard, LessonCardGrid } from './lesson-card/index.ts'
 
 // Lesson Components
-export { LessonForm } from './LessonForm.tsx'
+export { LessonForm } from './lesson-form/index.ts'
 export { LessonViewDialog } from './LessonViewDialog.tsx'
 export { LessonPrepForm } from './LessonPrepForm.tsx'
 export { LessonPrepDetails } from './lesson-prep-details/index.ts'
