@@ -9,7 +9,7 @@ import {
 // import { useSubjects, useLevels } from '@/hooks/use-subjects' // Removed as we only use teacher's subjects
 import { PhaseEditor } from './PhaseEditor'
 import { Button } from '@/components/ui/button'
-import { LessonHeader } from './LessonHeader'
+import { LessonPrepHeader } from './lesson-prep-header'
 import {
     Form,
     FormLanguageProvider,
@@ -166,7 +166,7 @@ export function LessonPrepForm({
                 <form onSubmit={form.handleSubmit(handleSubmit, onInvalid)} className="flex flex-col h-full bg-background" dir={language === 'ar' ? 'rtl' : 'ltr'}>
 
                     {/* NEW: Lesson Header (Metadata + Objectives) */}
-                    <LessonHeader
+                    <LessonPrepHeader
                         control={form.control}
                         isLoading={isLoading}
                         language={language}
