@@ -1,5 +1,5 @@
 import { memo } from 'react'
-import { PreparationCard } from '../PreparationCard'
+import { PreparationCard } from '../preparation-card/index.ts'
 import { useLessonsTab } from './useLessonsTab'
 import { LessonsTabHeader } from './LessonsTabHeader'
 import { LessonsTabLoading } from './LessonsTabLoading'
