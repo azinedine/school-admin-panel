@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next'
 import type { LessonPreparationFormData } from '@/schemas/lesson-preparation'
 import { PhaseEditor } from '../PhaseEditor'
 import { LessonPrepElements } from '../lesson-prep-elements'
-import { LessonPrepNotes } from '../LessonPrepNotes'
+import { LessonPrepNotes } from '../lesson-prep-notes'
 
 interface PrepFormRightColumnProps {
     control: Control<LessonPreparationFormData>
