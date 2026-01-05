@@ -2,7 +2,7 @@ import { type Control } from 'react-hook-form'
 import type { LessonPreparationFormData } from '@/schemas/lesson-preparation'
 import { LessonSupportMaterial } from '../lesson-support-material'
 import { LessonPrepPedagogicalContext } from '../lesson-prep-context'
-import { LessonPrepObjectives } from '../LessonPrepObjectives'
+import { LessonPrepObjectives } from '../lesson-prep-objectives'
 import { LessonPrepMethods } from '../LessonPrepMethods'
 
 interface PrepFormLeftColumnProps {
