@@ -14,7 +14,7 @@ export { LessonForm } from './lesson-form/index.ts'
 export { LessonViewDialog } from './lesson-view-dialog/index.ts'
 export { LessonPrepForm } from './lesson-prep-form/index.ts'
 export { LessonPrepDetails } from './lesson-prep-details/index.ts'
-export { PreparationCard } from './PreparationCard.tsx'
+export { PreparationCard } from './preparation-card/index.ts'
 
 // Form Sub-components
 export { LessonPrepPedagogicalContext } from './lesson-prep-context/index.ts'
