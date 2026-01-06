@@ -1,6 +1,0 @@
-export { LessonsTab } from './LessonsTab'
-export { useLessonsTab } from './useLessonsTab'
-export { LessonsTabHeader } from './LessonsTabHeader'
-export { LessonsTabLoading } from './LessonsTabLoading'
-export { LessonsTabEmptyState } from './LessonsTabEmptyState'
-export { LessonsTabViewDialog } from './LessonsTabViewDialog'
