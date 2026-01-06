@@ -12,20 +12,15 @@ export interface Level {
   name: string
 }
 
-interface SubjectsResponse {
-  data: Subject[]
-}
-
-interface LevelsResponse {
-  data: Level[]
-}
+type SubjectsApiResponse = Subject[] | { data: Subject[] }
+type LevelsApiResponse = Level[] | { data: Level[] }
 
 // Fetch subjects
 export function useSubjects() {
   return useQuery<Subject[]>({
     queryKey: ['subjects'],
     queryFn: async () => {
-      const response = await apiClient.get<any>('/v1/subjects')
+      const response = await apiClient.get<SubjectsApiResponse>('/v1/subjects')
       if (Array.isArray(response.data)) {
         return response.data
       }
@@ -40,7 +35,7 @@ export function useLevels() {
   return useQuery<Level[]>({
     queryKey: ['levels'],
     queryFn: async () => {
-      const response = await apiClient.get<any>('/v1/levels')
+      const response = await apiClient.get<LevelsApiResponse>('/v1/levels')
       if (Array.isArray(response.data)) {
         return response.data
       }
