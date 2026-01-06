@@ -1,7 +1,0 @@
-export { LessonViewDialog } from './LessonViewDialog'
-export { ViewDialogHeader } from './ViewDialogHeader'
-export { ViewDialogInfoItem } from './ViewDialogInfoItem'
-export { ViewDialogMetaGrid } from './ViewDialogMetaGrid'
-export { ViewDialogContent } from './ViewDialogContent'
-export { ViewDialogTimestamps } from './ViewDialogTimestamps'
-export { ViewDialogFooter } from './ViewDialogFooter'
