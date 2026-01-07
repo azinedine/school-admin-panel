@@ -15,8 +15,8 @@ import {
 
 
 import { Form } from '@/components/ui/form'
-import { TextField, SelectField, DatePicker, ActionButton } from '@/components/forms'
-import { MultiSelectField } from '@/components/forms/MultiSelectField'
+import { TextField, SelectField, DatePicker, ActionButton } from '@/components/ui/form-fields'
+import { MultiSelectField } from '@/components/ui/form-fields'
 import { useWilayas, useMunicipalities, useInstitutionsByLocation } from '@/hooks/use-institutions'
 import { useSubjects } from '@/hooks/use-subjects'
 import { useUpdateProfile } from '@/hooks/use-profile-mutation'
