@@ -1,6 +1,6 @@
 import { useFormContext, type FieldError } from "react-hook-form"
 import { useTranslation } from "react-i18next"
-import { SelectField } from "@/components/forms/SelectField" 
+import { SelectField } from "@/components/ui/form-fields"
 // Hooks
 import { useWilayas, useMunicipalities, useInstitutionsByLocation } from "@/hooks/use-institutions"
 
@@ -38,11 +38,11 @@ export function LocationSection() {
   })) || []
 
   // Create institution options, handling empty state
-  const institutionOptions = hasInstitutions 
+  const institutionOptions = hasInstitutions
     ? institutions.map(i => ({
-        value: i.id.toString(),
-        label: isRTL ? (i.name_ar || i.name) : i.name
-      }))
+      value: i.id.toString(),
+      label: isRTL ? (i.name_ar || i.name) : i.name
+    }))
     : []
 
   return (
@@ -53,9 +53,9 @@ export function LocationSection() {
         options={wilayaOptions}
         value={selectedWilaya}
         onChange={(val) => {
-            setValue('wilaya', val)
-            setValue('municipality', '') // Reset dependents
-            setValue('institution_id', '') 
+          setValue('wilaya', val)
+          setValue('municipality', '') // Reset dependents
+          setValue('institution_id', '')
         }}
         isLoading={loadingWilayas}
         error={errors.wilaya as FieldError}
@@ -68,8 +68,8 @@ export function LocationSection() {
         options={municipalityOptions}
         value={selectedMunicipality}
         onChange={(val) => {
-            setValue('municipality', val)
-            setValue('institution_id', '') // Reset dependent
+          setValue('municipality', val)
+          setValue('institution_id', '') // Reset dependent
         }}
         isLoading={loadingMunicipalities}
         disabled={!selectedWilaya}
@@ -78,20 +78,20 @@ export function LocationSection() {
       />
 
       <SelectField
-         label={t('auth.register.institution')}
-         placeholder={
-           noInstitutionsFound 
-             ? t('auth.register.noInstitutions') 
-             : t('auth.register.selectInstitution')
-         }
-         options={institutionOptions}
-         value={watch('institution_id')}
-         onChange={(val) => setValue('institution_id', val)}
-         isLoading={loadingInstitutions}
-         disabled={!selectedMunicipality || noInstitutionsFound}
-         error={errors.institution_id as FieldError}
-         required={!noInstitutionsFound}
-         className="sm:col-span-2 lg:col-span-1"
+        label={t('auth.register.institution')}
+        placeholder={
+          noInstitutionsFound
+            ? t('auth.register.noInstitutions')
+            : t('auth.register.selectInstitution')
+        }
+        options={institutionOptions}
+        value={watch('institution_id')}
+        onChange={(val) => setValue('institution_id', val)}
+        isLoading={loadingInstitutions}
+        disabled={!selectedMunicipality || noInstitutionsFound}
+        error={errors.institution_id as FieldError}
+        required={!noInstitutionsFound}
+        className="sm:col-span-2 lg:col-span-1"
       />
     </div>
   )
