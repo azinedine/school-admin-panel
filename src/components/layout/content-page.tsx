@@ -1,6 +1,6 @@
 import type React from 'react'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { ModeToggle } from "@/components/mode-toggle"
+import { ModeToggle } from "@/components/ui/mode-toggle"
 import { SidebarTrigger } from "@/components/ui/sidebar"
 
 interface ContentPageProps {
