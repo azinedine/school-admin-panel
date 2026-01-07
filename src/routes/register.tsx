@@ -11,7 +11,7 @@ import { LanguageSwitcher } from '@/components/language-switcher'
 import { UserPlus, ArrowRight } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { createRegistrationSchema, registrationDefaults, type RegistrationFormData, type RegistrationPayload } from '@/schemas/registration'
-import { ActionButton } from '@/components/forms/ActionButton'
+import { ActionButton } from '@/components/ui/form-fields'
 import { FullScreenLoader } from '@/components/ui/full-screen-loader'
 
 // Modular Sections
@@ -21,7 +21,7 @@ import { PersonalInfoSection } from '@/components/auth/register/PersonalInfoSect
 import { ProfessionalInfoSection } from '@/components/auth/register/ProfessionalInfoSection'
 import { AcademicSection } from '@/components/auth/register/AcademicSection'
 import { AdminAdditionalInfoSection } from '@/components/auth/register/AdminAdditionalInfoSection'
-import { FormSection } from '@/components/forms/FormSection'
+import { FormSection } from '@/components/ui/form-fields'
 
 export const Route = createFileRoute('/register')({
   beforeLoad: () => {
