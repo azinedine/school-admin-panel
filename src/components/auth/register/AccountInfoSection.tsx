@@ -1,8 +1,8 @@
 import { useFormContext, type FieldError } from "react-hook-form"
 import { useTranslation } from "react-i18next"
-import { TextField } from "../../forms/TextField"
-import { PasswordField } from "../../forms/PasswordField"
-import { SelectField } from "../../forms/SelectField"
+import { TextField } from "@/components/ui/form-fields"
+import { PasswordField } from "@/components/ui/form-fields"
+import { SelectField } from "@/components/ui/form-fields"
 
 export function AccountInfoSection() {
   const { t } = useTranslation()
