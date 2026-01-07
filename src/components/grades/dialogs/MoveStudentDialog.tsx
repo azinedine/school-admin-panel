@@ -10,7 +10,7 @@ import {
     DialogFooter,
 } from "@/components/ui/dialog"
 import type { GradeClass } from "@/features/grades"
-import type { MoveStudentDialogState } from "../types"
+import type { MoveStudentDialogState } from "../shared/types"
 
 interface MoveStudentDialogProps {
     state: MoveStudentDialogState
