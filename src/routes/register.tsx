@@ -15,12 +15,12 @@ import { ActionButton } from '@/components/forms/ActionButton'
 import { FullScreenLoader } from '@/components/ui/full-screen-loader'
 
 // Modular Sections
-import { AccountInfoSection } from '@/components/forms/register/AccountInfoSection'
-import { LocationSection } from '@/components/forms/register/LocationSection'
-import { PersonalInfoSection } from '@/components/forms/register/PersonalInfoSection'
-import { ProfessionalInfoSection } from '@/components/forms/register/ProfessionalInfoSection'
-import { AcademicSection } from '@/components/forms/register/AcademicSection'
-import { AdminAdditionalInfoSection } from '@/components/forms/register/AdminAdditionalInfoSection'
+import { AccountInfoSection } from '@/components/auth/register/AccountInfoSection'
+import { LocationSection } from '@/components/auth/register/LocationSection'
+import { PersonalInfoSection } from '@/components/auth/register/PersonalInfoSection'
+import { ProfessionalInfoSection } from '@/components/auth/register/ProfessionalInfoSection'
+import { AcademicSection } from '@/components/auth/register/AcademicSection'
+import { AdminAdditionalInfoSection } from '@/components/auth/register/AdminAdditionalInfoSection'
 import { FormSection } from '@/components/forms/FormSection'
 
 export const Route = createFileRoute('/register')({
@@ -37,7 +37,7 @@ function RegisterPage() {
   const isRTL = i18n.dir() === 'rtl'
 
   const { mutate: registerUser, isPending: loading } = useRegister()
-  
+
   const registrationSchema = useMemo(() => createRegistrationSchema(t), [t])
 
   // Initialize Form
@@ -106,7 +106,7 @@ function RegisterPage() {
       ...basePayload,
       ...rolePayload,
     }
-    
+
     registerUser(payload)
   }
 
@@ -119,7 +119,7 @@ function RegisterPage() {
 
       <div className="w-full max-w-7xl mx-auto space-y-6">
         <div className="text-center space-y-2 mb-8">
-           <div className="flex justify-center mb-4">
+          <div className="flex justify-center mb-4">
             <div className="h-14 w-14 rounded-full bg-primary/10 flex items-center justify-center text-primary">
               <UserPlus className="h-7 w-7" />
             </div>
@@ -132,70 +132,70 @@ function RegisterPage() {
 
         <FormProvider {...methods}>
           <form onSubmit={handleSubmit(onSubmit, () => {
-             toast.error(t('auth.validation.checkFields', 'Please check the form for errors'))
+            toast.error(t('auth.validation.checkFields', 'Please check the form for errors'))
           })} className="space-y-6">
-             {/* Show generic error if validation fails */}
-             {/* console.error("Validation Errors:", errors); */}
-             {/* Optional: toast.error(t('auth.validation.checkFields')); */}
-             {/* Since fields show their own errors, we might not need a toast, */}
-             {/* BUT for "Nothing happens" UX, a toast is helpful. */}
-             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                {/* Account Information */}
-                <div className="space-y-6">
-                   <FormSection title={t('auth.register.accountInfo')} columns={1}>
-                      <AccountInfoSection />
-                   </FormSection>
+            {/* Show generic error if validation fails */}
+            {/* console.error("Validation Errors:", errors); */}
+            {/* Optional: toast.error(t('auth.validation.checkFields')); */}
+            {/* Since fields show their own errors, we might not need a toast, */}
+            {/* BUT for "Nothing happens" UX, a toast is helpful. */}
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+              {/* Account Information */}
+              <div className="space-y-6">
+                <FormSection title={t('auth.register.accountInfo')} columns={1}>
+                  <AccountInfoSection />
+                </FormSection>
 
-                   <FormSection title={t('auth.register.locationAndInstitution', 'Location & Institution')} columns={1}>
-                      <LocationSection />
-                   </FormSection>
-                </div>
+                <FormSection title={t('auth.register.locationAndInstitution', 'Location & Institution')} columns={1}>
+                  <LocationSection />
+                </FormSection>
+              </div>
 
-                 {/* Role Specific Information */}
-                <div className="space-y-6">
-                    {role === 'teacher' && (
-                        <>
-                          <FormSection title={t('profilePage.personalInfo')} columns={1}>
-                              <PersonalInfoSection />
-                          </FormSection>
-                          <FormSection title={t('profilePage.professionalInfo')} columns={1}>
-                              <ProfessionalInfoSection />
-                          </FormSection>
-                        </>
-                    )}
-                     
-                     {role === 'admin' ? (
-                       <FormSection title={t('auth.register.additionalInfo')} columns={1}>
-                          <AdminAdditionalInfoSection />
-                       </FormSection>
-                     ) : (
-                       <FormSection 
-                          title={role === 'teacher' ? t('profilePage.academicInfo') : t('auth.register.additionalInfo')} 
-                          columns={1}
-                       >
-                          <AcademicSection role={role} />
-                       </FormSection>
-                     )}
-                </div>
-             </div>
+              {/* Role Specific Information */}
+              <div className="space-y-6">
+                {role === 'teacher' && (
+                  <>
+                    <FormSection title={t('profilePage.personalInfo')} columns={1}>
+                      <PersonalInfoSection />
+                    </FormSection>
+                    <FormSection title={t('profilePage.professionalInfo')} columns={1}>
+                      <ProfessionalInfoSection />
+                    </FormSection>
+                  </>
+                )}
+
+                {role === 'admin' ? (
+                  <FormSection title={t('auth.register.additionalInfo')} columns={1}>
+                    <AdminAdditionalInfoSection />
+                  </FormSection>
+                ) : (
+                  <FormSection
+                    title={role === 'teacher' ? t('profilePage.academicInfo') : t('auth.register.additionalInfo')}
+                    columns={1}
+                  >
+                    <AcademicSection role={role} />
+                  </FormSection>
+                )}
+              </div>
+            </div>
 
             <div className="flex flex-col sm:flex-row gap-4 items-center justify-between pt-4 border-t">
-               <p className="text-sm text-muted-foreground order-2 sm:order-1">
-                  {t('auth.register.hasAccount')}{' '}
-                  <Link to="/login" className="text-primary hover:underline font-medium">
-                    {t('auth.login.submit')}
-                  </Link>
-                </p>
+              <p className="text-sm text-muted-foreground order-2 sm:order-1">
+                {t('auth.register.hasAccount')}{' '}
+                <Link to="/login" className="text-primary hover:underline font-medium">
+                  {t('auth.login.submit')}
+                </Link>
+              </p>
 
-                <ActionButton 
-                  type="submit" 
-                  className="w-full sm:w-auto min-w-[200px] order-1 sm:order-2" 
-                  isLoading={loading}
-                  loadingText={t('common.processing')}
-                >
-                  {t('auth.register.submit')}
-                  <ArrowRight className={cn("h-4 w-4", isRTL ? "mr-2" : "ml-2")} />
-                </ActionButton>
+              <ActionButton
+                type="submit"
+                className="w-full sm:w-auto min-w-[200px] order-1 sm:order-2"
+                isLoading={loading}
+                loadingText={t('common.processing')}
+              >
+                {t('auth.register.submit')}
+                <ArrowRight className={cn("h-4 w-4", isRTL ? "mr-2" : "ml-2")} />
+              </ActionButton>
             </div>
           </form>
         </FormProvider>
