@@ -3,7 +3,7 @@ import { Button } from '@/components/ui/button'
 import { LogOut, Ban } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
 
-import { LanguageSwitcher } from '@/components/language-switcher'
+import { LanguageSwitcher } from '@/components/ui/language-switcher'
 import { useNavigate } from '@tanstack/react-router'
 
 export default function SuspendedPage() {
@@ -28,7 +28,7 @@ export default function SuspendedPage() {
             <Ban className="h-12 w-12 text-destructive" />
           </div>
         </div>
-        
+
         <div className="space-y-2">
           <h1 className="text-3xl font-bold tracking-tighter text-foreground sm:text-4xl">
             {t('auth.suspended.title', 'Account Suspended')}
@@ -39,30 +39,30 @@ export default function SuspendedPage() {
         </div>
 
         <div className="bg-card border rounded-lg p-6 shadow-sm">
-            <div className="flex flex-col gap-2 text-sm text-left">
-                <div className="flex justify-between">
-                    <span className="text-muted-foreground">{t('users.table.name', 'Name')}:</span>
-                    <span className="font-medium">{user?.name}</span>
-                </div>
-                <div className="flex justify-between">
-                    <span className="text-muted-foreground">{t('nav.profile.role', 'Role')}:</span>
-                    <span className="font-medium">{t(`auth.roles.${user?.role}`, user?.role || '')}</span>
-                </div>
-                <div className="flex justify-between">
-                    <span className="text-muted-foreground">{t('auth.suspended.account', 'Account')}:</span>
-                    <span className="font-medium">{user?.email}</span>
-                </div>
-                <div className="flex justify-between">
-                    <span className="text-muted-foreground">{t('auth.suspended.status', 'Status')}:</span>
-                    <span className="font-medium text-destructive capitalize">{user?.status || 'suspended'}</span>
-                </div>
-                <div className="flex justify-between pt-2 border-t mt-2">
-                    <span className="text-muted-foreground">{t('auth.suspended.contactSupport', 'Contact Support')}:</span>
-                    <a href="mailto:braivexa.company@gmail.com" className="font-medium text-primary hover:underline">
-                        braivexa.company@gmail.com
-                    </a>
-                </div>
+          <div className="flex flex-col gap-2 text-sm text-left">
+            <div className="flex justify-between">
+              <span className="text-muted-foreground">{t('users.table.name', 'Name')}:</span>
+              <span className="font-medium">{user?.name}</span>
             </div>
+            <div className="flex justify-between">
+              <span className="text-muted-foreground">{t('nav.profile.role', 'Role')}:</span>
+              <span className="font-medium">{t(`auth.roles.${user?.role}`, user?.role || '')}</span>
+            </div>
+            <div className="flex justify-between">
+              <span className="text-muted-foreground">{t('auth.suspended.account', 'Account')}:</span>
+              <span className="font-medium">{user?.email}</span>
+            </div>
+            <div className="flex justify-between">
+              <span className="text-muted-foreground">{t('auth.suspended.status', 'Status')}:</span>
+              <span className="font-medium text-destructive capitalize">{user?.status || 'suspended'}</span>
+            </div>
+            <div className="flex justify-between pt-2 border-t mt-2">
+              <span className="text-muted-foreground">{t('auth.suspended.contactSupport', 'Contact Support')}:</span>
+              <a href="mailto:braivexa.company@gmail.com" className="font-medium text-primary hover:underline">
+                braivexa.company@gmail.com
+              </a>
+            </div>
+          </div>
         </div>
 
         <div className="flex justify-center">
