@@ -8,7 +8,7 @@ import {
     DialogTitle,
     DialogFooter,
 } from "@/components/ui/dialog"
-import type { HistoryDialogState } from "../types"
+import type { HistoryDialogState } from "../shared/types"
 
 interface AttendanceRecord {
     id: string
