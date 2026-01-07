@@ -20,7 +20,7 @@ import {
     AlertDialogTitle,
 } from '@/components/ui/alert-dialog'
 import { LessonPrepDetails, LessonPrepForm } from '@/components/features/lessons'
-import { FormLanguageSelector } from '@/components/FormLanguageSelector'
+import { FormLanguageSelector } from '../../forms/preparation-form/components/FormLanguageSelector'
 import { usePreparationTab } from './use-preparation-tab.ts'
 import { PrepFilters } from './PrepFilters.tsx'
 import { PrepGrid } from './PrepGrid.tsx'
