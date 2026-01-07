@@ -1,5 +1,5 @@
 import { useTranslation } from "react-i18next"
-import { TextField } from "../../forms/TextField"
+import { TextField } from "@/components/ui/form-fields"
 
 export function ProfessionalInfoSection() {
   const { t } = useTranslation()
