@@ -1,5 +1,5 @@
-import { TimetableEmptyState } from '@/components/TimetableEmptyState'
-import { TimetableSetupDialog } from '@/components/TimetableSetupDialog'
+import { TimetableEmptyState } from '@/components/features/lessons/timetable/TimetableEmptyState'
+import { TimetableSetupDialog } from '@/components/features/lessons/dialogs/TimetableSetupDialog'
 import type { TimetableEntry } from '@/store/prep-store'
 
 interface TimetableSetupProps {
