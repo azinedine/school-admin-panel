@@ -4,7 +4,7 @@ import { AlertCircle, RotateCw, ChevronLeft, ChevronRight } from 'lucide-react'
 import { useAuthStore } from '@/store/auth-store'
 import { useUsersManagement } from '@/hooks/use-users-management'
 import { ContentPage } from '@/components/layout/content-page'
-import { UsersTable } from '@/components/users/users-table'
+import { UsersTable } from '@/components/features/users'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Alert, AlertDescription } from '@/components/ui/alert'
@@ -161,8 +161,8 @@ export function UsersManagementPage() {
             </CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
-            <UsersTable 
-              data={users} 
+            <UsersTable
+              data={users}
               isLoading={isPending}
             />
 
