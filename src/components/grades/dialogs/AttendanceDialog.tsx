@@ -9,7 +9,7 @@ import {
     DialogTitle,
     DialogFooter,
 } from "@/components/ui/dialog"
-import type { AttendanceDialogState } from "../types"
+import type { AttendanceDialogState } from "../shared/types"
 
 interface AttendanceDialogProps {
     state: AttendanceDialogState
