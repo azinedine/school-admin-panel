@@ -9,7 +9,7 @@ import {
     DialogTitle,
     DialogFooter,
 } from "@/components/ui/dialog"
-import type { NewStudentForm } from "../types"
+import type { NewStudentForm } from "../shared/types"
 
 interface AddStudentDialogProps {
     open: boolean
