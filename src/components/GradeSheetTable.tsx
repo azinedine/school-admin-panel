@@ -1,2 +1,2 @@
 // Re-export from new modular location
-export { GradeSheetTable } from './grades/GradeSheetTable'
+export { GradeSheetTable } from './grades/table/GradeSheetTable'
