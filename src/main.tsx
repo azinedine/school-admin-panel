@@ -6,7 +6,7 @@ import {
   RouterProvider,
   createRouter,
 } from '@tanstack/react-router'
-import { ThemeProvider } from './components/theme-provider'
+import { ThemeProvider } from '@/components/ui/theme-provider'
 import { QueryClientProvider } from '@tanstack/react-query'
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools'
 import { queryClient } from './lib/query-client'
