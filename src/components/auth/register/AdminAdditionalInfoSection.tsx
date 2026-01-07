@@ -1,6 +1,6 @@
 import { useTranslation } from "react-i18next"
-import { TextField, TextAreaField } from "../../forms/TextField"
-import { DatePicker } from "../../forms/DatePicker"
+import { TextField, TextAreaField } from "@/components/ui/form-fields"
+import { DatePicker } from "@/components/ui/form-fields"
 
 
 export function AdminAdditionalInfoSection() {
