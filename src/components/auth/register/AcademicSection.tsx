@@ -1,8 +1,8 @@
 import { useFormContext, type FieldError } from "react-hook-form"
 import { useTranslation } from "react-i18next"
-import { TextField } from "../../forms/TextField"
-import { SelectField } from "../../forms/SelectField"
-import { MultiSelectField } from "../../forms/MultiSelectField"
+import { TextField } from "@/components/ui/form-fields"
+import { SelectField } from "@/components/ui/form-fields"
+import { MultiSelectField } from "@/components/ui/form-fields"
 import { useSubjects, useLevels } from "@/hooks/use-subjects"
 
 interface AcademicSectionProps {
