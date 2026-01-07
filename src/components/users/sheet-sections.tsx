@@ -14,7 +14,7 @@ import {
   ProfileSection,
   ProfileInfoRow,
   ProfileAvatar,
-} from '@/components/profile'
+} from '@/components/features/profile'
 import { SheetHeader, SheetTitle } from '@/components/ui/sheet'
 
 interface SectionProps {
@@ -28,7 +28,7 @@ export function UserSheetHeader({ user }: SectionProps) {
       <SheetHeader className="mb-4">
         <SheetTitle className="sr-only">{t('pages.users.viewDetails.title')}</SheetTitle>
       </SheetHeader>
-      
+
       <div className="flex flex-col items-center">
         <ProfileAvatar
           name={user.name}
@@ -82,7 +82,7 @@ export function PersonalInfoSection({ user }: SectionProps) {
 
 export function InstitutionInfoSection({ user }: SectionProps) {
   const { t } = useTranslation()
-  
+
   if (!user.institution && !user.user_institution_id) return null
 
   return (
@@ -108,7 +108,7 @@ export function InstitutionInfoSection({ user }: SectionProps) {
 
 export function ProfessionalInfoSection({ user }: SectionProps) {
   const { t } = useTranslation()
-  
+
   if (!user.department && !user.position && !user.teacher_id) return null
 
   return (
@@ -147,11 +147,11 @@ export function AccountInfoSection({ user }: SectionProps) {
         label={t('profilePage.accountStatus')}
         value={getStatusLabel(user.status)}
         valueClassName={
-          user.status === 'active' 
-            ? 'text-green-600' 
+          user.status === 'active'
+            ? 'text-green-600'
             : user.status === 'suspended'
-            ? 'text-red-600'
-            : 'text-gray-600'
+              ? 'text-red-600'
+              : 'text-gray-600'
         }
       />
       <ProfileInfoRow
