@@ -7,7 +7,7 @@ import {
     DialogTitle,
     DialogFooter,
 } from "@/components/ui/dialog"
-import type { RemoveStudentDialogState } from "../types"
+import type { RemoveStudentDialogState } from "../shared/types"
 
 interface RemoveStudentDialogProps {
     state: RemoveStudentDialogState
