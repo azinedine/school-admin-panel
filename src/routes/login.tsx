@@ -1,6 +1,6 @@
 import { createFileRoute, redirect } from '@tanstack/react-router'
 import { useAuthStore } from '@/store/auth-store'
-import { LanguageSwitcher } from '@/components/language-switcher'
+import { LanguageSwitcher } from '@/components/ui/language-switcher'
 import { LoginForm } from '@/components/auth/login-form'
 
 export const Route = createFileRoute('/login')({
