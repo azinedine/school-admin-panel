@@ -6,7 +6,7 @@ import {
     SheetTitle,
     SheetDescription,
 } from "@/components/ui/sheet"
-import type { StudentInfoSidebarState } from "../types"
+import type { StudentInfoSidebarState } from "../shared/types"
 
 interface StudentInfoSidebarProps {
     state: StudentInfoSidebarState
