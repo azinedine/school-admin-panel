@@ -1,6 +1,6 @@
 import { useState, memo, useEffect } from 'react'
 import { useTimetable, useUpdateTimetable } from '@/hooks/use-timetable'
-import { TimetableSetupDialog } from '@/components/TimetableSetupDialog'
+import { TimetableSetupDialog } from '@/components/features/lessons/dialogs/TimetableSetupDialog'
 import { LessonPrepByClass } from '@/components/features/lessons'
 import { usePrepStore } from '@/store/prep-store'
 import { TimetableLoading } from './TimetableLoading'
