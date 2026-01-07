@@ -2,7 +2,7 @@ import { type Control, Controller } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
 import type { LessonPreparationFormData } from '@/schemas/lesson-preparation'
 import { useLearningObjectives } from '@/hooks/use-learning-objectives'
-import { MultiSelectField } from '@/components/forms/MultiSelectField'
+import { MultiSelectField } from '@/components/ui/form-fields'
 
 interface ObjectivesSelectProps {
     control: Control<LessonPreparationFormData>
