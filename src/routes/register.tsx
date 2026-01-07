@@ -7,7 +7,7 @@ import { useAuthStore } from '@/store/auth-store'
 import { useRegister } from '@/hooks/use-auth'
 import { toast } from 'sonner'
 // Card components removed as they are unused
-import { LanguageSwitcher } from '@/components/language-switcher'
+import { LanguageSwitcher } from '@/components/ui/language-switcher'
 import { UserPlus, ArrowRight } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { createRegistrationSchema, registrationDefaults, type RegistrationFormData, type RegistrationPayload } from '@/schemas/registration'
