@@ -49,7 +49,7 @@ export const PreparationTab = memo(function PreparationTab() {
         formLanguage,
         setFormLanguage,
         selectedPrep,
-        prepToDelete,
+        prepToDelete: _prepToDelete,
         statusFilter,
         setStatusFilter,
         searchQuery,
