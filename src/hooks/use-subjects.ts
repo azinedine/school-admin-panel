@@ -12,13 +12,7 @@ export interface Level {
   name: string
 }
 
-interface SubjectsResponse {
-  data: Subject[]
-}
 
-interface LevelsResponse {
-  data: Level[]
-}
 
 // Fetch subjects
 export function useSubjects() {
