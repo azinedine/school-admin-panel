@@ -1,0 +1,20 @@
+
+services:
+  # React Frontend Application
+  frontend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: school-admin-panel
+    restart: unless-stopped
+    ports:
+      - "3000:80"
+    environment:
+      # API URL - change this to your backend URL
+      VITE_API_URL: ${VITE_API_URL:-http://localhost:8000}
+    networks:
+      - frontend-network
+
+networks:
+  frontend-network:
+    driver: bridge
