@@ -208,8 +208,8 @@ export function DailyPlannerTable({ selectedDay }: DailyPlannerTableProps) {
         )}
       </Card>
 
-      {/* Temporarily disabled - component import needs fix */}
-      {/* {dialogState && (
+
+      {dialogState && (
         <LessonDetailDialog
           open={dialogState.open}
           onOpenChange={(open: boolean) => {
@@ -223,7 +223,7 @@ export function DailyPlannerTable({ selectedDay }: DailyPlannerTableProps) {
           onSave={addPlanEntry}
           onUpdate={updatePlanEntry}
         />
-      )} */}
+      )}
     </>
   )
 }
