@@ -1,9 +1,9 @@
 import { Badge } from '@/components/ui/badge'
-import { Card, CardContent, CardHeader } from '@/components/ui/card'
+import { Card, CardHeader } from '@/components/ui/card'
 import type { LessonPreparation } from '@/schemas/lesson-preparation'
 import { format } from 'date-fns'
 import { ar, fr, enUS } from 'date-fns/locale'
-import { BookOpen, Calendar, Clock, GraduationCap, User } from 'lucide-react'
+import { BookOpen, Calendar, Clock, User } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
 
 interface MemoHeaderProps {
