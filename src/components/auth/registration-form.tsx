@@ -85,8 +85,8 @@ export function RegistrationForm({ onSuccess }: RegistrationFormProps) {
   const { mutate: registerUser, isPending: isSubmitting } = useRegister()
 
   // Fetch dynamic data
-  const { data: subjectsList = [], isLoading: loadingSubjects } = useSubjects()
-  const { data: classesList = [], isLoading: loadingLevels } = useLevels()
+  const { data: subjectsList = [], isLoading: _loadingSubjects } = useSubjects()
+  const { data: classesList = [], isLoading: _loadingLevels } = useLevels()
 
   // Create schema with translations
   const registrationSchema = createRegistrationSchema(t)
