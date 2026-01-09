@@ -7,6 +7,7 @@ import {
   SidebarHeader,
   SidebarRail,
 } from '@/components/ui/sidebar'
+import { Badge } from '@/components/ui/badge'
 import { Building2 } from 'lucide-react'
 import { useUser } from '@/features/users/api/use-user'
 import { NavGroup } from '@/components/layout/nav-group'
@@ -70,6 +71,15 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
           <div className='group-data-[collapsible=icon]:hidden'>
             <LanguageSwitcher />
           </div>
+        </div>
+        {/* Environment Badge */}
+        <div className='px-4 pb-2'>
+          <Badge
+            variant={import.meta.env.MODE === 'production' ? 'default' : 'secondary'}
+            className='text-xs font-medium'
+          >
+            {import.meta.env.MODE === 'production' ? '🚀 PROD' : '🔧 DEV'}
+          </Badge>
         </div>
       </SidebarHeader>
       <SidebarContent>

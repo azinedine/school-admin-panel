@@ -208,10 +208,11 @@ export function DailyPlannerTable({ selectedDay }: DailyPlannerTableProps) {
         )}
       </Card>
 
+
       {dialogState && (
         <LessonDetailDialog
           open={dialogState.open}
-          onOpenChange={(open) => {
+          onOpenChange={(open: boolean) => {
             if (!open) setDialogState(null)
           }}
           day={dialogState.day}

@@ -12,8 +12,7 @@ export interface Level {
   name: string
 }
 
-type SubjectsApiResponse = Subject[] | { data: Subject[] }
-type LevelsApiResponse = Level[] | { data: Level[] }
+
 
 // Fetch subjects
 export function useSubjects() {
