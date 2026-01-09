@@ -1,11 +1,5 @@
-<<<<<<< HEAD
-
-services:
-  # React Frontend Application
-=======
 services:
   # React/Vite Frontend
->>>>>>> dev
   frontend:
     build:
       context: .
@@ -15,14 +9,9 @@ services:
     ports:
       - "3000:80"
     environment:
-<<<<<<< HEAD
-      # API URL - change this to your backend URL
-      VITE_API_URL: ${VITE_API_URL:-http://localhost:8000}
-=======
       - NODE_ENV=production
       # API URL for the frontend to connect to the backend
       - VITE_API_URL=http://localhost:8000
->>>>>>> dev
     networks:
       - frontend-network
 
