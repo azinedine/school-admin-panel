@@ -39,7 +39,7 @@ import {
   useGradeTableState
 } from "./grade-sheet/hooks"
 
-export function GradeSheetTable({ classId: selectedClassId, term: selectedTerm, classes, onClassSelect }: GradeSheetTableProps) {
+export function GradeSheetTable({ classId: selectedClassId, term: selectedTerm, classes, onClassSelect, isReadOnly = false }: GradeSheetTableProps) {
   const { t } = useTranslation()
   const { isRTL } = useDirection()
 
@@ -319,6 +319,7 @@ export function GradeSheetTable({ classId: selectedClassId, term: selectedTerm, 
                         onViewStudentInfo={dialogs.openStudentInfo}
                         onOpenAttendanceDialog={dialogs.openAttendance}
                         onOpenHistoryDialog={dialogs.openHistory}
+                        isReadOnly={isReadOnly}
                         t={t}
                       />
                     )
