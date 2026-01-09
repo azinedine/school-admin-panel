@@ -57,10 +57,10 @@ export function LessonPrepByClass() {
                             Please add your classes in your profile settings to start using the timetable feature.
                         </p>
                     </div>
-                    <Link to="/teacher/profile">
+                    <Link to="/teacher/grades">
                         <Button variant="default" size="lg">
                             <UserCog className="h-5 w-5 ltr:mr-2 rtl:ml-2" />
-                            Go to Profile Settings
+                            Go to Grades
                         </Button>
                     </Link>
                 </div>
