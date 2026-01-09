@@ -7,18 +7,19 @@ import {
   SidebarHeader,
   SidebarRail,
 } from '@/components/ui/sidebar'
+import { Badge } from '@/components/ui/badge'
 import { Building2 } from 'lucide-react'
 import { useUser } from '@/features/users/api/use-user'
 import { NavGroup } from '@/components/layout/nav-group'
 import { NavUser } from '@/components/layout/nav-user'
 import { LanguageSwitcher } from '@/components/language-switcher'
 import { useDirection } from '@/hooks/use-direction'
-import { 
-  PARENT_SIDEBAR, 
-  STUDENT_SIDEBAR, 
-  TEACHER_SIDEBAR, 
-  ADMIN_SIDEBAR, 
-  SUPER_ADMIN_SIDEBAR 
+import {
+  PARENT_SIDEBAR,
+  STUDENT_SIDEBAR,
+  TEACHER_SIDEBAR,
+  ADMIN_SIDEBAR,
+  SUPER_ADMIN_SIDEBAR
 } from './data/sidebar-permissions'
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
@@ -45,39 +46,48 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   }, [user?.role])
 
   return (
-    <Sidebar 
-      collapsible='icon' 
-      variant='floating' 
+    <Sidebar
+      collapsible='icon'
+      variant='floating'
       side={isRTL ? 'right' : 'left'}
       {...props}
     >
       <SidebarHeader>
         <div className='flex items-center justify-between gap-2 p-2'>
-           <div className='flex flex-col px-2 truncate'>
-             <span className='font-bold text-sm text-primary truncate'>
-               {user?.name || 'School Manager'}
-             </span>
-             <span className='text-xs text-muted-foreground truncate capitalize'>
-               {user?.role ? t(`auth.roles.${user.role}`, user.role) : ''}
-             </span>
-             {user?.institution?.name && (
-                <div className='flex items-center gap-1.5 mt-1 text-xs text-muted-foreground/80 truncate'>
-                  <Building2 className='h-3 w-3 shrink-0' />
-                  <span className='truncate' title={user.institution.name}>{user.institution.name}</span>
-                </div>
-             )}
-           </div>
+          <div className='flex flex-col px-2 truncate'>
+            <span className='font-bold text-sm text-primary truncate'>
+              {user?.name || 'School Manager'}
+            </span>
+            <span className='text-xs text-muted-foreground truncate capitalize'>
+              {user?.role ? t(`auth.roles.${user.role}`, user.role) : ''}
+            </span>
+            {user?.institution?.name && (
+              <div className='flex items-center gap-1.5 mt-1 text-xs text-muted-foreground/80 truncate'>
+                <Building2 className='h-3 w-3 shrink-0' />
+                <span className='truncate' title={user.institution.name}>{user.institution.name}</span>
+              </div>
+            )}
+          </div>
           <div className='group-data-[collapsible=icon]:hidden'>
             <LanguageSwitcher />
           </div>
         </div>
+        {/* Environment Badge */}
+        <div className='px-4 pb-2'>
+          <Badge
+            variant={import.meta.env.MODE === 'production' ? 'default' : 'secondary'}
+            className='text-xs font-medium'
+          >
+            {import.meta.env.MODE === 'production' ? '🚀 PROD' : '🔧 DEV'}
+          </Badge>
+        </div>
       </SidebarHeader>
       <SidebarContent>
         {sidebarItems.map((group) => (
-          <NavGroup 
-            key={group.title} 
-            title={group.title} 
-            items={group.items} 
+          <NavGroup
+            key={group.title}
+            title={group.title}
+            items={group.items}
           />
         ))}
       </SidebarContent>
