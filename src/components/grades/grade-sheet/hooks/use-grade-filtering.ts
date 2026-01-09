@@ -1,5 +1,7 @@
 import { useMemo } from 'react'
 import type { CalculatedStudentGrade, SortField, SortDirection } from '../types'
+import type { AttendanceRecord } from '@/store/attendance-store'
+import { format } from "date-fns"
 
 interface UseGradeFilteringProps {
     students: CalculatedStudentGrade[]
@@ -10,6 +12,8 @@ interface UseGradeFilteringProps {
     showSpecialCasesOnly: boolean
     showAbsencesOnly: boolean
     showLatenessOnly: boolean
+    absenceFilterDate?: Date
+    attendanceRecords?: AttendanceRecord[]
 }
 
 /**
@@ -19,6 +23,7 @@ interface UseGradeFilteringProps {
  * - Filters students by search query and special cases.
  * - Sorts students based on selected field and direction.
  * - Manages group assignments (Group 1 / Group 2) logic.
+ * - Filters by specific absence date if enabled.
  */
 export function useGradeFiltering({
     students,
@@ -27,7 +32,9 @@ export function useGradeFiltering({
     sortDirection,
     showSpecialCasesOnly,
     showAbsencesOnly,
-    showLatenessOnly
+    showLatenessOnly,
+    absenceFilterDate,
+    attendanceRecords = []
 }: UseGradeFilteringProps) {
 
     const processedStudents = useMemo(() => {
@@ -51,11 +58,24 @@ export function useGradeFiltering({
 
         // 3. Absences Filter
         if (showAbsencesOnly) {
-            result = result.filter((s) => (s.absences || 0) > 0)
+            if (absenceFilterDate) {
+                // Return students who have an *absence* record on the specific date
+                const dateStr = format(absenceFilterDate, 'yyyy-MM-dd')
+                const absentStudentIds = new Set(
+                    attendanceRecords
+                        .filter(r => r.type === 'absence' && r.date === dateStr)
+                        .map(r => r.studentId)
+                )
+                result = result.filter(s => absentStudentIds.has(s.id))
+            } else {
+                // Fallback (shouldn't really happen if default is set): show any absence count > 0
+                result = result.filter((s) => (s.absences || 0) > 0)
+            }
         }
 
         // 4. Lateness Filter
         if (showLatenessOnly) {
+            // Logic for lateness filter (currently just any lateness)
             result = result.filter((s) => (s.lateness || 0) > 0)
         }
 
@@ -74,7 +94,17 @@ export function useGradeFiltering({
         })
 
         return result
-    }, [students, searchQuery, sortField, sortDirection, showSpecialCasesOnly, showAbsencesOnly, showLatenessOnly])
+    }, [
+        students,
+        searchQuery,
+        sortField,
+        sortDirection,
+        showSpecialCasesOnly,
+        showAbsencesOnly,
+        showLatenessOnly,
+        absenceFilterDate,
+        attendanceRecords
+    ])
 
     // Group Logic (Memoized helper for group splitting)
     // Note: We don't change the processedStudents structure for groups, 
