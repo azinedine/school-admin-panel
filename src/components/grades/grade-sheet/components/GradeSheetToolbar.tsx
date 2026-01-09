@@ -1,4 +1,4 @@
-import { Search, Users, TrendingUp, CheckCircle, XCircle, Star, UserPlus } from "lucide-react"
+import { Search, Users, TrendingUp, CheckCircle, XCircle, Star, UserPlus, UserX, Clock } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import {
@@ -8,13 +8,7 @@ import {
     TooltipTrigger,
 } from "@/components/ui/tooltip"
 
-interface GradeSheetStatistics {
-    total: number
-    specialCaseCount: number
-    classAverage: string
-    passRate: string
-    failRate: string
-}
+import type { GradeSheetStatistics } from "../types"
 
 interface GradeSheetToolbarProps {
     statistics: GradeSheetStatistics
@@ -24,6 +18,10 @@ interface GradeSheetToolbarProps {
     onToggleGroups: () => void
     showSpecialCasesOnly: boolean
     onToggleSpecialCases: () => void
+    showAbsencesOnly: boolean
+    onToggleAbsences: () => void
+    showLatenessOnly: boolean
+    onToggleLateness: () => void
     canAddStudent: boolean
     onAddStudent: () => void
     t: (key: string) => string
@@ -37,6 +35,10 @@ export function GradeSheetToolbar({
     onToggleGroups,
     showSpecialCasesOnly,
     onToggleSpecialCases,
+    showAbsencesOnly,
+    onToggleAbsences,
+    showLatenessOnly,
+    onToggleLateness,
     canAddStudent,
     onAddStudent,
     t,
@@ -166,6 +168,60 @@ export function GradeSheetToolbar({
                                 </TooltipTrigger>
                                 <TooltipContent side="bottom">
                                     <p>{t('pages.grades.specialCase.showOnly')}</p>
+                                </TooltipContent>
+                            </Tooltip>
+                        </TooltipProvider>
+                    )}
+
+                    {/* Absences Filter */}
+                    {statistics.absenceCount > 0 && (
+                        <TooltipProvider>
+                            <Tooltip>
+                                <TooltipTrigger asChild>
+                                    <Button
+                                        variant={showAbsencesOnly ? "default" : "outline"}
+                                        size="icon"
+                                        onClick={onToggleAbsences}
+                                        className="h-8 w-8 relative"
+                                        aria-label={t('pages.grades.absences.showOnly')}
+                                    >
+                                        <UserX className="h-4 w-4" />
+                                        {statistics.absenceCount > 0 && (
+                                            <span className="absolute -top-1 -right-1 h-4 min-w-4 px-1 flex items-center justify-center text-[10px] font-bold rounded-full bg-primary text-primary-foreground border-2 border-background">
+                                                {statistics.absenceCount}
+                                            </span>
+                                        )}
+                                    </Button>
+                                </TooltipTrigger>
+                                <TooltipContent side="bottom">
+                                    <p>{t('pages.grades.absences.showOnly')}</p>
+                                </TooltipContent>
+                            </Tooltip>
+                        </TooltipProvider>
+                    )}
+
+                    {/* Lateness Filter */}
+                    {statistics.latenessCount > 0 && (
+                        <TooltipProvider>
+                            <Tooltip>
+                                <TooltipTrigger asChild>
+                                    <Button
+                                        variant={showLatenessOnly ? "default" : "outline"}
+                                        size="icon"
+                                        onClick={onToggleLateness}
+                                        className="h-8 w-8 relative"
+                                        aria-label={t('pages.grades.lateness.showOnly')}
+                                    >
+                                        <Clock className="h-4 w-4" />
+                                        {statistics.latenessCount > 0 && (
+                                            <span className="absolute -top-1 -right-1 h-4 min-w-4 px-1 flex items-center justify-center text-[10px] font-bold rounded-full bg-primary text-primary-foreground border-2 border-background">
+                                                {statistics.latenessCount}
+                                            </span>
+                                        )}
+                                    </Button>
+                                </TooltipTrigger>
+                                <TooltipContent side="bottom">
+                                    <p>{t('pages.grades.lateness.showOnly')}</p>
                                 </TooltipContent>
                             </Tooltip>
                         </TooltipProvider>
