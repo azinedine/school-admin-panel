@@ -320,9 +320,12 @@ export function GradeSheetTable({ classId: selectedClassId, term: selectedTerm, 
         selectedYear={selectedYear}
         selectedTerm={selectedTerm}
         // Simplified deletions - pass state or handler if needed, currently reusing local logic
-        recordToDelete={null}
-        onDeleteClick={() => { }} // TODO: Handle history delete properly inside dialog or hook
-        onDeleteConfirm={(id) => removeRecord(id)}
+        recordToDelete={dialogs.historyDialog.recordToDelete}
+        onDeleteClick={(id) => dialogs.setHistoryDialog(prev => ({ ...prev, recordToDelete: id }))}
+        onDeleteConfirm={(id) => {
+          removeRecord(id)
+          dialogs.setHistoryDialog(prev => ({ ...prev, recordToDelete: null }))
+        }}
         t={t}
       />
 
