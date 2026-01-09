@@ -24,6 +24,18 @@ export interface CalculatedStudentGrade extends StudentGrade {
     remarks: string
 }
 
+export interface GradeSheetStatistics {
+    classAverage: string
+    total: number
+    passed: number
+    failed: number
+    passRate: string
+    failRate: string
+    specialCaseCount: number
+    absenceCount: number
+    latenessCount: number
+}
+
 export interface GradeSheetTableProps {
     classId: string | null
     term: 1 | 2 | 3
