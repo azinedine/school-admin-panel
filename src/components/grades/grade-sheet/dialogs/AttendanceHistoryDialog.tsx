@@ -16,9 +16,7 @@ interface AttendanceHistoryDialogProps {
     open: boolean
     onOpenChange: (open: boolean) => void
     student: CalculatedStudentGrade | null
-    getStudentRecords: (studentId: string, year: string, term: number) => AttendanceRecord[]
-    selectedYear: string
-    selectedTerm: number
+    records: AttendanceRecord[]
     recordToDelete: string | null
     onDeleteClick: (id: string) => void
     onDeleteConfirm: (id: string) => void
@@ -29,20 +27,17 @@ export function AttendanceHistoryDialog({
     open,
     onOpenChange,
     student,
-    getStudentRecords,
-    selectedYear,
-    selectedTerm,
+    records,
     recordToDelete,
     onDeleteClick,
     onDeleteConfirm,
     t,
 }: AttendanceHistoryDialogProps) {
     const studentRecords = useMemo(() => {
-        if (!student) return []
-        return getStudentRecords(student.id, selectedYear, selectedTerm).sort(
+        return [...records].sort(
             (a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
         )
-    }, [student, getStudentRecords, selectedYear, selectedTerm])
+    }, [records])
 
     return (
         <Dialog open={open} onOpenChange={onOpenChange}>
@@ -67,12 +62,12 @@ export function AttendanceHistoryDialog({
                             >
                                 <div className="flex items-center gap-3">
                                     <div className={`p-2 rounded-full ${record.type === 'absence'
-                                            ? 'bg-red-100 dark:bg-red-950'
-                                            : 'bg-orange-100 dark:bg-orange-950'
+                                        ? 'bg-red-100 dark:bg-red-950'
+                                        : 'bg-orange-100 dark:bg-orange-950'
                                         }`}>
                                         <Clock className={`h-4 w-4 ${record.type === 'absence'
-                                                ? 'text-red-600 dark:text-red-400'
-                                                : 'text-orange-600 dark:text-orange-400'
+                                            ? 'text-red-600 dark:text-red-400'
+                                            : 'text-orange-600 dark:text-orange-400'
                                             }`} />
                                     </div>
                                     <div>
