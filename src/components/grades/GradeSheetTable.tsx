@@ -187,6 +187,16 @@ export function GradeSheetTable({ classId: selectedClassId, term: selectedTerm, 
   }
 
 
+  // Compute records for history dialog
+  const historyRecords = useMemo(() => {
+    if (!dialogs.historyDialog.student) return []
+    return getStudentRecords(
+      dialogs.historyDialog.student.id,
+      selectedYear,
+      selectedTerm
+    )
+  }, [dialogs.historyDialog.student, selectedYear, selectedTerm, records])
+
   // --- 7. Render ---
 
   if (classes.length === 0) {
@@ -316,9 +326,7 @@ export function GradeSheetTable({ classId: selectedClassId, term: selectedTerm, 
         open={dialogs.historyDialog.open}
         onOpenChange={(open) => dialogs.setHistoryDialog(prev => ({ ...prev, open }))}
         student={dialogs.historyDialog.student}
-        getStudentRecords={getStudentRecords}
-        selectedYear={selectedYear}
-        selectedTerm={selectedTerm}
+        records={historyRecords}
         // Simplified deletions - pass state or handler if needed, currently reusing local logic
         recordToDelete={dialogs.historyDialog.recordToDelete}
         onDeleteClick={(id) => dialogs.setHistoryDialog(prev => ({ ...prev, recordToDelete: id }))}
