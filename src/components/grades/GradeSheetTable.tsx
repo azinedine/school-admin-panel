@@ -66,94 +66,23 @@ import {
   useMoveStudent,
   useReorderStudents,
   useUpdateGrade,
-  type GradeClass,
 } from "@/features/grades"
+import type {
+  StudentGrade,
+  CalculatedStudentGrade,
+  GradeSheetTableProps,
+  SortField,
+  SortDirection,
+} from "./grade-sheet/types"
+import { FIELD_CONFIG } from "./grade-sheet/constants"
+import {
+  calculateContinuousAssessment,
+  calculateFinalAverage,
+  getRemarksKey,
+  getRowColor,
+} from "./grade-sheet/utils"
 
-// Local StudentGrade type for compatibility
-interface StudentGrade {
-  id: string
-  classId: string
-  lastName: string
-  firstName: string
-  dateOfBirth: string
-  behavior: number
-  applications: number
-  notebook: number
-  assignment: number
-  exam: number
-  specialCase?: string
-}
 
-// Calculated student grade with computed fields
-interface CalculatedStudentGrade extends StudentGrade {
-  lateness: number
-  absences: number
-  activityAverage: number
-  finalAverage: number
-  remarks: string
-}
-
-// Props for GradeSheetTable
-interface GradeSheetTableProps {
-  classId: string | null
-  term: 1 | 2 | 3
-  classes: GradeClass[]
-  onClassSelect: (classId: string) => void
-}
-
-type SortField = keyof CalculatedStudentGrade
-type SortDirection = "asc" | "desc" | null
-
-// Field configuration with min/max values for validation
-const FIELD_CONFIG: Record<string, { min: number; max: number; step: number; labelKey: string }> = {
-  behavior: { min: 0, max: 5, step: 0.5, labelKey: 'pages.grades.table.behavior' },
-  applications: { min: 0, max: 5, step: 0.5, labelKey: 'pages.grades.table.applications' },
-  notebook: { min: 0, max: 5, step: 0.5, labelKey: 'pages.grades.table.notebook' },
-  assignment: { min: 0, max: 20, step: 0.5, labelKey: 'pages.grades.table.assignment' },
-  exam: { min: 0, max: 20, step: 0.5, labelKey: 'pages.grades.table.exam' },
-}
-
-// Calculate continuous assessment from all 5 components
-// Each component contributes 0-5 points for a total of 0-25, scaled to 0-20
-// Components: Behavior, Participation (applications), Notebook, Tardiness (5 - count), Absences (5 - count)
-function calculateContinuousAssessment(
-  behavior: number,       // 0-5 score
-  participation: number,  // 0-5 score (applications)
-  notebook: number,       // 0-5 score
-  tardinessCount: number, // number of tardiness records
-  absenceCount: number    // number of absence records
-): number {
-  // Behavior, Participation, Notebook are direct scores (0-5)
-  const behaviorScore = Math.min(5, Math.max(0, behavior))
-  const participationScore = Math.min(5, Math.max(0, participation))
-  const notebookScore = Math.min(5, Math.max(0, notebook))
-
-  // Tardiness and Absences start at 5, deduct 1 per record (min 0)
-  const tardinessScore = Math.max(0, 5 - tardinessCount)
-  const absenceScore = Math.max(0, 5 - absenceCount)
-
-  // Total out of 25, scaled to 20
-  const total = behaviorScore + participationScore + notebookScore + tardinessScore + absenceScore
-  return Number((total * 20 / 25).toFixed(2))
-}
-
-function calculateFinalAverage(activityAverage: number, assignment: number, exam: number): number {
-  return Number(((activityAverage + assignment + exam) / 3).toFixed(2))
-}
-
-function getRemarksKey(average: number): string {
-  if (average >= 16) return "excellent"
-  if (average >= 14) return "veryGood"
-  if (average >= 12) return "good"
-  if (average >= 10) return "average"
-  return "poor"
-}
-
-function getRowColor(average: number): string {
-  if (average < 10) return "bg-red-50 dark:bg-red-950/20 hover:bg-red-100 dark:hover:bg-red-950/30"
-  if (average < 14) return "bg-yellow-50 dark:bg-yellow-950/20 hover:bg-yellow-100 dark:hover:bg-yellow-950/30"
-  return "bg-green-50 dark:bg-green-950/20 hover:bg-green-100 dark:hover:bg-green-950/30"
-}
 
 // Sortable student row component - extracted to use useSortable hook properly
 interface SortableStudentRowProps {
