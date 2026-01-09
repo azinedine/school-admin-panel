@@ -1,5 +1,8 @@
 import { Card } from '@/components/ui/card'
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs'
+import { Button } from '@/components/ui/button'
+import { Link } from '@tanstack/react-router'
+import { UserCog } from 'lucide-react'
 import { LessonSelector } from '../lesson-selector/index.ts'
 import { LessonPlanEntrySheet } from '../lesson-plan-entry-sheet/index.ts'
 import { useLessonPrepByClass } from './use-lesson-prep-by-class.ts'
@@ -47,11 +50,19 @@ export function LessonPrepByClass() {
     if (classes.length === 0) {
         return (
             <Card className="p-8">
-                <div className="text-center space-y-2">
-                    <p className="text-lg font-medium">No Classes Found</p>
-                    <p className="text-muted-foreground">
-                        Please add your classes in your profile settings to start using the timetable feature.
-                    </p>
+                <div className="text-center space-y-4">
+                    <div className="space-y-2">
+                        <p className="text-lg font-medium">No Classes Found</p>
+                        <p className="text-muted-foreground">
+                            Please add your classes in your profile settings to start using the timetable feature.
+                        </p>
+                    </div>
+                    <Link to="/teacher/profile">
+                        <Button variant="default" size="lg">
+                            <UserCog className="h-5 w-5 ltr:mr-2 rtl:ml-2" />
+                            Go to Profile Settings
+                        </Button>
+                    </Link>
                 </div>
             </Card>
         )
