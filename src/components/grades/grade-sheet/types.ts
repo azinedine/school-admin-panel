@@ -41,6 +41,7 @@ export interface GradeSheetTableProps {
     term: 1 | 2 | 3
     classes: import('@/features/grades').GradeClass[]
     onClassSelect: (classId: string) => void
+    isReadOnly?: boolean
 }
 
 export type SortField = keyof CalculatedStudentGrade
