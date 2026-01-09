@@ -17,6 +17,7 @@ export function useGradeTableState() {
     const [showGroups, setShowGroups] = useState(false)
     const [showSpecialCasesOnly, setShowSpecialCasesOnly] = useState(false)
     const [showAbsencesOnly, setShowAbsencesOnly] = useState(false)
+    const [absenceFilterDate, setAbsenceFilterDate] = useState<Date | undefined>(new Date())
     const [showLatenessOnly, setShowLatenessOnly] = useState(false)
 
     const [editingCell, setEditingCell] = useState<{
@@ -47,6 +48,8 @@ export function useGradeTableState() {
         setShowSpecialCasesOnly,
         showAbsencesOnly,
         setShowAbsencesOnly,
+        absenceFilterDate,
+        setAbsenceFilterDate,
         showLatenessOnly,
         setShowLatenessOnly,
         editingCell,
