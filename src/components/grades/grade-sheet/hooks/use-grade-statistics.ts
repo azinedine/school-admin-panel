@@ -1,15 +1,6 @@
 import { useMemo } from 'react'
-import type { CalculatedStudentGrade } from '../types'
+import type { CalculatedStudentGrade, GradeSheetStatistics } from '../types'
 
-export interface GradeSheetStatistics {
-    classAverage: string
-    total: number
-    passed: number
-    failed: number
-    passRate: string
-    failRate: string
-    specialCaseCount: number
-}
 
 /**
  * Hook to calculate class statistics.
@@ -28,7 +19,9 @@ export function useGradeStatistics(students: CalculatedStudentGrade[]): GradeShe
                 failed: 0,
                 passRate: "0.0",
                 failRate: "0.0",
-                specialCaseCount: 0
+                specialCaseCount: 0,
+                absenceCount: 0,
+                latenessCount: 0
             }
         }
 
@@ -37,6 +30,8 @@ export function useGradeStatistics(students: CalculatedStudentGrade[]): GradeShe
         const passed = students.filter(s => s.finalAverage >= 10).length
         const failed = total - passed
         const specialCaseCount = students.filter(s => !!s.specialCase).length
+        const absenceCount = students.filter(s => (s.absences || 0) > 0).length
+        const latenessCount = students.filter(s => (s.lateness || 0) > 0).length
 
         return {
             classAverage: (sumAverage / total).toFixed(2),
@@ -45,7 +40,9 @@ export function useGradeStatistics(students: CalculatedStudentGrade[]): GradeShe
             failed,
             passRate: ((passed / total) * 100).toFixed(1),
             failRate: ((failed / total) * 100).toFixed(1),
-            specialCaseCount
+            specialCaseCount,
+            absenceCount,
+            latenessCount
         }
     }, [students])
 }
