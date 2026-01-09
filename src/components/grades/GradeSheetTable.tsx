@@ -208,6 +208,29 @@ export function GradeSheetTable({ classId: selectedClassId, term: selectedTerm, 
     )
   }
 
+  // Guard: If no class is selected, show a prompt or empty state, but still show the class selector
+  if (!selectedClassId) {
+    return (
+      <div className="flex flex-col gap-4" dir={isRTL ? 'rtl' : 'ltr'}>
+        <div className="relative">
+          <div className="pointer-events-none absolute left-0 top-0 bottom-0 w-4 bg-gradient-to-r from-background to-transparent z-10" />
+          <div className="pointer-events-none absolute right-0 top-0 bottom-0 w-4 bg-gradient-to-l from-background to-transparent z-10" />
+          <ClassSelector
+            classes={classes}
+            selectedClassId={selectedClassId}
+            onClassSelect={handleClassSelect}
+            getClassStudentCount={getClassStudentCount}
+            t={t}
+          />
+        </div>
+        <div className="flex flex-col items-center justify-center py-16 px-4 border rounded-md border-dashed">
+          <p className="text-lg text-muted-foreground font-medium">{t('pages.grades.selectClass.title')}</p>
+          <p className="text-sm text-muted-foreground mt-1">{t('pages.grades.selectClass.description')}</p>
+        </div>
+      </div>
+    )
+  }
+
   return (
     <div className="flex flex-col gap-4" dir={isRTL ? 'rtl' : 'ltr'}>
       {/* Class Navigation */}
