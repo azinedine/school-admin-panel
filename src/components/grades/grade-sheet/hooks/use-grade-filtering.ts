@@ -8,6 +8,8 @@ interface UseGradeFilteringProps {
     sortDirection: SortDirection
     showGroups: boolean
     showSpecialCasesOnly: boolean
+    showAbsencesOnly: boolean
+    showLatenessOnly: boolean
 }
 
 /**
@@ -23,8 +25,9 @@ export function useGradeFiltering({
     searchQuery,
     sortField,
     sortDirection,
-    showGroups,
-    showSpecialCasesOnly
+    showSpecialCasesOnly,
+    showAbsencesOnly,
+    showLatenessOnly
 }: UseGradeFilteringProps) {
 
     const processedStudents = useMemo(() => {
@@ -46,7 +49,17 @@ export function useGradeFiltering({
             result = result.filter((s) => !!s.specialCase)
         }
 
-        // 3. Sorting
+        // 3. Absences Filter
+        if (showAbsencesOnly) {
+            result = result.filter((s) => (s.absences || 0) > 0)
+        }
+
+        // 4. Lateness Filter
+        if (showLatenessOnly) {
+            result = result.filter((s) => (s.lateness || 0) > 0)
+        }
+
+        // 5. Sorting
         result.sort((a, b) => {
             let aValue = a[sortField]
             let bValue = b[sortField]
@@ -61,7 +74,7 @@ export function useGradeFiltering({
         })
 
         return result
-    }, [students, searchQuery, sortField, sortDirection, showSpecialCasesOnly])
+    }, [students, searchQuery, sortField, sortDirection, showSpecialCasesOnly, showAbsencesOnly, showLatenessOnly])
 
     // Group Logic (Memoized helper for group splitting)
     // Note: We don't change the processedStudents structure for groups, 
