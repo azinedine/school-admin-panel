@@ -23,7 +23,8 @@ export function useGradeDialogs() {
     const [historyDialog, setHistoryDialog] = useState<{
         open: boolean
         student: CalculatedStudentGrade | null
-    }>({ open: false, student: null })
+        recordToDelete: string | null
+    }>({ open: false, student: null, recordToDelete: null })
 
     // Move Student
     const [moveStudentDialog, setMoveStudentDialog] = useState<{
@@ -49,7 +50,7 @@ export function useGradeDialogs() {
     }, [])
 
     const openHistory = useCallback((student: CalculatedStudentGrade) => {
-        setHistoryDialog({ open: true, student })
+        setHistoryDialog({ open: true, student, recordToDelete: null })
     }, [])
 
     const openMove = useCallback((student: CalculatedStudentGrade) => {
