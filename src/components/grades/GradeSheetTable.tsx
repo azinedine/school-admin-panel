@@ -1,5 +1,5 @@
 import { useMemo, useCallback, useState } from "react"
-import { ArrowUpDown, Search, Users, TrendingUp, CheckCircle, XCircle, UserMinus, Clock, History, Trash2, GripVertical, Star, MoreVertical, Move, UserX, UserPlus, Info } from "lucide-react"
+import { ArrowUpDown, Search, Users, TrendingUp, CheckCircle, XCircle, UserMinus, Clock, History, GripVertical, Star, MoreVertical, Move, UserX, UserPlus, Info } from "lucide-react"
 import { useTranslation } from "react-i18next"
 import {
   DndContext,
@@ -29,19 +29,11 @@ import {
   TableRow,
 } from "@/components/ui/table"
 import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogFooter,
-} from "@/components/ui/dialog"
-import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
-import { Label } from "@/components/ui/label"
 import {
   Tooltip,
   TooltipContent,
@@ -81,6 +73,13 @@ import {
   getRemarksKey,
   getRowColor,
 } from "./grade-sheet/utils"
+import {
+  AttendanceDialog,
+  AttendanceHistoryDialog,
+  MoveStudentDialog,
+  RemoveStudentDialog,
+  AddStudentDialog,
+} from "./grade-sheet/dialogs"
 
 
 
@@ -724,13 +723,6 @@ export function GradeSheetTable({ classId: selectedClassId, term: selectedTerm, 
     }
   }, [updateStudentMutation, t])
 
-  const studentRecords = useMemo(() => {
-    if (!historyDialog.student) return []
-    return getStudentRecords(historyDialog.student.id, selectedYear, selectedTerm).sort(
-      (a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
-    )
-  }, [historyDialog.student, getStudentRecords, records, selectedYear, selectedTerm])
-
   const filteredAndSortedStudents = useMemo(() => {
     let result = [...calculatedStudents]
 
@@ -1229,298 +1221,68 @@ export function GradeSheetTable({ classId: selectedClassId, term: selectedTerm, 
       </div>
 
       {/* Attendance Dialog */}
-      <Dialog open={attendanceDialog.open} onOpenChange={(open) => setAttendanceDialog(prev => ({ ...prev, open }))}>
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle>
-              {attendanceDialog.type === 'absence'
-                ? t('pages.grades.attendance.recordAbsence')
-                : t('pages.grades.attendance.recordTardiness')}
-            </DialogTitle>
-          </DialogHeader>
-
-          {attendanceDialog.student && (
-            <div className="space-y-4 py-4">
-              <p className="font-medium">
-                {attendanceDialog.student.firstName} {attendanceDialog.student.lastName}
-              </p>
-
-              <div className="grid grid-cols-2 gap-4">
-                <div className="space-y-2">
-                  <Label htmlFor="date">{t('pages.grades.attendance.date')}</Label>
-                  <Input
-                    id="date"
-                    type="date"
-                    value={attendanceDate}
-                    onChange={(e) => setAttendanceDate(e.target.value)}
-                  />
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="time">{t('pages.grades.attendance.time')}</Label>
-                  <Input
-                    id="time"
-                    type="time"
-                    value={attendanceTime}
-                    onChange={(e) => setAttendanceTime(e.target.value)}
-                  />
-                </div>
-              </div>
-            </div>
-          )}
-
-          <DialogFooter>
-            <Button variant="outline" onClick={() => setAttendanceDialog({ open: false, student: null, type: 'absence' })}>
-              {t('common.cancel')}
-            </Button>
-            <Button onClick={handleRecordAttendance}>
-              {t('pages.grades.attendance.confirm')}
-            </Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
+      <AttendanceDialog
+        open={attendanceDialog.open}
+        onOpenChange={(open) => setAttendanceDialog(prev => ({ ...prev, open }))}
+        student={attendanceDialog.student}
+        type={attendanceDialog.type}
+        date={attendanceDate}
+        time={attendanceTime}
+        onDateChange={setAttendanceDate}
+        onTimeChange={setAttendanceTime}
+        onConfirm={handleRecordAttendance}
+        t={t}
+      />
 
       {/* History Dialog */}
-      <Dialog open={historyDialog.open} onOpenChange={(open) => setHistoryDialog(prev => ({ ...prev, open }))}>
-        <DialogContent className="max-w-md">
-          <DialogHeader>
-            <DialogTitle>
-              {t('pages.grades.attendance.history')}
-              {historyDialog.student && ` - ${historyDialog.student.firstName} ${historyDialog.student.lastName}`}
-            </DialogTitle>
-          </DialogHeader>
-
-          <div className="space-y-2 max-h-[300px] overflow-y-auto py-4">
-            {studentRecords.length === 0 ? (
-              <p className="text-muted-foreground text-center py-4">
-                {t('pages.grades.attendance.noRecords')}
-              </p>
-            ) : (
-              studentRecords.map((record) => (
-                <div
-                  key={record.id}
-                  className="flex items-center justify-between p-3 rounded-lg border bg-muted/30"
-                >
-                  <div className="flex items-center gap-3">
-                    {record.type === 'absence' ? (
-                      <UserMinus className="h-4 w-4 text-red-500" />
-                    ) : (
-                      <Clock className="h-4 w-4 text-orange-500" />
-                    )}
-                    <div>
-                      <p className="font-medium text-sm">
-                        {t(`pages.grades.attendance.${record.type}`)}
-                      </p>
-                      <p className="text-xs text-muted-foreground">
-                        {record.date} • {record.time}
-                      </p>
-                    </div>
-                  </div>
-
-                  {recordToDelete === record.id ? (
-                    <div className="flex items-center gap-2">
-                      <Button
-                        variant="destructive"
-                        size="sm"
-                        onClick={() => handleDeleteRecord(record.id)}
-                      >
-                        {t('pages.grades.attendance.confirm')}
-                      </Button>
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        onClick={() => setRecordToDelete(null)}
-                      >
-                        {t('common.cancel')}
-                      </Button>
-                    </div>
-                  ) : (
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      className="text-destructive hover:text-destructive"
-                      onClick={() => setRecordToDelete(record.id)}
-                    >
-                      <Trash2 className="h-4 w-4" />
-                    </Button>
-                  )}
-                </div>
-              ))
-            )}
-          </div>
-
-          <DialogFooter>
-            <Button variant="outline" onClick={() => setHistoryDialog({ open: false, student: null })}>
-              {t('common.cancel')}
-            </Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
+      <AttendanceHistoryDialog
+        open={historyDialog.open}
+        onOpenChange={(open) => setHistoryDialog(prev => ({ ...prev, open }))}
+        student={historyDialog.student}
+        getStudentRecords={getStudentRecords}
+        selectedYear={selectedYear}
+        selectedTerm={selectedTerm}
+        recordToDelete={recordToDelete}
+        onDeleteClick={setRecordToDelete}
+        onDeleteConfirm={handleDeleteRecord}
+        t={t}
+      />
 
       {/* Move Student Dialog */}
-      <Dialog open={moveStudentDialog.open} onOpenChange={(open) => setMoveStudentDialog({ open, student: open ? moveStudentDialog.student : null })}>
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle>{t('pages.grades.studentManagement.moveToClass')}</DialogTitle>
-          </DialogHeader>
-
-          {moveStudentDialog.student && (
-            <div className="space-y-4 py-4">
-              <p className="text-sm text-muted-foreground">
-                {t('pages.grades.studentManagement.moveStudentDescription', {
-                  name: `${moveStudentDialog.student.firstName} ${moveStudentDialog.student.lastName}`
-                })}
-              </p>
-
-              <div className="space-y-2">
-                <Label htmlFor="targetClass">{t('pages.grades.studentManagement.selectClass')}</Label>
-                <div className="grid gap-2">
-                  {classes.filter(c => c.id !== moveStudentDialog.student?.classId).map((cls) => (
-                    <Button
-                      key={cls.id}
-                      variant="outline"
-                      className="justify-start"
-                      onClick={() => handleMoveStudent(moveStudentDialog.student!.id, cls.id)}
-                    >
-                      <Move className="h-4 w-4 ltr:mr-2 rtl:ml-2" />
-                      {cls.name}
-                    </Button>
-                  ))}
-                  {classes.filter(c => c.id !== moveStudentDialog.student?.classId).length === 0 && (
-                    <p className="text-sm text-muted-foreground text-center py-4">
-                      {t('pages.grades.studentManagement.noOtherClasses')}
-                    </p>
-                  )}
-                </div>
-              </div>
-            </div>
-          )}
-
-          <DialogFooter>
-            <Button variant="outline" onClick={() => setMoveStudentDialog({ open: false, student: null })}>
-              {t('common.cancel')}
-            </Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
+      <MoveStudentDialog
+        open={moveStudentDialog.open}
+        onOpenChange={(open) => setMoveStudentDialog({ open, student: open ? moveStudentDialog.student : null })}
+        student={moveStudentDialog.student}
+        classes={classes}
+        onMove={handleMoveStudent}
+        t={t}
+      />
 
       {/* Remove Student Dialog */}
-      <Dialog open={removeStudentDialog.open} onOpenChange={(open) => setRemoveStudentDialog({ open, student: open ? removeStudentDialog.student : null })}>
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle>{t('pages.grades.studentManagement.removeFromClass')}</DialogTitle>
-          </DialogHeader>
-
-          {removeStudentDialog.student && (
-            <div className="space-y-4 py-4">
-              <p className="text-sm text-muted-foreground">
-                {t('pages.grades.studentManagement.removeStudentDescription', {
-                  name: `${removeStudentDialog.student.firstName} ${removeStudentDialog.student.lastName}`
-                })}
-              </p>
-              <p className="text-sm font-medium text-destructive">
-                {t('pages.grades.studentManagement.removeWarning')}
-              </p>
-            </div>
-          )}
-
-          <DialogFooter>
-            <Button variant="outline" onClick={() => setRemoveStudentDialog({ open: false, student: null })}>
-              {t('common.cancel')}
-            </Button>
-            <Button
-              variant="destructive"
-              onClick={() => removeStudentDialog.student && handleRemoveStudent(removeStudentDialog.student.id)}
-            >
-              {t('pages.grades.studentManagement.confirmRemove')}
-            </Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
+      <RemoveStudentDialog
+        open={removeStudentDialog.open}
+        onOpenChange={(open) => setRemoveStudentDialog({ open, student: open ? removeStudentDialog.student : null })}
+        student={removeStudentDialog.student}
+        onConfirm={handleRemoveStudent}
+        t={t}
+      />
 
       {/* Add Student Dialog */}
-      <Dialog open={addStudentDialog} onOpenChange={setAddStudentDialog}>
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle>{t('pages.grades.addStudent.title')}</DialogTitle>
-          </DialogHeader>
-
-          <div className="space-y-4 py-4">
-            <div className="grid gap-4">
-              <div className="grid gap-2">
-                <Label htmlFor="studentId">{t('pages.grades.addStudent.id')}</Label>
-                <Input
-                  id="studentId"
-                  placeholder={t('pages.grades.addStudent.idPlaceholder')}
-                  value={newStudent.id}
-                  onChange={(e) => setNewStudent({ ...newStudent, id: e.target.value })}
-                />
-                <p className="text-xs text-muted-foreground">
-                  {t('pages.grades.addStudent.idOptional')}
-                </p>
-              </div>
-
-              <div className="grid gap-2">
-                <Label htmlFor="lastName">{t('pages.grades.addStudent.lastName')} *</Label>
-                <Input
-                  id="lastName"
-                  placeholder={t('pages.grades.addStudent.lastNamePlaceholder')}
-                  value={newStudent.lastName}
-                  onChange={(e) => setNewStudent({ ...newStudent, lastName: e.target.value })}
-                  required
-                />
-              </div>
-
-              <div className="grid gap-2">
-                <Label htmlFor="firstName">{t('pages.grades.addStudent.firstName')} *</Label>
-                <Input
-                  id="firstName"
-                  placeholder={t('pages.grades.addStudent.firstNamePlaceholder')}
-                  value={newStudent.firstName}
-                  onChange={(e) => setNewStudent({ ...newStudent, firstName: e.target.value })}
-                  required
-                />
-              </div>
-
-              <div className="grid gap-2">
-                <Label htmlFor="dateOfBirth">{t('pages.grades.addStudent.dateOfBirth')}</Label>
-                <Input
-                  id="dateOfBirth"
-                  type="date"
-                  value={newStudent.dateOfBirth}
-                  onChange={(e) => setNewStudent({ ...newStudent, dateOfBirth: e.target.value })}
-                />
-              </div>
-            </div>
-          </div>
-
-          <DialogFooter>
-            <Button variant="outline" onClick={() => {
-              setAddStudentDialog(false)
-              setNewStudent({
-                id: '',
-                lastName: '',
-                firstName: '',
-                dateOfBirth: '2013-01-01',
-              })
-            }}>
-              {t('common.cancel')}
-            </Button>
-            <Button onClick={handleAddStudent} disabled={!newStudent.lastName.trim() || !newStudent.firstName.trim()}>
-              {t('pages.grades.addStudent.add')}
-            </Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
+      <AddStudentDialog
+        open={addStudentDialog}
+        onOpenChange={setAddStudentDialog}
+        newStudent={newStudent}
+        onStudentChange={setNewStudent}
+        onAdd={handleAddStudent}
+        t={t}
+      />
 
       {/* Student Info Sidebar */}
       <Sheet
         open={studentInfoSidebar.open}
         onOpenChange={(open) => setStudentInfoSidebar({ open, student: open ? studentInfoSidebar.student : null })}
       >
-        <SheetContent
-          side={isRTL ? 'left' : 'right'}
-          className="w-full sm:max-w-md overflow-y-auto"
-        >
+        <SheetContent side={isRTL ? 'left' : 'right'} className="w-full sm:max-w-md overflow-y-auto">
           {studentInfoSidebar.student && (
             <>
               <SheetHeader>
@@ -1648,8 +1410,6 @@ export function GradeSheetTable({ classId: selectedClassId, term: selectedTerm, 
           )}
         </SheetContent>
       </Sheet>
-
-      {/* End of Scrollable Content Area */}
     </div>
   )
 }
