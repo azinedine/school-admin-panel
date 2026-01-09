@@ -38,6 +38,7 @@ interface SortableStudentRowProps {
     onOpenAttendanceDialog: (student: CalculatedStudentGrade, type: 'absence' | 'tardiness') => void
     onOpenHistoryDialog: (student: CalculatedStudentGrade) => void
     t: (key: string, opts?: Record<string, unknown>) => string
+    isReadOnly?: boolean
 }
 
 export function SortableStudentRow({
@@ -56,6 +57,7 @@ export function SortableStudentRow({
     onOpenAttendanceDialog,
     onOpenHistoryDialog,
     t,
+    isReadOnly = false,
 }: SortableStudentRowProps) {
     const {
         attributes,
@@ -115,17 +117,21 @@ export function SortableStudentRow({
                             <Info className="h-4 w-4 ltr:mr-2 rtl:ml-2" />
                             {t('pages.grades.studentManagement.viewInfo')}
                         </DropdownMenuItem>
-                        <DropdownMenuItem onClick={() => onMoveStudent(student)}>
-                            <Move className="h-4 w-4 ltr:mr-2 rtl:ml-2" />
-                            {t('pages.grades.studentManagement.moveToClass')}
-                        </DropdownMenuItem>
-                        <DropdownMenuItem
-                            onClick={() => onRemoveStudent(student)}
-                            className="text-destructive focus:text-destructive"
-                        >
-                            <UserX className="h-4 w-4 ltr:mr-2 rtl:ml-2" />
-                            {t('pages.grades.studentManagement.removeFromClass')}
-                        </DropdownMenuItem>
+                        {!isReadOnly && (
+                            <>
+                                <DropdownMenuItem onClick={() => onMoveStudent(student)}>
+                                    <Move className="h-4 w-4 ltr:mr-2 rtl:ml-2" />
+                                    {t('pages.grades.studentManagement.moveToClass')}
+                                </DropdownMenuItem>
+                                <DropdownMenuItem
+                                    onClick={() => onRemoveStudent(student)}
+                                    className="text-destructive focus:text-destructive"
+                                >
+                                    <UserX className="h-4 w-4 ltr:mr-2 rtl:ml-2" />
+                                    {t('pages.grades.studentManagement.removeFromClass')}
+                                </DropdownMenuItem>
+                            </>
+                        )}
                     </DropdownMenuContent>
                 </DropdownMenu>
             </TableCell>
@@ -196,55 +202,63 @@ export function SortableStudentRow({
                             </Tooltip>
                         </TooltipProvider>
                         <DropdownMenuContent align="start">
-                            <DropdownMenuItem
-                                onClick={() => updateStudent(student.id, { specialCase: 'longAbsence' })}
-                                className={student.specialCase === 'longAbsence' ? 'bg-red-50 dark:bg-red-950' : ''}
-                            >
-                                <span className="w-2 h-2 rounded-full bg-red-500 ltr:mr-2 rtl:ml-2" />
-                                {t('pages.grades.specialCase.longAbsence')}
-                            </DropdownMenuItem>
-                            <DropdownMenuItem
-                                onClick={() => updateStudent(student.id, { specialCase: 'exemption' })}
-                                className={student.specialCase === 'exemption' ? 'bg-blue-50 dark:bg-blue-950' : ''}
-                            >
-                                <span className="w-2 h-2 rounded-full bg-blue-500 ltr:mr-2 rtl:ml-2" />
-                                {t('pages.grades.specialCase.exemption')}
-                            </DropdownMenuItem>
-                            <DropdownMenuItem
-                                onClick={() => updateStudent(student.id, { specialCase: 'medical' })}
-                                className={student.specialCase === 'medical' ? 'bg-orange-50 dark:bg-orange-950' : ''}
-                            >
-                                <span className="w-2 h-2 rounded-full bg-orange-500 ltr:mr-2 rtl:ml-2" />
-                                {t('pages.grades.specialCase.medical')}
-                            </DropdownMenuItem>
-                            <DropdownMenuItem
-                                onClick={() => updateStudent(student.id, { specialCase: 'transfer' })}
-                                className={student.specialCase === 'transfer' ? 'bg-green-50 dark:bg-green-950' : ''}
-                            >
-                                <span className="w-2 h-2 rounded-full bg-green-500 ltr:mr-2 rtl:ml-2" />
-                                {t('pages.grades.specialCase.transfer')}
-                            </DropdownMenuItem>
-                            <DropdownMenuItem
-                                onClick={() => {
-                                    const customName = prompt(t('pages.grades.specialCase.enterCustom'))
-                                    if (customName && customName.trim()) {
-                                        updateStudent(student.id, { specialCase: customName.trim() })
-                                    }
-                                }}
-                                className={hasSpecialCase && !['longAbsence', 'exemption', 'medical', 'transfer'].includes(student.specialCase || '') ? 'bg-purple-50 dark:bg-purple-950' : ''}
-                            >
-                                <span className="w-2 h-2 rounded-full bg-purple-500 ltr:mr-2 rtl:ml-2" />
-                                {t('pages.grades.specialCase.custom')}
-                            </DropdownMenuItem>
-                            {hasSpecialCase && (
+                            {!isReadOnly ? (
                                 <>
                                     <DropdownMenuItem
-                                        onClick={() => updateStudent(student.id, { specialCase: undefined })}
-                                        className="text-muted-foreground"
+                                        onClick={() => updateStudent(student.id, { specialCase: 'longAbsence' })}
+                                        className={student.specialCase === 'longAbsence' ? 'bg-red-50 dark:bg-red-950' : ''}
                                     >
-                                        {t('pages.grades.specialCase.clear')}
+                                        <span className="w-2 h-2 rounded-full bg-red-500 ltr:mr-2 rtl:ml-2" />
+                                        {t('pages.grades.specialCase.longAbsence')}
                                     </DropdownMenuItem>
+                                    <DropdownMenuItem
+                                        onClick={() => updateStudent(student.id, { specialCase: 'exemption' })}
+                                        className={student.specialCase === 'exemption' ? 'bg-blue-50 dark:bg-blue-950' : ''}
+                                    >
+                                        <span className="w-2 h-2 rounded-full bg-blue-500 ltr:mr-2 rtl:ml-2" />
+                                        {t('pages.grades.specialCase.exemption')}
+                                    </DropdownMenuItem>
+                                    <DropdownMenuItem
+                                        onClick={() => updateStudent(student.id, { specialCase: 'medical' })}
+                                        className={student.specialCase === 'medical' ? 'bg-orange-50 dark:bg-orange-950' : ''}
+                                    >
+                                        <span className="w-2 h-2 rounded-full bg-orange-500 ltr:mr-2 rtl:ml-2" />
+                                        {t('pages.grades.specialCase.medical')}
+                                    </DropdownMenuItem>
+                                    <DropdownMenuItem
+                                        onClick={() => updateStudent(student.id, { specialCase: 'transfer' })}
+                                        className={student.specialCase === 'transfer' ? 'bg-green-50 dark:bg-green-950' : ''}
+                                    >
+                                        <span className="w-2 h-2 rounded-full bg-green-500 ltr:mr-2 rtl:ml-2" />
+                                        {t('pages.grades.specialCase.transfer')}
+                                    </DropdownMenuItem>
+                                    <DropdownMenuItem
+                                        onClick={() => {
+                                            const customName = prompt(t('pages.grades.specialCase.enterCustom'))
+                                            if (customName && customName.trim()) {
+                                                updateStudent(student.id, { specialCase: customName.trim() })
+                                            }
+                                        }}
+                                        className={hasSpecialCase && !['longAbsence', 'exemption', 'medical', 'transfer'].includes(student.specialCase || '') ? 'bg-purple-50 dark:bg-purple-950' : ''}
+                                    >
+                                        <span className="w-2 h-2 rounded-full bg-purple-500 ltr:mr-2 rtl:ml-2" />
+                                        {t('pages.grades.specialCase.custom')}
+                                    </DropdownMenuItem>
+                                    {hasSpecialCase && (
+                                        <>
+                                            <DropdownMenuItem
+                                                onClick={() => updateStudent(student.id, { specialCase: undefined })}
+                                                className="text-muted-foreground"
+                                            >
+                                                {t('pages.grades.specialCase.clear')}
+                                            </DropdownMenuItem>
+                                        </>
+                                    )}
                                 </>
+                            ) : (
+                                <DropdownMenuItem disabled>
+                                    {t('common.readOnly', { defaultValue: 'Read Only' })}
+                                </DropdownMenuItem>
                             )}
                         </DropdownMenuContent>
                     </DropdownMenu>
@@ -259,6 +273,7 @@ export function SortableStudentRow({
                 setEditingCell={setEditingCell}
                 handleCellEdit={handleCellEdit}
                 t={t}
+                isDisabled={isReadOnly}
             />
             <EditableCell
                 student={student}
@@ -268,6 +283,7 @@ export function SortableStudentRow({
                 setEditingCell={setEditingCell}
                 handleCellEdit={handleCellEdit}
                 t={t}
+                isDisabled={isReadOnly}
             />
             <EditableCell
                 student={student}
@@ -277,6 +293,7 @@ export function SortableStudentRow({
                 setEditingCell={setEditingCell}
                 handleCellEdit={handleCellEdit}
                 t={t}
+                isDisabled={isReadOnly}
             />
             <AttendanceCell
                 student={student}
@@ -285,6 +302,7 @@ export function SortableStudentRow({
                 onOpenAttendanceDialog={onOpenAttendanceDialog}
                 onOpenHistoryDialog={onOpenHistoryDialog}
                 t={t}
+                isDisabled={isReadOnly}
             />
             <AttendanceCell
                 student={student}
@@ -293,6 +311,7 @@ export function SortableStudentRow({
                 onOpenAttendanceDialog={onOpenAttendanceDialog}
                 onOpenHistoryDialog={onOpenHistoryDialog}
                 t={t}
+                isDisabled={isReadOnly}
             />
             <TableCell
                 className="text-center font-semibold bg-primary/5 dark:bg-primary/10 text-primary cursor-not-allowed"
@@ -308,6 +327,7 @@ export function SortableStudentRow({
                 setEditingCell={setEditingCell}
                 handleCellEdit={handleCellEdit}
                 t={t}
+                isDisabled={isReadOnly}
             />
             <EditableCell
                 student={student}
@@ -317,6 +337,7 @@ export function SortableStudentRow({
                 setEditingCell={setEditingCell}
                 handleCellEdit={handleCellEdit}
                 t={t}
+                isDisabled={isReadOnly}
             />
             <TableCell className="text-center font-bold text-lg bg-primary/10 dark:bg-primary/20 text-primary">{student.finalAverage.toFixed(2)}</TableCell>
             <TableCell className="font-semibold whitespace-nowrap truncate max-w-[140px]">{t(`pages.grades.remarks.${student.remarks}`)}</TableCell>
