@@ -5,7 +5,6 @@ import { LessonPrepByClass } from '../lesson-prep-by-class/index.ts'
 import { usePrepStore } from '@/store/prep-store'
 import { TimetableLoading } from './TimetableLoading'
 import { TimetableActions } from './TimetableActions'
-import { TimetableSetup } from './TimetableSetup'
 
 /**
  * TimetableTab - Timetable and lesson planning
@@ -13,7 +12,6 @@ import { TimetableSetup } from './TimetableSetup'
  */
 export const TimetableTab = memo(function TimetableTab() {
     const {
-        isTimetableInitialized,
         getAllTimetableSlots,
         initializeTimetable,
         setTimetable,
@@ -36,35 +34,27 @@ export const TimetableTab = memo(function TimetableTab() {
         return <TimetableLoading />
     }
 
-    // If no timetable, show timetable setup
-    if (!isTimetableInitialized && (!remoteTimetable || remoteTimetable.length === 0)) {
-        return (
-            <TimetableSetup
-                open={timetableDialogOpen}
-                onOpenChange={setTimetableDialogOpen}
-                onSave={async (entries) => {
-                    await updateTimetableMutation.mutateAsync(entries)
-                    initializeTimetable(entries)
-                }}
-            />
-        )
-    }
+    // Show lesson prep organized by class with optional edit button if timetable exists
+    const hasTimetable = remoteTimetable && remoteTimetable.length > 0
 
-    // Show lesson prep organized by class
     return (
         <div className="space-y-6">
-            <TimetableActions onEditClick={() => setTimetableDialogOpen(true)} />
+            {hasTimetable && <TimetableActions onEditClick={() => setTimetableDialogOpen(true)} />}
 
             <LessonPrepByClass />
 
-            {/* Edit Timetable Dialog */}
+            {/* Timetable Setup/Edit Dialog */}
             <TimetableSetupDialog
                 open={timetableDialogOpen}
                 onOpenChange={setTimetableDialogOpen}
-                existingTimetable={getAllTimetableSlots()}
+                existingTimetable={hasTimetable ? getAllTimetableSlots() : undefined}
                 onSave={async (entries) => {
                     await updateTimetableMutation.mutateAsync(entries)
-                    setTimetable(entries)
+                    if (hasTimetable) {
+                        setTimetable(entries)
+                    } else {
+                        initializeTimetable(entries)
+                    }
                     setTimetableDialogOpen(false)
                 }}
             />
