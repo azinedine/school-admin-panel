@@ -405,10 +405,13 @@ export default function GradesPage() {
                 <DropdownMenuItem
                   key={cls.id}
                   className={`flex justify-between gap-4 ${selectedClassId === cls.id ? "bg-accent" : ""}`}
+                  onClick={() => {
+                    setSelectedClassId(cls.id)
+                    window.history.replaceState(null, '', `${window.location.pathname}?class=${cls.id}`)
+                  }}
                 >
                   <span
                     className="flex-1 cursor-pointer flex items-center gap-2"
-                    onClick={() => setSelectedClassId(cls.id)}
                   >
                     {cls.name}
                     {cls.grade_level && validLevels.includes(cls.grade_level) ? (
