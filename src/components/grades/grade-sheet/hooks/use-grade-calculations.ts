@@ -1,73 +1,75 @@
 import { useMemo } from 'react'
-import { useAttendanceStore } from '@/store/attendance-store'
 import type { StudentGrade, CalculatedStudentGrade } from '../types'
-import {
-    calculateContinuousAssessment,
-    calculateFinalAverage,
-    getRemarksKey,
-} from '../utils'
+import type { GradeStudent } from '@/features/grades'
+import { calculateFinalAverage, getRemarksKey, calculateContinuousAssessment } from '../utils'
 
 /**
- * Hook for calculating student grades with attendance data
+ * Hook to normalize and calculate student grades.
+ *
+ * Responsibility:
+ * - Transforms raw API data into `StudentGrade` objects (normalization).
+ * - Calculates derived fields like `activityAverage`, `finalAverage`, and `remarks`.
+ * - Ensures all numeric fields are valid numbers.
  */
 export function useGradeCalculations(
-    students: StudentGrade[],
-    selectedClassId: string | null,
-    selectedYear: string,
-    selectedTerm: number
+    studentsRaw: GradeStudent[],
+    classId: string,
+    getStudentAbsenceCount?: (id: string, year: string, term: number) => number,
+    getStudentTardinessCount?: (id: string, year: string, term: number) => number,
+    year?: string,
+    term?: number
 ) {
-    const { getStudentAbsenceCount, getStudentTardinessCount, records } = useAttendanceStore()
+    const students: StudentGrade[] = useMemo(() => {
+        return studentsRaw.map(s => ({
+            id: s.id,
+            classId: classId || '',
+            lastName: s.last_name,
+            firstName: s.first_name,
+            dateOfBirth: s.date_of_birth || '',
+            behavior: Number(s.behavior) || 5, // Default to 5 if missing
+            applications: Number(s.applications) || 5,
+            notebook: Number(s.notebook) || 5,
+            assignment: Number(s.assignment) || 0,
+            exam: Number(s.exam) || 0,
+            specialCase: s.special_case || undefined,
+        }))
+    }, [studentsRaw, classId])
 
-    const calculatedStudents = useMemo((): CalculatedStudentGrade[] => {
-        return students
-            .filter(student => student.classId === selectedClassId)
-            .map(student => {
-                const absenceCount = getStudentAbsenceCount(student.id, selectedYear, selectedTerm)
-                const tardinessCount = getStudentTardinessCount(student.id, selectedYear, selectedTerm)
+    const calculatedStudents: CalculatedStudentGrade[] = useMemo(() => {
+        return students.map(student => {
+            const absences = (getStudentAbsenceCount && year && term)
+                ? getStudentAbsenceCount(student.id, year, term)
+                : 0
+            const lateness = (getStudentTardinessCount && year && term)
+                ? getStudentTardinessCount(student.id, year, term)
+                : 0
 
-                const activityAverage = calculateContinuousAssessment(
-                    student.behavior,
-                    student.applications,
-                    student.notebook,
-                    tardinessCount,
-                    absenceCount
-                )
+            // Calculate Activity Average
+            const activityAverage = calculateContinuousAssessment(
+                student.behavior,
+                student.applications,
+                student.notebook,
+                lateness,
+                absences
+            )
 
-                const finalAverage = calculateFinalAverage(activityAverage, student.assignment, student.exam)
+            // Calculate Final Average using standard formula
+            const finalAverage = calculateFinalAverage(
+                activityAverage,
+                student.assignment,
+                student.exam
+            )
 
-                return {
-                    ...student,
-                    lateness: tardinessCount,
-                    absences: absenceCount,
-                    activityAverage,
-                    finalAverage,
-                    remarks: getRemarksKey(finalAverage)
-                }
-            })
-    }, [students, records, selectedClassId, getStudentAbsenceCount, getStudentTardinessCount, selectedYear, selectedTerm])
-
-    // Calculate class statistics
-    const classStatistics = useMemo(() => {
-        if (calculatedStudents.length === 0) {
             return {
-                classAverage: 0,
-                passRate: 0,
-                totalStudents: 0,
+                ...student,
+                absences,
+                lateness,
+                activityAverage,
+                finalAverage,
+                remarks: getRemarksKey(finalAverage),
             }
-        }
+        })
+    }, [students, getStudentAbsenceCount, getStudentTardinessCount, year, term])
 
-        const total = calculatedStudents.reduce((sum, s) => sum + s.finalAverage, 0)
-        const passCount = calculatedStudents.filter(s => s.finalAverage >= 10).length
-
-        return {
-            classAverage: Number((total / calculatedStudents.length).toFixed(2)),
-            passRate: Number(((passCount / calculatedStudents.length) * 100).toFixed(1)),
-            totalStudents: calculatedStudents.length,
-        }
-    }, [calculatedStudents])
-
-    return {
-        calculatedStudents,
-        classStatistics,
-    }
+    return { students, calculatedStudents }
 }
