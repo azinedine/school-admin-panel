@@ -48,6 +48,7 @@ export const PreparationTab = memo(function PreparationTab() {
         formLanguage,
         setFormLanguage,
         selectedPrep,
+        prepToDelete: _prepToDelete,
         statusFilter,
         setStatusFilter,
         searchQuery,

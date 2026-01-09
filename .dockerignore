@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # Dockerignore for Frontend
 node_modules
 npm-debug.log
@@ -13,3 +14,20 @@ dist
 coverage
 .idea
 *.log
+=======
+node_modules
+npm-debug.log
+.git
+.gitignore
+.env
+.env.local
+.env.*.local
+dist
+coverage
+.vscode
+.idea
+*.log
+.DS_Store
+README.md
+.eslintcache
+>>>>>>> dev
