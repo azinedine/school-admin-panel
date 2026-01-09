@@ -54,6 +54,7 @@ interface EditableCellProps {
     setEditingCell: (cell: { id: string; field: string } | null) => void
     handleCellEdit: (id: string, field: keyof StudentGrade, value: string, keepOpen?: boolean) => void
     t: (key: string, opts?: Record<string, unknown>) => string
+    isDisabled?: boolean
 }
 
 export function EditableCell({
@@ -64,6 +65,7 @@ export function EditableCell({
     setEditingCell,
     handleCellEdit,
     t,
+    isDisabled = false,
 }: EditableCellProps) {
     const isEditing = editingCell?.id === student.id && editingCell?.field === field
     const config = FIELD_CONFIG[field] || { min: 0, max: 20, step: 0.5, labelKey: field }
@@ -99,8 +101,8 @@ export function EditableCell({
             <Tooltip>
                 <TooltipTrigger asChild>
                     <TableCell
-                        className="text-center cursor-pointer hover:bg-muted/50"
-                        onClick={() => setEditingCell({ id: student.id, field })}
+                        className={`text-center ${!isDisabled ? 'cursor-pointer hover:bg-muted/50' : ''}`}
+                        onClick={() => !isDisabled && setEditingCell({ id: student.id, field })}
                     >
                         {isEditing ? (
                             <Input
@@ -158,6 +160,7 @@ interface AttendanceCellProps {
     onOpenAttendanceDialog: (student: CalculatedStudentGrade, type: 'absence' | 'tardiness') => void
     onOpenHistoryDialog: (student: CalculatedStudentGrade) => void
     t: (key: string) => string
+    isDisabled?: boolean
 }
 
 export function AttendanceCell({
@@ -167,6 +170,7 @@ export function AttendanceCell({
     onOpenAttendanceDialog,
     onOpenHistoryDialog,
     t,
+    isDisabled = false,
 }: AttendanceCellProps) {
     return (
         <TableCell className="text-center">
@@ -181,10 +185,12 @@ export function AttendanceCell({
                     </Button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="center">
-                    <DropdownMenuItem onClick={() => onOpenAttendanceDialog(student, type === 'absences' ? 'absence' : 'tardiness')}>
-                        {type === 'absences' ? <UserMinus className="h-4 w-4 ltr:mr-2 rtl:ml-2" /> : <Clock className="h-4 w-4 ltr:mr-2 rtl:ml-2" />}
-                        {type === 'absences' ? t('pages.grades.attendance.recordAbsence') : t('pages.grades.attendance.recordTardiness')}
-                    </DropdownMenuItem>
+                    {!isDisabled && (
+                        <DropdownMenuItem onClick={() => onOpenAttendanceDialog(student, type === 'absences' ? 'absence' : 'tardiness')}>
+                            {type === 'absences' ? <UserMinus className="h-4 w-4 ltr:mr-2 rtl:ml-2" /> : <Clock className="h-4 w-4 ltr:mr-2 rtl:ml-2" />}
+                            {type === 'absences' ? t('pages.grades.attendance.recordAbsence') : t('pages.grades.attendance.recordTardiness')}
+                        </DropdownMenuItem>
+                    )}
                     {count > 0 && (
                         <DropdownMenuItem onClick={() => onOpenHistoryDialog(student)}>
                             <History className="h-4 w-4 ltr:mr-2 rtl:ml-2" />
