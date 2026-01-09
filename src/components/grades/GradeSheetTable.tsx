@@ -61,7 +61,8 @@ export function GradeSheetTable({ classId: selectedClassId, term: selectedTerm, 
     getStudentTardinessCount,
     addRecord,
     removeRecord,
-    getStudentRecords
+    getStudentRecords,
+    records // Subscribe to all records to trigger re-renders on change
   } = useAttendanceStore()
 
   const { calculatedStudents } = useGradeCalculations(
@@ -70,7 +71,8 @@ export function GradeSheetTable({ classId: selectedClassId, term: selectedTerm, 
     getStudentAbsenceCount,
     getStudentTardinessCount,
     selectedYear,
-    selectedTerm
+    selectedTerm,
+    records // Pass full records to force recalculation when they change
   )
 
 
@@ -102,7 +104,9 @@ export function GradeSheetTable({ classId: selectedClassId, term: selectedTerm, 
     sortField: tableState.sortField,
     sortDirection: tableState.sortDirection,
     showGroups: tableState.showGroups,
-    showSpecialCasesOnly: tableState.showSpecialCasesOnly
+    showSpecialCasesOnly: tableState.showSpecialCasesOnly,
+    showAbsencesOnly: tableState.showAbsencesOnly,
+    showLatenessOnly: tableState.showLatenessOnly
   })
 
 
@@ -216,6 +220,10 @@ export function GradeSheetTable({ classId: selectedClassId, term: selectedTerm, 
           onToggleGroups={() => tableState.setShowGroups(!tableState.showGroups)}
           showSpecialCasesOnly={tableState.showSpecialCasesOnly}
           onToggleSpecialCases={() => tableState.setShowSpecialCasesOnly(!tableState.showSpecialCasesOnly)}
+          showAbsencesOnly={tableState.showAbsencesOnly}
+          onToggleAbsences={() => tableState.setShowAbsencesOnly(!tableState.showAbsencesOnly)}
+          showLatenessOnly={tableState.showLatenessOnly}
+          onToggleLateness={() => tableState.setShowLatenessOnly(!tableState.showLatenessOnly)}
           canAddStudent={!!selectedClassId}
           onAddStudent={() => dialogs.setAddStudentOpen(true)}
           t={t}
