@@ -26,7 +26,7 @@ export function useStudentActions(
     setRemoveStudentDialog: (state: { open: boolean; student: CalculatedStudentGrade | null }) => void,
     setRecordToDelete: (id: string | null) => void,
     setEditingCell: (cell: { id: string; field: string } | null) => void,
-    attend anceDate: string,
+    attendanceDate: string,
     attendanceTime: string,
     attendanceDialog: AttendanceDialogState,
     setAddStudentDialog: (open: boolean) => void,
@@ -50,7 +50,7 @@ export function useStudentActions(
         try {
             await updateGradeMutation.mutateAsync({
                 studentId: id,
-                term: selectedTerm,
+                term: selectedTerm as 1 | 2 | 3,
                 [field]: numValue,
             })
         } catch (error) {
