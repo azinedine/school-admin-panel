@@ -47,8 +47,11 @@ export function LessonPrepByClass() {
     if (classes.length === 0) {
         return (
             <Card className="p-8">
-                <div className="text-center text-muted-foreground">
-                    <p>{t('pages.prep.timetable.noSlotsForDay')}</p>
+                <div className="text-center space-y-2">
+                    <p className="text-lg font-medium">No Classes Found</p>
+                    <p className="text-muted-foreground">
+                        Please add your classes in your profile settings to start using the timetable feature.
+                    </p>
                 </div>
             </Card>
         )
