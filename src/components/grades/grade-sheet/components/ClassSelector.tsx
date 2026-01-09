@@ -20,7 +20,7 @@ export function ClassSelector({
                 {classes.map((cls) => {
                     const isActive = cls.id === selectedClassId
                     const studentCount = getClassStudentCount(cls.id)
-                    const hasValidLevel = cls.grade_level && ['1st', '2nd', '3rd', '4th', '5th'].includes(cls.grade_level)
+                    const hasValidLevel = cls.grade_level && ['1AP', '2AP', '3AP', '4AP', '5AP'].includes(cls.grade_level)
 
                     return (
                         <button
