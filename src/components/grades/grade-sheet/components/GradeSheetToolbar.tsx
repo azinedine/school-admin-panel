@@ -9,6 +9,15 @@ import {
 } from "@/components/ui/tooltip"
 
 import type { GradeSheetStatistics } from "../types"
+import { Calendar as CalendarIcon } from "lucide-react"
+import { format } from "date-fns"
+import { Calendar } from "@/components/ui/calendar"
+import {
+    Popover,
+    PopoverContent,
+    PopoverTrigger,
+} from "@/components/ui/popover"
+import { cn } from "@/lib/utils"
 
 interface GradeSheetToolbarProps {
     statistics: GradeSheetStatistics
@@ -22,6 +31,8 @@ interface GradeSheetToolbarProps {
     onToggleAbsences: () => void
     showLatenessOnly: boolean
     onToggleLateness: () => void
+    absenceFilterDate?: Date
+    onAbsenceFilterDateChange?: (date: Date | undefined) => void
     canAddStudent: boolean
     onAddStudent: () => void
     t: (key: string) => string
@@ -39,6 +50,8 @@ export function GradeSheetToolbar({
     onToggleAbsences,
     showLatenessOnly,
     onToggleLateness,
+    absenceFilterDate,
+    onAbsenceFilterDateChange,
     canAddStudent,
     onAddStudent,
     t,
@@ -174,31 +187,57 @@ export function GradeSheetToolbar({
                     )}
 
                     {/* Absences Filter */}
-                    {statistics.absenceCount > 0 && (
-                        <TooltipProvider>
-                            <Tooltip>
-                                <TooltipTrigger asChild>
+                    <div className="flex items-center gap-1">
+                        {showAbsencesOnly && (
+                            <Popover>
+                                <PopoverTrigger asChild>
                                     <Button
-                                        variant={showAbsencesOnly ? "default" : "outline"}
-                                        size="icon"
-                                        onClick={onToggleAbsences}
-                                        className="h-8 w-8 relative"
-                                        aria-label={t('pages.grades.absences.showOnly')}
-                                    >
-                                        <UserX className="h-4 w-4" />
-                                        {statistics.absenceCount > 0 && (
-                                            <span className="absolute -top-1 -right-1 h-4 min-w-4 px-1 flex items-center justify-center text-[10px] font-bold rounded-full bg-primary text-primary-foreground border-2 border-background">
-                                                {statistics.absenceCount}
-                                            </span>
+                                        variant={"outline"}
+                                        className={cn(
+                                            "w-[140px] h-8 justify-start text-left font-normal",
+                                            !absenceFilterDate && "text-muted-foreground"
                                         )}
+                                    >
+                                        <CalendarIcon className="mr-2 h-4 w-4" />
+                                        {absenceFilterDate ? format(absenceFilterDate, "dd/MM/yyyy") : <span>{t('pages.grades.date.pick')}</span>}
                                     </Button>
-                                </TooltipTrigger>
-                                <TooltipContent side="bottom">
-                                    <p>{t('pages.grades.absences.showOnly')}</p>
-                                </TooltipContent>
-                            </Tooltip>
-                        </TooltipProvider>
-                    )}
+                                </PopoverTrigger>
+                                <PopoverContent className="w-auto p-0" align="end">
+                                    <Calendar
+                                        mode="single"
+                                        selected={absenceFilterDate}
+                                        onSelect={onAbsenceFilterDateChange}
+                                        initialFocus
+                                    />
+                                </PopoverContent>
+                            </Popover>
+                        )}
+                        {statistics.absenceCount > 0 && (
+                            <TooltipProvider>
+                                <Tooltip>
+                                    <TooltipTrigger asChild>
+                                        <Button
+                                            variant={showAbsencesOnly ? "default" : "outline"}
+                                            size="icon"
+                                            onClick={onToggleAbsences}
+                                            className="h-8 w-8 relative"
+                                            aria-label={t('pages.grades.absences.showOnly')}
+                                        >
+                                            <UserX className="h-4 w-4" />
+                                            {statistics.absenceCount > 0 && (
+                                                <span className="absolute -top-1 -right-1 h-4 min-w-4 px-1 flex items-center justify-center text-[10px] font-bold rounded-full bg-primary text-primary-foreground border-2 border-background">
+                                                    {statistics.absenceCount}
+                                                </span>
+                                            )}
+                                        </Button>
+                                    </TooltipTrigger>
+                                    <TooltipContent side="bottom">
+                                        <p>{t('pages.grades.absences.showOnly')}</p>
+                                    </TooltipContent>
+                                </Tooltip>
+                            </TooltipProvider>
+                        )}
+                    </div>
 
                     {/* Lateness Filter */}
                     {statistics.latenessCount > 0 && (
