@@ -13,7 +13,6 @@ export function ClassSelector({
     selectedClassId,
     onClassSelect,
     getClassStudentCount,
-    t,
 }: ClassSelectorProps) {
     return (
         <div className="mb-4">
