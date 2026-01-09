@@ -1,4 +1,3 @@
-import { Button } from '@/components/ui/button'
 import type { GradeClass } from '../types'
 
 interface ClassSelectorProps {
@@ -22,7 +21,7 @@ export function ClassSelector({
                 {classes.map((cls) => {
                     const isActive = cls.id === selectedClassId
                     const studentCount = getClassStudentCount(cls.id)
-                    const hasValidLevel = cls.level && ['1st', '2nd', '3rd', '4th', '5th'].includes(cls.level)
+                    const hasValidLevel = cls.grade_level && ['1st', '2nd', '3rd', '4th', '5th'].includes(cls.grade_level)
 
                     return (
                         <button
