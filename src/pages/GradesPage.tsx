@@ -53,10 +53,26 @@ export default function GradesPage() {
     return `${startYear}-${startYear + 1}`
   }, [])
 
+  // Calculate current term based on date
+  const getCurrentTerm = useCallback((): Term => {
+    const now = new Date()
+    const month = now.getMonth() // 0-11
+    // Term 1: Sep (8) - Dec (11)
+    if (month >= 8 && month <= 11) return 1
+    // Term 2: Jan (0) - Mar (2)
+    if (month >= 0 && month <= 2) return 2
+    // Term 3: Apr (3) - Aug (7)
+    return 3
+  }, [])
+
   // State
   const [selectedYear] = useState(getAcademicYear())
-  const [selectedTerm, setSelectedTerm] = useState<Term>(1)
+  const [currentTerm] = useState<Term>(getCurrentTerm())
+  const [selectedTerm, setSelectedTerm] = useState<Term>(getCurrentTerm())
   const [selectedClassId, setSelectedClassId] = useState<string | null>(null)
+
+  // Determine if read-only
+  const isReadOnly = selectedTerm < currentTerm
 
   // API hooks
   const { data: classes = [], isLoading: isLoadingClasses } = useGradeClasses(selectedYear)
@@ -591,6 +607,7 @@ export default function GradesPage() {
             term={selectedTerm}
             classes={classes}
             onClassSelect={setSelectedClassId}
+            isReadOnly={isReadOnly}
           />
         )}
       </ContentPage>
