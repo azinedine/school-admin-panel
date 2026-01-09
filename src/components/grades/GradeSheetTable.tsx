@@ -572,7 +572,7 @@ export function GradeSheetTable({ classId: selectedClassId, term: selectedTerm, 
   const [sortField, setSortField] = useState<SortField | null>(null)
   const [sortDirection, setSortDirection] = useState<SortDirection>(null)
   const [editingCell, setEditingCell] = useState<{ id: string; field: string } | null>(null)
-  const [showGroups, setShowGroups] = useState(false)
+  const [showGroups, setShowGroups] = useState(true)
   const [showSpecialCasesOnly, setShowSpecialCasesOnly] = useState(false)
 
   // Attendance dialog state
