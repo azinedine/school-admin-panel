@@ -16,6 +16,8 @@ export function useGradeTableState() {
     const [sortDirection, setSortDirection] = useState<SortDirection>('asc')
     const [showGroups, setShowGroups] = useState(false)
     const [showSpecialCasesOnly, setShowSpecialCasesOnly] = useState(false)
+    const [showAbsencesOnly, setShowAbsencesOnly] = useState(false)
+    const [showLatenessOnly, setShowLatenessOnly] = useState(false)
 
     const [editingCell, setEditingCell] = useState<{
         id: string
@@ -43,6 +45,10 @@ export function useGradeTableState() {
         setShowGroups,
         showSpecialCasesOnly,
         setShowSpecialCasesOnly,
+        showAbsencesOnly,
+        setShowAbsencesOnly,
+        showLatenessOnly,
+        setShowLatenessOnly,
         editingCell,
         setEditingCell
     }
