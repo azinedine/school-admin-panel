@@ -8,9 +8,9 @@ interface AddStudentDialogProps {
     open: boolean
     onOpenChange: (open: boolean) => void
     newStudent: NewStudentForm
-  on StudentChange: (student: NewStudentForm) => void
+    onStudentChange: (student: NewStudentForm) => void
     onAdd: () => void
-        t: (key: string) => string
+    t: (key: string) => string
 }
 
 export function AddStudentDialog({
