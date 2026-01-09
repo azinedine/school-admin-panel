@@ -106,7 +106,9 @@ export function GradeSheetTable({ classId: selectedClassId, term: selectedTerm, 
     showGroups: tableState.showGroups,
     showSpecialCasesOnly: tableState.showSpecialCasesOnly,
     showAbsencesOnly: tableState.showAbsencesOnly,
-    showLatenessOnly: tableState.showLatenessOnly
+    showLatenessOnly: tableState.showLatenessOnly,
+    absenceFilterDate: tableState.absenceFilterDate,
+    attendanceRecords: records
   })
 
 
@@ -224,6 +226,8 @@ export function GradeSheetTable({ classId: selectedClassId, term: selectedTerm, 
           onToggleAbsences={() => tableState.setShowAbsencesOnly(!tableState.showAbsencesOnly)}
           showLatenessOnly={tableState.showLatenessOnly}
           onToggleLateness={() => tableState.setShowLatenessOnly(!tableState.showLatenessOnly)}
+          absenceFilterDate={tableState.absenceFilterDate}
+          onAbsenceFilterDateChange={tableState.setAbsenceFilterDate}
           canAddStudent={!!selectedClassId}
           onAddStudent={() => dialogs.setAddStudentOpen(true)}
           t={t}
