@@ -3,7 +3,12 @@ import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { Button } from '@/components/ui/button'
 import { Link } from '@tanstack/react-router'
 import { UserCog } from 'lucide-react'
+<<<<<<< HEAD
 import { LessonSelector, LessonPlanEntrySheet } from '@/components/features/lessons'
+=======
+import { LessonSelector } from '../lesson-selector/index.ts'
+import { LessonPlanEntrySheet } from '@/components/features/lessons/viewer/sheets/lesson-plan-entry-sheet'
+>>>>>>> production
 import { useLessonPrepByClass } from './use-lesson-prep-by-class.ts'
 import { LessonsTable } from './LessonsTable.tsx'
 import { StatusNoteDialog } from './StatusNoteDialog.tsx'

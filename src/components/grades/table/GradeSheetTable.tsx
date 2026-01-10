@@ -14,21 +14,21 @@ import { useAttendanceStore } from "@/store/attendance-store"
 import { useGradeStudents } from "@/features/grades"
 import {
   type GradeSheetTableProps,
-} from "./grade-sheet/types"
+} from "../grade-sheet/types"
 import {
   AttendanceDialog,
   AttendanceHistoryDialog,
   MoveStudentDialog,
   RemoveStudentDialog,
   AddStudentDialog,
-} from "./grade-sheet/dialogs"
+} from "../grade-sheet/dialogs"
 import {
   SortableStudentRow,
   SortableHeader,
   StudentInfoSidebar,
   GradeSheetToolbar,
   ClassSelector,
-} from "./grade-sheet/components"
+} from "../grade-sheet/components"
 import {
   useGradeCalculations,
   useGradeFiltering,
@@ -37,7 +37,7 @@ import {
   useGradeDialogs,
   useGradeDnD,
   useGradeTableState
-} from "./grade-sheet/hooks"
+} from "../grade-sheet/hooks"
 
 export function GradeSheetTable({ classId: selectedClassId, term: selectedTerm, classes, onClassSelect, isReadOnly = false }: GradeSheetTableProps) {
   const { t } = useTranslation()
@@ -404,6 +404,7 @@ export function GradeSheetTable({ classId: selectedClassId, term: selectedTerm, 
         selectedTerm={selectedTerm}
         isRTL={isRTL}
         t={t}
+        className={classes.find(c => c.id === selectedClassId)?.name}
       />
     </div>
   )

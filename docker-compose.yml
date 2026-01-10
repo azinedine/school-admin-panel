@@ -1,6 +1,5 @@
-
 services:
-  # React Frontend Application
+  # React/Vite Frontend
   frontend:
     build:
       context: .

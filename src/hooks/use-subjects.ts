@@ -12,6 +12,11 @@ export interface Level {
   name: string
 }
 
+<<<<<<< HEAD
+=======
+type SubjectsApiResponse = Subject[] | { data: Subject[] }
+type LevelsApiResponse = Level[] | { data: Level[] }
+>>>>>>> production
 
 
 // Fetch subjects
