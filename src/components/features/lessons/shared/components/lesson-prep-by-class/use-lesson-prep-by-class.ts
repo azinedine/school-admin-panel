@@ -1,7 +1,8 @@
 import { useMemo, useState, useCallback } from 'react'
 import { useTranslation } from 'react-i18next'
 import { usePrepStore, type DailyPlanEntry, type LessonTemplate } from '@/store/prep-store'
-import { useGradesStore } from '@/store/grades-store'
+import { useGradeClasses } from '@/features/grades'
+import { getAcademicYear } from '@/utils/academic-year'
 import { useLessonPreps } from '@/hooks/use-lesson-preparation'
 import { useCurrentUser } from '@/store/auth-store'
 import { toast } from 'sonner'
@@ -15,10 +16,17 @@ export function useLessonPrepByClass() {
     const { planEntries, addPlanEntry, deletePlanEntry, updatePlanEntry } = usePrepStore()
     const user = useCurrentUser()
     const { data: lessonPreps = [] } = useLessonPreps()
-    const { classes: gradesClasses } = useGradesStore()
+
+    // API Data Source
+    const currentYear = useMemo(() => getAcademicYear(), [])
+    const { data: gradesClassesRaw = [] } = useGradeClasses(currentYear)
 
     // Class selection
-    const classes = useMemo(() => gradesClasses.map((c) => c.name).sort(), [gradesClasses])
+    const classes = useMemo(() => {
+        return gradesClassesRaw
+            .map((c) => c.name)
+            .sort()
+    }, [gradesClassesRaw])
     const [selectedClass, setSelectedClass] = useState<string>(classes[0] || '')
 
     // Dialog states
@@ -73,15 +81,16 @@ export function useLessonPrepByClass() {
 
     // Default year for selector based on class grade
     const defaultSelectorYear = useMemo(() => {
-        const classData = gradesClasses.find((c) => c.name === selectedClass)
-        const grade = classData?.grade || ''
+        const classData = gradesClassesRaw.find((c) => c.name === selectedClass)
+        // API uses 'grade_level', verify property access
+        const grade = classData?.grade_level || ''
 
         if (grade.startsWith('1')) return '1st'
         if (grade.startsWith('2')) return '2nd'
         if (grade.startsWith('3')) return '3rd'
         if (grade.startsWith('4')) return '4th'
         return '1st'
-    }, [selectedClass, gradesClasses])
+    }, [selectedClass, gradesClassesRaw])
 
     // Template data from lesson preps
     const templates = useMemo(() => {
