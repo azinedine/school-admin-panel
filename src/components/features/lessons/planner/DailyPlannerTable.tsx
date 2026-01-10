@@ -12,11 +12,7 @@ import {
 import { Button } from '@/components/ui/button'
 import { Card } from '@/components/ui/card'
 import { usePrepStore, type DailyPlanEntry } from '@/store/prep-store'
-<<<<<<< HEAD
 import { LessonDetailDialog } from '@/components/features/lessons'
-=======
-import { LessonDetailDialog } from '@/components/features/lessons/viewer/dialogs/lesson-detail-dialog'
->>>>>>> production
 import {
   DropdownMenu,
   DropdownMenuContent,
