@@ -1,3 +1,4 @@
+import { useState } from "react"
 import {
     Sheet,
     SheetContent,
@@ -5,6 +6,15 @@ import {
     SheetTitle,
     SheetDescription,
 } from "@/components/ui/sheet"
+import {
+    Dialog,
+    DialogContent,
+    DialogTrigger,
+} from "@/components/ui/dialog"
+import { Button } from "@/components/ui/button"
+import { FileWarning } from "lucide-react"
+import { useCurrentUser } from "@/store/auth-store"
+import { StudentReportForm } from "@/components/features/reports/student-report/StudentReportForm"
 import type { CalculatedStudentGrade } from "../types"
 
 interface StudentInfoSidebarProps {
@@ -15,6 +25,7 @@ interface StudentInfoSidebarProps {
     selectedTerm: 1 | 2 | 3
     isRTL: boolean
     t: (key: string) => string
+    className?: string // Added className prop
 }
 
 export function StudentInfoSidebar({
@@ -25,7 +36,16 @@ export function StudentInfoSidebar({
     selectedTerm,
     isRTL,
     t,
+    className = "", // Default to empty string if not passed
 }: StudentInfoSidebarProps) {
+    const [isReportDialogOpen, setIsReportDialogOpen] = useState(false)
+    const user = useCurrentUser()
+
+    // Determine institution name (fallback logic)
+    // The user object might need 'institution' relation loaded, or we fetch it.
+    // tailored for now to avoid breaking if missing
+    const institutionName = user?.institution?.name || "Institution"
+
     return (
         <Sheet open={open} onOpenChange={onOpenChange}>
             <SheetContent side={isRTL ? 'left' : 'right'} className="w-full sm:max-w-md overflow-y-auto">
@@ -41,6 +61,38 @@ export function StudentInfoSidebar({
                         </SheetHeader>
 
                         <div className="mt-6 space-y-6">
+                            {/* Actions Section */}
+                            <div className="space-y-3">
+                                <h3 className="text-sm font-semibold text-foreground">
+                                    Actions
+                                </h3>
+                                <Dialog open={isReportDialogOpen} onOpenChange={setIsReportDialogOpen}>
+                                    <DialogTrigger asChild>
+                                        <Button variant="destructive" className="w-full justify-start">
+                                            <FileWarning className="mr-2 h-4 w-4" />
+                                            Create Disciplinary Report
+                                        </Button>
+                                    </DialogTrigger>
+                                    <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto p-0 border-none bg-transparent shadow-none">
+                                        <StudentReportForm
+                                            student={{
+                                                id: student.id,
+                                                name: `${student.firstName} ${student.lastName}`,
+                                                className: className || "N/A"
+                                            }}
+                                            teacher={{
+                                                id: user?.id || 0,
+                                                name: user?.name || "Unknown Teacher"
+                                            }}
+                                            institutionName={institutionName}
+                                            academicYear={selectedYear}
+                                            onSuccess={() => setIsReportDialogOpen(false)}
+                                            onCancel={() => setIsReportDialogOpen(false)}
+                                        />
+                                    </DialogContent>
+                                </Dialog>
+                            </div>
+
                             {/* Basic Information */}
                             <div className="space-y-3">
                                 <h3 className="text-sm font-semibold text-foreground">
