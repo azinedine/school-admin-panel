@@ -404,6 +404,7 @@ export function GradeSheetTable({ classId: selectedClassId, term: selectedTerm, 
         selectedTerm={selectedTerm}
         isRTL={isRTL}
         t={t}
+        className={classes.find(c => c.id === selectedClassId)?.name}
       />
     </div>
   )
