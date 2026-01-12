@@ -18,23 +18,3 @@ networks:
   frontend-network:
     driver: bridge
 
-services:
-  # React/Vite Frontend
-  frontend:
-    build:
-      context: .
-      dockerfile: Dockerfile
-    container_name: school-admin-panel
-    restart: unless-stopped
-    ports:
-      - "3000:80"
-    environment:
-      - NODE_ENV=production
-      # API URL for the frontend to connect to the backend
-      - VITE_API_URL=http://localhost:8000
-    networks:
-      - frontend-network
-
-networks:
-  frontend-network:
-    driver: bridge
