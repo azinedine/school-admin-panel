@@ -14,7 +14,7 @@ export function useGradeTableState() {
     const [searchQuery, setSearchQuery] = useState('')
     const [sortField, setSortField] = useState<SortField>('lastName')
     const [sortDirection, setSortDirection] = useState<SortDirection>('asc')
-    const [showGroups, setShowGroups] = useState(false)
+    const [showGroups, setShowGroups] = useState(true)
     const [showSpecialCasesOnly, setShowSpecialCasesOnly] = useState(false)
     const [showAbsencesOnly, setShowAbsencesOnly] = useState(false)
     const [absenceFilterDate, setAbsenceFilterDate] = useState<Date | undefined>(new Date())
