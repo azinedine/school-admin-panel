@@ -375,6 +375,8 @@
                 "behavior": "Behavior",
                 "applications": "Applications",
                 "notebook": "Notebook",
+                "oralInterrogation": "Oral",
+                "notebookChecked": "Corrected",
                 "lateness": "Lateness",
                 "absences": "Absences",
                 "activityAverage": "Activity Avg /20",
@@ -383,6 +385,14 @@
                 "finalAverage": "Average",
                 "remarks": "Remarks",
                 "group": "Group"
+            },
+            "tracking": {
+                "oralInterrogation": "Oral Interrogation",
+                "notebookChecked": "Notebook Checked",
+                "markAsInterrogated": "Mark as interrogated",
+                "markNotebookChecked": "Mark notebook as checked",
+                "interrogatedOn": "Interrogated on",
+                "notebookCheckedOn": "Notebook checked on"
             },
             "remarks": {
                 "excellent": "Excellent",
