@@ -11,7 +11,8 @@ import {
 } from "@/components/ui/table"
 import { useDirection } from "@/hooks/use-direction"
 import { useAttendanceStore } from "@/store/attendance-store"
-import { useGradeStudents } from "@/features/grades"
+import { useGradeStudents, useUpdatePedagogicalTracking } from "@/features/grades"
+import type { CalculatedStudentGrade } from "../grade-sheet/types"
 import {
   type GradeSheetTableProps,
 } from "../grade-sheet/types"
@@ -94,6 +95,38 @@ export function GradeSheetTable({ classId: selectedClassId, term: selectedTerm, 
     handleMoveStudent,
     handleReorderStudents
   } = useGradeMutations(selectedClassId || '', String(selectedTerm))
+
+  // Pedagogical Tracking Mutations
+  const updateTrackingMutation = useUpdatePedagogicalTracking()
+  const [trackingLoading, setTrackingLoading] = useState<{ studentId: string; field: 'oral_interrogation' | 'notebook_checked' } | null>(null)
+
+  const handleToggleOralInterrogation = useCallback((student: CalculatedStudentGrade) => {
+    setTrackingLoading({ studentId: student.id, field: 'oral_interrogation' })
+    updateTrackingMutation.mutate(
+      {
+        studentId: student.id,
+        term: selectedTerm,
+        oral_interrogation: !student.oralInterrogation,
+      },
+      {
+        onSettled: () => setTrackingLoading(null),
+      }
+    )
+  }, [updateTrackingMutation, selectedTerm])
+
+  const handleToggleNotebookChecked = useCallback((student: CalculatedStudentGrade) => {
+    setTrackingLoading({ studentId: student.id, field: 'notebook_checked' })
+    updateTrackingMutation.mutate(
+      {
+        studentId: student.id,
+        term: selectedTerm,
+        notebook_checked: !student.notebookChecked,
+      },
+      {
+        onSettled: () => setTrackingLoading(null),
+      }
+    )
+  }, [updateTrackingMutation, selectedTerm])
 
   const statistics = useGradeStatistics(calculatedStudents)
 
@@ -287,6 +320,8 @@ export function GradeSheetTable({ classId: selectedClassId, term: selectedTerm, 
                   <SortableHeader field="behavior" onSort={tableState.handleSort}>{t('pages.grades.table.behavior')}</SortableHeader>
                   <SortableHeader field="applications" onSort={tableState.handleSort}>{t('pages.grades.table.applications')}</SortableHeader>
                   <SortableHeader field="notebook" onSort={tableState.handleSort}>{t('pages.grades.table.notebook')}</SortableHeader>
+                  <SortableHeader field="oralInterrogation" onSort={tableState.handleSort}>{t('pages.grades.table.oralInterrogation')}</SortableHeader>
+                  <SortableHeader field="notebookChecked" onSort={tableState.handleSort}>{t('pages.grades.table.notebookChecked')}</SortableHeader>
                   <SortableHeader field="lateness" onSort={tableState.handleSort}>{t('pages.grades.table.lateness')}</SortableHeader>
                   <SortableHeader field="absences" onSort={tableState.handleSort}>{t('pages.grades.table.absences')}</SortableHeader>
                   <SortableHeader field="activityAverage" highlight onSort={tableState.handleSort}>{t('pages.grades.table.activityAverage')}</SortableHeader>
@@ -319,6 +354,9 @@ export function GradeSheetTable({ classId: selectedClassId, term: selectedTerm, 
                         onViewStudentInfo={dialogs.openStudentInfo}
                         onOpenAttendanceDialog={dialogs.openAttendance}
                         onOpenHistoryDialog={dialogs.openHistory}
+                        onToggleOralInterrogation={handleToggleOralInterrogation}
+                        onToggleNotebookChecked={handleToggleNotebookChecked}
+                        trackingLoading={trackingLoading}
                         isReadOnly={isReadOnly}
                         t={t}
                       />
