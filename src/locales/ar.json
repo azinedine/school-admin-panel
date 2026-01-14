@@ -370,7 +370,9 @@
                 "exam": "الإختبار /20",
                 "finalAverage": "المعدل",
                 "remarks": "التقديرات",
-                "group": "الفوج"
+                "group": "الفوج",
+                "oralInterrogation": "استجواب",
+                "notebookChecked": "مراقبة الكراس"
             },
             "remarks": {
                 "excellent": "ممتاز",
@@ -378,6 +380,14 @@
                 "good": "جيد",
                 "average": "متوسط",
                 "poor": "ضعيف. ضرورة المراجعة والاجتهاد"
+            },
+            "tracking": {
+                "oralInterrogation": "استجواب شفهي",
+                "notebookChecked": "تصحيح الكراس",
+                "markAsInterrogated": "تحديد كـ مستجوب",
+                "markNotebookChecked": "تحديد الكراس كـ مصحح",
+                "interrogatedOn": "تاريخ الاستجواب",
+                "notebookCheckedOn": "تاريخ التصحيح"
             },
             "hints": {
                 "clickToEdit": "انقر على الخلية لتعديل العلامة",
