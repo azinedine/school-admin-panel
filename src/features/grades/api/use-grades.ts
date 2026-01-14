@@ -18,6 +18,7 @@ import type {
     BatchUpdateGradesRequest,
     ReorderStudentsRequest,
     MoveStudentRequest,
+    UpdatePedagogicalTrackingRequest,
 } from '../types'
 
 // Query Keys
@@ -243,6 +244,66 @@ export function useBatchUpdateGrades() {
             return data
         },
         onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: gradeKeys.all })
+        },
+    })
+}
+
+// ============ Pedagogical Tracking ============
+
+export function useUpdatePedagogicalTracking() {
+    const queryClient = useQueryClient()
+
+    return useMutation({
+        mutationFn: async ({ studentId, ...request }: UpdatePedagogicalTrackingRequest & { studentId: string }) => {
+            const { data } = await apiClient.put<{ data: Partial<GradeStudent> }>(
+                `/v1/grade-students/${studentId}/tracking`,
+                request
+            )
+            return data.data
+        },
+        onMutate: async (variables) => {
+            // Cancel any outgoing refetches
+            await queryClient.cancelQueries({ queryKey: gradeKeys.all })
+
+            // Snapshot the previous value for all students queries
+            const previousData = queryClient.getQueriesData({ queryKey: gradeKeys.all })
+
+            // Optimistically update the cache
+            queryClient.setQueriesData(
+                { queryKey: gradeKeys.all },
+                (old: GradeStudent[] | undefined) => {
+                    if (!old || !Array.isArray(old)) return old
+                    return old.map((student) => {
+                        if (student.id === variables.studentId) {
+                            return {
+                                ...student,
+                                ...(variables.oral_interrogation !== undefined && {
+                                    oral_interrogation: variables.oral_interrogation,
+                                    last_interrogation_at: variables.oral_interrogation ? new Date().toISOString() : student.last_interrogation_at,
+                                }),
+                                ...(variables.notebook_checked !== undefined && {
+                                    notebook_checked: variables.notebook_checked,
+                                    last_notebook_check_at: variables.notebook_checked ? new Date().toISOString() : student.last_notebook_check_at,
+                                }),
+                            }
+                        }
+                        return student
+                    })
+                }
+            )
+
+            return { previousData }
+        },
+        onError: (_err, _variables, context) => {
+            // Rollback on error
+            if (context?.previousData) {
+                context.previousData.forEach(([queryKey, data]) => {
+                    queryClient.setQueryData(queryKey, data)
+                })
+            }
+        },
+        onSettled: () => {
             queryClient.invalidateQueries({ queryKey: gradeKeys.all })
         },
     })
