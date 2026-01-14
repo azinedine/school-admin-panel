@@ -361,7 +361,9 @@
                 "exam": "Examen /20",
                 "finalAverage": "Moyenne",
                 "remarks": "Appréciations",
-                "group": "Groupe"
+                "group": "Groupe",
+                "oralInterrogation": "Interro. Orale",
+                "notebookChecked": "Vérif. Cahier"
             },
             "remarks": {
                 "excellent": "Excellent",
@@ -369,6 +371,14 @@
                 "good": "Bien",
                 "average": "Moyen",
                 "poor": "Faible. Amélioration nécessaire"
+            },
+            "tracking": {
+                "oralInterrogation": "Interrogation orale",
+                "notebookChecked": "Vérification du cahier",
+                "markAsInterrogated": "Marquer comme interrogé",
+                "markNotebookChecked": "Marquer cahier vérifié",
+                "interrogatedOn": "Interrogé le",
+                "notebookCheckedOn": "Cahier vérifié le"
             },
             "hints": {
                 "clickToEdit": "Cliquez sur une cellule pour modifier la note",
