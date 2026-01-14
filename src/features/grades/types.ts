@@ -31,6 +31,11 @@ export interface GradeStudent {
     notebook: number
     assignment: number
     exam: number
+    // Pedagogical tracking fields for current term
+    oral_interrogation: boolean
+    notebook_checked: boolean
+    last_interrogation_at: string | null
+    last_notebook_check_at: string | null
 }
 
 export interface StudentGrade {
@@ -105,4 +110,10 @@ export interface ReorderStudentsRequest {
 
 export interface MoveStudentRequest {
     grade_class_id: string
+}
+
+export interface UpdatePedagogicalTrackingRequest {
+    term: 1 | 2 | 3
+    oral_interrogation?: boolean
+    notebook_checked?: boolean
 }
