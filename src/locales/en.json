@@ -29,7 +29,10 @@
         "inactive": "Inactive",
         "formErrors": "Please check the form for errors",
         "errorsIn": "Errors in",
-        "minutes": "minutes"
+        "minutes": "minutes",
+        "noInternet": "No Internet Connection",
+        "checkConnection": "Please check your internet connection and try again.",
+        "retry": "Retry"
     },
     "auth": {
         "login": {
