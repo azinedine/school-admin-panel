@@ -30,7 +30,10 @@
         "formErrors": "Veuillez vérifier les erreurs dans le formulaire",
         "errorsIn": "Erreurs dans",
         "minutes": "minutes",
-        "selectLevel": "Sélectionner le niveau"
+        "selectLevel": "Sélectionner le niveau",
+        "noInternet": "Pas de connexion internet",
+        "checkConnection": "Veuillez vérifier votre connexion internet et réessayer.",
+        "retry": "Réessayer"
     },
     "auth": {
         "login": {
