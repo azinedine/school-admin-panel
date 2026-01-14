@@ -14,6 +14,11 @@ export interface StudentGrade {
     assignment: number
     exam: number
     specialCase?: string
+    // Pedagogical tracking fields
+    oralInterrogation: boolean
+    notebookChecked: boolean
+    lastInterrogationAt: string | null
+    lastNotebookCheckAt: string | null
 }
 
 export interface CalculatedStudentGrade extends StudentGrade {
