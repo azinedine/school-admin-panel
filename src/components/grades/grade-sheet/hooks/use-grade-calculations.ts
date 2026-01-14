@@ -33,6 +33,11 @@ export function useGradeCalculations(
             assignment: Number(s.assignment) || 0,
             exam: Number(s.exam) || 0,
             specialCase: s.special_case || undefined,
+            // Pedagogical tracking fields
+            oralInterrogation: Boolean(s.oral_interrogation),
+            notebookChecked: Boolean(s.notebook_checked),
+            lastInterrogationAt: s.last_interrogation_at || null,
+            lastNotebookCheckAt: s.last_notebook_check_at || null,
         }))
     }, [studentsRaw, classId])
 
