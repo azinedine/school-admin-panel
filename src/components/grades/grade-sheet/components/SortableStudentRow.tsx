@@ -21,6 +21,7 @@ import { toast } from "sonner"
 import type { CalculatedStudentGrade, StudentGrade } from "../types"
 import { getRowColor } from "../utils"
 import { EditableCell, AttendanceCell } from "./TableCells"
+import { TrackingToggle } from "../../shared/TrackingToggle"
 
 interface SortableStudentRowProps {
     student: CalculatedStudentGrade
@@ -37,6 +38,9 @@ interface SortableStudentRowProps {
     onViewStudentInfo: (student: CalculatedStudentGrade) => void
     onOpenAttendanceDialog: (student: CalculatedStudentGrade, type: 'absence' | 'tardiness') => void
     onOpenHistoryDialog: (student: CalculatedStudentGrade) => void
+    onToggleOralInterrogation: (student: CalculatedStudentGrade) => void
+    onToggleNotebookChecked: (student: CalculatedStudentGrade) => void
+    trackingLoading?: { studentId: string; field: 'oral_interrogation' | 'notebook_checked' } | null
     t: (key: string, opts?: Record<string, unknown>) => string
     isReadOnly?: boolean
 }
@@ -56,6 +60,9 @@ export function SortableStudentRow({
     onViewStudentInfo,
     onOpenAttendanceDialog,
     onOpenHistoryDialog,
+    onToggleOralInterrogation,
+    onToggleNotebookChecked,
+    trackingLoading,
     t,
     isReadOnly = false,
 }: SortableStudentRowProps) {
@@ -295,6 +302,27 @@ export function SortableStudentRow({
                 t={t}
                 isDisabled={isReadOnly}
             />
+            {/* Pedagogical Tracking Columns */}
+            <TableCell className="text-center">
+                <TrackingToggle
+                    checked={student.oralInterrogation}
+                    onToggle={() => onToggleOralInterrogation(student)}
+                    lastCompletedAt={student.lastInterrogationAt}
+                    type="oral_interrogation"
+                    isLoading={trackingLoading?.studentId === student.id && trackingLoading?.field === 'oral_interrogation'}
+                    disabled={isReadOnly}
+                />
+            </TableCell>
+            <TableCell className="text-center">
+                <TrackingToggle
+                    checked={student.notebookChecked}
+                    onToggle={() => onToggleNotebookChecked(student)}
+                    lastCompletedAt={student.lastNotebookCheckAt}
+                    type="notebook_checked"
+                    isLoading={trackingLoading?.studentId === student.id && trackingLoading?.field === 'notebook_checked'}
+                    disabled={isReadOnly}
+                />
+            </TableCell>
             <AttendanceCell
                 student={student}
                 type="lateness"
