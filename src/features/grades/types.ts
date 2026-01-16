@@ -68,7 +68,7 @@ export interface CreateStudentRequest {
     last_name: string
     first_name: string
     date_of_birth?: string
-    special_case?: string
+    special_case?: string | null
 }
 
 export interface BatchCreateStudentsRequest {
