@@ -23,6 +23,7 @@ import { useUpdateProfile } from '@/hooks/use-profile-mutation'
 import { mapSubjectNamesToIds, mapSubjectIdsToNames } from '@/utils/subject-utils'
 import type { User } from '@/features/users/types/user.types'
 import { createProfileSchema } from '@/schemas/profile-schema'
+import { logger } from '@/lib/logger'
 
 // Mapped type for form inputs (native date inputs use strings)
 export type ProfileFormInputValues = {
@@ -193,7 +194,7 @@ export function EditProfileDialog({ user, isOpen, onClose }: EditProfileDialogPr
       await updateProfile(profileValues)
       onClose()
     } catch (error) {
-      console.error('Failed to update profile:', error)
+      logger.error('Failed to update profile', 'ProfileManagement', error)
     }
   }
 
