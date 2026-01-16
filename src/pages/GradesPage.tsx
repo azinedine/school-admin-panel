@@ -6,6 +6,7 @@ import { GradeSheetTable } from "@/components/grades/table/GradeSheetTable"
 import { ContentPage } from "@/components/layout/content-page"
 import { useDirection } from "@/hooks/use-direction"
 import { Button } from "@/components/ui/button"
+import { logger } from "@/lib/logger"
 import {
   Dialog,
   DialogContent,
@@ -245,7 +246,7 @@ export default function GradesPage() {
           toast.error(t('pages.grades.excel.noData'))
         }
       } catch (error) {
-        console.error('Error parsing Excel:', error)
+        logger.error('Failed to parse Excel file', 'GradesImport', error)
         toast.error(t('pages.grades.excel.parseError'))
       }
     }
