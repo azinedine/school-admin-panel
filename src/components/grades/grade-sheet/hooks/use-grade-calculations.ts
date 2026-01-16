@@ -44,8 +44,33 @@ export function useGradeCalculations(
 
     const calculatedStudents: CalculatedStudentGrade[] = useMemo(() => {
         return students.map(student => {
-            const absences = getStudentAbsenceCount?.(student.id, year || '', Number(term)) || 0
-            const lateness = getStudentTardinessCount?.(student.id, year || '', Number(term)) || 0
+            // Use attendanceRecords directly if provided, otherwise use the functions
+            let absences = 0
+            let lateness = 0
+
+            if (attendanceRecords) {
+                // Count directly from records
+                const yearStr = year || ''
+                const termNum = Number(term)
+                
+                absences = attendanceRecords.filter(
+                    r => r.studentId === student.id && 
+                         r.year === yearStr && 
+                         r.term === termNum && 
+                         r.type === 'absence'
+                ).length
+                
+                lateness = attendanceRecords.filter(
+                    r => r.studentId === student.id && 
+                         r.year === yearStr && 
+                         r.term === termNum && 
+                         r.type === 'tardiness'
+                ).length
+            } else {
+                // Fallback to functions
+                absences = getStudentAbsenceCount?.(student.id, year || '', Number(term)) || 0
+                lateness = getStudentTardinessCount?.(student.id, year || '', Number(term)) || 0
+            }
 
             // Calculate Activity Average
             const activityAverage = calculateContinuousAssessment(
