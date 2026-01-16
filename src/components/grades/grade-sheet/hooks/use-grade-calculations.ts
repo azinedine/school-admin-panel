@@ -1,6 +1,7 @@
 import { useMemo } from 'react'
 import type { StudentGrade, CalculatedStudentGrade } from '../types'
 import type { GradeStudent } from '@/features/grades'
+import type { AttendanceRecord } from '@/store/attendance-store'
 import { calculateFinalAverage, getRemarksKey, calculateContinuousAssessment } from '../utils'
 
 /**
@@ -18,7 +19,7 @@ export function useGradeCalculations(
     getStudentTardinessCount?: (id: string, year: string, term: number) => number,
     year?: string,
     term?: number | string,
-    attendanceRecords?: any[] // Added dependency for reactivity
+    attendanceRecords?: AttendanceRecord[]
 ) {
     const students: StudentGrade[] = useMemo(() => {
         return studentsRaw.map(s => ({
