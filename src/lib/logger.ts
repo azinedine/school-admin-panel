@@ -114,12 +114,13 @@ class Logger {
   /**
    * Send error to tracking service (placeholder for production)
    */
-  private sendToErrorTracking(message: string, context?: string, error?: unknown): void {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  private sendToErrorTracking(_message: string, _context?: string, _error?: unknown): void {
     // TODO: Integrate with error tracking service (Sentry, LogRocket, etc.)
     // Example:
-    // Sentry.captureException(error, {
-    //   tags: { context },
-    //   extra: { message }
+    // Sentry.captureException(_error, {
+    //   tags: { context: _context },
+    //   extra: { message: _message }
     // })
   }
 
