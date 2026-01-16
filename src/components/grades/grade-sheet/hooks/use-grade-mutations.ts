@@ -30,7 +30,7 @@ export function useGradeMutations(classId: string, term: string) {
 
     const handleCreateStudent = useCallback((student: Partial<StudentGrade>) => new Promise<boolean>((resolve) => {
         // Map camelCase to snake_case for API
-        const apiRequest = {
+        const apiRequest: { classId: string; student_number?: string; last_name: string; first_name: string; date_of_birth?: string; special_case?: string | null } = {
             classId: student.classId || classId,
             student_number: student.id || undefined, // Use id as student_number
             last_name: student.lastName || '',
@@ -46,7 +46,7 @@ export function useGradeMutations(classId: string, term: string) {
             return
         }
 
-        createStudentMutation.mutate(apiRequest as any, { // TODO: Fix CreateStudentRequest type to include classId or fix hook
+        createStudentMutation.mutate(apiRequest, {
             onSuccess: () => {
                 toast.success(t('pages.grades.toast.createSuccess'))
                 resolve(true)
