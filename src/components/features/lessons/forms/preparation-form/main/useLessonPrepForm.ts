@@ -3,6 +3,7 @@ import { useEffect, useRef, useCallback } from 'react'
 import { toast } from 'sonner'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useTranslation } from 'react-i18next'
+import { logger } from '@/lib/logger'
 import {
     type LessonPreparationFormData,
     type LessonPreparationApiPayload,
@@ -79,12 +80,12 @@ export function useLessonPrepForm({
                     level: savedDraft.level || defaultLevel,
                 })
                 hasRestoredDraft.current = true
-                console.log('Draft restored from localStorage')
+                logger.debug('Draft restored from localStorage', 'LessonPreparation')
             }
         } catch (e) {
-            console.warn('Failed to load draft from localStorage:', e)
+            logger.warn('Failed to load draft from localStorage', 'LessonPreparation', e)
         }
-    }, [])
+    }, [initialData, form, nextLessonNumber, defaultSubject, defaultLevel])
 
     // Auto-save to localStorage with debounce
     const saveTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null)
@@ -101,9 +102,9 @@ export function useLessonPrepForm({
                 try {
                     const allFormData = form.getValues()
                     localStorage.setItem(STORAGE_KEY, JSON.stringify(allFormData))
-                    console.log('Draft saved to localStorage:', Object.keys(allFormData))
+                    logger.debug('Draft saved to localStorage', 'LessonPreparation', { keys: Object.keys(allFormData) })
                 } catch (e) {
-                    console.warn('Failed to save draft to localStorage:', e)
+                    logger.warn('Failed to save draft to localStorage', 'LessonPreparation', e)
                 }
             }, 2000)
         })
@@ -120,7 +121,7 @@ export function useLessonPrepForm({
         try {
             localStorage.removeItem(STORAGE_KEY)
         } catch (e) {
-            console.warn('Failed to clear draft from localStorage:', e)
+            logger.warn('Failed to clear draft from localStorage', 'LessonPreparation', e)
         }
     }, [])
 
@@ -135,7 +136,7 @@ export function useLessonPrepForm({
 
     const onInvalid = useCallback(
         (errors: FieldErrors<LessonPreparationFormData>) => {
-            console.error('Form validation errors:', errors)
+            logger.warn('Form validation errors', 'LessonPreparation', errors)
             const errorFields = Object.keys(errors)
                 .map((key) => t(`pages.prep.${key}`, key))
                 .join(', ')
