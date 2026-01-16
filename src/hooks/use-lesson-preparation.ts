@@ -1,6 +1,7 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import { toast } from 'sonner'
 import { apiClient } from '@/lib/api-client'
+import { logger } from '@/lib/logger'
 import type { LessonPreparation, LessonPreparationApiPayload } from '@/schemas/lesson-preparation'
 
 /**
@@ -166,7 +167,7 @@ export function useCreateLessonPrep() {
     },
     onError: (error) => {
       toast.error('Failed to create lesson preparation')
-      console.error('Create lesson prep error:', error)
+      logger.error('Failed to create lesson preparation', 'LessonPreparation', error)
     },
   })
 }
@@ -214,7 +215,7 @@ export function useGenericUpdateLessonPrep() {
     },
     onError: (error) => {
       toast.error('Failed to update status')
-      console.error('Update status error:', error)
+      logger.error('Failed to update lesson preparation status', 'LessonPreparation', error)
     },
   })
 }
@@ -257,7 +258,7 @@ export function useUpdateLessonPrep(id: number) {
     },
     onError: (error) => {
       toast.error('Failed to update lesson preparation')
-      console.error('Update lesson prep error:', error)
+      logger.error('Failed to update lesson preparation', 'LessonPreparation', error)
     },
   })
 }
@@ -308,7 +309,7 @@ export function useDeleteLessonPrep() {
     },
     onError: (error) => {
       toast.error('Failed to delete lesson preparation')
-      console.error('Delete lesson prep error:', error)
+      logger.error('Failed to delete lesson preparation', 'LessonPreparation', error)
     },
   })
 }
