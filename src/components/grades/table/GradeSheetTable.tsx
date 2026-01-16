@@ -209,7 +209,7 @@ export function GradeSheetTable({ classId: selectedClassId, term: selectedTerm, 
     addRecord({
       studentId: dialogs.attendanceDialog.student.id,
       studentName: `${dialogs.attendanceDialog.student.firstName} ${dialogs.attendanceDialog.student.lastName}`,
-      classId: 'class-1', // Todo: fix hardecoded classId
+      classId: selectedClassId || '',
       date: attendanceDate,
       time: attendanceTime,
       year: selectedYear,
