@@ -21,6 +21,7 @@ import { format } from 'date-fns'
 import { useTranslation } from 'react-i18next'
 import { Skeleton } from '@/components/ui/skeleton'
 import { MoreHorizontal, Eye, Ban, Trash2, CheckCircle } from 'lucide-react'
+import { logger } from '@/lib/logger'
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -72,7 +73,7 @@ export function UsersTable({ data, isLoading }: UsersTableProps) {
         },
         onError: (error) => {
           toast.dismiss(loadingToast)
-          console.error('Failed to update user status:', error)
+          logger.error('Failed to update user status', 'UserManagement', error)
           toast.error(t('pages.users.suspendAccount.error', 'Failed to update user status'))
         }
       }
@@ -162,7 +163,7 @@ export function UsersTable({ data, isLoading }: UsersTableProps) {
         try {
           return format(new Date(info.getValue()), 'MMM d, yyyy')
         } catch (error) {
-          console.error('Failed to format date:', error)
+          logger.warn('Failed to format date', 'UserManagement', error)
           return '-'
         }
       },
