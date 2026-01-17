@@ -21,6 +21,8 @@
         "create": "Créer",
         "createSuccess": "Créé avec succès",
         "deleteSuccess": "Supprimé avec succès",
+        "deleting": "Suppression en cours...",
+        "saving": "Enregistrement...",
         "error": "Une erreur s'est produite",
         "filters": "Filtres",
         "all": "Tous",
@@ -242,6 +244,9 @@
         "deleteAccountBtn": "Supprimer le compte",
         "deleteAccountConfirmTitle": "Êtes-vous absolument sûr ?",
         "deleteAccountConfirmDesc": "Cette action est irréversible. Cela supprimera définitivement votre compte et toutes vos données de nos serveurs.",
+        "deleteAccountWarning": "Cette action est irréversible. Cela supprimera définitivement votre compte et toutes vos données de nos serveurs.",
+        "accountToDelete": "Compte",
+        "typeDeleteToConfirm": "Tapez DELETE pour confirmer",
         "validation": {
             "nameLength": "Le nom doit comporter au moins 2 caractères",
             "emailInvalid": "Veuillez entrer une adresse email valide",

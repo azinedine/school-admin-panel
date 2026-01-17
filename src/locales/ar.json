@@ -17,6 +17,8 @@
         "loading": "جاري التحميل...",
         "error": "حدث خطأ",
         "success": "تمت العملية بنجاح",
+        "deleting": "جاري الحذف...",
+        "saving": "جاري الحفظ...",
         "all": "الكل",
         "clear": "مسح",
         "active": "نشط",
@@ -251,6 +253,9 @@
         "deleteAccountBtn": "حذف الحساب",
         "deleteAccountConfirmTitle": "هل أنت متأكد تماماً؟",
         "deleteAccountConfirmDesc": "لا يمكن التراجع عن هذا الإجراء. سيؤدي هذا إلى حذف حسابك نهائياً وإزالة جميع بياناتك من خوادمنا.",
+        "deleteAccountWarning": "لا يمكن التراجع عن هذا الإجراء. سيؤدي هذا إلى حذف حسابك نهائياً وإزالة جميع بياناتك من خوادمنا.",
+        "accountToDelete": "الحساب",
+        "typeDeleteToConfirm": "اكتب DELETE للتأكيد",
         "validation": {
             "nameLength": "يجب أن يحتوي الاسم على حرفين على الأقل",
             "emailInvalid": "الرجاء إدخال عنوان بريد إلكتروني صحيح",

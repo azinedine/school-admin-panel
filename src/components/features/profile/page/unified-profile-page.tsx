@@ -25,9 +25,9 @@ import {
 import { useUser } from '@/features/users/api/use-user'
 
 import { useState } from 'react'
-import { EditProfileDialog } from '../dialogs/EditProfileDialog'
+import { EditProfileDialog, DeleteAccountDialog } from '../dialogs'
 import { Button } from '@/components/ui/button'
-import { Pencil } from 'lucide-react'
+import { Pencil, Trash2 } from 'lucide-react'
 
 export function UnifiedProfilePage() {
   const { t, i18n } = useTranslation()
@@ -37,6 +37,7 @@ export function UnifiedProfilePage() {
   const { data: profile, isLoading, isError, error } = useUser()
 
   const [isEditOpen, setIsEditOpen] = useState(false)
+  const [isDeleteOpen, setIsDeleteOpen] = useState(false)
 
   // Format date for display
   const formatDate = (dateString: string | null | undefined) => {
@@ -65,10 +66,21 @@ export function UnifiedProfilePage() {
       title={t('profilePage.title')}
       description={t('profilePage.personalInfoDesc')}
       headerActions={
-        <Button onClick={() => setIsEditOpen(true)} size="sm" className="gap-2">
-          <Pencil className="h-4 w-4" />
-          {t('common.edit', 'Edit')}
-        </Button>
+        <div className="flex gap-2">
+          <Button onClick={() => setIsEditOpen(true)} size="sm" className="gap-2">
+            <Pencil className="h-4 w-4" />
+            {t('common.edit', 'Edit')}
+          </Button>
+          <Button
+            onClick={() => setIsDeleteOpen(true)}
+            size="sm"
+            variant="destructive"
+            className="gap-2"
+          >
+            <Trash2 className="h-4 w-4" />
+            {t('profilePage.deleteAccount', 'Delete Account')}
+          </Button>
+        </div>
       }
     >
       {/* Loading State */}
@@ -298,6 +310,12 @@ export function UnifiedProfilePage() {
             user={profile}
             isOpen={isEditOpen}
             onClose={() => setIsEditOpen(false)}
+          />
+
+          <DeleteAccountDialog
+            isOpen={isDeleteOpen}
+            onClose={() => setIsDeleteOpen(false)}
+            userEmail={profile.email}
           />
         </>
       )}
