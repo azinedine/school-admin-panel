@@ -67,10 +67,10 @@ export function UnifiedProfilePage() {
       description={t('profilePage.personalInfoDesc')}
       headerActions={
         <div className="flex gap-2">
-          <Button onClick={() => setIsEditOpen(true)} size="sm" className="gap-2">
-            <Pencil className="h-4 w-4" />
-            {t('common.edit', 'Edit')}
-          </Button>
+        <Button onClick={() => setIsEditOpen(true)} size="sm" className="gap-2">
+          <Pencil className="h-4 w-4" />
+          {t('common.edit', 'Edit')}
+        </Button>
           <Button
             onClick={() => setIsDeleteOpen(true)}
             size="sm"
