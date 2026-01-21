@@ -1,6 +1,7 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import { apiClient } from '@/lib/api-client'
 import type { StudentReport, StudentReportFormValues } from '@/schemas/student-report-schema'
+import { gradeKeys } from '@/features/grades'
 
 export const reportKeys = {
     all: ['student-reports'] as const,
@@ -44,6 +45,8 @@ export function useCreateStudentReport() {
         },
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: reportKeys.lists() })
+            // Also invalidate grades to refresh reports_count indicator
+            queryClient.invalidateQueries({ queryKey: gradeKeys.all })
         },
     })
 }
@@ -60,6 +63,22 @@ export function useUpdateStudentReport() {
         onSuccess: (data) => {
             queryClient.invalidateQueries({ queryKey: reportKeys.lists() })
             queryClient.invalidateQueries({ queryKey: reportKeys.detail(data.id) })
+        },
+    })
+}
+
+// Delete Report
+export function useDeleteStudentReport() {
+    const queryClient = useQueryClient()
+
+    return useMutation({
+        mutationFn: async (id: number) => {
+            await apiClient.delete(`/v1/student-reports/${id}`)
+        },
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: reportKeys.lists() })
+            // Also invalidate grades to refresh reports_count indicator
+            queryClient.invalidateQueries({ queryKey: gradeKeys.all })
         },
     })
 }
