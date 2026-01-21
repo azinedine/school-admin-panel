@@ -29,6 +29,7 @@ import {
   StudentInfoSidebar,
   GradeSheetToolbar,
   ClassSelector,
+  WeeklyReviewPanel,
 } from "../grade-sheet/components"
 import {
   useGradeCalculations,
@@ -39,6 +40,13 @@ import {
   useGradeDnD,
   useGradeTableState
 } from "../grade-sheet/hooks"
+import {
+  useWeeklyReviewSummary,
+  useBatchCreateWeeklyReviews,
+  useResolveWeeklyReviewAlert,
+  getCurrentISOWeek,
+  type ObservationType,
+} from "@/features/weekly-reviews"
 
 export function GradeSheetTable({ classId: selectedClassId, term: selectedTerm, classes, onClassSelect, isReadOnly = false }: GradeSheetTableProps) {
   const { t } = useTranslation()
@@ -127,6 +135,54 @@ export function GradeSheetTable({ classId: selectedClassId, term: selectedTerm, 
       }
     )
   }, [updateTrackingMutation, selectedTerm])
+
+  // --- Weekly Review ---
+  const { data: weeklyReviewSummary } = useWeeklyReviewSummary(selectedClassId || '')
+  const batchCreateReviewsMutation = useBatchCreateWeeklyReviews()
+  const resolveAlertMutation = useResolveWeeklyReviewAlert()
+
+  const [weeklyReviewPanel, setWeeklyReviewPanel] = useState<{
+    open: boolean
+    student: CalculatedStudentGrade | null
+  }>({ open: false, student: null })
+
+  const handleOpenWeeklyReviewPanel = useCallback((student: CalculatedStudentGrade) => {
+    setWeeklyReviewPanel({ open: true, student })
+  }, [])
+
+  const handleSaveWeeklyReview = useCallback(async (data: {
+    studentId: string
+    notebookChecked: boolean
+    lessonWritten: boolean
+    homeworkDone: boolean
+    score: number | null
+    observationType: ObservationType
+    observationNotes: string | null
+  }) => {
+    if (!selectedClassId) return
+
+    const { year, week } = getCurrentISOWeek()
+
+    await batchCreateReviewsMutation.mutateAsync({
+      classId: selectedClassId,
+      year,
+      week_number: week,
+      reviews: [{
+        student_id: data.studentId,
+        notebook_checked: data.notebookChecked,
+        lesson_written: data.lessonWritten,
+        homework_done: data.homeworkDone,
+        score: data.score,
+        observation_type: data.observationType,
+        observation_notes: data.observationNotes,
+      }],
+    })
+  }, [selectedClassId, batchCreateReviewsMutation])
+
+  const handleResolveAlert = useCallback(async (reviewId: number) => {
+    if (!selectedClassId) return
+    await resolveAlertMutation.mutateAsync({ reviewId, classId: selectedClassId })
+  }, [selectedClassId, resolveAlertMutation])
 
   const statistics = useGradeStatistics(calculatedStudents)
 
@@ -359,6 +415,8 @@ export function GradeSheetTable({ classId: selectedClassId, term: selectedTerm, 
                         trackingLoading={trackingLoading}
                         isReadOnly={isReadOnly}
                         t={t}
+                        weeklyReviewSummary={weeklyReviewSummary?.students?.[student.id] ?? null}
+                        onOpenWeeklyReviewPanel={handleOpenWeeklyReviewPanel}
                       />
                     )
                   })}
@@ -443,6 +501,17 @@ export function GradeSheetTable({ classId: selectedClassId, term: selectedTerm, 
         isRTL={isRTL}
         t={t}
         className={classes.find(c => c.id === selectedClassId)?.name}
+      />
+
+      <WeeklyReviewPanel
+        open={weeklyReviewPanel.open}
+        onOpenChange={(open) => setWeeklyReviewPanel(prev => ({ ...prev, open }))}
+        student={weeklyReviewPanel.student}
+        summary={weeklyReviewPanel.student ? weeklyReviewSummary?.students?.[weeklyReviewPanel.student.id] ?? null : null}
+        onSaveReview={handleSaveWeeklyReview}
+        onResolveAlert={handleResolveAlert}
+        isLoading={batchCreateReviewsMutation.isPending}
+        isRTL={isRTL}
       />
     </div>
   )
