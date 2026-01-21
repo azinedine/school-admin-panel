@@ -371,7 +371,9 @@
                 "remarks": "Appréciations",
                 "group": "Groupe",
                 "oralInterrogation": "Interro. Orale",
-                "notebookChecked": "Vérif. Cahier"
+                "notebookChecked": "Vérif. Cahier",
+                "report": "Rapport",
+                "hasReport": "Cet élève a un rapport enregistré"
             },
             "remarks": {
                 "excellent": "Excellent",
