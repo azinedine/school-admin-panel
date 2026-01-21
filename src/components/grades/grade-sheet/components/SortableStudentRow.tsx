@@ -22,6 +22,7 @@ import type { CalculatedStudentGrade, StudentGrade } from "../types"
 import { getRowColor } from "../utils"
 import { EditableCell, AttendanceCell } from "./TableCells"
 import { TrackingToggle } from "../../shared/TrackingToggle"
+import { StudentReportIndicator } from "./StudentReportIndicator"
 
 interface SortableStudentRowProps {
     student: CalculatedStudentGrade
@@ -165,6 +166,11 @@ export function SortableStudentRow({
             <TableCell className="whitespace-nowrap max-w-[140px]">
                 <span className="flex items-center gap-1">
                     <span className="truncate">{student.firstName}</span>
+                    {/* Report Indicator */}
+                    <StudentReportIndicator
+                        reportsCount={student.reportsCount}
+                        tooltip={t('pages.grades.table.hasReport')}
+                    />
                     {/* Special Case Menu */}
                     <DropdownMenu>
                         <TooltipProvider delayDuration={300}>
