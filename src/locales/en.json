@@ -392,7 +392,9 @@
                 "exam": "Exam /20",
                 "finalAverage": "Average",
                 "remarks": "Remarks",
-                "group": "Group"
+                "group": "Group",
+                "report": "Report",
+                "hasReport": "This student has a report on file"
             },
             "tracking": {
                 "oralInterrogation": "Oral Interrogation",
