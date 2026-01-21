@@ -23,6 +23,8 @@ import { getRowColor } from "../utils"
 import { EditableCell, AttendanceCell } from "./TableCells"
 import { TrackingToggle } from "../../shared/TrackingToggle"
 import { StudentReportIndicator } from "./StudentReportIndicator"
+import { WeeklyReviewIndicator } from "./WeeklyReviewIndicator"
+import type { StudentWeeklyReviewSummary } from "@/features/weekly-reviews"
 
 interface SortableStudentRowProps {
     student: CalculatedStudentGrade
@@ -44,6 +46,9 @@ interface SortableStudentRowProps {
     trackingLoading?: { studentId: string; field: 'oral_interrogation' | 'notebook_checked' } | null
     t: (key: string, opts?: Record<string, unknown>) => string
     isReadOnly?: boolean
+    // Weekly review tracking
+    weeklyReviewSummary?: StudentWeeklyReviewSummary | null
+    onOpenWeeklyReviewPanel?: (student: CalculatedStudentGrade) => void
 }
 
 export function SortableStudentRow({
@@ -66,6 +71,8 @@ export function SortableStudentRow({
     trackingLoading,
     t,
     isReadOnly = false,
+    weeklyReviewSummary,
+    onOpenWeeklyReviewPanel,
 }: SortableStudentRowProps) {
     const {
         attributes,
@@ -170,6 +177,14 @@ export function SortableStudentRow({
                     <StudentReportIndicator
                         reportsCount={student.reportsCount}
                         tooltip={t('pages.grades.table.hasReport')}
+                    />
+                    {/* Weekly Review Indicator */}
+                    <WeeklyReviewIndicator
+                        summary={weeklyReviewSummary ?? null}
+                        onOpenReviewPanel={() => onOpenWeeklyReviewPanel?.(student)}
+                        reviewedTooltip={t('pages.grades.weeklyReview.indicators.reviewedLastWeek')}
+                        pendingAlertTooltip={t('pages.grades.weeklyReview.indicators.pendingAlert')}
+                        getObservationLabel={(type) => t(`pages.grades.weeklyReview.observations.${type}`)}
                     />
                     {/* Special Case Menu */}
                     <DropdownMenu>
