@@ -19,6 +19,8 @@ export interface StudentGrade {
     notebookChecked: boolean
     lastInterrogationAt: string | null
     lastNotebookCheckAt: string | null
+    // Report indicator (count of student reports)
+    reportsCount: number
 }
 
 export interface CalculatedStudentGrade extends StudentGrade {
