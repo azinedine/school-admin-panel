@@ -380,7 +380,9 @@
                 "remarks": "التقديرات",
                 "group": "الفوج",
                 "oralInterrogation": "استجواب",
-                "notebookChecked": "مراقبة الكراس"
+                "notebookChecked": "مراقبة الكراس",
+                "report": "تقرير",
+                "hasReport": "هذا الطالب لديه تقرير مسجل"
             },
             "remarks": {
                 "excellent": "ممتاز",
