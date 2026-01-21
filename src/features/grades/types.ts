@@ -36,6 +36,8 @@ export interface GradeStudent {
     notebook_checked: boolean
     last_interrogation_at: string | null
     last_notebook_check_at: string | null
+    // Report indicator (count of student reports)
+    reports_count: number
 }
 
 export interface StudentGrade {
