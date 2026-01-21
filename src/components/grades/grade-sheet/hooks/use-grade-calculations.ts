@@ -39,6 +39,8 @@ export function useGradeCalculations(
             notebookChecked: Boolean(s.notebook_checked),
             lastInterrogationAt: s.last_interrogation_at || null,
             lastNotebookCheckAt: s.last_notebook_check_at || null,
+            // Report indicator
+            reportsCount: Number(s.reports_count) || 0,
         }))
     }, [studentsRaw, classId])
 
