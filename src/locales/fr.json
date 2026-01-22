@@ -1000,5 +1000,47 @@
                 "error": "Échec de la suppression du compte utilisateur"
             }
         }
+    },
+    "reports": {
+        "status": {
+            "draft": "Brouillon",
+            "finalized": "Finalisé"
+        },
+        "studentReport": {
+            "title": "Rapport Disciplinaire",
+            "subtitle": "Documentation officielle de la conduite de l'élève",
+            "student": "Élève",
+            "class": "Classe",
+            "reportDate": "Date du rapport",
+            "teacher": "Enseignant rapporteur",
+            "involvedParties": "Parties impliquées",
+            "incidentDescription": "Description de l'incident",
+            "incidentPlaceholder": "Décrivez ce qui s'est passé, y compris la date, l'heure, le lieu et les témoins éventuels. Soyez factuel et précis...",
+            "proposedSanctions": "Sanctions proposées",
+            "tips": "Conseils de rédaction",
+            "tip1": "Incluez la date, l'heure et le lieu précis",
+            "tip2": "Décrivez les actions objectivement sans suppositions",
+            "tip3": "Mentionnez les témoins ou preuves éventuels"
+        },
+        "sanctions": {
+            "parentSummons": "Convocation des parents",
+            "guidanceCounselor": "Orientation vers le conseiller",
+            "writtenWarning": "Avertissement écrit",
+            "disciplinaryCouncil": "Conseil de discipline",
+            "severity": "Gravité",
+            "low": "Faible",
+            "medium": "Moyenne",
+            "high": "Élevée"
+        },
+        "actions": {
+            "saveReport": "Enregistrer le rapport",
+            "finalize": "Finaliser",
+            "draftHint": "Les rapports peuvent être modifiés jusqu'à leur finalisation"
+        },
+        "toast": {
+            "created": "Rapport créé avec succès",
+            "updated": "Rapport mis à jour avec succès",
+            "error": "Échec de l'enregistrement du rapport"
+        }
     }
 }
