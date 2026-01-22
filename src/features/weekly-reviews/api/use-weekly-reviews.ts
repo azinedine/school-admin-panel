@@ -124,7 +124,6 @@ export function useUpdateWeeklyReview() {
     return useMutation({
         mutationFn: async ({
             reviewId,
-            classId,
             ...request
         }: UpdateWeeklyReviewRequest & { reviewId: number; classId: string }) => {
             const { data } = await apiClient.put<{ data: WeeklyReview }>(
