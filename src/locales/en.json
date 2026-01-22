@@ -1008,5 +1008,47 @@
                 "error": "Failed to delete user account"
             }
         }
+    },
+    "reports": {
+        "status": {
+            "draft": "Draft",
+            "finalized": "Finalized"
+        },
+        "studentReport": {
+            "title": "Student Disciplinary Report",
+            "subtitle": "Official documentation of student conduct",
+            "student": "Student",
+            "class": "Class",
+            "reportDate": "Report Date",
+            "teacher": "Reporting Teacher",
+            "involvedParties": "Involved Parties",
+            "incidentDescription": "Incident Description",
+            "incidentPlaceholder": "Describe what happened, including the date, time, location, and any witnesses. Be factual and specific...",
+            "proposedSanctions": "Proposed Sanctions",
+            "tips": "Writing Tips",
+            "tip1": "Include specific date, time, and location",
+            "tip2": "Describe actions objectively without assumptions",
+            "tip3": "Mention any witnesses or evidence"
+        },
+        "sanctions": {
+            "parentSummons": "Parent Summons",
+            "guidanceCounselor": "Guidance Counselor Referral",
+            "writtenWarning": "Written Warning",
+            "disciplinaryCouncil": "Disciplinary Council",
+            "severity": "Severity",
+            "low": "Low",
+            "medium": "Medium",
+            "high": "High"
+        },
+        "actions": {
+            "saveReport": "Save Report",
+            "finalize": "Finalize",
+            "draftHint": "Reports can be edited until finalized"
+        },
+        "toast": {
+            "created": "Report created successfully",
+            "updated": "Report updated successfully",
+            "error": "Failed to save report"
+        }
     }
 }
