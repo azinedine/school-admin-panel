@@ -35,7 +35,8 @@ export function useWeeklyReviewSummary(classId: string) {
     const { year, week } = getCurrentISOWeek()
 
     return useQuery({
-        queryKey: weeklyReviewKeys.summary(classId),
+        // Include year/week in key so cache invalidates when week changes
+        queryKey: [...weeklyReviewKeys.summary(classId), year, week],
         queryFn: async () => {
             const { data } = await apiClient.get<{ data: WeeklyReviewSummaryResponse }>(
                 `/v1/grade-classes/${classId}/weekly-reviews/summary`
@@ -152,7 +153,7 @@ export function useResolveWeeklyReviewAlert() {
     const queryClient = useQueryClient()
 
     return useMutation({
-        mutationFn: async ({ reviewId, classId }: { reviewId: number; classId: string }) => {
+        mutationFn: async ({ reviewId }: { reviewId: number; classId: string }) => {
             const { data } = await apiClient.post<{ data: WeeklyReview }>(
                 `/v1/weekly-reviews/${reviewId}/resolve`
             )
@@ -178,7 +179,7 @@ export function useDeleteWeeklyReview() {
     const queryClient = useQueryClient()
 
     return useMutation({
-        mutationFn: async ({ reviewId, classId }: { reviewId: number; classId: string }) => {
+        mutationFn: async ({ reviewId }: { reviewId: number; classId: string }) => {
             await apiClient.delete(`/v1/weekly-reviews/${reviewId}`)
         },
         onSuccess: (_, variables) => {
