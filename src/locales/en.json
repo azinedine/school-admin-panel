@@ -34,7 +34,19 @@
         "minutes": "minutes",
         "noInternet": "No Internet Connection",
         "checkConnection": "Please check your internet connection and try again.",
-        "retry": "Retry"
+        "retry": "Retry",
+        "checking": "Checking...",
+        "serverUnavailable": "Server Unavailable",
+        "serverUnavailableDesc": "We cannot reach the server. Please try again later.",
+        "troubleshooting": "Troubleshooting Tips",
+        "tip": {
+            "checkWifi": "Check your Wi-Fi or mobile data connection",
+            "restartRouter": "Try restarting your router",
+            "airplaneMode": "Make sure airplane mode is off",
+            "serverMaintenance": "The server may be under maintenance",
+            "waitAndRetry": "Wait a few moments and try again",
+            "contactSupport": "Contact support if the issue persists"
+        }
     },
     "auth": {
         "login": {
