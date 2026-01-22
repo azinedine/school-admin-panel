@@ -375,6 +375,35 @@
                 "report": "Rapport",
                 "hasReport": "Cet élève a un rapport enregistré"
             },
+            "weeklyReview": {
+                "title": "Révision hebdomadaire",
+                "week": "Semaine {{week}}, {{year}}",
+                "notebookChecked": "Cahier vérifié",
+                "lessonWritten": "Leçon écrite",
+                "homeworkDone": "Devoirs faits",
+                "score": "Note",
+                "observation": "Observation",
+                "notes": "Notes",
+                "observations": {
+                    "OK": "Aucun problème",
+                    "NO_NOTEBOOK": "Pas de cahier",
+                    "LESSON_NOT_WRITTEN": "Leçon non écrite",
+                    "INCOMPLETE": "Travail incomplet",
+                    "HOMEWORK_MISSING": "Devoirs manquants",
+                    "COMMUNICATION_NOTE": "Note de communication envoyée",
+                    "MULTIPLE_ISSUES": "Plusieurs problèmes"
+                },
+                "indicators": {
+                    "reviewedLastWeek": "Révisé la semaine dernière",
+                    "reviewedThisWeek": "Révisé cette semaine",
+                    "pendingAlert": "Suivi nécessaire",
+                    "issueFrom": "Problème de la semaine {{week}}"
+                },
+                "actions": {
+                    "markResolved": "Marquer comme résolu",
+                    "reviewStudent": "Réviser l'élève"
+                }
+            },
             "remarks": {
                 "excellent": "Excellent",
                 "veryGood": "Très bien",
