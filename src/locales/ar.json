@@ -384,6 +384,35 @@
                 "report": "تقرير",
                 "hasReport": "هذا الطالب لديه تقرير مسجل"
             },
+            "weeklyReview": {
+                "title": "المراجعة الأسبوعية",
+                "week": "الأسبوع {{week}}، {{year}}",
+                "notebookChecked": "تم فحص الكراس",
+                "lessonWritten": "الدرس مكتوب",
+                "homeworkDone": "الواجبات منجزة",
+                "score": "العلامة",
+                "observation": "الملاحظة",
+                "notes": "ملاحظات",
+                "observations": {
+                    "OK": "لا توجد مشاكل",
+                    "NO_NOTEBOOK": "بدون كراس",
+                    "LESSON_NOT_WRITTEN": "الدرس غير مكتوب",
+                    "INCOMPLETE": "عمل ناقص",
+                    "HOMEWORK_MISSING": "واجبات ناقصة",
+                    "COMMUNICATION_NOTE": "ملاحظة في كراس المراسلة",
+                    "MULTIPLE_ISSUES": "مشاكل متعددة"
+                },
+                "indicators": {
+                    "reviewedLastWeek": "تمت المراجعة الأسبوع الماضي",
+                    "reviewedThisWeek": "تمت المراجعة هذا الأسبوع",
+                    "pendingAlert": "يحتاج متابعة",
+                    "issueFrom": "مشكلة من الأسبوع {{week}}"
+                },
+                "actions": {
+                    "markResolved": "تحديد كمحلول",
+                    "reviewStudent": "مراجعة الطالب"
+                }
+            },
             "remarks": {
                 "excellent": "ممتاز",
                 "veryGood": "جيد جدا",
