@@ -1,35 +1,34 @@
 import { createRootRoute, Outlet, Navigate } from '@tanstack/react-router'
 import { Toaster } from '@/components/ui/sonner'
-import { useState, useEffect } from 'react'
-import { NoInternet } from '@/components/common/NoInternet'
+import { NoConnection } from '@/components/common/NoInternet'
+import { useConnectionStatus } from '@/hooks/use-connection-status'
+
+function RootComponent() {
+  const { status, isChecking, checkServerHealth } = useConnectionStatus({
+    healthCheckInterval: 30000, // Check every 30 seconds
+    enableHealthCheck: true,
+  })
+
+  // Show no connection page when offline or server is down
+  if (status !== 'online') {
+    return (
+      <NoConnection
+        type={status}
+        onRetry={checkServerHealth}
+        isRetrying={isChecking}
+      />
+    )
+  }
+
+  return (
+    <>
+      <Outlet />
+      <Toaster />
+    </>
+  )
+}
 
 export const Route = createRootRoute({
-  component: () => {
-    const [isOnline, setIsOnline] = useState(navigator.onLine)
-
-    useEffect(() => {
-      const handleOnline = () => setIsOnline(true)
-      const handleOffline = () => setIsOnline(false)
-
-      window.addEventListener('online', handleOnline)
-      window.addEventListener('offline', handleOffline)
-
-      return () => {
-        window.removeEventListener('online', handleOnline)
-        window.removeEventListener('offline', handleOffline)
-      }
-    }, [])
-
-    if (!isOnline) {
-      return <NoInternet onRetry={() => window.location.reload()} />
-    }
-
-    return (
-      <>
-        <Outlet />
-        <Toaster />
-      </>
-    )
-  },
+  component: RootComponent,
   notFoundComponent: () => <Navigate to="/unauthorized" />,
 })
