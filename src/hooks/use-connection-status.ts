@@ -1,7 +1,9 @@
 import { useState, useEffect, useCallback } from 'react'
-import { apiClient } from '@/lib/api-client'
 
 export type ConnectionStatus = 'online' | 'offline' | 'server-down'
+
+// Health check URL - use env variable or default
+const HEALTH_CHECK_URL = `${import.meta.env.VITE_API_BASE_URL || 'http://localhost:8000/api'}/health`
 
 interface UseConnectionStatusOptions {
     /** Interval in ms to check server health (default: 30000 = 30s) */
@@ -38,11 +40,22 @@ export function useConnectionStatus(options: UseConnectionStatusOptions = {}): C
 
         setIsChecking(true)
         try {
-            // Use the health endpoint from the API
-            const response = await apiClient.get('/health', {
-                timeout: 5000, // 5 second timeout for health check
+            // Use simple fetch without credentials to avoid CORS preflight
+            const controller = new AbortController()
+            const timeoutId = setTimeout(() => controller.abort(), 5000)
+
+            const response = await fetch(HEALTH_CHECK_URL, {
+                method: 'GET',
+                signal: controller.signal,
+                // Don't send credentials to avoid CORS complications
+                credentials: 'omit',
+                headers: {
+                    'Accept': 'application/json',
+                },
             })
-            const available = response.status === 200
+
+            clearTimeout(timeoutId)
+            const available = response.ok
             setIsServerAvailable(available)
             setLastChecked(new Date())
             return available
