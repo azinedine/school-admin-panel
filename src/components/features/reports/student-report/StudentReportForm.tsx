@@ -1,5 +1,6 @@
 import { useForm, FormProvider } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
+import { useTranslation } from 'react-i18next'
 import { studentReportSchema, type StudentReportFormValues } from '@/schemas/student-report-schema'
 import { ReportHeader } from './ReportHeader'
 import { StudentInfoBlock } from './StudentInfoBlock'
@@ -22,6 +23,8 @@ interface StudentReportFormProps {
     }
     institutionName: string
     academicYear: string
+    reportNumber?: string
+    status?: 'draft' | 'finalized'
     onSuccess?: () => void
     onCancel: () => void
 }
@@ -31,9 +34,12 @@ export function StudentReportForm({
     teacher,
     institutionName,
     academicYear,
+    reportNumber,
+    status = 'draft',
     onSuccess,
     onCancel
 }: StudentReportFormProps) {
+    const { t } = useTranslation()
     const { mutate: createReport, isPending } = useCreateStudentReport()
 
     const methods = useForm<StudentReportFormValues>({
@@ -49,26 +55,33 @@ export function StudentReportForm({
     const onSubmit = (data: StudentReportFormValues) => {
         createReport(data, {
             onSuccess: () => {
-                toast.success('Report created successfully')
+                toast.success(t('reports.toast.created', 'Report created successfully'))
                 onSuccess?.()
             },
             onError: (error) => {
-                toast.error('Failed to create report')
+                toast.error(t('reports.toast.error', 'Failed to create report'))
                 console.error(error)
             }
         })
     }
 
     return (
-        <Card className="max-w-4xl mx-auto p-8 bg-card shadow-lg print:shadow-none print:border-none">
+        <Card className="max-w-3xl mx-auto bg-card shadow-xl border-0 overflow-hidden print:shadow-none print:border">
             <FormProvider {...methods}>
                 <form onSubmit={methods.handleSubmit(onSubmit)}>
-                    <ReportHeader
-                        institutionName={institutionName}
-                        academicYear={academicYear}
-                    />
+                    {/* Header Section */}
+                    <div className="px-6 sm:px-8 pt-8">
+                        <ReportHeader
+                            institutionName={institutionName}
+                            academicYear={academicYear}
+                            reportNumber={reportNumber}
+                            status={status}
+                        />
+                    </div>
 
-                    <div className="space-y-8">
+                    {/* Main Content */}
+                    <div className="px-6 sm:px-8 pb-8 space-y-8">
+                        {/* Step 1: Involved Parties */}
                         <StudentInfoBlock
                             studentName={student.name}
                             className={student.className}
@@ -76,13 +89,17 @@ export function StudentReportForm({
                             teacherName={teacher.name}
                         />
 
+                        {/* Step 2: Incident Description */}
                         <IncidentSection />
 
+                        {/* Step 3: Sanctions */}
                         <SanctionsSelector />
 
+                        {/* Actions */}
                         <ReportActions
                             onCancel={onCancel}
                             isSubmitting={isPending}
+                            isDraft={status === 'draft'}
                         />
                     </div>
                 </form>
