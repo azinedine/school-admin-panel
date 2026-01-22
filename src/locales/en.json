@@ -396,6 +396,35 @@
                 "report": "Report",
                 "hasReport": "This student has a report on file"
             },
+            "weeklyReview": {
+                "title": "Weekly Review",
+                "week": "Week {{week}}, {{year}}",
+                "notebookChecked": "Notebook checked",
+                "lessonWritten": "Lesson written",
+                "homeworkDone": "Homework done",
+                "score": "Score",
+                "observation": "Observation",
+                "notes": "Notes",
+                "observations": {
+                    "OK": "No issues",
+                    "NO_NOTEBOOK": "No notebook",
+                    "LESSON_NOT_WRITTEN": "Lesson not written",
+                    "INCOMPLETE": "Incomplete work",
+                    "HOMEWORK_MISSING": "Homework missing",
+                    "COMMUNICATION_NOTE": "Communication note sent",
+                    "MULTIPLE_ISSUES": "Multiple issues"
+                },
+                "indicators": {
+                    "reviewedLastWeek": "Reviewed last week",
+                    "reviewedThisWeek": "Reviewed this week",
+                    "pendingAlert": "Needs follow-up",
+                    "issueFrom": "Issue from week {{week}}"
+                },
+                "actions": {
+                    "markResolved": "Mark as resolved",
+                    "reviewStudent": "Review student"
+                }
+            },
             "tracking": {
                 "oralInterrogation": "Oral Interrogation",
                 "notebookChecked": "Notebook Checked",
