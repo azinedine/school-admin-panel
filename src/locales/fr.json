@@ -35,7 +35,19 @@
         "selectLevel": "Sélectionner le niveau",
         "noInternet": "Pas de connexion internet",
         "checkConnection": "Veuillez vérifier votre connexion internet et réessayer.",
-        "retry": "Réessayer"
+        "retry": "Réessayer",
+        "checking": "Vérification...",
+        "serverUnavailable": "Serveur indisponible",
+        "serverUnavailableDesc": "Impossible de joindre le serveur. Veuillez réessayer plus tard.",
+        "troubleshooting": "Conseils de dépannage",
+        "tip": {
+            "checkWifi": "Vérifiez votre connexion Wi-Fi ou données mobiles",
+            "restartRouter": "Essayez de redémarrer votre routeur",
+            "airplaneMode": "Assurez-vous que le mode avion est désactivé",
+            "serverMaintenance": "Le serveur peut être en maintenance",
+            "waitAndRetry": "Attendez quelques instants et réessayez",
+            "contactSupport": "Contactez le support si le problème persiste"
+        }
     },
     "auth": {
         "login": {
